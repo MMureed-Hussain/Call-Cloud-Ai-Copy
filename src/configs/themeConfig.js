@@ -3,7 +3,7 @@
 //Template config options
 const themeConfig = {
   app: {
-    appName: "Marketer Lodge",
+    appName: "CallCloud",
     appLogoImage: require("@src/assets/images/logo/defaultVuexyLogo.svg")
       .default,
   },
