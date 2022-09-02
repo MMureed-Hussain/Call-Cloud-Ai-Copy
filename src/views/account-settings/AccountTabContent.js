@@ -72,6 +72,7 @@ import {
   CardTitle,
   CardHeader,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 // ** Utils
@@ -99,6 +100,7 @@ const AccountTabs = ({ data }) => {
   // } = useForm({ defaultValues });
 
   // ** States
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
   //prettier-ignore
   const [avatar, setAvatar] = useState(data.avatar ? data.avatar : require("@src/assets/images/avatars/avatar-blank.png").default);
 
@@ -244,8 +246,13 @@ const AccountTabs = ({ data }) => {
   const [regionError, setRegionError] = useState(false);
 
   const onChange = (e) => {
+    if (!e.target.files.length) {
+      console.log("return");
+      return;
+    }
     const reader = new FileReader(),
       files = e.target.files;
+
     reader.onload = function () {
       setAvatar(reader.result);
     };
@@ -337,8 +344,9 @@ const AccountTabs = ({ data }) => {
       }
 
       console.log("form data ==>", payload);
-
-      dispatch(updateProfile(payload));
+      setFormSubmissionLoader(true);
+      // prettier-ignore
+      dispatch(updateProfile(payload)).then(() => setFormSubmissionLoader(false));
     }
     e.preventDefault();
   };
@@ -353,7 +361,12 @@ const AccountTabs = ({ data }) => {
     <Fragment>
       <Card>
         <CardHeader className="border-bottom">
-          <CardTitle tag="h4">Profile Details</CardTitle>
+          <CardTitle tag="h4">
+            {
+              // prettier-ignore
+              data.profileCompleted ? "Profile Details" : "Thanks for Creating CallCloud Account - Let`s complete your client profile."
+            }
+          </CardTitle>
         </CardHeader>
         <CardBody className="py-2 my-25">
           <div className="d-flex">
@@ -475,6 +488,23 @@ const AccountTabs = ({ data }) => {
               </Col>
 
               <Col sm="6" className="mb-1">
+                <Label className="form-label" for="emailInput">
+                  E-mail
+                </Label>
+                <Input
+                  id="emailInput"
+                  type="email"
+                  name="email"
+                  invalid={emailError}
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <FormFeedback>Please enter a valid Email</FormFeedback>
+              </Col>
+
+              <Col sm="6" className="mb-1">
                 <Label className="form-label" for="firstName">
                   First Name
                 </Label>
@@ -502,23 +532,6 @@ const AccountTabs = ({ data }) => {
                 />
 
                 <FormFeedback>Please enter a valid Last Name</FormFeedback>
-              </Col>
-
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="emailInput">
-                  E-mail
-                </Label>
-                <Input
-                  id="emailInput"
-                  type="email"
-                  name="email"
-                  invalid={emailError}
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-
-                <FormFeedback>Please enter a valid Email</FormFeedback>
               </Col>
 
               <Col sm="6" className="mb-1">
@@ -617,6 +630,13 @@ const AccountTabs = ({ data }) => {
                   color="primary"
                 >
                   Save changes
+                  {formSubmissionLoader && (
+                    <Spinner
+                      style={{ marginLeft: "5px" }}
+                      size={"sm"}
+                      color="white"
+                    />
+                  )}
                 </Button>
                 <Button color="secondary" outline>
                   Discard

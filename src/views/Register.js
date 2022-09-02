@@ -21,6 +21,7 @@ import {
   Input,
   Button,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 // ** Styles
@@ -49,6 +50,7 @@ const Register = () => {
   // const [nameEmpty, setNameEmpty] = useState(false);
   const [termAccepted, setTermAccepted] = useState(false);
   const [termAcceptedError, setTermAcceptedError] = useState(false);
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   const handleSubmit = (e) => {
     let valid = true;
@@ -85,6 +87,7 @@ const Register = () => {
     }
     // valid = false;
     if (valid) {
+      setFormSubmissionLoader(true);
       dispatch(
         register({
           email,
@@ -92,7 +95,7 @@ const Register = () => {
           // name,
           password_confirmation: passwordConfirmation,
         })
-      );
+      ).then(() => setFormSubmissionLoader(false));
     }
 
     e.preventDefault();
@@ -280,6 +283,13 @@ const Register = () => {
               </div>
               <Button onClick={(e) => handleSubmit(e)} color="primary" block>
                 Sign up
+                {formSubmissionLoader && (
+                  <Spinner
+                    style={{ marginLeft: "5px" }}
+                    size={"sm"}
+                    color="white"
+                  />
+                )}
               </Button>
             </Form>
             <p className="text-center mt-2">

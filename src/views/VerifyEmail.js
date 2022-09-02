@@ -1,9 +1,10 @@
 // ** React Imports
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useSkin } from "@hooks/useSkin";
 
 // ** Reactstrap Imports
-import { Row, Col, CardTitle, CardText, Button } from "reactstrap";
+import { Row, Col, CardTitle, CardText, Button, Spinner } from "reactstrap";
 
 // ** Styles
 import "@styles/base/pages/authentication.scss";
@@ -17,6 +18,7 @@ const VerifyEmail = () => {
   const { skin } = useSkin();
 
   const dispatch = useDispatch();
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   const store = useSelector((state) => {
     return state.auth;
@@ -31,7 +33,9 @@ const VerifyEmail = () => {
   }
 
   const handleResend = (e) => {
-    dispatch(sendMailVerificationLink());
+    setFormSubmissionLoader(true);
+    // prettier-ignore
+    dispatch(sendMailVerificationLink()).then(() => setFormSubmissionLoader(false));
     e.preventDefault();
   };
 
@@ -133,6 +137,14 @@ const VerifyEmail = () => {
               <span>Didn't receive an email? </span>
               <a href="/" onClick={(e) => handleResend(e)}>
                 <span>Resend</span>
+
+                {formSubmissionLoader && (
+                  <Spinner
+                    style={{ marginLeft: "5px" }}
+                    size={"sm"}
+                    color="white"
+                  />
+                )}
               </a>
             </p>
           </Col>

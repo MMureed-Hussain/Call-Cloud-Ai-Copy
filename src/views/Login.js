@@ -14,6 +14,7 @@ import {
   Input,
   Button,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 import "@styles/react/pages/page-authentication.scss";
 
@@ -35,6 +36,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
+
   const handleSubmit = (e) => {
     let valid = true;
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
@@ -52,6 +55,7 @@ const Login = () => {
     }
 
     if (valid) {
+      setFormSubmissionLoader(true);
       dispatch(csrf());
       const payload = { email, password };
 
@@ -59,7 +63,7 @@ const Login = () => {
         payload.remember_me = true;
       }
 
-      dispatch(login(payload));
+      dispatch(login(payload)).then(() => setFormSubmissionLoader(false));
     }
 
     e.preventDefault();
@@ -164,7 +168,7 @@ const Login = () => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-              Welcome to {store.user}! 👋
+              Welcome to CallCloud! 👋
             </CardTitle>
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure
@@ -226,6 +230,13 @@ const Login = () => {
                 block
               >
                 Sign in!
+                {formSubmissionLoader && (
+                  <Spinner
+                    style={{ marginLeft: "5px" }}
+                    size={"sm"}
+                    color="white"
+                  />
+                )}
               </Button>
             </Form>
             <p className="text-center mt-2">

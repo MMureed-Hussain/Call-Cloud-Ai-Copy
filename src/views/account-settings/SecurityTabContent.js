@@ -12,6 +12,7 @@ import {
   CardTitle,
   CardHeader,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 // ** Third Party Components
@@ -58,6 +59,8 @@ const SecurityTabContent = () => {
   const [newPasswordConfirmationError, setNewPasswordConfirmationError] =
     useState(false);
 
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
+
   const onSubmit = async (e) => {
     let valid = true;
 
@@ -83,6 +86,7 @@ const SecurityTabContent = () => {
     }
 
     if (valid) {
+      setFormSubmissionLoader(true);
       const payload = {
         password: newPassword,
         password_confirmation: newPasswordConfirmation,
@@ -90,6 +94,7 @@ const SecurityTabContent = () => {
       };
       console.log("onSubmit", payload);
       const r = await dispatch(updatePassword(payload)).unwrap();
+      setFormSubmissionLoader(false);
       console.log(r);
     }
 
@@ -157,6 +162,13 @@ const SecurityTabContent = () => {
                   color="primary"
                 >
                   Save changes
+                  {formSubmissionLoader && (
+                    <Spinner
+                      style={{ marginLeft: "5px" }}
+                      size={"sm"}
+                      color="white"
+                    />
+                  )}
                 </Button>
                 <Button color="secondary" outline>
                   Cancel

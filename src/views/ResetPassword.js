@@ -22,6 +22,7 @@ import {
   Input,
   Button,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 // ** Styles
@@ -56,6 +57,8 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
+
   const handleSubmit = (e) => {
     let valid = true;
 
@@ -80,6 +83,7 @@ const ResetPassword = () => {
     }
 
     if (valid) {
+      setFormSubmissionLoader(true);
       dispatch(
         resetPasswordRequest({
           email,
@@ -87,7 +91,7 @@ const ResetPassword = () => {
           password_confirmation: passwordConfirmation,
           token: params.resetToken,
         })
-      );
+      ).then(() => setFormSubmissionLoader(false));
     }
 
     e.preventDefault();
@@ -240,6 +244,13 @@ const ResetPassword = () => {
 
               <Button onClick={(e) => handleSubmit(e)} color="primary" block>
                 Reset password
+                {formSubmissionLoader && (
+                  <Spinner
+                    style={{ marginLeft: "5px" }}
+                    size={"sm"}
+                    color="white"
+                  />
+                )}
               </Button>
             </Form>
             <p className="text-center mt-2">

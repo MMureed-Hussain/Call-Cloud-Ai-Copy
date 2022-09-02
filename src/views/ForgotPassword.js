@@ -19,6 +19,7 @@ import {
   Input,
   Button,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 // ** Styles
@@ -39,6 +40,8 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [emailInvalid, setEmailInvalid] = useState(false);
 
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
+
   const handleSubmit = (e) => {
     let valid = true;
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
@@ -52,7 +55,9 @@ const ForgotPassword = () => {
       // dispatch(csrf());
 
       const payload = { email };
-      dispatch(forgotPasswordRequest(payload));
+      setFormSubmissionLoader(true);
+      // prettier-ignore
+      dispatch(forgotPasswordRequest(payload)).then(() => setFormSubmissionLoader(false));
     }
 
     e.preventDefault();
@@ -176,6 +181,13 @@ const ForgotPassword = () => {
               </div>
               <Button onClick={(e) => handleSubmit(e)} color="primary" block>
                 Send reset link
+                {formSubmissionLoader && (
+                  <Spinner
+                    style={{ marginLeft: "5px" }}
+                    size={"sm"}
+                    color="white"
+                  />
+                )}
               </Button>
             </Form>
             <p className="text-center mt-2">
