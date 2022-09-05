@@ -10,17 +10,34 @@ import Sidebar from "@components/sidebar";
 // ** Third Party Components
 
 // ** Reactstrap Imports
-import { Button, Label, FormText, Form, Input, FormFeedback } from "reactstrap";
+import {
+  Button,
+  Label,
+  FormText,
+  Form,
+  Input,
+  FormFeedback,
+  Spinner,
+} from "reactstrap";
 
 // ** Store & Actions
-import { addWorkspace } from "@store/workspaces";
+import { addWorkspace, updateWorkspace } from "@store/workspaces";
 import { useDispatch } from "react-redux";
 
-const SidebarNewUsers = ({ open, toggleSidebar, refreshTable }) => {
+const SidebarWorkspace = ({
+  open,
+  toggleSidebar,
+  refreshTable,
+  workspace = null,
+}) => {
   // ** States
-
-  const [name, setName] = useState("");
+  console.log("workspace", workspace);
+  const [name, setName] = useState(() => {
+    return workspace ? workspace.name : "";
+  });
   const [nameError, setNameError] = useState(false);
+  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
+
   // const [plan, setPlan] = useState("basic");
   // const [role, setRole] = useState("subscriber");
 
@@ -41,14 +58,27 @@ const SidebarNewUsers = ({ open, toggleSidebar, refreshTable }) => {
     }
 
     if (valid) {
-      dispatch(addWorkspace({ name })).then((result) => {
-        console.log("result", result);
-        if (result.payload.data.workspace) {
-          setName("");
-          refreshTable();
-          toggleSidebar();
-        }
-      });
+      setFormSubmissionLoader(true);
+
+      if (workspace) {
+        dispatch(updateWorkspace({ name, id: workspace.id })).then((result) => {
+          setFormSubmissionLoader(false);
+          if (result.payload.data.workspace) {
+            setName("");
+            refreshTable();
+            toggleSidebar();
+          }
+        });
+      } else {
+        dispatch(addWorkspace({ name })).then((result) => {
+          setFormSubmissionLoader(false);
+          if (result.payload.data.workspace) {
+            setName("");
+            refreshTable();
+            toggleSidebar();
+          }
+        });
+      }
     }
   };
 
@@ -86,6 +116,9 @@ const SidebarNewUsers = ({ open, toggleSidebar, refreshTable }) => {
 
         <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">
           Submit
+          {formSubmissionLoader && (
+            <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="white" />
+          )}
         </Button>
         <Button type="reset" color="secondary" outline onClick={toggleSidebar}>
           Cancel
@@ -95,4 +128,4 @@ const SidebarNewUsers = ({ open, toggleSidebar, refreshTable }) => {
   );
 };
 
-export default SidebarNewUsers;
+export default SidebarWorkspace;

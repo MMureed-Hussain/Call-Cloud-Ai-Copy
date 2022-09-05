@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 // import Avatar from "@components/avatar";
 
 // ** Store & Actions
-import { store } from "@store/store";
-import { deleteWorkspace } from "@store/workspaces";
+// import { store } from "@store/store";
+// import { deleteWorkspace } from "@store/workspaces";
 
 // ** Icons Imports
 import {
@@ -63,8 +63,8 @@ export const columns = [
             <DropdownItem
               tag={Link}
               className="w-100"
-              to={`/apps/user/view/${row.id}`}
-              onClick={() => store.dispatch(getUser(row.id))}
+              to={`/workspace/${row.id}`}
+              // onClick={() => store.dispatch(getUser(row.id))}
             >
               <FileText size={14} className="me-50" />
               <span className="align-middle">Details</span>
@@ -73,7 +73,10 @@ export const columns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                row.handleEdit(row.id);
+                e.preventDefault();
+              }}
             >
               <Archive size={14} className="me-50" />
               <span className="align-middle">Edit</span>
@@ -83,8 +86,8 @@ export const columns = [
               href="/"
               className="w-100"
               onClick={(e) => {
+                row.handleDelete(row.id);
                 e.preventDefault();
-                store.dispatch(deleteWorkspace(row.id));
               }}
             >
               <Trash2 size={14} className="me-50" />

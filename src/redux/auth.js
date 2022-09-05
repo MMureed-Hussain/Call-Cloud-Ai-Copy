@@ -14,6 +14,7 @@ export const login = createAsyncThunk("auth/login", async (payload) => {
       `${process.env.REACT_APP_API_ENDPOINT}/login`,
       payload
     );
+    window.location.href = "/";
     return {
       data: {
         user: response.data,
@@ -209,6 +210,7 @@ export const sendMailVerificationLink = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async () => {
   try {
     await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/logout`);
+    window.location.href = "/login";
     return {
       user: null,
     };

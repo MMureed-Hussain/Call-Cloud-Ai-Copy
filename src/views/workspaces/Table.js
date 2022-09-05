@@ -7,9 +7,20 @@ import Sidebar from "./Sidebar";
 // ** Table Columns
 import { columns } from "./columns";
 
+// ** Confirm box
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
+const MySwal = withReactContent(Swal);
+
 // ** Store & Actions
 // import { getAllData, getData } from "../store";
-import { getData } from "@store/workspaces";
+import {
+  getData,
+  storeCurrentPage,
+  storeRowsPerPage,
+  deleteWorkspace,
+} from "@store/workspaces";
 import { useDispatch, useSelector } from "react-redux";
 
 // ** Third Party Components
@@ -59,6 +70,7 @@ const CustomHeader = ({
   rowsPerPage,
   handleFilter,
   searchTerm,
+  setEditWorkspace,
 }) => {
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
@@ -103,7 +115,10 @@ const CustomHeader = ({
             <Button
               className="add-new-user"
               color="primary"
-              onClick={toggleSidebar}
+              onClick={() => {
+                setEditWorkspace(null);
+                toggleSidebar();
+              }}
             >
               Add New Workspace
             </Button>
@@ -122,10 +137,13 @@ const WorkspacesList = () => {
   // ** States
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => store.currentPage);
   const [sortColumn, setSortColumn] = useState("id");
-  const [rowsPerPage, setRowsPerPage] = useState(2);
+  const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPage);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [editWorkspace, setEditWorkspace] = useState(null);
+
   //   const [currentRole, setCurrentRole] = useState({
   //     value: "",
   //     label: "Select Role",
@@ -214,7 +232,9 @@ const WorkspacesList = () => {
         // currentPlan: currentPlan.value,
       })
     );
-    setCurrentPage(page.selected + 1);
+    const newPage = page.selected + 1;
+    setCurrentPage(newPage);
+    dispatch(storeCurrentPage({ currentPage: newPage }));
   };
 
   // ** Function in get data on rows per page
@@ -226,13 +246,16 @@ const WorkspacesList = () => {
         sortColumn,
         q: searchTerm,
         perPage: value,
-        page: currentPage,
+        page: 1,
         // role: currentRole.value,
         // currentPlan: currentPlan.value,
         // status: currentStatus.value,
       })
     );
+    setCurrentPage(1);
     setRowsPerPage(value);
+    dispatch(storeCurrentPage({ currentPage: 1 }));
+    dispatch(storeRowsPerPage({ rowsPerPage: value }));
   };
 
   // ** Function in get data on search query change
@@ -291,7 +314,49 @@ const WorkspacesList = () => {
     });
 
     if (store.workspaces.length > 0) {
-      return store.workspaces;
+      const workspaces = store.workspaces.map((workspace) => {
+        const tempWorkspace = { ...workspace };
+        tempWorkspace.handleEdit = (id) => {
+          const editWorkspace = store.workspaces.filter(
+            (workspace) => workspace.id === id
+          );
+          if (editWorkspace.length) {
+            setEditWorkspace(editWorkspace[0]);
+            toggleSidebar();
+          }
+        };
+        tempWorkspace.handleDelete = (id) => {
+          return MySwal.fire({
+            title: "Are you sure?",
+            text: "Are you sure you would like to delete this workspace?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+              cancelButton: "btn btn-danger ms-1",
+            },
+            buttonsStyling: false,
+          }).then(function (result) {
+            if (result.value) {
+              dispatch(deleteWorkspace({ id }));
+              refreshTable();
+            } else if (result.dismiss === MySwal.DismissReason.cancel) {
+              MySwal.fire({
+                title: "Cancelled",
+                text: "Deactivation Cancelled!!",
+                icon: "error",
+                customClass: {
+                  confirmButton: "btn btn-success",
+                },
+              });
+            }
+          });
+        };
+        return tempWorkspace;
+      });
+
+      return workspaces;
     } else if (store.workspaces.length === 0 && isFiltered) {
       return [];
     } else {
@@ -430,17 +495,21 @@ const WorkspacesList = () => {
                 handleFilter={handleFilter}
                 handlePerPage={handlePerPage}
                 toggleSidebar={toggleSidebar}
+                setEditWorkspace={setEditWorkspace}
               />
             }
           />
         </div>
       </Card>
 
-      <Sidebar
-        open={sidebarOpen}
-        refreshTable={refreshTable}
-        toggleSidebar={toggleSidebar}
-      />
+      {sidebarOpen && (
+        <Sidebar
+          open={sidebarOpen}
+          refreshTable={refreshTable}
+          toggleSidebar={toggleSidebar}
+          workspace={editWorkspace}
+        />
+      )}
     </Fragment>
   );
 };

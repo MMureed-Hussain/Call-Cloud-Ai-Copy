@@ -63,6 +63,57 @@ export const addWorkspace = createAsyncThunk(
   }
 );
 
+// Perform Login API and set user data in store
+export const updateWorkspace = createAsyncThunk(
+  "workspaces/updateWorkspace",
+  async (payload) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`,
+        { name: payload.name }
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: {
+          workspace: response.data,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: {
+          workspace: null,
+        },
+      };
+    }
+  }
+);
+
+// Perform Login API and set user data in store
+export const deleteWorkspace = createAsyncThunk(
+  "workspaces/deleteWorkspace",
+  async (payload) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: null,
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: null,
+      };
+    }
+  }
+);
+
 // prettier-ignore
 //const user = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")) : null;
 export const workspacesSlice = createSlice({
@@ -70,11 +121,16 @@ export const workspacesSlice = createSlice({
   initialState: {
     workspaces: [],
     loading: true,
-    total: 0
+    total: 0,
+    currentPage:1,
+    rowsPerPage:10
   },
   reducers: {
-    deleteWorkspace: (state, action) => {
-      state.query = action.payload
+    storeCurrentPage: (state, action) => {
+      state.currentPage = action.payload.currentPage
+    },
+    storeRowsPerPage: (state, action) => {
+      state.rowsPerPage = action.payload.rowsPerPage
     },
     getWorkspace: (state, action) => {
         state.query = action.payload
@@ -91,10 +147,19 @@ export const workspacesSlice = createSlice({
         if (action.payload.data.workspace) {
             //state.workspaces = [...state.workspaces, action.payload.data.workspace];
         }
+      })
+      .addCase(updateWorkspace.fulfilled, (state, action) => {
+        if (action.payload.data.workspace) {
+            //state.workspaces = [...state.workspaces, action.payload.data.workspace];
+        }
+      })
+      .addCase(deleteWorkspace.fulfilled, (state, action) => {
+        console.log("deleted", state, action)
       });
   },
 });
 
-export const { deleteWorkspace, getWorkspace } = workspacesSlice.actions;
+export const { getWorkspace, storeRowsPerPage, storeCurrentPage } =
+  workspacesSlice.actions;
 
 export default workspacesSlice.reducer;
