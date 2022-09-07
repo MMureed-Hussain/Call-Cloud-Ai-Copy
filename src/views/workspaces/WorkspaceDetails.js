@@ -1,14 +1,15 @@
 import { Card, CardHeader, CardBody, CardTitle, CardText } from "reactstrap";
 import { useParams } from "react-router-dom";
-// import Table from "./Table";
+import UsersTable from "./UsersTable";
 
 const WorkspaceDetails = () => {
   const params = useParams();
 
   return (
-    <div className="app-user-list">
-      {/* <Table /> */}
-      {params.id}
+    <div>
+      <div className="app-user-list">
+        <UsersTable workspaceId={params.id} />
+      </div>
     </div>
   );
 };

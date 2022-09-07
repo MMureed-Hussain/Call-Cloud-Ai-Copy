@@ -284,21 +284,21 @@ const AccountTabs = ({ data }) => {
       setEmailError(false);
     }
 
-    if (!industry) {
+    if (!industry && data.role === "company") {
       valid = false;
       setIndustryError(true);
     } else {
       setIndustryError(false);
     }
 
-    if (!companyName) {
+    if (!companyName && data.role === "company") {
       valid = false;
       setCompanyNameError(true);
     } else {
       setCompanyNameError(false);
     }
 
-    if (!companySize) {
+    if (!companySize && data.role === "company") {
       valid = false;
       setCompanySizeError(true);
     } else {
@@ -331,9 +331,6 @@ const AccountTabs = ({ data }) => {
         email,
         firstName,
         lastName,
-        companyName,
-        companySize: companySize.value,
-        industry: industry.id,
         country: country.id,
         region: region.id,
         city,
@@ -341,6 +338,12 @@ const AccountTabs = ({ data }) => {
 
       if (avatarFile) {
         payload.avatar = avatarFile;
+      }
+
+      if (data.role === "company") {
+        payload.companyName = companyName;
+        payload.companySize = companySize.value;
+        payload.industry = industry.id;
       }
 
       console.log("form data ==>", payload);
@@ -412,80 +415,85 @@ const AccountTabs = ({ data }) => {
           </div>
           <Form className="mt-2 pt-50">
             <Row>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="companyName">
-                  Company Name
-                </Label>
-                <Input
-                  id="companyName"
-                  placeholder="ClickMage"
-                  invalid={companyNameError}
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                />
+              {data.role === "company" && (
+                <>
+                  {" "}
+                  <Col sm="6" className="mb-1">
+                    <Label className="form-label" for="companyName">
+                      Company Name
+                    </Label>
+                    <Input
+                      id="companyName"
+                      placeholder="ClickMage"
+                      invalid={companyNameError}
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                    />
 
-                <FormFeedback>Please enter a valid Company Name</FormFeedback>
-              </Col>
+                    <FormFeedback>
+                      Please enter a valid Company Name
+                    </FormFeedback>
+                  </Col>
+                  <Col sm="6" className="mb-1">
+                    <Label className="form-label" for="industryInput">
+                      Industry
+                    </Label>
+                    <AsyncSelect
+                      defaultOptions
+                      isClearable={false}
+                      value={industry}
+                      name="industry"
+                      className="react-select"
+                      id="industryInput"
+                      classNamePrefix="select"
+                      onChange={(industry) => {
+                        setIndustry(industry);
+                      }}
+                      theme={selectThemeColors}
+                      loadOptions={loadIndustriesOptions}
+                      onInputChange={handleIndustryInputChange}
+                      noOptionsMessage={(input) => {
+                        return `No match found for ${input.inputValue}!`;
+                      }}
+                    />
 
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="industryInput">
-                  Industry
-                </Label>
-                <AsyncSelect
-                  defaultOptions
-                  isClearable={false}
-                  value={industry}
-                  name="industry"
-                  className="react-select"
-                  id="industryInput"
-                  classNamePrefix="select"
-                  onChange={(industry) => {
-                    setIndustry(industry);
-                  }}
-                  theme={selectThemeColors}
-                  loadOptions={loadIndustriesOptions}
-                  onInputChange={handleIndustryInputChange}
-                  noOptionsMessage={(input) => {
-                    return `No match found for ${input.inputValue}!`;
-                  }}
-                />
-
-                {industryError && (
-                  <div
-                    className="invalid-feedback"
-                    style={{ display: "block" }}
-                  >
-                    Please select Industry
-                  </div>
-                )}
-              </Col>
-
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="companySize">
-                  Company Size
-                </Label>
-                <Select
-                  theme={selectThemeColors}
-                  className="react-select"
-                  id="companySize"
-                  classNamePrefix="select"
-                  options={companySizeOptions}
-                  value={companySize}
-                  isClearable={false}
-                  onChange={(selected) => {
-                    console.log(selected);
-                    setCompanySize(selected);
-                  }}
-                />
-                {companySizeError && (
-                  <div
-                    className="invalid-feedback"
-                    style={{ display: "block" }}
-                  >
-                    Please select Company Size!
-                  </div>
-                )}
-              </Col>
+                    {industryError && (
+                      <div
+                        className="invalid-feedback"
+                        style={{ display: "block" }}
+                      >
+                        Please select Industry
+                      </div>
+                    )}
+                  </Col>
+                  <Col sm="6" className="mb-1">
+                    <Label className="form-label" for="companySize">
+                      Company Size
+                    </Label>
+                    <Select
+                      theme={selectThemeColors}
+                      className="react-select"
+                      id="companySize"
+                      classNamePrefix="select"
+                      options={companySizeOptions}
+                      value={companySize}
+                      isClearable={false}
+                      onChange={(selected) => {
+                        console.log(selected);
+                        setCompanySize(selected);
+                      }}
+                    />
+                    {companySizeError && (
+                      <div
+                        className="invalid-feedback"
+                        style={{ display: "block" }}
+                      >
+                        Please select Company Size!
+                      </div>
+                    )}
+                  </Col>
+                </>
+              )}
 
               <Col sm="6" className="mb-1">
                 <Label className="form-label" for="emailInput">

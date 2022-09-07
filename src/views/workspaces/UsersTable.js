@@ -1,11 +1,11 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // ** Invoice List Sidebar
-import Sidebar from "./Sidebar";
+import UserSidebar from "./UserSidebar";
 
 // ** Table Columns
-import { adminWorkspaceColumns, userWorkspaceColumns } from "./columns";
+import { userColumns } from "./columns";
 
 // ** Confirm box
 import Swal from "sweetalert2";
@@ -16,10 +16,10 @@ const MySwal = withReactContent(Swal);
 // ** Store & Actions
 // import { getAllData, getData } from "../store";
 import {
-  getData,
-  storeCurrentPage,
-  storeRowsPerPage,
-  deleteWorkspace,
+  getUsers,
+  storeCurrentPageUser,
+  storeRowsPerPageUser,
+  //   deleteUser,
 } from "@store/workspaces";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -70,8 +70,8 @@ const CustomHeader = ({
   rowsPerPage,
   handleFilter,
   searchTerm,
-  setEditWorkspace,
   userData,
+  //   setEditWorkspace,
 }) => {
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
@@ -118,11 +118,11 @@ const CustomHeader = ({
                 className="add-new-user"
                 color="primary"
                 onClick={() => {
-                  setEditWorkspace(null);
+                  // setEditWorkspace(null);
                   toggleSidebar();
                 }}
               >
-                Add New Workspace
+                Add New User
               </Button>
             </div>
           )}
@@ -132,7 +132,8 @@ const CustomHeader = ({
   );
 };
 
-const WorkspacesList = () => {
+const UsersList = ({ workspaceId }) => {
+  console.log("workspaceId", workspaceId);
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
@@ -141,12 +142,12 @@ const WorkspacesList = () => {
   // ** States
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(() => store.currentPage);
+  const [currentPage, setCurrentPage] = useState(() => store.currentPageUser);
   const [sortColumn, setSortColumn] = useState("id");
-  const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPage);
+  const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPageUser);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [editWorkspace, setEditWorkspace] = useState(null);
+  //   const [editWorkspace, setEditWorkspace] = useState(null);
 
   //   const [currentRole, setCurrentRole] = useState({
   //     value: "",
@@ -169,25 +170,42 @@ const WorkspacesList = () => {
 
   const refreshTable = () => {
     dispatch(
-      getData({
+      getUsers({
         sort,
         sortColumn,
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
+        id: workspaceId,
       })
     );
   };
 
   // ** Get data on mount
-  if (store.loading) {
+
+  useEffect(() => {
+    if (!store.usersLoading) {
+      dispatch(
+        getUsers({
+          sort,
+          sortColumn,
+          q: searchTerm,
+          page: currentPage,
+          perPage: rowsPerPage,
+          id: workspaceId,
+        })
+      );
+    }
+  }, [workspaceId]);
+  if (store.usersLoading) {
     dispatch(
-      getData({
+      getUsers({
         sort,
         sortColumn,
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
+        id: workspaceId,
       })
     );
   }
@@ -225,12 +243,13 @@ const WorkspacesList = () => {
   // ** Function in get data on page change
   const handlePagination = (page) => {
     dispatch(
-      getData({
+      getUsers({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: rowsPerPage,
         page: page.selected + 1,
+        id: workspaceId,
         // role: currentRole.value,
         // status: currentStatus.value,
         // currentPlan: currentPlan.value,
@@ -238,19 +257,20 @@ const WorkspacesList = () => {
     );
     const newPage = page.selected + 1;
     setCurrentPage(newPage);
-    dispatch(storeCurrentPage({ currentPage: newPage }));
+    dispatch(storeCurrentPageUser({ currentPage: newPage }));
   };
 
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
     const value = parseInt(e.currentTarget.value);
     dispatch(
-      getData({
+      getUsers({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: value,
         page: 1,
+        id: workspaceId,
         // role: currentRole.value,
         // currentPlan: currentPlan.value,
         // status: currentStatus.value,
@@ -258,20 +278,21 @@ const WorkspacesList = () => {
     );
     setCurrentPage(1);
     setRowsPerPage(value);
-    dispatch(storeCurrentPage({ currentPage: 1 }));
-    dispatch(storeRowsPerPage({ rowsPerPage: value }));
+    dispatch(storeCurrentPageUser({ currentPage: 1 }));
+    dispatch(storeRowsPerPageUser({ rowsPerPage: value }));
   };
 
   // ** Function in get data on search query change
   const handleFilter = (val) => {
     setSearchTerm(val);
     dispatch(
-      getData({
+      getUsers({
         sort,
         q: val,
         sortColumn,
         page: currentPage,
         perPage: rowsPerPage,
+        id: workspaceId,
         // role: currentRole.value,
         // status: currentStatus.value,
         // currentPlan: currentPlan.value,
@@ -281,7 +302,7 @@ const WorkspacesList = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / rowsPerPage));
+    const count = Number(Math.ceil(store.totalUsers / rowsPerPage));
 
     return (
       <ReactPaginate
@@ -317,19 +338,17 @@ const WorkspacesList = () => {
       return filters[k].length > 0;
     });
 
-    if (store.workspaces.length > 0) {
-      const workspaces = store.workspaces.map((workspace) => {
-        const tempWorkspace = { ...workspace };
-        tempWorkspace.handleEdit = (id) => {
-          const editWorkspace = store.workspaces.filter(
-            (workspace) => workspace.id === id
-          );
-          if (editWorkspace.length) {
-            setEditWorkspace(editWorkspace[0]);
+    if (store.users.length > 0) {
+      const users = store.users.map((user) => {
+        const tempUser = { ...user };
+        tempUser.handleEdit = (id) => {
+          const editUser = store.users.filter((user) => user.id === id);
+          if (editUser.length) {
+            // setEditWorkspace(editUser[0]);
             toggleSidebar();
           }
         };
-        tempWorkspace.handleDelete = async (id) => {
+        tempUser.handleDelete = async (id) => {
           const result = await MySwal.fire({
             title: "Are you sure?",
             text: "Are you sure you would like to delete this workspace?",
@@ -356,14 +375,14 @@ const WorkspacesList = () => {
             });
           }
         };
-        return tempWorkspace;
+        return tempUser;
       });
 
-      return workspaces;
-    } else if (store.workspaces.length === 0 && isFiltered) {
+      return users;
+    } else if (store.users.length === 0 && isFiltered) {
       return [];
     } else {
-      return store.workspaces.slice(0, rowsPerPage);
+      return store.users.slice(0, rowsPerPage);
     }
   };
 
@@ -372,12 +391,13 @@ const WorkspacesList = () => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
     dispatch(
-      getData({
+      getUsers({
         sort: sortDirection,
         sortColumn: column.sortField,
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
+        id: workspaceId,
         // role: currentRole.value,
         // status: currentStatus.value,
         // currentPlan: currentPlan.value,
@@ -387,94 +407,7 @@ const WorkspacesList = () => {
 
   return (
     <Fragment>
-      {/* <Card>
-        <CardHeader>
-          <CardTitle tag="h4">Filters</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <Row>
-            <Col md="4">
-              <Label for="role-select">Role</Label>
-              <Select
-                isClearable={false}
-                value={currentRole}
-                options={roleOptions}
-                className="react-select"
-                classNamePrefix="select"
-                theme={selectThemeColors}
-                onChange={(data) => {
-                  setCurrentRole(data);
-                  dispatch(
-                    getData({
-                      sort,
-                      sortColumn,
-                      q: searchTerm,
-                      role: data.value,
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      status: currentStatus.value,
-                      currentPlan: currentPlan.value,
-                    })
-                  );
-                }}
-              />
-            </Col>
-            <Col className="my-md-0 my-1" md="4">
-              <Label for="plan-select">Plan</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={planOptions}
-                value={currentPlan}
-                onChange={(data) => {
-                  setCurrentPlan(data);
-                  dispatch(
-                    getData({
-                      sort,
-                      sortColumn,
-                      q: searchTerm,
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      role: currentRole.value,
-                      currentPlan: data.value,
-                      status: currentStatus.value,
-                    })
-                  );
-                }}
-              />
-            </Col>
-            <Col md="4">
-              <Label for="status-select">Status</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={statusOptions}
-                value={currentStatus}
-                onChange={(data) => {
-                  setCurrentStatus(data);
-                  dispatch(
-                    getData({
-                      sort,
-                      sortColumn,
-                      q: searchTerm,
-                      page: currentPage,
-                      status: data.value,
-                      perPage: rowsPerPage,
-                      role: currentRole.value,
-                      currentPlan: currentPlan.value,
-                    })
-                  );
-                }}
-              />
-            </Col>
-          </Row>
-        </CardBody>
-      </Card> */}
-
+      {store.workspaceName && <p>Manage workspace: {store.workspaceName}</p>}
       <Card className="overflow-hidden workspace-list">
         <div className="react-dataTable">
           <DataTable
@@ -484,8 +417,7 @@ const WorkspacesList = () => {
             pagination
             responsive
             paginationServer
-            // prettier-ignore
-            columns={userData.user.role === "company" ? adminWorkspaceColumns : userWorkspaceColumns}
+            columns={userColumns}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
@@ -499,8 +431,8 @@ const WorkspacesList = () => {
                 handleFilter={handleFilter}
                 handlePerPage={handlePerPage}
                 toggleSidebar={toggleSidebar}
-                setEditWorkspace={setEditWorkspace}
                 userData={userData}
+                // setEditWorkspace={setEditWorkspace}
               />
             }
           />
@@ -508,15 +440,16 @@ const WorkspacesList = () => {
       </Card>
 
       {sidebarOpen && (
-        <Sidebar
+        <UserSidebar
           open={sidebarOpen}
           refreshTable={refreshTable}
           toggleSidebar={toggleSidebar}
-          workspace={editWorkspace}
+          workspaceId={workspaceId}
+          //   workspace={editWorkspace}
         />
       )}
     </Fragment>
   );
 };
 
-export default WorkspacesList;
+export default UsersList;

@@ -4,8 +4,7 @@
 const themeConfig = {
   app: {
     appName: "CallCloud",
-    appLogoImage: require("@src/assets/images/logo/defaultVuexyLogo.svg")
-      .default,
+    appLogoImage: require("@src/assets/images/logo/callcloud.svg").default,
   },
   layout: {
     isRTL: false,
