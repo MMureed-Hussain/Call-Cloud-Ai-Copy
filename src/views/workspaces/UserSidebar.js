@@ -84,7 +84,7 @@ const SidebarUser = ({
     <Sidebar
       size="lg"
       open={open}
-      title="New Workspace"
+      title="New User"
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
