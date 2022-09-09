@@ -122,6 +122,58 @@ export const inviteMember = createAsyncThunk(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}/invite`,
         {
           email: payload.email,
+          nickname: payload.nickname,
+        }
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: {
+          user: true,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: null,
+      };
+    }
+  }
+);
+
+// Perform delete user from workspace API
+export const deleteMemberFromWorkspace = createAsyncThunk(
+  "workspaces/deleteMemberFromWorkspace",
+  async (payload) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/delete-member/${payload.id}`
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: null,
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: null,
+      };
+    }
+  }
+);
+
+// Perform delete user from workspace API
+export const updateMemberInWorkspace = createAsyncThunk(
+  "workspaces/updateMemberInWorkspace",
+  async (payload) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/update-member/${payload.id}`,
+        {
+          nickname: payload.nickname,
         }
       );
 
@@ -185,7 +237,7 @@ export const workspacesSlice = createSlice({
     users:[],
     usersLoading:true,
     totalUsers: 0,
-    rowsPerPageUser:2,
+    rowsPerPageUser:10,
     currentPageUser:1,
     workspaceName:""
   },
@@ -227,6 +279,12 @@ export const workspacesSlice = createSlice({
         console.log("No need to update store", state, action)
       })
       .addCase(inviteMember.fulfilled, (state, action) => {
+        console.log("No need to update store", state, action)
+      })
+      .addCase(updateMemberInWorkspace.fulfilled, (state, action) => {
+        console.log("No need to update store", state, action)
+      })
+      .addCase(deleteMemberFromWorkspace.fulfilled, (state, action) => {
         console.log("No need to update store", state, action)
       })
       .addCase(getUsers.fulfilled, (state, action) => {
