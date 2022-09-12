@@ -11,6 +11,38 @@ PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER
 WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
 
 //for keep actions dropdown visibe in workspaces list 
+
+html
+body{
+	background-color: #f3f2ef;
+}
+
 .workspace-list .rdt_TableBody {
 	min-height: 250px;
+}
+
+.nav-pills .nav-link,
+.btn {
+	border-radius: 50px;
+	box-shadow: none !important;
+}
+
+.header-navbar.floating-nav,
+.card{
+	box-shadow: 0 4px 24px 0 rgb(34 41 47 / .05%);
+	border-radius: 10px;
+}
+
+.main-menu.menu-shadow{
+	box-shadow: 0 4px 24px 0 rgb(34 41 47 / .05%);
+}
+
+.btn-primay:hover,
+a:not([href]):hover{
+	color: #4da6f9;
+}
+
+
+.main-menu .navbar-header .navbar-brand .brand-text{
+	color:#302f4b;
 }
