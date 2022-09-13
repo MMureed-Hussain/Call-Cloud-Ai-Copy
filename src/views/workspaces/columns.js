@@ -235,6 +235,22 @@ export const userColumns = [
     cell: (row) => renderJoinedAt(row),
   },
   {
+    name: "Calls",
+    sortable: false,
+    minWidth: "172px",
+    // sortField: "createdAt",
+    // selector: (row) => row.joinedAt,
+    cell: () => "0",
+  },
+  {
+    name: "Role",
+    sortable: false,
+    minWidth: "172px",
+    // sortField: "createdAt",
+    // selector: (row) => row.joinedAt,
+    cell: () => "Member",
+  },
+  {
     name: "Actions",
     minWidth: "100px",
     cell: (row) => (

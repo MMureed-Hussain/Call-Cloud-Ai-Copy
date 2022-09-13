@@ -30,6 +30,8 @@ const Home = lazy(() => import("../../views/Home"));
 const Workspaces = lazy(() => import("../../views/workspaces/Workspaces"));
 // prettier-ignore
 const WorkspaceDetails = lazy(() => import("../../views/workspaces/WorkspaceDetails"));
+// prettier-ignore
+const WorkspaceManageUsers = lazy(() => import("../../views/workspaces/WorkspaceManageUsers"));
 const Login = lazy(() => import("../../views/Login"));
 const Register = lazy(() => import("../../views/Register"));
 const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
@@ -71,6 +73,13 @@ const Routes = [
   {
     path: "/workspace/:id",
     element: <WorkspaceDetails />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/workspace/:id/users",
+    element: <WorkspaceManageUsers />,
     meta: {
       isPrivate: true,
     },

@@ -1,19 +1,19 @@
-import { Card, CardHeader, CardBody, CardTitle, CardText } from "reactstrap";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import UsersTable from "./UsersTable";
 import WorkspaceMemberView from "./WorkspaceMemberView";
-import WorkspaceCompanyView from "./WorkspaceCompanyView";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
 import { storeCurrentWorkspaceById } from "@store/workspaces";
 
 const WorkspaceDetails = () => {
   const params = useParams();
+
+  //   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
   const workspaceState = useSelector((state) => state.workspaces);
 
-  const dispatch = useDispatch();
   useEffect(() => {
     if (
       authState.user &&
@@ -24,13 +24,22 @@ const WorkspaceDetails = () => {
     }
   }, []);
 
+  if (authState.user.role !== "company") {
+    return <Navigate to={`/workspace/${params.id}`} />;
+  }
+  if (params.id === "id") {
+    return (
+      <Navigate
+        to={`/workspaces?error_message=Please create workspace first!`}
+      />
+    );
+  }
+
   return (
     <div>
-      {authState.user.role === "company" ? (
-        <WorkspaceCompanyView workspaceId={params.id} />
-      ) : (
-        <WorkspaceMemberView workspaceId={params.id} />
-      )}
+      <div className="app-user-list">
+        <UsersTable workspaceId={params.id} />
+      </div>
     </div>
   );
 };
