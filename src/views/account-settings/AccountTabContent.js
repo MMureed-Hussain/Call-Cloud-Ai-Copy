@@ -521,7 +521,13 @@ const AccountTabs = ({ data }) => {
                   placeholder="John"
                   invalid={firstNameError}
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => {
+                    const firstName = e.target.value.replace(
+                      /(^\w{1})|(\s+\w{1})/g,
+                      (letter) => letter.toUpperCase()
+                    );
+                    setFirstName(firstName);
+                  }}
                 />
 
                 <FormFeedback>Please enter a valid First Name</FormFeedback>
@@ -536,7 +542,13 @@ const AccountTabs = ({ data }) => {
                   placeholder="Doe"
                   invalid={lastNameError}
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => {
+                    const lastName = e.target.value.replace(
+                      /(^\w{1})|(\s+\w{1})/g,
+                      (letter) => letter.toUpperCase()
+                    );
+                    setLastName(lastName);
+                  }}
                 />
 
                 <FormFeedback>Please enter a valid Last Name</FormFeedback>
