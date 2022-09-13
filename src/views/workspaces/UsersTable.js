@@ -415,7 +415,9 @@ const UsersList = ({ workspaceId }) => {
 
   return (
     <Fragment>
-      {store.workspaceName && <p>Manage workspace: {store.workspaceName}</p>}
+      {store.currentWorkspace && (
+        <p>Manage workspace: {store.currentWorkspace.name}</p>
+      )}
       <Card className="overflow-hidden workspace-list">
         <div className="react-dataTable">
           <DataTable

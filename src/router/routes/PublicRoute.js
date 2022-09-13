@@ -8,6 +8,7 @@ import { getHomeRouteForLoggedInUser } from "@utils";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "@store/auth";
+import { getData } from "@store/workspaces";
 
 const PublicRoute = ({ children, route }) => {
   const store = useSelector((state) => {
@@ -17,7 +18,11 @@ const PublicRoute = ({ children, route }) => {
   const dispatch = useDispatch();
 
   if (!store.user && store.loading) {
-    dispatch(getUser());
+    dispatch(getUser()).then((data) => {
+      if (data.payload.data.user) {
+        dispatch(getData({ page: 1, perPage: 10 }));
+      }
+    });
   }
 
   if (store.loading) {

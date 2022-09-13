@@ -15,17 +15,27 @@ const Home = () => {
   const store = useSelector((state) => {
     return state.auth;
   });
+  const workspaceState = useSelector((state) => {
+    return state.workspaces;
+  });
 
   if (!store.user) {
     return <Navigate to="/login" />;
   }
+
+  // if (workspaceState.currentWorkspace) {
+  //   return <Navigate to={`/workspace/${workspaceState.currentWorkspace.id}`} />;
+  // }
 
   return (
     <div>
       <Card>
         <CardHeader>
           <CardTitle>
-            Welcome {store.user.name} ({store.user.email}) 🚀
+            {
+              // prettier-ignore
+              workspaceState.currentWorkspace ? `Welcome ${store.user.name} (${store.user.email}) to workspace ${workspaceState.currentWorkspace.name} 🚀` : `Welcome ${store.user.name} (${store.user.email}) 🚀`
+            }
           </CardTitle>
         </CardHeader>
         <CardBody>
