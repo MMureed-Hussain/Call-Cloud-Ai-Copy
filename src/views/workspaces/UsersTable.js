@@ -20,6 +20,7 @@ import {
   storeCurrentPageUser,
   storeRowsPerPageUser,
   //   deleteUser,
+  deleteMemberFromWorkspace,
 } from "@store/workspaces";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -71,7 +72,7 @@ const CustomHeader = ({
   handleFilter,
   searchTerm,
   userData,
-  //   setEditWorkspace,
+  setEditUser,
 }) => {
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
@@ -118,7 +119,7 @@ const CustomHeader = ({
                 className="add-new-user"
                 color="primary"
                 onClick={() => {
-                  // setEditWorkspace(null);
+                  setEditUser(null);
                   toggleSidebar();
                 }}
               >
@@ -147,7 +148,7 @@ const UsersList = ({ workspaceId }) => {
   const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPageUser);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  //   const [editWorkspace, setEditWorkspace] = useState(null);
+  const [editUser, setEditUser] = useState(null);
 
   //   const [currentRole, setCurrentRole] = useState({
   //     value: "",
@@ -344,17 +345,23 @@ const UsersList = ({ workspaceId }) => {
         tempUser.handleEdit = (id) => {
           const editUser = store.users.filter((user) => user.id === id);
           if (editUser.length) {
-            // setEditWorkspace(editUser[0]);
+            setEditUser(editUser[0]);
             toggleSidebar();
           }
         };
-        tempUser.handleDelete = async (id) => {
+        tempUser.handleDelete = async (id, joinedAt) => {
+          console.log("joinedAt", joinedAt);
+          // prettier-ignore
+          const text = joinedAt ? "Are you sure you would like to remove this user?" : "Are you sure you would like to cancel this invitation?";
+          // prettier-ignore
+          const confirmButtonText = joinedAt ? "Yes, remove it!" : "Yes, cancel it!";
+
           const result = await MySwal.fire({
             title: "Are you sure?",
-            text: "Are you sure you would like to delete this workspace?",
+            text,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
+            confirmButtonText,
             customClass: {
               confirmButton: "btn btn-primary",
               cancelButton: "btn btn-danger ms-1",
@@ -362,12 +369,13 @@ const UsersList = ({ workspaceId }) => {
             buttonsStyling: false,
           });
           if (result.value) {
-            dispatch(deleteWorkspace({ id }));
+            dispatch(deleteMemberFromWorkspace({ id }));
+            console.log("delete workspace", id);
             refreshTable();
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({
               title: "Cancelled",
-              text: "Deactivation Cancelled!!",
+              text: "Action Cancelled!!",
               icon: "error",
               customClass: {
                 confirmButton: "btn btn-success",
@@ -407,7 +415,9 @@ const UsersList = ({ workspaceId }) => {
 
   return (
     <Fragment>
-      {store.workspaceName && <p>Manage workspace: {store.workspaceName}</p>}
+      {store.currentWorkspace && (
+        <p>Manage workspace: {store.currentWorkspace.name}</p>
+      )}
       <Card className="overflow-hidden workspace-list">
         <div className="react-dataTable">
           <DataTable
@@ -432,7 +442,7 @@ const UsersList = ({ workspaceId }) => {
                 handlePerPage={handlePerPage}
                 toggleSidebar={toggleSidebar}
                 userData={userData}
-                // setEditWorkspace={setEditWorkspace}
+                setEditUser={setEditUser}
               />
             }
           />
@@ -445,7 +455,7 @@ const UsersList = ({ workspaceId }) => {
           refreshTable={refreshTable}
           toggleSidebar={toggleSidebar}
           workspaceId={workspaceId}
-          //   workspace={editWorkspace}
+          user={editUser}
         />
       )}
     </Fragment>

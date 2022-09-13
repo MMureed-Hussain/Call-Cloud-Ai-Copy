@@ -34,6 +34,31 @@ export const getData = createAsyncThunk(
   }
 );
 
+// Perform get workspace API and set workspace data in store
+export const storeCurrentWorkspaceById = createAsyncThunk(
+  "workspaces/storeCurrentWorkspaceById",
+  async (payload) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`
+      );
+      return {
+        data: {
+          workspace: response.data.workspace,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: {
+          workspace: null,
+        },
+      };
+    }
+  }
+);
+
 // Perform add workspace API
 export const addWorkspace = createAsyncThunk(
   "workspaces/addWorkspace",
@@ -122,6 +147,58 @@ export const inviteMember = createAsyncThunk(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}/invite`,
         {
           email: payload.email,
+          nickname: payload.nickname,
+        }
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: {
+          user: true,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: null,
+      };
+    }
+  }
+);
+
+// Perform delete user from workspace API
+export const deleteMemberFromWorkspace = createAsyncThunk(
+  "workspaces/deleteMemberFromWorkspace",
+  async (payload) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/delete-member/${payload.id}`
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: null,
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: null,
+      };
+    }
+  }
+);
+
+// Perform delete user from workspace API
+export const updateMemberInWorkspace = createAsyncThunk(
+  "workspaces/updateMemberInWorkspace",
+  async (payload) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/update-member/${payload.id}`,
+        {
+          nickname: payload.nickname,
         }
       );
 
@@ -154,7 +231,6 @@ export const getUsers = createAsyncThunk(
         data: {
           users: response.data.users,
           total: response.data.total,
-          workspaceName: response.data.workspaceName,
         },
       };
     } catch (e) {
@@ -185,9 +261,11 @@ export const workspacesSlice = createSlice({
     users:[],
     usersLoading:true,
     totalUsers: 0,
-    rowsPerPageUser:2,
+    rowsPerPageUser:10,
     currentPageUser:1,
-    workspaceName:""
+
+
+    currentWorkspace: null
   },
   reducers: {
     storeCurrentPage: (state, action) => {
@@ -202,6 +280,9 @@ export const workspacesSlice = createSlice({
     storeRowsPerPageUser: (state, action) => {
       state.rowsPerPageUser = action.payload.rowsPerPage
     },
+    storeCurrentWorkspace: (state, action) => {
+      state.currentWorkspace = action.payload.workspace
+    },
     getWorkspace: (state, action) => {
       state.query = action.payload
     }
@@ -212,6 +293,15 @@ export const workspacesSlice = createSlice({
         state.workspaces = action.payload.data.workspaces;
         state.total = action.payload.data.total;
         state.loading = false;
+
+        if (action.payload.data.workspaces.length && !state.currentWorkspace) {
+          state.currentWorkspace = action.payload.data.workspaces[0]
+        }
+      })
+      .addCase(storeCurrentWorkspaceById.fulfilled, (state, action) => {
+        if (action.payload.data.workspace) {
+          state.currentWorkspace = action.payload.data.workspace
+        }
       })
       .addCase(addWorkspace.fulfilled, (state, action) => {
         if (action.payload.data.workspace) {
@@ -229,11 +319,16 @@ export const workspacesSlice = createSlice({
       .addCase(inviteMember.fulfilled, (state, action) => {
         console.log("No need to update store", state, action)
       })
+      .addCase(updateMemberInWorkspace.fulfilled, (state, action) => {
+        console.log("No need to update store", state, action)
+      })
+      .addCase(deleteMemberFromWorkspace.fulfilled, (state, action) => {
+        console.log("No need to update store", state, action)
+      })
       .addCase(getUsers.fulfilled, (state, action) => {
         state.users = action.payload.data.users;
         state.totalUsers = action.payload.data.total;
         state.usersLoading = false;
-        state.workspaceName = action.payload.data.workspaceName;
       });
   },
 });
@@ -244,6 +339,7 @@ export const {
   storeCurrentPage,
   storeCurrentPageUser,
   storeRowsPerPageUser,
+  storeCurrentWorkspace,
 } = workspacesSlice.actions;
 
 export default workspacesSlice.reducer;
