@@ -72,22 +72,43 @@ const WorkspaceSwitcher = () => {
         </Button>
         <Popover
           // width={"500px"}
-          style={{ width: "276px" }}
+          style={{ width: "276px", borderRadius:"10px" }}
           placement={window.innerWidth < 500 ? "bottom" : "right"}
           target="controlledPopover"
           isOpen={popoverOpen}
           toggle={() => setPopoverOpen(!popoverOpen)}
         >
-          <PopoverHeader>Switch Workspace</PopoverHeader>
+          <PopoverHeader className="popover-header d-flex align-items-center justify-content-between btn-gradient-primary disabled">
+            Switch Workspace
+            <Link 
+              className="btn btn-light text-primary btn-sm"
+              to="/workspaces" 
+              
+              onClick={() => setPopoverOpen(false)}>
+                
+              <small>See All</small>
+            </Link>
+          </PopoverHeader>
+
           <PopoverBody>
             {/* <div className="d-flex align-items-center mb-sm-0 mb-1 me-1"> */}
-            <Link to="/workspaces" onClick={() => setPopoverOpen(false)}>
-              <small>See all workspaces</small>
-            </Link>
+
             <Col>
-              <Label className="form-label" for="workspaceInput">
+              {/* <Label className="form-label" for="workspaceInput">
                 Workspace
-              </Label>
+              </Label> */}
+              <Button
+                className="add-new-user w-100"
+                color="primary"
+                outline 
+                onClick={() => {
+                  setEditWorkspace(null);
+                  toggleSidebar();
+                }}
+              >
+                Create Workspace
+              </Button>
+              <span class="divider"></span>
               <AsyncSelect
                 defaultOptions
                 isClearable={false}
@@ -96,6 +117,7 @@ const WorkspaceSwitcher = () => {
                 name="workspace"
                 className="react-select"
                 id="workspaceInput"
+                placeholder="Type to find"
                 classNamePrefix="select"
                 onChange={(workspace) => {
                   console.log(workspace);
