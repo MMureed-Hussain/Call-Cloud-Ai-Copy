@@ -66,7 +66,12 @@ export const addWorkspace = createAsyncThunk(
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace`,
-        payload
+        payload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       toast.success(response.data.message);
@@ -94,7 +99,12 @@ export const updateWorkspace = createAsyncThunk(
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`,
-        { name: payload.name }
+        { name: payload.name, logo: payload.logo },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       toast.success(response.data.message);
