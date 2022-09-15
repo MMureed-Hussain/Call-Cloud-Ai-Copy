@@ -118,7 +118,7 @@ const WorkspaceSwitcher = () => {
         </Button>
         <Popover
           // width={"500px"}
-          style={{ width: "276px", borderRadius:"10px" }}
+          style={{ width: "276px", borderRadius: "10px" }}
           placement={window.innerWidth < 500 ? "bottom" : "right"}
           target="controlledPopover"
           isOpen={popoverOpen}
@@ -126,12 +126,11 @@ const WorkspaceSwitcher = () => {
         >
           <PopoverHeader className="popover-header d-flex align-items-center justify-content-between btn-gradient-primary disabled">
             Switch Workspace
-            <Link 
+            <Link
               className="btn btn-light text-primary btn-sm"
-              to="/workspaces" 
-              
-              onClick={() => setPopoverOpen(false)}>
-                
+              to="/workspaces"
+              onClick={() => setPopoverOpen(false)}
+            >
               <small>See All</small>
             </Link>
           </PopoverHeader>
@@ -143,18 +142,23 @@ const WorkspaceSwitcher = () => {
               {/* <Label className="form-label" for="workspaceInput">
                 Workspace
               </Label> */}
-              <Button
-                className="add-new-user w-100"
-                color="primary"
-                outline 
-                onClick={() => {
-                  setEditWorkspace(null);
-                  toggleSidebar();
-                }}
-              >
-                Create Workspace
-              </Button>
-              <span class="divider"></span>
+              <Link to="/workspaces?action=create-workspace">
+                <Button
+                  className="add-new-user w-100"
+                  color="primary"
+                  outline
+                  outline
+                  outline
+                  onClick={() => setPopoverOpen(false)}
+                  // onClick={() => {
+                  //   setEditWorkspace(null);
+                  //   toggleSidebar();
+                  // }}
+                >
+                  Create Workspace
+                </Button>
+              </Link>
+              <span className="divider"></span>
               <AsyncSelect
                 formatOptionLabel={formatOptionLabel}
                 defaultOptions

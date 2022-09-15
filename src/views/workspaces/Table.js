@@ -1,5 +1,6 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 // ** Invoice List Sidebar
 import Sidebar from "./Sidebar";
@@ -78,15 +79,13 @@ const CustomHeader = ({
       <Row>
         <Col xl="6" className="d-flex align-items-center p-0">
           <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
-            <label className="mb-0" htmlFor="search-invoice">
-
-            </label>
+            <label className="mb-0" htmlFor="search-invoice"></label>
             <Input
               id="search-invoice"
               className="ms-50 w-100"
               type="text"
               value={searchTerm}
-              placeholder='Type to find'
+              placeholder="Type to find"
               onChange={(e) => handleFilter(e.target.value)}
             />
           </div>
@@ -96,8 +95,6 @@ const CustomHeader = ({
           xl="6"
           className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
         >
-          
-
           <div className="d-flex align-items-center mx-1">
             <label htmlFor="rows-per-page">Show</label>
             <Input
@@ -135,8 +132,22 @@ const CustomHeader = ({
     </div>
   );
 };
+function useQuery() {
+  const { search } = useLocation();
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
 
 const WorkspacesList = () => {
+  const query = useQuery();
+
+  // Show create workspace sidebar
+  let createWorkspaceSidebar = false;
+  if (query.get("action") && query.get("action") === "create-workspace") {
+    createWorkspaceSidebar = true;
+    const href = window.location.href.split("?")[0];
+    window.history.pushState({}, document.title, href);
+  }
+
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
@@ -148,7 +159,7 @@ const WorkspacesList = () => {
   const [currentPage, setCurrentPage] = useState(() => store.currentPage);
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPage);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(createWorkspaceSidebar);
 
   const [editWorkspace, setEditWorkspace] = useState(null);
 
