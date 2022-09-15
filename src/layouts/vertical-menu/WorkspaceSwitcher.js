@@ -18,6 +18,8 @@ import { storeCurrentWorkspace } from "@store/workspaces";
 // import { updateProfile } from "@store/auth";
 import AsyncSelect from "react-select/async";
 
+import Avatar from "@components/avatar";
+
 import { selectThemeColors } from "@utils";
 
 import { useNavigate, Link } from "react-router-dom";
@@ -47,6 +49,7 @@ const WorkspaceSwitcher = () => {
         id: workspace.id,
         value: workspace.name,
         label: workspace.name,
+        logo: workspace.logo,
       };
     });
     return workspaces;
@@ -54,6 +57,27 @@ const WorkspaceSwitcher = () => {
 
   const handleWorkspaceInputChange = (newValue) => {
     setWorkspaceQuery(newValue);
+  };
+
+  const formatOptionLabel = (workspace) => {
+    return (
+      <div className="d-flex align-items-center">
+        {workspace.logo && workspace.logo.length ? (
+          <Avatar className="me-1" img={workspace.logo} size="sm" />
+        ) : (
+          <Avatar
+            initials
+            className="me-1"
+            color={"light-primary"}
+            content={workspace.label}
+            imgWidth="24"
+            imgHeight="24"
+            size="sm"
+          />
+        )}
+        {workspace.label}
+      </div>
+    );
   };
 
   return (
@@ -65,6 +89,28 @@ const WorkspaceSwitcher = () => {
           outline
           id="controlledPopover"
         >
+          {workspaceStore.currentWorkspace &&
+          workspaceStore.currentWorkspace.logo &&
+          workspaceStore.currentWorkspace.logo.length ? (
+            <Avatar
+              className="me-1"
+              img={workspaceStore.currentWorkspace.logo}
+              // width="32"
+              // height="32"
+              size="sm"
+            />
+          ) : (
+            <Avatar
+              initials
+              className="me-1"
+              color={"light-primary"}
+              size="sm"
+              content={
+                // prettier-ignore
+                workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No Workspace"
+              }
+            />
+          )}
           {
             // prettier-ignore
             workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"
@@ -89,6 +135,7 @@ const WorkspaceSwitcher = () => {
                 Workspace
               </Label>
               <AsyncSelect
+                formatOptionLabel={formatOptionLabel}
                 defaultOptions
                 isClearable={false}
                 // prettier-ignore
@@ -101,7 +148,11 @@ const WorkspaceSwitcher = () => {
                   console.log(workspace);
                   dispatch(
                     storeCurrentWorkspace({
-                      workspace: { id: workspace.id, name: workspace.value },
+                      workspace: {
+                        id: workspace.id,
+                        name: workspace.value,
+                        logo: workspace.logo,
+                      },
                     })
                   );
                   navigate(`/workspace/${workspace.id}`);
