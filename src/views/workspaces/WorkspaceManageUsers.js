@@ -16,9 +16,10 @@ const WorkspaceDetails = () => {
 
   useEffect(() => {
     if (
-      authState.user &&
-      workspaceState.currentWorkspace &&
-      workspaceState.currentWorkspace.id !== params.id
+      (authState.user &&
+        workspaceState.currentWorkspace &&
+        workspaceState.currentWorkspace.id !== params.id) ||
+      (authState.user && !workspaceState.currentWorkspace)
     ) {
       dispatch(storeCurrentWorkspaceById({ id: params.id }));
     }
