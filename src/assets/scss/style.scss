@@ -46,3 +46,21 @@ a:not([href]):hover{
 .main-menu .navbar-header .navbar-brand .brand-text{
 	color:#302f4b;
 }
+
+.vertical-layout .main-menu .navigation a.active{
+	box-shadow: none;
+	border-radius: 50px;
+}
+
+
+span.divider{
+	border: 1px solid #eeeeee;
+}
+
+.bs-popover-auto{
+	border-radius: 15px !important;
+}
+
+.bs-popover-auto .popover-header{
+	border-radius: 15px 15px 0 0;
+}

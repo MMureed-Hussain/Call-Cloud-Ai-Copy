@@ -1,6 +1,8 @@
 // ** React Imports
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbTack } from '@fortawesome/free-solid-svg-icons'
 
 // ** Icons Imports
 import { Disc, X, Circle } from "react-feather";
@@ -35,8 +37,15 @@ const VerticalMenuHeader = (props) => {
   const Toggler = () => {
     if (!menuCollapsed) {
       return (
-        <Disc
-          size={20}
+        // <div
+        //   size={20}
+        //   data-tour="toggle-icon"
+        //   className="text-primary toggle-icon d-none d-xl-block"
+        //   onClick={() => setMenuCollapsed(true)}
+        // >asdf</div>
+
+        <FontAwesomeIcon 
+          icon={faThumbTack}
           data-tour="toggle-icon"
           className="text-primary toggle-icon d-none d-xl-block"
           onClick={() => setMenuCollapsed(true)}
@@ -44,7 +53,8 @@ const VerticalMenuHeader = (props) => {
       );
     } else {
       return (
-        <Circle
+        <FontAwesomeIcon
+          icon={faThumbTack}
           size={20}
           data-tour="toggle-icon"
           className="text-primary toggle-icon d-none d-xl-block"

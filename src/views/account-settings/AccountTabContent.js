@@ -375,8 +375,9 @@ const AccountTabs = ({ data }) => {
           <div className="d-flex">
             <div className="me-25">
               <img
-                className="rounded me-50"
+                className="me-50"
                 src={avatar}
+                style={{ borderRadius: "100%" }}
                 alt="Generic placeholder image"
                 height="100"
                 width="100"
