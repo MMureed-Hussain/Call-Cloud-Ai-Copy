@@ -2,17 +2,17 @@ import { Layers, Home, Users } from "react-feather";
 
 export default [
   {
-    id: "home",
-    title: "Home",
+    id: "dashboard",
+    title: "Dashboard",
     icon: <Home size={20} />,
-    navLink: "/home",
+    navLink: "/dashboard",
   },
-  {
-    id: "workspaces",
-    title: "Workspaces",
-    icon: <Layers size={20} />,
-    navLink: "/workspaces",
-  },
+  // {
+  //   id: "workspaces",
+  //   title: "Workspaces",
+  //   icon: <Layers size={20} />,
+  //   navLink: "/workspaces",
+  // },
   {
     id: "manageUsers",
     title: "Users",

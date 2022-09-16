@@ -367,7 +367,7 @@ const AccountTabs = ({ data }) => {
           <CardTitle tag="h4">
             {
               // prettier-ignore
-              data.profileCompleted ? "Profile Details" : "Thanks for Creating CallCloud Account - Let`s complete your client profile."
+              data.profileCompleted ? "Profile Details" : "Thanks for Creating CallCloud Account - Let's complete your client profile."
             }
           </CardTitle>
         </CardHeader>
@@ -425,10 +425,18 @@ const AccountTabs = ({ data }) => {
                     </Label>
                     <Input
                       id="companyName"
-                      placeholder="ClickMage"
+                      placeholder="Some Company"
                       invalid={companyNameError}
                       value={companyName}
-                      onChange={(e) => setCompanyName(e.target.value)}
+                      // onChange={(e) => setCompanyName(e.target.value)}
+
+                      onChange={(e) => {
+                        const company = e.target.value.replace(
+                          /(^\w{1})|(\s+\w{1})/g,
+                          (letter) => letter.toUpperCase()
+                        );
+                        setCompanyName(company);
+                      }}
                     />
 
                     <FormFeedback>
@@ -638,7 +646,13 @@ const AccountTabs = ({ data }) => {
                   placeholder="Ottawa"
                   invalid={cityError}
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  onChange={(e) => {
+                    const city = e.target.value.replace(
+                      /(^\w{1})|(\s+\w{1})/g,
+                      (letter) => letter.toUpperCase()
+                    );
+                    setCity(city);
+                  }}
                 />
 
                 <FormFeedback>Please enter a valid City</FormFeedback>
@@ -659,9 +673,9 @@ const AccountTabs = ({ data }) => {
                     />
                   )}
                 </Button>
-                <Button color="secondary" outline>
+                {/* <Button color="secondary" outline>
                   Discard
-                </Button>
+                </Button> */}
               </Col>
             </Row>
           </Form>

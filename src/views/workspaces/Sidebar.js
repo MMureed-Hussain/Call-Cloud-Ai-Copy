@@ -43,7 +43,7 @@ const SidebarWorkspace = ({
 
   const [avatarFile, setAvatarFile] = useState(null);
   // prettier-ignore
-  const [avatar, setAvatar] = useState(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/avatar-blank.png").default);
+  const [avatar, setAvatar] = useState(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
 
   // ** Store Vars
   const dispatch = useDispatch();
@@ -99,7 +99,7 @@ const SidebarWorkspace = ({
 
   const handleImgReset = () => {
     //prettier-ignore
-    setAvatar(workspace.logo ? workspace.logo : require("@src/assets/images/avatars/avatar-blank.png").default);
+    setAvatar(workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
     setAvatarFile(null);
   };
 
@@ -171,10 +171,18 @@ const SidebarWorkspace = ({
 
           <Input
             id="name"
-            placeholder="ClickMage"
+            placeholder="Some Workspace"
             invalid={nameError}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            // onChange={(e) => setName(e.target.value)}
+
+            onChange={(e) => {
+              const name = e.target.value.replace(
+                /(^\w{1})|(\s+\w{1})/g,
+                (letter) => letter.toUpperCase()
+              );
+              setName(name);
+            }}
           />
 
           <FormFeedback>Please enter a valid Workspace Name</FormFeedback>
