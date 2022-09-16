@@ -76,7 +76,7 @@ const Login = () => {
     source = require(`@src/assets/images/pages/${illustration}`).default;
 
   if (store.user && store.user.emailVerified && store.user.profileCompleted) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/dashboard" />;
   }
 
   if (store.user && !store.user.emailVerified) {

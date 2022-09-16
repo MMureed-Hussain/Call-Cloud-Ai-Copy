@@ -28,6 +28,7 @@ const WorkspaceSwitcher = () => {
   //   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const workspaceStore = useSelector((state) => state.workspaces);
+  const authStore = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const [workspaceQuery, setWorkspaceQuery] = useState("");
@@ -142,23 +143,21 @@ const WorkspaceSwitcher = () => {
               {/* <Label className="form-label" for="workspaceInput">
                 Workspace
               </Label> */}
-              <Link to="/workspaces?action=create-workspace">
-                <Button
-                  className="add-new-user w-100"
-                  color="primary"
-                  outline
-                  outline
-                  outline
-                  onClick={() => setPopoverOpen(false)}
-                  // onClick={() => {
-                  //   setEditWorkspace(null);
-                  //   toggleSidebar();
-                  // }}
-                >
-                  Create Workspace
-                </Button>
-              </Link>
-              <span className="divider"></span>
+              {authStore.user && authStore.user.role === "company" && (
+                <>
+                  <Link to="/workspaces?action=create-workspace">
+                    <Button
+                      className="add-new-user w-100"
+                      color="primary"
+                      outline
+                      onClick={() => setPopoverOpen(false)}
+                    >
+                      Create Workspace
+                    </Button>
+                  </Link>
+                  <span className="divider"></span>
+                </>
+              )}
               <AsyncSelect
                 formatOptionLabel={formatOptionLabel}
                 defaultOptions

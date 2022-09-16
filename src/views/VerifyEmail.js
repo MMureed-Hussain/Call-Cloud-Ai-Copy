@@ -32,7 +32,7 @@ const VerifyEmail = () => {
     source = require(`@src/assets/images/pages/${illustration}`).default;
 
   if (store.user && store.user.emailVerified) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/dashboard" />;
   }
 
   const handleResend = (e) => {
