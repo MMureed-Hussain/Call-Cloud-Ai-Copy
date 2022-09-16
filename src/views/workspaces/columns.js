@@ -30,9 +30,9 @@ import {
   DropdownItem,
 } from "reactstrap";
 
-const renderName = (row) => {
-  return row.nickname ? row.nickname : row.name;
-};
+// const renderName = (row) => {
+//   return row.nickname ? row.nickname : row.name;
+// };
 const renderCreatedAt = (row) => {
   return row.createdAt ? row.createdAt : "-";
 };
@@ -60,11 +60,33 @@ export const adminWorkspaceColumns = [
   {
     name: "Name",
     sortable: true,
-    minWidth: "172px",
+    minWidth: "300px",
     sortField: "name",
     selector: (row) => row.name,
-    cell: (row) => renderName(row),
+    cell: (row) => (
+      <div className="d-flex justify-content-left align-items-center">
+        {renderWorkspaceLogo(row)}
+        <div className="d-flex flex-column">
+          {/* <Link
+            to={`/apps/user/view/${row.id}`}
+            className='user_name text-truncate text-body'
+            onClick={() => store.dispatch(getUser(row.id))}
+          > */}
+          <span className="fw-bolder">{row.name}</span>
+          {/* </Link> */}
+          {/* <small className="text-truncate text-muted mb-0">{row.email}</small> */}
+        </div>
+      </div>
+    ),
   },
+  // {
+  //   name: "Name",
+  //   sortable: true,
+  //   minWidth: "172px",
+  //   sortField: "name",
+  //   selector: (row) => row.name,
+  //   cell: (row) => renderName(row),
+  // },
   {
     name: "Created At",
     sortable: true,
@@ -72,6 +94,22 @@ export const adminWorkspaceColumns = [
     sortField: "createdAt",
     selector: (row) => row.createdAt,
     cell: (row) => renderCreatedAt(row),
+  },
+  {
+    name: "Calls",
+    sortable: false,
+    minWidth: "172px",
+    // sortField: "createdAt",
+    // selector: (row) => row.createdAt,
+    cell: () => "0",
+  },
+  {
+    name: "Users",
+    sortable: true,
+    minWidth: "172px",
+    sortField: "users",
+    selector: (row) => row.users,
+    cell: (row) => row.users,
   },
   {
     name: "Actions",
@@ -126,11 +164,33 @@ export const userWorkspaceColumns = [
   {
     name: "Name",
     sortable: true,
-    minWidth: "172px",
+    minWidth: "300px",
     sortField: "name",
     selector: (row) => row.name,
-    cell: (row) => renderName(row),
+    cell: (row) => (
+      <div className="d-flex justify-content-left align-items-center">
+        {renderWorkspaceLogo(row)}
+        <div className="d-flex flex-column">
+          {/* <Link
+            to={`/apps/user/view/${row.id}`}
+            className='user_name text-truncate text-body'
+            onClick={() => store.dispatch(getUser(row.id))}
+          > */}
+          <span className="fw-bolder">{row.name}</span>
+          {/* </Link> */}
+          {/* <small className="text-truncate text-muted mb-0">{row.email}</small> */}
+        </div>
+      </div>
+    ),
   },
+  // {
+  //   name: "Name",
+  //   sortable: true,
+  //   minWidth: "172px",
+  //   sortField: "name",
+  //   selector: (row) => row.name,
+  //   cell: (row) => renderName(row),
+  // },
   {
     name: "Joined At",
     sortable: true,

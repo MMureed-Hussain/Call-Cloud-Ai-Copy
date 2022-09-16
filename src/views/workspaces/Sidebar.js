@@ -41,6 +41,10 @@ const SidebarWorkspace = ({
   // const [plan, setPlan] = useState("basic");
   // const [role, setRole] = useState("subscriber");
 
+  const [avatarFile, setAvatarFile] = useState(null);
+  // prettier-ignore
+  const [avatar, setAvatar] = useState(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/avatar-blank.png").default);
+
   // ** Store Vars
   const dispatch = useDispatch();
 
@@ -60,8 +64,14 @@ const SidebarWorkspace = ({
     if (valid) {
       setFormSubmissionLoader(true);
 
+      const payload = { name };
+      if (avatarFile) {
+        payload.logo = avatarFile;
+      }
+
       if (workspace) {
-        dispatch(updateWorkspace({ name, id: workspace.id })).then((result) => {
+        payload.id = workspace.id;
+        dispatch(updateWorkspace(payload)).then((result) => {
           setFormSubmissionLoader(false);
           if (result.payload.data.workspace) {
             setName("");
@@ -70,7 +80,7 @@ const SidebarWorkspace = ({
           }
         });
       } else {
-        dispatch(addWorkspace({ name })).then((result) => {
+        dispatch(addWorkspace(payload)).then((result) => {
           setFormSubmissionLoader(false);
           if (result.payload.data.workspace) {
             setName("");
@@ -87,18 +97,74 @@ const SidebarWorkspace = ({
     setNameError(false);
   };
 
+  const handleImgReset = () => {
+    //prettier-ignore
+    setAvatar(workspace.logo ? workspace.logo : require("@src/assets/images/avatars/avatar-blank.png").default);
+    setAvatarFile(null);
+  };
+
+  const onChange = (e) => {
+    if (!e.target.files.length) {
+      console.log("return");
+      return;
+    }
+    const reader = new FileReader(),
+      files = e.target.files;
+
+    reader.onload = function () {
+      setAvatar(reader.result);
+    };
+    setAvatarFile(files[0]);
+    reader.readAsDataURL(files[0]);
+  };
+
   return (
     <Sidebar
       size="lg"
       open={open}
-      title="New Workspace"
+      title={workspace ? "Edit Workspace" : "New Workspace"}
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
       onClosed={handleSidebarClosed}
     >
+      <div className="d-flex">
+        <div className="me-25">
+          <img
+            className="rounded me-50"
+            src={avatar}
+            alt="Generic placeholder image"
+            height="100"
+            width="100"
+          />
+        </div>
+        <div className="d-flex align-items-end mt-75 ms-1">
+          <div>
+            <Button
+              tag={Label}
+              className="mb-75 me-75"
+              size="sm"
+              color="primary"
+            >
+              Upload
+              <Input type="file" onChange={onChange} hidden accept="image/*" />
+            </Button>
+            <Button
+              className="mb-75"
+              color="secondary"
+              size="sm"
+              outline
+              onClick={handleImgReset}
+            >
+              Reset
+            </Button>
+            <p className="mb-0">Allowed JPG, GIF or PNG. Max size of 800kB</p>
+          </div>
+        </div>
+      </div>
+
       <Form>
-        <div className="mb-1">
+        <div className="mb-1 mt-2">
           <Label className="form-label" for="name">
             Name <span className="text-danger">*</span>
           </Label>
