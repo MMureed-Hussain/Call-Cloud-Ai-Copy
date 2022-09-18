@@ -64,6 +64,14 @@ const Routes = [
     },
   },
   {
+    path: "/complete-profile",
+    element: <AccountSettings />,
+    meta: {
+      isPrivate: true,
+      layout: "blank",
+    },
+  },
+  {
     path: "/workspaces",
     element: <Workspaces />,
     meta: {

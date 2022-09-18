@@ -367,7 +367,7 @@ const AccountTabs = ({ data }) => {
           <CardTitle tag="h4">
             {
               // prettier-ignore
-              data.profileCompleted ? "Profile Details" : "Thanks for Creating CallCloud Account - Let's complete your client profile."
+              data.profileCompleted ? "Profile Details" : "Let’s complete your profile."
             }
           </CardTitle>
         </CardHeader>
