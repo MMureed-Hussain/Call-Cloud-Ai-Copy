@@ -52,9 +52,9 @@ const PrivateRoute = ({ children, route }) => {
       store.user &&
       !store.user.profileCompleted &&
       store.user.emailVerified &&
-      location.pathname !== "/profile"
+      location.pathname !== "/complete-profile"
     ) {
-      return <Navigate to="/profile" />;
+      return <Navigate to="/complete-profile" />;
     }
 
     if (store.user && restrictedRoute) {

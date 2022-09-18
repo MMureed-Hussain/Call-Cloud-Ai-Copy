@@ -1,5 +1,6 @@
 // ** React Imports
 import { Fragment, useState } from "react";
+import { useLocation, Navigate } from "react-router-dom";
 
 // ** Third Party Components
 // import axios from "axios";
@@ -28,6 +29,10 @@ const AccountSettings = () => {
   const [activeTab, setActiveTab] = useState("1");
   // const [data] = useState(null);
 
+  // check current route if it is /complete-profile or /profile
+  const location = useLocation();
+  console.log("location", location);
+
   const store = useSelector((state) => {
     return state.auth;
   });
@@ -36,6 +41,13 @@ const AccountSettings = () => {
     setActiveTab(tab);
   };
 
+  if (
+    store.user &&
+    store.user.profileCompleted &&
+    location.pathname === "/complete-profile"
+  ) {
+    return <Navigate to="/dashboard" />;
+  }
   // useEffect(() => {
   //   axios
   //     .get("/account-setting/data")
@@ -50,25 +62,31 @@ const AccountSettings = () => {
       /> */}
       {store.user ? (
         <Row>
-          <Col xs={12}>
-            <Tabs
-              className="mb-2"
-              activeTab={activeTab}
-              toggleTab={toggleTab}
-            />
+          {location.pathname === "/profile" ? (
+            <Col xs={12}>
+              <Tabs
+                className="mb-2"
+                activeTab={activeTab}
+                toggleTab={toggleTab}
+              />
 
-            <TabContent activeTab={activeTab}>
-              <TabPane tabId="1">
-                <AccountTabContent data={store.user} />
-              </TabPane>
-              <TabPane tabId="2">
-                <SecurityTabContent />
-              </TabPane>
-              <TabPane tabId="3">{/* <BillingTabContent /> */}</TabPane>
-              <TabPane tabId="4">{/* <NotificationsTabContent /> */}</TabPane>
-              <TabPane tabId="5">{/* <ConnectionsTabContent /> */}</TabPane>
-            </TabContent>
-          </Col>
+              <TabContent activeTab={activeTab}>
+                <TabPane tabId="1">
+                  <AccountTabContent data={store.user} />
+                </TabPane>
+                <TabPane tabId="2">
+                  <SecurityTabContent />
+                </TabPane>
+                <TabPane tabId="3">{/* <BillingTabContent /> */}</TabPane>
+                <TabPane tabId="4">{/* <NotificationsTabContent /> */}</TabPane>
+                <TabPane tabId="5">{/* <ConnectionsTabContent /> */}</TabPane>
+              </TabContent>
+            </Col>
+          ) : (
+            <Col className="mx-auto" xs={8}>
+              <AccountTabContent data={store.user} />
+            </Col>
+          )}
         </Row>
       ) : null}
     </Fragment>
