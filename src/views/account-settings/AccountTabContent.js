@@ -658,7 +658,7 @@ const AccountTabs = ({ data }) => {
                 <FormFeedback>Please enter a valid City</FormFeedback>
               </Col>
 
-              <Col className="mt-2" sm="12">
+              <Col className="mt-2 d-flex justify-content-center" sm="12">
                 <Button
                   onClick={(e) => onSubmit(e)}
                   className="me-1"

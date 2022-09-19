@@ -8,6 +8,9 @@ import { useLocation, Navigate } from "react-router-dom";
 // ** Reactstrap Imports
 import { Row, Col, TabContent, TabPane } from "reactstrap";
 
+// ** Config
+import themeConfig from "@configs/themeConfig";
+
 // ** Demo Components
 import Tabs from "./Tabs";
 // import Breadcrumbs from "@components/breadcrumbs";
@@ -84,6 +87,14 @@ const AccountSettings = () => {
             </Col>
           ) : (
             <Col className="mx-auto" xs={8}>
+              <div className="height-100 d-flex justify-content-center align-items-center">
+                <img
+                  height={22}
+                  src={themeConfig.app.appLogoImage}
+                  alt="logo"
+                />
+                <h2 className="brand-text text-primary ms-1 mb-0">CallCloud</h2>
+              </div>
               <AccountTabContent data={store.user} />
             </Col>
           )}
