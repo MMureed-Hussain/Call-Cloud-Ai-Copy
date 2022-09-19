@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
   Button,
   Popover,
+  UncontrolledPopover,
   PopoverHeader,
   PopoverBody,
   Input,
@@ -32,7 +33,7 @@ const WorkspaceSwitcher = () => {
   const dispatch = useDispatch();
 
   const [workspaceQuery, setWorkspaceQuery] = useState("");
-  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(true);
 
   const navigate = useNavigate();
 
@@ -89,6 +90,7 @@ const WorkspaceSwitcher = () => {
           color="primary"
           outline
           id="controlledPopover"
+          // onClick={() => setPopoverOpen(!popoverOpen)}
         >
           {workspaceStore.currentWorkspace &&
           workspaceStore.currentWorkspace.logo &&
@@ -117,85 +119,95 @@ const WorkspaceSwitcher = () => {
             workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"
           }
         </Button>
-        <Popover
-          // width={"500px"}
-          style={{ width: "276px", borderRadius: "10px" }}
-          placement={window.innerWidth < 500 ? "bottom" : "right"}
-          target="controlledPopover"
-          isOpen={popoverOpen}
-          toggle={() => setPopoverOpen(!popoverOpen)}
-        >
-          <PopoverHeader className="popover-header d-flex align-items-center justify-content-between btn-gradient-primary disabled">
-            Switch Workspace
-            <Link
-              className="btn btn-light text-primary btn-sm"
-              to="/workspaces"
-              onClick={() => setPopoverOpen(false)}
-            >
-              <small>See All</small>
-            </Link>
-          </PopoverHeader>
+        {popoverOpen && (
+          <UncontrolledPopover
+            // width={"500px"}
+            style={{ width: "276px", borderRadius: "10px" }}
+            placement={window.innerWidth < 500 ? "bottom" : "right"}
+            target="controlledPopover"
+            // isOpen={popoverOpen}
+            // toggle={() => setPopoverOpen(!popoverOpen)}
+            trigger="legacy"
+          >
+            <PopoverHeader className="popover-header d-flex align-items-center justify-content-between btn-gradient-primary disabled">
+              Switch Workspace
+              <Link
+                className="btn btn-light text-primary btn-sm"
+                to="/workspaces"
+                onClick={() => {
+                  setPopoverOpen(false);
+                  setTimeout(() => setPopoverOpen(true), 1000);
+                }}
+              >
+                <small>See All</small>
+              </Link>
+            </PopoverHeader>
 
-          <PopoverBody>
-            {/* <div className="d-flex align-items-center mb-sm-0 mb-1 me-1"> */}
+            <PopoverBody>
+              {/* <div className="d-flex align-items-center mb-sm-0 mb-1 me-1"> */}
 
-            <Col>
-              {/* <Label className="form-label" for="workspaceInput">
+              <Col>
+                {/* <Label className="form-label" for="workspaceInput">
                 Workspace
               </Label> */}
-              {authStore.user && authStore.user.role === "company" && (
-                <>
-                  <Link to="/workspaces?action=create-workspace">
-                    <Button
-                      className="add-new-user w-100"
-                      color="primary"
-                      outline
-                      onClick={() => setPopoverOpen(false)}
-                    >
-                      Create Workspace
-                    </Button>
-                  </Link>
-                  <span className="divider"></span>
-                </>
-              )}
-              <AsyncSelect
-                formatOptionLabel={formatOptionLabel}
-                defaultOptions
-                isClearable={false}
-                // prettier-ignore
-                value={workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"}
-                name="workspace"
-                className="react-select"
-                id="workspaceInput"
-                placeholder="Type to find"
-                classNamePrefix="select"
-                onChange={(workspace) => {
-                  console.log(workspace);
-                  dispatch(
-                    storeCurrentWorkspace({
-                      workspace: {
-                        id: workspace.id,
-                        name: workspace.value,
-                        logo: workspace.logo,
-                      },
-                    })
-                  );
-                  navigate(`/workspace/${workspace.id}`);
-                  setPopoverOpen(false);
-                }}
-                theme={selectThemeColors}
-                loadOptions={loadWorkspacesOptions}
-                onInputChange={handleWorkspaceInputChange}
-                noOptionsMessage={(input) => {
-                  console.log("input", input);
+                {authStore.user && authStore.user.role === "company" && (
+                  <>
+                    <Link to="/workspaces?action=create-workspace">
+                      <Button
+                        className="add-new-user w-100"
+                        color="primary"
+                        outline
+                        onClick={() => {
+                          setPopoverOpen(false);
+                          setTimeout(() => setPopoverOpen(true), 1000);
+                        }}
+                      >
+                        Create Workspace
+                      </Button>
+                    </Link>
+                    <span className="divider"></span>
+                  </>
+                )}
+                <AsyncSelect
+                  formatOptionLabel={formatOptionLabel}
+                  defaultOptions
+                  isClearable={false}
                   // prettier-ignore
-                  return input.inputValue.length ? `No match found for ${input.inputValue}!` : ``;
-                }}
-              />
-            </Col>
-            {/* </div> */}
-          </PopoverBody>
-        </Popover>
+                  value={workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"}
+                  name="workspace"
+                  className="react-select"
+                  id="workspaceInput"
+                  placeholder="Type to find"
+                  classNamePrefix="select"
+                  onChange={(workspace) => {
+                    console.log(workspace);
+                    dispatch(
+                      storeCurrentWorkspace({
+                        workspace: {
+                          id: workspace.id,
+                          name: workspace.value,
+                          logo: workspace.logo,
+                        },
+                      })
+                    );
+                    navigate(`/workspace/${workspace.id}`);
+                    setPopoverOpen(false);
+                    setTimeout(() => setPopoverOpen(true), 1000);
+                  }}
+                  theme={selectThemeColors}
+                  loadOptions={loadWorkspacesOptions}
+                  onInputChange={handleWorkspaceInputChange}
+                  noOptionsMessage={(input) => {
+                    console.log("input", input);
+                    // prettier-ignore
+                    return input.inputValue.length ? `No match found for ${input.inputValue}!` : ``;
+                  }}
+                />
+              </Col>
+              {/* </div> */}
+            </PopoverBody>
+          </UncontrolledPopover>
+        )}
       </div>
     </React.Fragment>
   );

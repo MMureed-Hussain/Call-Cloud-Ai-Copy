@@ -189,7 +189,7 @@ const SidebarWorkspace = ({
         </div>
 
         <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">
-          Submit
+          {workspace ? "Update Workspace" : "Add Workspace"}
           {formSubmissionLoader && (
             <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="white" />
           )}
