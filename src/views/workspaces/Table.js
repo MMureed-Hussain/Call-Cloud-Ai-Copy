@@ -105,12 +105,12 @@ const CustomHeader = ({
               onChange={handlePerPage}
               style={{ width: "5rem" }}
             >
-              <option value="2">2</option>
+              {/* <option value="2">2</option> */}
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
             </Input>
-            <label htmlFor="rows-per-page">Entries</label>
+            {/* <label htmlFor="rows-per-page">Entries</label> */}
           </div>
 
           {userData.user.role === "company" && (

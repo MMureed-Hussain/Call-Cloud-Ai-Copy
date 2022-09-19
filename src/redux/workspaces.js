@@ -95,7 +95,7 @@ export const addWorkspace = createAsyncThunk(
 // Perform update workspace API
 export const updateWorkspace = createAsyncThunk(
   "workspaces/updateWorkspace",
-  async (payload) => {
+  async (payload, { getState }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`,
@@ -106,11 +106,13 @@ export const updateWorkspace = createAsyncThunk(
           },
         }
       );
-
+      const isCurrentWorkspace =
+        getState().workspaces.currentWorkspace.id === payload.id;
       toast.success(response.data.message);
       return {
         data: {
-          workspace: response.data,
+          workspace: response.data.workspace,
+          isCurrentWorkspace,
         },
       };
     } catch (e) {
@@ -265,13 +267,13 @@ export const workspacesSlice = createSlice({
     loading: true,
     total: 0,
     currentPage:1,
-    rowsPerPage:10,
+    rowsPerPage:50,
 
     //Workspace users table related attributes
     users:[],
     usersLoading:true,
     totalUsers: 0,
-    rowsPerPageUser:10,
+    rowsPerPageUser:50,
     currentPageUser:1,
 
 
@@ -319,8 +321,8 @@ export const workspacesSlice = createSlice({
         }
       })
       .addCase(updateWorkspace.fulfilled, (state, action) => {
-        if (action.payload.data.workspace) {
-          console.log("No need to update store", state, action)
+        if (action.payload.data.workspace && action.payload.data.isCurrentWorkspace) {
+          state.currentWorkspace = action.payload.data.workspace;
         }
       })
       .addCase(deleteWorkspace.fulfilled, (state, action) => {

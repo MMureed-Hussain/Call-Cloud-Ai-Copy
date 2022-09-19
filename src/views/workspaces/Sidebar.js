@@ -20,6 +20,9 @@ import {
   Spinner,
 } from "reactstrap";
 
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+
 // ** Store & Actions
 import { addWorkspace, updateWorkspace } from "@store/workspaces";
 import { useDispatch } from "react-redux";
@@ -45,8 +48,33 @@ const SidebarWorkspace = ({
   // prettier-ignore
   const [avatar, setAvatar] = useState(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
 
+  const [cropper, setCropper] = useState(null);
+
   // ** Store Vars
   const dispatch = useDispatch();
+
+  const submitForm = (payload) => {
+    if (workspace) {
+      payload.id = workspace.id;
+      dispatch(updateWorkspace(payload)).then((result) => {
+        setFormSubmissionLoader(false);
+        if (result.payload.data.workspace) {
+          setName("");
+          refreshTable();
+          toggleSidebar();
+        }
+      });
+    } else {
+      dispatch(addWorkspace(payload)).then((result) => {
+        setFormSubmissionLoader(false);
+        if (result.payload.data.workspace) {
+          setName("");
+          refreshTable();
+          toggleSidebar();
+        }
+      });
+    }
+  };
 
   // ** Function to handle form submit
   const onSubmit = (e) => {
@@ -66,28 +94,12 @@ const SidebarWorkspace = ({
 
       const payload = { name };
       if (avatarFile) {
-        payload.logo = avatarFile;
-      }
-
-      if (workspace) {
-        payload.id = workspace.id;
-        dispatch(updateWorkspace(payload)).then((result) => {
-          setFormSubmissionLoader(false);
-          if (result.payload.data.workspace) {
-            setName("");
-            refreshTable();
-            toggleSidebar();
-          }
-        });
+        cropper.getCroppedCanvas().toBlob((blob) => {
+          payload.logo = new File([blob], "logo.jpeg");
+          submitForm(payload);
+        }, "image/jpeg");
       } else {
-        dispatch(addWorkspace(payload)).then((result) => {
-          setFormSubmissionLoader(false);
-          if (result.payload.data.workspace) {
-            setName("");
-            refreshTable();
-            toggleSidebar();
-          }
-        });
+        submitForm(payload);
       }
     }
   };
@@ -99,7 +111,7 @@ const SidebarWorkspace = ({
 
   const handleImgReset = () => {
     //prettier-ignore
-    setAvatar(workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
+    setAvatar(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
     setAvatarFile(null);
   };
 
@@ -130,13 +142,35 @@ const SidebarWorkspace = ({
     >
       <div className="d-flex">
         <div className="me-25">
-          <img
-            className="rounded me-50"
-            src={avatar}
-            alt="Generic placeholder image"
-            height="100"
-            width="100"
-          />
+          {!avatarFile ? (
+            <img
+              className="rounded me-50 img-preview"
+              src={avatar}
+              alt="Generic placeholder image"
+              height="100"
+              width="100"
+            />
+          ) : (
+            <div className="rounded">
+              <Cropper
+                style={{ height: "150px", width: "60%" }}
+                zoomTo={0}
+                initialAspectRatio={1}
+                src={avatar}
+                viewMode={1}
+                minCropBoxHeight={10}
+                minCropBoxWidth={10}
+                background={false}
+                responsive={true}
+                autoCropArea={1}
+                checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                onInitialized={(instance) => {
+                  setCropper(instance);
+                }}
+                guides={true}
+              />
+            </div>
+          )}
         </div>
         <div className="d-flex align-items-end mt-75 ms-1">
           <div>
@@ -189,7 +223,7 @@ const SidebarWorkspace = ({
         </div>
 
         <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">
-          Submit
+          {workspace ? "Update Workspace" : "Add Workspace"}
           {formSubmissionLoader && (
             <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="white" />
           )}
