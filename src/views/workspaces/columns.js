@@ -56,6 +56,21 @@ const renderClient = (row) => {
   }
 };
 
+const renderWorkspaceLogo = (row) => {
+  if (row.logo && row.logo.length) {
+    return <Avatar className="me-1" img={row.logo} width="32" height="32" />;
+  } else {
+    return (
+      <Avatar
+        initials
+        className="me-1"
+        color={row.avatarColor || "light-primary"}
+        content={row.name || "John Doe"}
+      />
+    );
+  }
+};
+
 export const adminWorkspaceColumns = [
   {
     name: "Name",
