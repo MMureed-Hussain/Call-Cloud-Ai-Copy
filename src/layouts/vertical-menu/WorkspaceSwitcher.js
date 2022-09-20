@@ -114,10 +114,12 @@ const WorkspaceSwitcher = () => {
               }
             />
           )}
-          {
-            // prettier-ignore
-            workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"
-          }
+          <span className="menu-item text-truncate">
+            {
+              // prettier-ignore
+              workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"
+            }
+          </span>
         </Button>
         {popoverOpen && (
           <UncontrolledPopover
