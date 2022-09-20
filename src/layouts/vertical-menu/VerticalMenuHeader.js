@@ -37,17 +37,11 @@ const VerticalMenuHeader = (props) => {
   const Toggler = () => {
     if (!menuCollapsed) {
       return (
-        // <div
-        //   size={20}
-        //   data-tour="toggle-icon"
-        //   className="text-primary toggle-icon d-none d-xl-block"
-        //   onClick={() => setMenuCollapsed(true)}
-        // >asdf</div>
-
         <FontAwesomeIcon 
+          font-size={10}
           icon={faThumbTack}
           data-tour="toggle-icon"
-          className="text-primary toggle-icon d-none d-xl-block"
+          className="toggle-icon d-none d-xl-block"
           onClick={() => setMenuCollapsed(true)}
         />
       );
@@ -55,9 +49,9 @@ const VerticalMenuHeader = (props) => {
       return (
         <FontAwesomeIcon
           icon={faThumbTack}
-          size={20}
+          font-size={10}
           data-tour="toggle-icon"
-          className="text-primary toggle-icon d-none d-xl-block"
+          className="toggle-icon d-none d-xl-block"
           onClick={() => setMenuCollapsed(false)}
         />
       );
@@ -92,7 +86,7 @@ const VerticalMenuHeader = (props) => {
           </li>
         </ul>
       </div>
-      <div className="navbar-header">
+      <div className="workspace-outer">
         <ul className="nav navbar-nav flex-row">
           <li className="nav-item w-100">
             <WorkspaceSwitcher />
