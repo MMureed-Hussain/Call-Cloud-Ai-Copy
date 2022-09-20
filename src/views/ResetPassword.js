@@ -104,7 +104,7 @@ const ResetPassword = () => {
     source = require(`@src/assets/images/pages/${illustration}`).default;
 
   //   if (store.user) {
-  //     return <Navigate to="/home" />;
+  //     return <Navigate to="/dashboard" />;
   //   }
   return (
     <div className="auth-wrapper auth-cover">

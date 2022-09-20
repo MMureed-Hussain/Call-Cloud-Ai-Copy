@@ -76,7 +76,7 @@ const Login = () => {
     source = require(`@src/assets/images/pages/${illustration}`).default;
 
   if (store.user && store.user.emailVerified && store.user.profileCompleted) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/dashboard" />;
   }
 
   if (store.user && !store.user.emailVerified) {
@@ -84,7 +84,7 @@ const Login = () => {
   }
 
   if (store.user && !store.user.profileCompleted) {
-    return <Navigate to="/profile" />;
+    return <Navigate to="/complete-profile" />;
   }
   return (
     <div className="auth-wrapper auth-cover">

@@ -37,7 +37,7 @@ const PublicRoute = ({ children, route }) => {
     }
 
     if (store.user && route.path === "/login") {
-      return <Navigate to="/home" />;
+      return <Navigate to="/dashboard" />;
     }
   }
 

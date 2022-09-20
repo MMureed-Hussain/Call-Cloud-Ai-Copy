@@ -24,7 +24,7 @@ const getLayout = {
 const TemplateTitle = "%s - Vuexy React Admin Template";
 
 // ** Default Route
-const DefaultRoute = "/home";
+const DefaultRoute = "/dashboard";
 
 const Home = lazy(() => import("../../views/Home"));
 const Workspaces = lazy(() => import("../../views/workspaces/Workspaces"));
@@ -50,7 +50,7 @@ const Routes = [
     },
   },
   {
-    path: "/home",
+    path: "/dashboard",
     element: <Home />,
     meta: {
       isPrivate: true,
@@ -61,6 +61,14 @@ const Routes = [
     element: <AccountSettings />,
     meta: {
       isPrivate: true,
+    },
+  },
+  {
+    path: "/complete-profile",
+    element: <AccountSettings />,
+    meta: {
+      isPrivate: true,
+      layout: "blank",
     },
   },
   {

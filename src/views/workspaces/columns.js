@@ -70,12 +70,19 @@ const renderWorkspaceLogo = (row) => {
     );
   }
 };
-
+const Title = () => (
+  <div
+    style={{ paddingLeft: "45px" }}
+    className="d-flex justify-content-center align-items-center"
+  >
+    Name
+  </div>
+);
 export const adminWorkspaceColumns = [
   {
-    name: "Name",
+    name: <Title />,
     sortable: true,
-    minWidth: "300px",
+    minWidth: "200px",
     sortField: "name",
     selector: (row) => row.name,
     cell: (row) => (
@@ -177,7 +184,7 @@ export const adminWorkspaceColumns = [
 ];
 export const userWorkspaceColumns = [
   {
-    name: "Name",
+    name: <Title />,
     sortable: true,
     minWidth: "300px",
     sortField: "name",
@@ -266,7 +273,7 @@ export const userWorkspaceColumns = [
 
 export const userColumns = [
   {
-    name: "Name",
+    name: <Title />,
     sortable: true,
     minWidth: "300px",
     sortField: "name",
