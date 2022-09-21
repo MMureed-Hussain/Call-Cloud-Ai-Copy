@@ -22,7 +22,7 @@ const PrivateRoute = ({ children, route }) => {
   if (!store.user && store.loading) {
     dispatch(getUser()).then((data) => {
       if (data.payload.data.user) {
-        dispatch(getData({ page: 1, perPage: 10 }));
+        dispatch(getData({ page: 1, perPage: 50 }));
       }
     });
   }

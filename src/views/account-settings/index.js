@@ -49,7 +49,11 @@ const AccountSettings = () => {
     store.user.profileCompleted &&
     location.pathname === "/complete-profile"
   ) {
-    return <Navigate to="/dashboard" />;
+    if (store.user.role === "company") {
+      return <Navigate to="/setup-workspaces" />;
+    } else {
+      return <Navigate to="/dashboard" />;
+    }
   }
   // useEffect(() => {
   //   axios
