@@ -38,6 +38,10 @@ const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
 const ResetPassword = lazy(() => import("../../views/ResetPassword"));
 const Error = lazy(() => import("../../views/Error"));
 const AccountSettings = lazy(() => import("../../views/account-settings"));
+// prettier-ignore
+const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWorkspaces"));
+// prettier-ignore
+const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
 // ** Merge Routes
 const Routes = [
@@ -66,6 +70,22 @@ const Routes = [
   {
     path: "/complete-profile",
     element: <AccountSettings />,
+    meta: {
+      isPrivate: true,
+      layout: "blank",
+    },
+  },
+  {
+    path: "/setup-workspaces",
+    element: <SetupWorkspaces />,
+    meta: {
+      isPrivate: true,
+      layout: "blank",
+    },
+  },
+  {
+    path: "/invite-users",
+    element: <InviteUsers />,
     meta: {
       isPrivate: true,
       layout: "blank",

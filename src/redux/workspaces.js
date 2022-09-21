@@ -92,6 +92,34 @@ export const addWorkspace = createAsyncThunk(
   }
 );
 
+// Perform add multiple workspace API
+export const addMultipleWorkspaces = createAsyncThunk(
+  "workspaces/addMultipleWorkspaces",
+  async (payload) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/bulk-workspaces`,
+        payload
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: {
+          workspaces: response.data.workspaces,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: {
+          workspaces: [],
+        },
+      };
+    }
+  }
+);
+
 // Perform update workspace API
 export const updateWorkspace = createAsyncThunk(
   "workspaces/updateWorkspace",
@@ -167,6 +195,32 @@ export const inviteMember = createAsyncThunk(
       return {
         data: {
           user: true,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: null,
+      };
+    }
+  }
+);
+
+// Perform inviteMultipleMembers API
+export const inviteMultipleMembers = createAsyncThunk(
+  "workspaces/inviteMultipleMembers",
+  async (payload) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/workspace-bulk-invite`,
+        payload
+      );
+
+      toast.success(response.data.message);
+      return {
+        data: {
+          users: true,
         },
       };
     } catch (e) {
@@ -320,6 +374,11 @@ export const workspacesSlice = createSlice({
           console.log("No need to update store", state, action)
         }
       })
+      .addCase(addMultipleWorkspaces.fulfilled, (state, action) => {
+        if (action.payload.data.workspaces) {
+          console.log("No need to update store", state, action)
+        }
+      })
       .addCase(updateWorkspace.fulfilled, (state, action) => {
         if (action.payload.data.workspace && action.payload.data.isCurrentWorkspace) {
           state.currentWorkspace = action.payload.data.workspace;
@@ -329,6 +388,9 @@ export const workspacesSlice = createSlice({
         console.log("No need to update store", state, action)
       })
       .addCase(inviteMember.fulfilled, (state, action) => {
+        console.log("No need to update store", state, action)
+      })
+      .addCase(inviteMultipleMembers.fulfilled, (state, action) => {
         console.log("No need to update store", state, action)
       })
       .addCase(updateMemberInWorkspace.fulfilled, (state, action) => {

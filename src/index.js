@@ -58,7 +58,7 @@ root.render(
 
           <Toaster
             position={themeConfig.layout.toastPosition}
-            toastOptions={{ className: "react-hot-toast" }}
+            toastOptions={{ className: "react-hot-toast", duration: 5000 }}
           >
             {(t) => (
               <ToastBar toast={t}>
