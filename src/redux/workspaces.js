@@ -59,6 +59,48 @@ export const storeCurrentWorkspaceById = createAsyncThunk(
   }
 );
 
+// Perform mark workspace as accessed now API
+export const markWorkspaceAsAccessedNow = createAsyncThunk(
+  "workspaces/markWorkspaceAsAccessedNow",
+  async (payload) => {
+    try {
+      await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/mark-workspace-as-accessed-now/${payload.id}`
+      );
+      return {
+        data: true,
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: false,
+      };
+    }
+  }
+);
+
+// Perform get recently accessed workspaces
+export const recentlyAccessedWorkspaces = createAsyncThunk(
+  "workspaces/recentlyAccessedWorkspaces",
+  async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/recently-accessed-workspaces`
+      );
+      return {
+        data: response.data.recentWorkspaces,
+      };
+    } catch (e) {
+      console.log(e);
+      toast.error(e.response.data.message);
+      return {
+        data: false,
+      };
+    }
+  }
+);
+
 // Perform add workspace API
 export const addWorkspace = createAsyncThunk(
   "workspaces/addWorkspace",
@@ -331,7 +373,8 @@ export const workspacesSlice = createSlice({
     currentPageUser:1,
 
 
-    currentWorkspace: null
+    currentWorkspace: null,
+    recentlyAccessedWorkspaces: false
   },
   reducers: {
     storeCurrentPage: (state, action) => {
@@ -360,13 +403,27 @@ export const workspacesSlice = createSlice({
         state.total = action.payload.data.total;
         state.loading = false;
 
-        if (action.payload.data.workspaces.length && !state.currentWorkspace) {
-          state.currentWorkspace = action.payload.data.workspaces[0]
-        }
+        // if (action.payload.data.workspaces.length && !state.currentWorkspace) {
+        //   state.currentWorkspace = action.payload.data.workspaces[0]
+        // }
       })
       .addCase(storeCurrentWorkspaceById.fulfilled, (state, action) => {
         if (action.payload.data.workspace) {
           state.currentWorkspace = action.payload.data.workspace
+        }
+      })
+      .addCase(markWorkspaceAsAccessedNow.fulfilled, (state, action) => {
+        if (action.payload.data) {
+          console.log("no action required")
+        }
+      })
+      .addCase(recentlyAccessedWorkspaces.fulfilled, (state, action) => {
+        if (action.payload.data) {
+          state.recentlyAccessedWorkspaces = action.payload.data
+
+          if (action.payload.data.length && !state.currentWorkspace) {
+            state.currentWorkspace = action.payload.data[0]
+          }
         }
       })
       .addCase(addWorkspace.fulfilled, (state, action) => {
