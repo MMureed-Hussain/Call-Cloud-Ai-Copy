@@ -7,7 +7,7 @@ import { AbilityContext } from "@src/utility/context/Can";
 import UiLoader from "@components/ui-loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "@store/auth";
-import { getData } from "@store/workspaces";
+import { getData, recentlyAccessedWorkspaces } from "@store/workspaces";
 
 const PrivateRoute = ({ children, route }) => {
   // ** Hooks & Vars
@@ -22,7 +22,9 @@ const PrivateRoute = ({ children, route }) => {
   if (!store.user && store.loading) {
     dispatch(getUser()).then((data) => {
       if (data.payload.data.user) {
-        dispatch(getData({ page: 1, perPage: 50 }));
+        dispatch(getData({ page: 1, perPage: 50 })).then(() => {
+          dispatch(recentlyAccessedWorkspaces());
+        });
       }
     });
   }

@@ -15,7 +15,11 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 import { useSelector, useDispatch } from "react-redux";
-import { storeCurrentWorkspace } from "@store/workspaces";
+import {
+  storeCurrentWorkspace,
+  markWorkspaceAsAccessedNow,
+  recentlyAccessedWorkspaces,
+} from "@store/workspaces";
 // import { updateProfile } from "@store/auth";
 import AsyncSelect from "react-select/async";
 
@@ -192,6 +196,11 @@ const WorkspaceSwitcher = () => {
                         },
                       })
                     );
+                    dispatch(
+                      markWorkspaceAsAccessedNow({ id: workspace.id })
+                    ).then(() => {
+                      dispatch(recentlyAccessedWorkspaces());
+                    });
                     navigate(`/workspace/${workspace.id}`);
                     setPopoverOpen(false);
                     setTimeout(() => setPopoverOpen(true), 1000);
@@ -205,6 +214,61 @@ const WorkspaceSwitcher = () => {
                     return input.inputValue.length ? `No match found for ${input.inputValue}!` : ``;
                   }}
                 />
+                {workspaceStore.recentlyAccessedWorkspaces && (
+                  <div className="pt-2">
+                    <p>Recent Workspaces</p>
+                    {workspaceStore.recentlyAccessedWorkspaces.map(
+                      (workspace, index) => {
+                        return (
+                          <Link
+                            key={index}
+                            className="text-primary"
+                            to={`/workspace/${workspace.id}`}
+                            onClick={() => {
+                              dispatch(
+                                storeCurrentWorkspace({
+                                  workspace: {
+                                    id: workspace.id,
+                                    name: workspace.name,
+                                    logo: workspace.logo,
+                                  },
+                                })
+                              );
+                              dispatch(
+                                markWorkspaceAsAccessedNow({ id: workspace.id })
+                              ).then(() => {
+                                dispatch(recentlyAccessedWorkspaces());
+                              });
+                              setPopoverOpen(false);
+                              setTimeout(() => setPopoverOpen(true), 1000);
+                            }}
+                          >
+                            <div className="d-flex my-1 align-items-center">
+                              {workspace.logo && workspace.logo.length ? (
+                                <Avatar
+                                  className="me-1"
+                                  img={workspace.logo}
+                                  size="sm"
+                                />
+                              ) : (
+                                <Avatar
+                                  initials
+                                  className="me-1"
+                                  color={"light-primary"}
+                                  content={workspace.name}
+                                  imgWidth="24"
+                                  imgHeight="24"
+                                  size="sm"
+                                />
+                              )}
+                              {workspace.name}
+                            </div>
+                          </Link>
+                        );
+                      }
+                    )}
+                  </div>
+                )}
               </Col>
               {/* </div> */}
             </PopoverBody>

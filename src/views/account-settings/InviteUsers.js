@@ -69,6 +69,7 @@ const InviteUsers = () => {
         return { email: invitation.email, workspace: invitation.workspace.id };
       });
 
+      setFormSubmissionLoader(true);
       dispatch(inviteMultipleMembers({ invitations: invitationArray })).then(
         () => {
           setFormSubmissionLoader(false);
