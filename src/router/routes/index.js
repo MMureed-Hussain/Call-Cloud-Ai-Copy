@@ -43,6 +43,9 @@ const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWor
 // prettier-ignore
 const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
+
+const Plans = lazy(() => import("../../views/plans"));
+
 // ** Merge Routes
 const Routes = [
   {
@@ -73,6 +76,14 @@ const Routes = [
     meta: {
       isPrivate: true,
       layout: "blank",
+    },
+  },
+  {
+    path: "/plans",
+    element: <Plans />,
+    meta: {
+      isPrivate: true,
+      // layout: "blank",
     },
   },
   {
