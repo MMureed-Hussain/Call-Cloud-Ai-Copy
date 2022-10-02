@@ -59,6 +59,17 @@ const PrivateRoute = ({ children, route }) => {
       return <Navigate to="/complete-profile" />;
     }
 
+    if (
+      store.user &&
+      store.user.role === "company" &&
+      store.user.profileCompleted &&
+      store.user.emailVerified &&
+      !store.user.isSubscribed &&
+      location.pathname !== "/plans"
+    ) {
+      return <Navigate to="/plans" />;
+    }
+
     if (store.user && restrictedRoute) {
       return <Navigate to="/" />;
     }
