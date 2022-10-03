@@ -19,6 +19,7 @@ import {
 import { useSelector } from "react-redux";
 
 import axios from "axios";
+import toast from "react-hot-toast";
 axios.defaults.withCredentials = true;
 
 // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
@@ -26,6 +27,7 @@ axios.defaults.withCredentials = true;
 const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
   const [clientSecret, setClientSecret] = useState(null);
   const [subscribeLoader, setSubscribeLoader] = useState(false);
+  const [subscriptionCreated, setSubscriptionCreated] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const elements = useElements();
@@ -65,6 +67,8 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
       // The payment has been processed!
       console.log("result", result);
       if (result.setupIntent.status === "succeeded") {
+        toast.success("Subscription created successfully!");
+        setSubscriptionCreated(true);
         // Show a success message to your customer
         // There's a risk of the customer closing the window before callback
         // execution. Set up a webhook or plugin to listen for the
@@ -158,6 +162,16 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
                     <p>Please select plan!</p>
                   )}
                 </div>
+                {subscriptionCreated && (
+                  <div className="mt-2 p-1 bg-info rounded">
+                    <p color="primary">
+                      Your subscription created successfully. We will send you
+                      mail on activation of your subscription soon. No further
+                      action required from your side.
+                    </p>
+                    <p>Thank you!</p>
+                  </div>
+                )}
               </Col>
             </div>
           )}
