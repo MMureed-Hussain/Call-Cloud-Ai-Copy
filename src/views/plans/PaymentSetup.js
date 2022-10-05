@@ -97,11 +97,18 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
     })();
   }, []);
   //   console.log(data);
-  // prettier-ignore
-  const selectedPlanObject = data.filter((plan) => plan.active_prices.filter((price) => price.id === selectedPrice).length)[0];
+  let selectedPlanObject, selectedPriceObject;
+  if (selectedPrice && selectedPrice.includes("free_plan")) {
+    const planId = selectedPrice.split("-")[1];
+    selectedPlanObject = data.filter((plan) => plan.id === planId)[0];
+    selectedPriceObject = null;
+  } else {
+    // prettier-ignore
+    selectedPlanObject = data.filter((plan) => plan.active_prices.filter((price) => price.id === selectedPrice).length)[0];
 
-  // prettier-ignore
-  const selectedPriceObject = selectedPlanObject && selectedPlanObject.active_prices.filter((price) => price.id === selectedPrice)[0];
+    // prettier-ignore
+    selectedPriceObject = selectedPlanObject && selectedPlanObject.active_prices.filter((price) => price.id === selectedPrice)[0];
+  }
 
   return (
     <Fragment>
@@ -109,73 +116,80 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Payment Details</CardTitle>
         </CardHeader>
-        <CardBody className="py-2 my-25">
-          {clientSecret && (
-            <div ref={cardSectionRef} style={{ display: "content" }}>
-              <Col lg="6" className="mt-2">
-                {/* <Elements stripe={stripePromise}> */}
-                <CardElement />
-                <p className="d-flex invalid-feedback">{errorMessage}</p>
-                {/* </Elements> */}
+        <div ref={cardSectionRef} style={{ display: "content" }}>
+          {(!selectedPlanObject ||
+            (selectedPlanObject && !selectedPlanObject.is_free_plan)) && (
+            <CardBody className="py-2 my-25">
+              {clientSecret && (
+                <Col lg="6" className="mt-2">
+                  {/* <Elements stripe={stripePromise}> */}
+                  <CardElement />
+                  <p className="d-flex invalid-feedback">{errorMessage}</p>
+                  {/* </Elements> */}
 
-                <Button
-                  disabled={
-                    !selectedPlanObject ||
-                    !stripe ||
-                    !selectedPriceObject ||
-                    subscribeLoader
-                  }
-                  className="mt-2"
-                  //   prettier-ignore
-                  style={{cursor: (!selectedPlanObject || !stripe || !selectedPriceObject) ? "not-allowed" : "pointer" }}
-                  onClick={handleSubmit}
-                  //   disabled={!stripe}
-                  color="primary"
-                >
-                  Subscribe
-                  {subscribeLoader && (
-                    <Spinner
-                      style={{ marginLeft: "5px" }}
-                      size={"sm"}
-                      color="white"
-                    />
-                  )}
-                </Button>
-                <div className="mt-2">
-                  {selectedPlanObject && selectedPriceObject ? (
-                    <p>
-                      You have selected{" "}
-                      <span className="h6">{selectedPlanObject.title}</span>{" "}
-                      plan with{" "}
-                      <span className="h6">{selectedPriceObject.cycle}</span>{" "}
-                      billing cycle ({" "}
-                      <span className="h6">
-                        ${selectedPriceObject.amount} /{" "}
-                        {
-                          // prettier-ignore
-                          selectedPriceObject.cycle === "yearly" ? "Year" : "Month"
-                        }
-                      </span>{" "}
-                      )
-                    </p>
-                  ) : (
-                    <p>Please select plan!</p>
-                  )}
-                </div>
-                {subscriptionCreated && (
-                  <div className="mt-2 p-1 bg-info rounded">
-                    <p color="primary">
-                      Your subscription created successfully. We will send you
-                      mail on activation of your subscription soon. No further
-                      action required from your side.
-                    </p>
-                    <p>Thank you!</p>
+                  <Button
+                    disabled={
+                      !selectedPlanObject ||
+                      !stripe ||
+                      !selectedPriceObject ||
+                      subscribeLoader
+                    }
+                    className="mt-2"
+                    //   prettier-ignore
+                    style={{cursor: (!selectedPlanObject || !stripe || !selectedPriceObject) ? "not-allowed" : "pointer" }}
+                    onClick={handleSubmit}
+                    //   disabled={!stripe}
+                    color="primary"
+                  >
+                    Subscribe
+                    {subscribeLoader && (
+                      <Spinner
+                        style={{ marginLeft: "5px" }}
+                        size={"sm"}
+                        color="white"
+                      />
+                    )}
+                  </Button>
+                  <div className="mt-2">
+                    {selectedPlanObject && selectedPriceObject ? (
+                      <p>
+                        You have selected{" "}
+                        <span className="h6">{selectedPlanObject.title}</span>{" "}
+                        plan with{" "}
+                        <span className="h6">{selectedPriceObject.cycle}</span>{" "}
+                        billing cycle ({" "}
+                        <span className="h6">
+                          ${selectedPriceObject.amount} /{" "}
+                          {
+                            // prettier-ignore
+                            selectedPriceObject.cycle === "yearly" ? "Year" : "Month"
+                          }
+                        </span>{" "}
+                        )
+                      </p>
+                    ) : (
+                      <p>Please select plan!</p>
+                    )}
                   </div>
-                )}
-              </Col>
-            </div>
+                  {subscriptionCreated && (
+                    <div className="mt-2 p-1 bg-info rounded">
+                      <p color="primary">
+                        Your subscription created successfully. We will send you
+                        mail on activation of your subscription soon. No further
+                        action required from your side.
+                      </p>
+                      <p>Thank you!</p>
+                    </div>
+                  )}
+                </Col>
+              )}
+            </CardBody>
           )}
-        </CardBody>
+
+          {selectedPlanObject && selectedPlanObject.is_free_plan && (
+            <CardBody className="py-2 my-25">Free plan</CardBody>
+          )}
+        </div>
       </Card>
     </Fragment>
   );

@@ -47,14 +47,15 @@ const Plans = () => {
       return {
         id: plan.id,
         active_prices: plan.active_prices,
+        is_free_plan: plan.is_free_plan,
         title: plan.name,
         subtitle: plan.description,
         // prettier-ignore
         monthlyPrice: plan.active_prices.filter((price) => price.cycle === "monthly").length ? plan.active_prices.filter((price) => price.cycle === "monthly")[0].amount : 0,
         // prettier-ignore
-        monthlyPriceId: plan.active_prices.filter((price) => price.cycle === "monthly").length ? plan.active_prices.filter((price) => price.cycle === "monthly")[0].id : false,
+        monthlyPriceId: plan.active_prices.filter((price) => price.cycle === "monthly").length ? plan.active_prices.filter((price) => price.cycle === "monthly")[0].id : plan.is_free_plan ? `free_plan-${plan.id}` : false,
         // prettier-ignore
-        yearlyPriceId: plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].id : false,
+        yearlyPriceId: plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].id :  plan.is_free_plan ? `free_plan-${plan.id}` : false,
 
         yearlyPlan: {
           // prettier-ignore
