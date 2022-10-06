@@ -34,7 +34,7 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
   const stripe = useStripe();
 
   const authStore = useSelector((store) => store.auth);
-  console.log("authStore", authStore);
+
   const handleSubmit = async (event) => {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
@@ -78,25 +78,18 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
     }
   };
 
-  //   const options = {
-  //     // passing the client secret obtained in step 2
-  //     clientSecret,
-  //     // Fully customizable with appearance API.
-  //     // appearance: {/*...*/},
-  //   };
-
   useEffect(() => {
     (async () => {
       const res = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/get-client-secret`
       );
-      console.log("res", res);
       if (res.data) {
         setClientSecret(res.data.client_secret);
       }
     })();
   }, []);
   //   console.log(data);
+
   let selectedPlanObject, selectedPriceObject;
   if (selectedPrice && selectedPrice.includes("free_plan")) {
     const planId = selectedPrice.split("-")[1];
@@ -109,6 +102,21 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
     // prettier-ignore
     selectedPriceObject = selectedPlanObject && selectedPlanObject.active_prices.filter((price) => price.id === selectedPrice)[0];
   }
+
+  const handleFreePlanSubmit = async (event) => {
+    event.preventDefault();
+    setSubscribeLoader(true);
+
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/create-free-plan-subscription`,
+      { plan_id: selectedPlanObject.id }
+    );
+
+    if (res.data) {
+      toast.success(res.data.message);
+    }
+    setSubscribeLoader(false);
+  };
 
   return (
     <Fragment>
@@ -187,7 +195,32 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
           )}
 
           {selectedPlanObject && selectedPlanObject.is_free_plan && (
-            <CardBody className="py-2 my-25">Free plan</CardBody>
+            <CardBody className="py-2 my-25">
+              <p>
+                You have selected{" "}
+                <span className="h6">{selectedPlanObject.title}</span> plan
+                which will expire after{" "}
+                <span className="h6">{selectedPlanObject.trial_days}</span> days
+              </p>
+
+              <Button
+                className="mt-2"
+                //   prettier-ignore
+
+                onClick={handleFreePlanSubmit}
+                //   disabled={!stripe}
+                color="primary"
+              >
+                Start free plan
+                {subscribeLoader && (
+                  <Spinner
+                    style={{ marginLeft: "5px" }}
+                    size={"sm"}
+                    color="white"
+                  />
+                )}
+              </Button>
+            </CardBody>
           )}
         </div>
       </Card>

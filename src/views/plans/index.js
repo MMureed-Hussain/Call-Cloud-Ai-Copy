@@ -48,6 +48,7 @@ const Plans = () => {
         id: plan.id,
         active_prices: plan.active_prices,
         is_free_plan: plan.is_free_plan,
+        trial_days: plan.trial_days,
         title: plan.name,
         subtitle: plan.description,
         // prettier-ignore

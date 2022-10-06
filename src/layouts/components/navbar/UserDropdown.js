@@ -14,6 +14,7 @@ import {
   CreditCard,
   HelpCircle,
   Power,
+  DollarSign,
 } from "react-feather";
 
 // ** Reactstrap Imports
@@ -76,6 +77,14 @@ const UserDropdown = () => {
         >
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
+        </DropdownItem>
+        <DropdownItem
+          tag={Link}
+          to="/profile?active_tab=billing"
+          // onClick={(e) => e.preventDefault()}
+        >
+          <DollarSign size={14} className="me-75" />
+          <span className="align-middle">Billing & Plans</span>
         </DropdownItem>
         {/* <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
           <Mail size={14} className="me-75" />
