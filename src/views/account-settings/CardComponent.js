@@ -23,15 +23,16 @@ const CardComponent = ({ refreshCardList }) => {
   const stripe = useStripe();
   const authStore = useSelector((store) => store.auth);
 
+  const loadClientSecret = async () => {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/get-client-secret`
+    );
+    if (res.data) {
+      setClientSecret(res.data.client_secret);
+    }
+  };
   useEffect(() => {
-    (async () => {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/get-client-secret`
-      );
-      if (res.data) {
-        setClientSecret(res.data.client_secret);
-      }
-    })();
+    loadClientSecret();
   }, []);
 
   const handleSubmit = async (event) => {
@@ -64,10 +65,13 @@ const CardComponent = ({ refreshCardList }) => {
       setErrorMessage(result.error.message);
     } else {
       // The payment has been processed!
-      console.log("result", result);
       if (result.setupIntent.status === "succeeded") {
         toast.success("Payment method added successfully!");
-        refreshCardList();
+        setClientSecret(null);
+        loadClientSecret();
+        setTimeout(() => {
+          refreshCardList();
+        }, 3000);
       }
     }
   };
@@ -101,7 +105,7 @@ const CardComponent = ({ refreshCardList }) => {
             </span>
           </Label>
           <Label className="fw-bolder ms-1" for="save-card">
-            Save Card for future billing?
+            Save this as the Default Payment Method
           </Label>
         </div>
       </div>
