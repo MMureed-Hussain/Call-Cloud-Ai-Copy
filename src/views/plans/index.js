@@ -18,6 +18,10 @@ import "@styles/base/pages/page-pricing.scss";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
+console.log(
+  "REACT_APP_STRIPE_PUBLIC_KEY",
+  process.env.REACT_APP_STRIPE_PUBLIC_KEY
+);
 const stripePromise = loadStripe(
   "pk_test_51LlyMhHi6ImuTvws8AebvNxWWljx3mugCY3OuVXZeEm9DwR66VNuE2JMI5jYHASl0EmrWQz1ThvYu0n0j4wbXXDy00xwilLeEU"
 );
@@ -47,14 +51,16 @@ const Plans = () => {
       return {
         id: plan.id,
         active_prices: plan.active_prices,
+        is_free_plan: plan.is_free_plan,
+        trial_days: plan.trial_days,
         title: plan.name,
         subtitle: plan.description,
         // prettier-ignore
         monthlyPrice: plan.active_prices.filter((price) => price.cycle === "monthly").length ? plan.active_prices.filter((price) => price.cycle === "monthly")[0].amount : 0,
         // prettier-ignore
-        monthlyPriceId: plan.active_prices.filter((price) => price.cycle === "monthly").length ? plan.active_prices.filter((price) => price.cycle === "monthly")[0].id : false,
+        monthlyPriceId: plan.active_prices.filter((price) => price.cycle === "monthly").length ? plan.active_prices.filter((price) => price.cycle === "monthly")[0].id : plan.is_free_plan ? `free_plan-${plan.id}` : false,
         // prettier-ignore
-        yearlyPriceId: plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].id : false,
+        yearlyPriceId: plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].id :  plan.is_free_plan ? `free_plan-${plan.id}` : false,
 
         yearlyPlan: {
           // prettier-ignore

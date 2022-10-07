@@ -59,14 +59,15 @@ const Login = () => {
 
     if (valid) {
       setFormSubmissionLoader(true);
-      dispatch(csrf());
-      const payload = { email, password };
+      dispatch(csrf()).then(() => {
+        const payload = { email, password };
 
-      if (rememberMe) {
-        payload.remember_me = true;
-      }
+        if (rememberMe) {
+          payload.remember_me = true;
+        }
 
-      dispatch(login(payload)).then(() => setFormSubmissionLoader(false));
+        dispatch(login(payload)).then(() => setFormSubmissionLoader(false));
+      });
     }
 
     e.preventDefault();
