@@ -181,7 +181,7 @@ const PaymentMethods = () => {
                             {/* <h6 className="mb-0">{card.name}</h6> */}
                             {card.isPrimary && (
                               <Badge color="light-primary" className="ms-50">
-                                Primary
+                                Default
                               </Badge>
                             )}
                           </div>
