@@ -31,13 +31,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 import { loadStripe } from "@stripe/stripe-js";
-console.log(
-  "REACT_APP_STRIPE_PUBLIC_KEY",
-  process.env.REACT_APP_STRIPE_PUBLIC_KEY
-);
-const stripePromise = loadStripe(
-  "pk_test_51LlyMhHi6ImuTvws8AebvNxWWljx3mugCY3OuVXZeEm9DwR66VNuE2JMI5jYHASl0EmrWQz1ThvYu0n0j4wbXXDy00xwilLeEU"
-);
+
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 import { Elements } from "@stripe/react-stripe-js";
 
 import CardComponent from "./CardComponent";
@@ -46,6 +41,7 @@ const PaymentMethods = () => {
   // ** States
   const [data, setData] = useState([]);
   const [deleteLoader, setDeleteLoader] = useState(false);
+  const [makeDefaultLoader, setMakeDefaultLoader] = useState(false);
 
   const loadPaymentMethods = () => {
     axios
@@ -123,6 +119,23 @@ const PaymentMethods = () => {
       }
     });
   };
+
+  const handleMakeDefaultPaymentMethod = (id) => {
+    setMakeDefaultLoader(id);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/default-payment-method/${id}`
+      )
+      .then((res) => {
+        toast.success(res.data.message);
+        loadPaymentMethods();
+        setMakeDefaultLoader(false);
+      })
+      .catch((e) => {
+        toast.error(e.response.data.message);
+        setMakeDefaultLoader(false);
+      });
+  };
   useEffect(() => {
     loadPaymentMethods();
   }, []);
@@ -190,6 +203,25 @@ const PaymentMethods = () => {
                               Edit
                             </Button> */}
                             <Button
+                              disabled={card.isPrimary}
+                              size="sm"
+                              onClick={() => {
+                                handleMakeDefaultPaymentMethod(card.id);
+                              }}
+                              color="primary"
+                              className="mx-2"
+                            >
+                              Make Default
+                              {makeDefaultLoader === card.id && (
+                                <Spinner
+                                  style={{ marginLeft: "5px" }}
+                                  size={"sm"}
+                                  color="white"
+                                />
+                              )}
+                            </Button>
+                            <Button
+                              size="sm"
                               onClick={() => handleDeletePaymentMethod(card.id)}
                               outline
                             >

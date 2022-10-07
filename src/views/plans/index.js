@@ -18,14 +18,7 @@ import "@styles/base/pages/page-pricing.scss";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
-console.log(
-  "REACT_APP_STRIPE_PUBLIC_KEY",
-  process.env.REACT_APP_STRIPE_PUBLIC_KEY
-);
-const stripePromise = loadStripe(
-  "pk_test_51LlyMhHi6ImuTvws8AebvNxWWljx3mugCY3OuVXZeEm9DwR66VNuE2JMI5jYHASl0EmrWQz1ThvYu0n0j4wbXXDy00xwilLeEU"
-);
-// const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const Plans = () => {
   // ** States
