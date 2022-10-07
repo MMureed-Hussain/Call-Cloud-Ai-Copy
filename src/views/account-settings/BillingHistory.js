@@ -43,6 +43,7 @@ import {
   UncontrolledTooltip,
   UncontrolledDropdown,
   UncontrolledButtonDropdown,
+  Spinner,
 } from "reactstrap";
 
 // ** Styles
@@ -81,8 +82,11 @@ const columns = [
           id={`send-tooltip-${row.id}`}
           onClick={() => row.handleDownloadInvoice(row.id)}
         />
+        {row.downloadingPDF && (
+          <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="primary" />
+        )}
         <UncontrolledTooltip placement="top" target={`send-tooltip-${row.id}`}>
-          Download Invoice
+          {`Download Invoice ${row.downloadingPDF}`}
         </UncontrolledTooltip>
       </div>
     ),
@@ -92,6 +96,33 @@ const columns = [
 const BillingHistory = () => {
   const [data, setData] = useState([]);
 
+  const handleDownloadInvoice = (id) => {
+    setData((data) => {
+      const newState = data.map((d) => {
+        if (d.id === id) {
+          d.downloadingPDF = true;
+        }
+        return { ...d };
+      });
+      return newState;
+    });
+    axios
+      .get(`${process.env.REACT_APP_API_ENDPOINT}/api/invoice/${id}`)
+      .then((res) => {
+        setData((data) => {
+          return data.map((d) => {
+            if (d.id === id) {
+              d.downloadingPDF = false;
+            }
+            return { ...d };
+          });
+        });
+        window.location.href = res.data.invoicePDFLink;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_API_ENDPOINT}/api/invoices`, {
@@ -101,17 +132,8 @@ const BillingHistory = () => {
       .then((res) => {
         const invoices = res.data.invoices.map((invoice, index) => {
           invoice.indexNo = index;
-          invoice.handleDownloadInvoice = (id) => {
-            axios
-              .get(`${process.env.REACT_APP_API_ENDPOINT}/api/invoice/${id}`)
-              .then((res) => {
-                console.log(res.data.invoicePDFLink);
-                window.location.href = res.data.invoicePDFLink;
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          };
+          invoice.downloadingPDF = false;
+          invoice.handleDownloadInvoice = handleDownloadInvoice;
           return invoice;
         });
         setData(invoices);
