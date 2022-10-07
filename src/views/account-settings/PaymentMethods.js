@@ -1,107 +1,135 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
+
+import Swal from "sweetalert2";
+
+// import { useForm, Controller } from 'react-hook-form'
+import withReactContent from "sweetalert2-react-content";
+
+// ** Styles
+import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
+
+const MySwal = withReactContent(Swal);
 
 // ** Reactstrap Imports
 import {
   Row,
   Col,
   Card,
-  Form,
-  Modal,
   Badge,
-  Label,
-  Input,
   Button,
   CardBody,
   CardTitle,
-  ModalBody,
   CardHeader,
-  InputGroup,
-  ModalHeader,
-  FormFeedback,
-  InputGroupText,
+  Spinner,
 } from "reactstrap";
 
 // ** Third Party Components
 import classnames from "classnames";
-import Cleave from "cleave.js/react";
-import { Check, X } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
 
-// ** Card Images
-import jcbCC from "@src/assets/images/icons/payments/jcb-cc.png";
-import amexCC from "@src/assets/images/icons/payments/amex-cc.png";
-import uatpCC from "@src/assets/images/icons/payments/uatp-cc.png";
-import visaCC from "@src/assets/images/icons/payments/visa-cc.png";
-import dinersCC from "@src/assets/images/icons/payments/diners-cc.png";
-import maestroCC from "@src/assets/images/icons/payments/maestro-cc.png";
-import discoverCC from "@src/assets/images/icons/payments/discover-cc.png";
-import mastercardCC from "@src/assets/images/icons/payments/mastercard-cc.png";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 
-const cardsObj = {
-  jcb: jcbCC,
-  uatp: uatpCC,
-  visa: visaCC,
-  amex: amexCC,
-  diners: dinersCC,
-  maestro: maestroCC,
-  discover: discoverCC,
-  mastercard: mastercardCC,
-};
+import { loadStripe } from "@stripe/stripe-js";
+console.log(
+  "REACT_APP_STRIPE_PUBLIC_KEY",
+  process.env.REACT_APP_STRIPE_PUBLIC_KEY
+);
+const stripePromise = loadStripe(
+  "pk_test_51LlyMhHi6ImuTvws8AebvNxWWljx3mugCY3OuVXZeEm9DwR66VNuE2JMI5jYHASl0EmrWQz1ThvYu0n0j4wbXXDy00xwilLeEU"
+);
+import { Elements } from "@stripe/react-stripe-js";
 
-const data = [
-  {
-    cardCvc: "587",
-    name: "Tom McBride",
-    expiryDate: "12/24",
-    imgAlt: "Mastercard",
-    badgeColor: "primary",
-    cardStatus: "Primary",
-    cardNumber: "5577 0000 5577 9865",
-    imgSrc: require("@src/assets/images/icons/payments/mastercard.png").default,
-  },
-  {
-    cardCvc: "681",
-    imgAlt: "Visa card",
-    expiryDate: "02/24",
-    name: "Mildred Wagner",
-    cardNumber: "4532 3616 2070 5678",
-    imgSrc: require("@src/assets/images/icons/payments/visa.png").default,
-  },
-];
-
+import CardComponent from "./CardComponent";
+import toast from "react-hot-toast";
 const PaymentMethods = () => {
   // ** States
-  const [show, setShow] = useState(false);
-  const [cardType, setCardType] = useState("");
-  const [selected, setSelected] = useState(null);
-  const [modalCardType, setModalCardType] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [data, setData] = useState([]);
+  const [deleteLoader, setDeleteLoader] = useState(false);
 
-  // ** Hooks
-  const {
-    control,
-    setError,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ defaultValues: { cardInput: "" } });
+  const loadPaymentMethods = () => {
+    axios
+      .get(`${process.env.REACT_APP_API_ENDPOINT}/api/payment-methods`)
+      .then((res) => {
+        console.log(res.data.paymentMethods);
+        const data = res.data.paymentMethods.map((paymentMethod) => {
+          let imgSrc =
+            require(`@src/assets/images/icons/payments/visa.png`).default;
 
-  const onSubmit = (data) => {
-    if (data.cardInput.length <= 0) {
-      setError("cardInput", {
-        type: "manual",
-        message: "Please Enter Valid Card Number",
+          if (
+            [
+              "visa",
+              "visa-cc",
+              "uatp-cc",
+              "mastercard",
+              "mastercard-cc",
+              "maestro-cc",
+              "jcb",
+              "discover",
+              "diners",
+              "amex-cc",
+              "american-ex",
+            ].includes(paymentMethod.brand)
+          ) {
+            // prettier-ignore
+            const cardImage = ["jcb", "discover", "diners"].includes(paymentMethod.brand) ? `${paymentMethod.brand}-cc` : paymentMethod.brand;
+            imgSrc =
+              require(`@src/assets/images/icons/payments/${cardImage}.png`).default;
+          }
+          return {
+            expiryDate: paymentMethod.expiryDate,
+            imgAlt: paymentMethod.brand,
+            badgeColor: "primary",
+            isPrimary: paymentMethod.is_primary,
+            cardNumber: paymentMethod.last4,
+            imgSrc,
+            id: paymentMethod.id,
+          };
+        });
+        setData(data);
       });
-    }
   };
 
-  const selectedCondition = selected !== null;
+  const handleDeletePaymentMethod = (id) => {
+    return MySwal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you would like to delete this payment method?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+        confirmButton: "btn btn-primary",
+        cancelButton: "btn btn-danger ms-1",
+      },
+      buttonsStyling: false,
+    }).then(function (result) {
+      if (result.value) {
+        // redirect to login page
 
-  const openEditModal = (card) => {
-    setSelected(card);
-    setShow(true);
+        setDeleteLoader(true);
+        axios
+          .delete(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/payment-method/${id}`
+          )
+          .then((res) => {
+            toast.success(res.data.message);
+            loadPaymentMethods();
+            setDeleteLoader(false);
+          })
+          .catch((e) => {
+            toast.error(e.response.data.message);
+            setDeleteLoader(false);
+          });
+      }
+    });
   };
+  useEffect(() => {
+    loadPaymentMethods();
+  }, []);
 
+  const refreshCardList = () => {
+    loadPaymentMethods();
+  };
   return (
     <Fragment>
       <Card>
@@ -111,148 +139,11 @@ const PaymentMethods = () => {
         <CardBody className="my-1 py-25">
           <Row className="gx-4">
             <Col lg="6">
-              <Row
-                tag={Form}
-                className="gx-2 gy-1"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <Col xs={12}>
-                  <div className="form-check mb-1">
-                    <Input
-                      type="radio"
-                      value="card"
-                      id="card-radio"
-                      name="payment-method-radio"
-                      checked={paymentMethod === "card"}
-                      onChange={() => setPaymentMethod("card")}
-                    />
-                    <Label className="form-check-label" for="card-radio">
-                      Credit/Debit/ATM Card
-                    </Label>
-                  </div>
-                  <div className="form-check mb-1">
-                    <Input
-                      type="radio"
-                      value="paypal"
-                      id="paypal-radio"
-                      name="payment-method-radio"
-                      checked={paymentMethod === "paypal"}
-                      onChange={() => setPaymentMethod("paypal")}
-                    />
-                    <Label className="form-check-label" for="paypal-radio">
-                      PayPal account
-                    </Label>
-                  </div>
-                </Col>
-                {paymentMethod === "card" && (
-                  <Fragment>
-                    <Col xs={12}>
-                      <Label className="form-label" for="credit-card">
-                        Card Number
-                      </Label>
-                      <InputGroup>
-                        <Controller
-                          id="credit-card"
-                          name="cardInput"
-                          control={control}
-                          placeholder="1356 3215 6548 7898"
-                          render={({ field }) => (
-                            <Cleave
-                              {...field}
-                              name="cardInput"
-                              className={classnames("form-control", {
-                                "is-invalid": errors.cardInput,
-                              })}
-                              options={{
-                                creditCard: true,
-                                onCreditCardTypeChanged: (type) => {
-                                  setCardType(type);
-                                },
-                              }}
-                            />
-                          )}
-                        />
-                        {cardType !== "" && cardType !== "unknown" ? (
-                          <InputGroupText>
-                            <img
-                              height="24"
-                              alt="card-type"
-                              src={cardsObj[cardType]}
-                            />
-                          </InputGroupText>
-                        ) : null}
-                      </InputGroup>
-                      {errors.cardInput ? (
-                        <FormFeedback className="d-block">
-                          {errors.cardInput.message}
-                        </FormFeedback>
-                      ) : null}
-                    </Col>
-                    <Col md={6}>
-                      <Label className="form-label" for="card-name">
-                        Name On Card
-                      </Label>
-                      <Input id="card-name" placeholder="John Doe" />
-                    </Col>
-                    <Col xs={6} md={3}>
-                      <Label className="form-label" for="exp-date">
-                        Exp. Date
-                      </Label>
-                      <Cleave
-                        id="exp-date"
-                        placeholder="MM/YY"
-                        className="form-control"
-                        options={{ delimiter: "/", blocks: [2, 2] }}
-                      />
-                    </Col>
-                    <Col xs={6} md={3}>
-                      <Label className="form-label" for="cvv">
-                        CVV
-                      </Label>
-                      <Cleave
-                        id="cvv"
-                        placeholder="654"
-                        className="form-control"
-                        options={{ blocks: [3] }}
-                      />
-                    </Col>
-                    <Col xs={12}>
-                      <div className="d-flex align-items-center">
-                        <div className="form-switch w-100">
-                          <Input
-                            defaultChecked
-                            type="switch"
-                            name="save-card"
-                            id="save-card"
-                          />
-                          <Label className="form-check-label" for="save-card">
-                            <span className="switch-icon-left">
-                              <Check size={14} />
-                            </span>
-                            <span className="switch-icon-right">
-                              <X size={14} />
-                            </span>
-                          </Label>
-                          <Label
-                            className="form-check-label fw-bolder ms-1"
-                            for="save-card"
-                          >
-                            Save Card for future billing?
-                          </Label>
-                        </div>
-                      </div>
-                    </Col>
-                    <Col className="mt-2 pt-1" xs={12}>
-                      <Button type="submit" className="me-1" color="primary">
-                        Submit
-                      </Button>
-                      <Button color="secondary" outline>
-                        Cancel
-                      </Button>
-                    </Col>
-                  </Fragment>
-                )}
-              </Row>
+              <div className="mt-2">
+                <Elements stripe={stripePromise}>
+                  <CardComponent refreshCardList={refreshCardList} />
+                </Elements>
+              </div>
             </Col>
             <Col lg="6" className="mt-2 mt-lg-0">
               <h6 className="fw-bolder mb-2">My Cards</h6>
@@ -274,8 +165,8 @@ const PaymentMethods = () => {
                             className="mb-1 img-fluid"
                           />
                           <div className="d-flex align-items-center mb-50">
-                            <h6 className="mb-0">{card.name}</h6>
-                            {index === 0 && (
+                            {/* <h6 className="mb-0">{card.name}</h6> */}
+                            {card.isPrimary && (
                               <Badge color="light-primary" className="ms-50">
                                 Primary
                               </Badge>
@@ -290,15 +181,27 @@ const PaymentMethods = () => {
                         </div>
                         <div className="d-flex flex-column text-start text-lg-end">
                           <div className="d-flex order-sm-0 order-1 mt-1 mt-sm-0">
-                            <Button
+                            {/* <Button
                               outline
                               color="primary"
                               className="me-75"
                               onClick={() => openEditModal(card)}
                             >
                               Edit
+                            </Button> */}
+                            <Button
+                              onClick={() => handleDeletePaymentMethod(card.id)}
+                              outline
+                            >
+                              Delete
+                              {deleteLoader && (
+                                <Spinner
+                                  style={{ marginLeft: "5px" }}
+                                  size={"sm"}
+                                  color="white"
+                                />
+                              )}
                             </Button>
-                            <Button outline>Delete</Button>
                           </div>
                           <span className="mt-2">
                             Card expires at {card.expiryDate}
@@ -313,7 +216,7 @@ const PaymentMethods = () => {
           </Row>
         </CardBody>
       </Card>
-      <Modal
+      {/* <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered"
@@ -436,7 +339,7 @@ const PaymentMethods = () => {
             </Col>
           </Form>
         </ModalBody>
-      </Modal>
+      </Modal> */}
     </Fragment>
   );
 };

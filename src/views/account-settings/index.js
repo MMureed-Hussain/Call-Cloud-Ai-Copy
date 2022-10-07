@@ -57,14 +57,14 @@ const AccountSettings = () => {
 
   // check current route if it is /complete-profile or /profile
   const location = useLocation();
-  console.log("location", location);
+  // console.log("location", location);
 
   const store = useSelector((state) => {
     return state.auth;
   });
 
   const toggleTab = (tab) => {
-    console.log(tab, setActiveTab);
+    // console.log(tab, setActiveTab);
     setActiveTab(tab);
   };
 
