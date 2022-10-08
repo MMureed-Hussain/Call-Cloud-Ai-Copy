@@ -37,7 +37,7 @@ import { Elements } from "@stripe/react-stripe-js";
 
 import CardComponent from "./CardComponent";
 import toast from "react-hot-toast";
-const PaymentMethods = () => {
+const PaymentMethods = ({ setHasPaymentMethod }) => {
   // ** States
   const [data, setData] = useState([]);
   const [deleteLoader, setDeleteLoader] = useState(false);
@@ -82,6 +82,9 @@ const PaymentMethods = () => {
             id: paymentMethod.id,
           };
         });
+        if (data.length) {
+          setHasPaymentMethod(true);
+        }
         setData(data);
       });
   };

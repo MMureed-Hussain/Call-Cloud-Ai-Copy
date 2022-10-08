@@ -29,6 +29,7 @@ const PricingCards = ({
   selectedPrice,
   setSelectedPrice,
   cardSection,
+  currentPlan,
 }) => {
   const colsProps = cols ? cols : { md: data.length > 3 ? 3 : 4, xs: 12 };
   // const [selectedPlan, setSelectedPlan] = useState(false);
@@ -49,11 +50,27 @@ const PricingCards = ({
           return (
             <Col className="item px-1" key={index} {...colsProps}>
               <Card
-                style={{ cursor: "pointer" }}
+                style={{
+                  // prettier-ignore
+                  cursor: currentPlan && currentPlan.is_free_pan && currentPlan.id === item.id ? "not-allowed" : currentPlan && !currentPlan.is_free_pan && currentPlan.id === item.id && currentPlan.currentPrice.cycle === duration ? "not-allowed" : "pointer",
+                }}
                 onClick={() => {
+                  if (
+                    (currentPlan &&
+                      currentPlan.is_free_pan &&
+                      currentPlan.id === item.id) ||
+                    (currentPlan &&
+                      !currentPlan.is_free_pan &&
+                      currentPlan.id === item.id &&
+                      currentPlan.currentPrice.cycle === duration)
+                  ) {
+                    return;
+                  }
                   // prettier-ignore
                   duration === "yearly" ? setSelectedPrice(item.yearlyPriceId) : setSelectedPrice(item.monthlyPriceId);
-                  cardSection.current.scrollIntoView();
+                  if (cardSection) {
+                    cardSection.current.scrollIntoView();
+                  }
                 }}
                 className={classnames("text-center", {
                   border: bordered,
@@ -110,6 +127,15 @@ const PricingCards = ({
                     ))}
                   </ListGroup>
                   <Button
+                    disabled={
+                      (currentPlan &&
+                        currentPlan.is_free_pan &&
+                        currentPlan.id === item.id) ||
+                      (currentPlan &&
+                        !currentPlan.is_free_pan &&
+                        currentPlan.id === item.id &&
+                        currentPlan.currentPrice.cycle === duration)
+                    }
                     block
                     // onClick={}
                     // outline={item.title !== "Standard"}
@@ -117,7 +143,10 @@ const PricingCards = ({
                     color="primary"
                   >
                     {/* {item.title === "Basic" ? "Your current plan" : "Upgrade"} */}
-                    Get Started
+                    {
+                      // prettier-ignore
+                      currentPlan ? currentPlan.id === item.id && currentPlan.is_free_pan ? "Current Plan" : !currentPlan.is_free_pan && currentPlan.id === item.id && currentPlan.currentPrice.cycle === duration ? "Current Plan" : "Change Plan" : "Get Started"
+                    }
                   </Button>
                 </CardBody>
               </Card>

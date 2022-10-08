@@ -86,7 +86,7 @@ const columns = [
           <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="primary" />
         )}
         <UncontrolledTooltip placement="top" target={`send-tooltip-${row.id}`}>
-          {`Download Invoice ${row.downloadingPDF}`}
+          {`Download Invoice`}
         </UncontrolledTooltip>
       </div>
     ),
