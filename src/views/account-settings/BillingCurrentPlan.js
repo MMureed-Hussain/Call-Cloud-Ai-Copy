@@ -32,29 +32,25 @@ import withReactContent from "sweetalert2-react-content";
 import "@styles/base/pages/page-pricing.scss";
 import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
 
+import ChangePlan from "./ChangePlan";
+import toast from "react-hot-toast";
 const MySwal = withReactContent(Swal);
 
-const BillingCurrentPlan = () => {
+const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
   // ** States
   const [show, setShow] = useState(false);
   const [data, setData] = useState(null);
-  const [duration, setDuration] = useState("monthly");
-  console.log(data);
-  useEffect(() => {
+
+  const loadCurrentPlan = () => {
     axios
       .get(`${process.env.REACT_APP_API_ENDPOINT}/api/current-plan-details`)
       .then((res) => {
         setData(res.data.currentPlanDetails);
       });
-  }, []);
-
-  const onChange = (e) => {
-    if (e.target.checked) {
-      setDuration("yearly");
-    } else {
-      setDuration("monthly");
-    }
   };
+  useEffect(() => {
+    loadCurrentPlan();
+  }, []);
 
   const handleConfirmCancel = () => {
     return MySwal.fire({
@@ -70,14 +66,20 @@ const BillingCurrentPlan = () => {
       buttonsStyling: false,
     }).then(function (result) {
       if (result.value) {
-        MySwal.fire({
-          icon: "success",
-          title: "Unsubscribed!",
-          text: "Your subscription cancelled successfully.",
-          customClass: {
-            confirmButton: "btn btn-success",
-          },
-        });
+        axios
+          .get(`${process.env.REACT_APP_API_ENDPOINT}/api/cancel-subscription`)
+          .then((res) => {
+            MySwal.fire({
+              icon: "success",
+              title: "Unsubscribed!",
+              text: res.data.message,
+              customClass: {
+                confirmButton: "btn btn-success",
+              },
+            }).then(() => {
+              window.location.href = "/profile?active_tab=billing";
+            });
+          });
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: "Cancelled",
@@ -89,6 +91,11 @@ const BillingCurrentPlan = () => {
         });
       }
     });
+  };
+
+  const handleChangePlanSuccess = () => {
+    loadCurrentPlan();
+    setShow(false);
   };
 
   if (!data) {
@@ -159,11 +166,19 @@ const BillingCurrentPlan = () => {
               <Button
                 color="primary"
                 className="me-1 mt-1"
-                onClick={() => setShow(true)}
+                onClick={() => {
+                  if (hasPaymentMethod) {
+                    setShow(true);
+                  } else {
+                    toast.error("Please add payment method first!");
+                    paymentMethodRef.current.scrollIntoView();
+                  }
+                }}
               >
-                Upgrade Plan
+                Change Plan
               </Button>
               <Button
+                disabled={data.currentPlan.is_free_plan}
                 outline
                 color="danger"
                 className="mt-1"
@@ -186,30 +201,12 @@ const BillingCurrentPlan = () => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
-          <h1 className="text-center mb-1">Subscription Plan</h1>
-          <p className="text-center mb-3">
-            All plans include 40+ advanced tools and features to boost your
-            product. Choose the best plan to fit your needs.
-          </p>
-          <div className="d-flex align-items-center justify-content-center mb-5 pb-50">
-            <h6 className="me-50 mb-0">Monthly</h6>
-            <div className="form-switch">
-              <Input
-                id="plan-switch"
-                type="switch"
-                checked={duration === "yearly"}
-                onChange={onChange}
-              />
-            </div>
-            <h6 className="ms-50 mb-0">Annually</h6>
-          </div>
-          {/* <PricingCard bordered data={data} duration={duration} /> */}
-          <div className="text-center">
-            <p>Still not convinced? Start with a 14-day FREE trial!</p>
-            <Button color="primary" onClick={() => setShow(!show)}>
-              Start your trial
-            </Button>
-          </div>
+          {show && (
+            <ChangePlan
+              handleChangePlanSuccess={handleChangePlanSuccess}
+              currentPlan={data.currentPlan}
+            />
+          )}
         </ModalBody>
       </Modal>
     </Fragment>
