@@ -14,6 +14,8 @@ import AsyncCreatableSelect from "react-select/async-creatable";
 import { CountryRegionData } from "react-country-region-selector";
 // console.log("CountryRegionData", CountryRegionData);
 
+// console.log(JSON.stringify(selectedTimezone, null, 2));
+
 const countryOptions = CountryRegionData.map((country) => {
   return {
     id: country[1],
@@ -87,6 +89,7 @@ import { updateProfile } from "@store/auth";
 
 const AccountTabs = ({ data }) => {
   const dispatch = useDispatch();
+
   // ** Hooks
   // const defaultValues = {
   //   name: data.name,
@@ -135,8 +138,23 @@ const AccountTabs = ({ data }) => {
       return null;
     }
   });
+
+  const [timezone, setTimezone] = useState(() => {
+    if (data.timezone) {
+      return {
+        label: data.timezone.timezone,
+        value: data.timezone.id,
+        id: data.timezone.id,
+      };
+    } else {
+      return null;
+    }
+  });
+
   const [industryError, setIndustryError] = useState(false);
+  const [timezoneError, setTimezoneError] = useState(false);
   const [industryQuery, setIndustryQuery] = useState("");
+  const [timezoneQuery, setTimezoneQuery] = useState("");
 
   const [companyName, setCompanyName] = useState(() => {
     return data.companyName ? data.companyName : "";
@@ -170,8 +188,27 @@ const AccountTabs = ({ data }) => {
     return industries;
   };
 
+  const loadTimezonesOptions = async () => {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/timezones?q=${timezoneQuery}`
+    );
+    const timezones = res.data.map((timezone) => {
+      return {
+        id: timezone.id,
+        value: timezone.id,
+        // label: `${timezone.timezone} (${timezone.gmt_offset})`,
+        label: `${timezone.timezone}`,
+      };
+    });
+    return timezones;
+  };
+
   const handleIndustryInputChange = (newValue) => {
     setIndustryQuery(newValue);
+  };
+
+  const handleTimezoneInputChange = (newValue) => {
+    setTimezoneQuery(newValue);
   };
 
   const [regionOptions, setRegionOptions] = useState(() => {
@@ -291,6 +328,13 @@ const AccountTabs = ({ data }) => {
       setIndustryError(false);
     }
 
+    if (!timezone && data.role === "member") {
+      valid = false;
+      setTimezoneError(true);
+    } else {
+      setTimezoneError(false);
+    }
+
     if (!companyName && data.role === "company") {
       valid = false;
       setCompanyNameError(true);
@@ -334,6 +378,7 @@ const AccountTabs = ({ data }) => {
         country: country.id,
         region: region.id,
         city,
+        timezone: timezone.id,
       };
 
       if (avatarFile) {
@@ -657,6 +702,39 @@ const AccountTabs = ({ data }) => {
 
                 <FormFeedback>Please enter a valid City</FormFeedback>
               </Col>
+
+              <Col sm="6" className="mb-1">
+                  <Label className="form-label" for="timezoneInput">
+                    Timezone
+                  </Label>
+                  <AsyncSelect
+                    defaultOptions
+                    isClearable={false}
+                    value={timezone}
+                    name="industry"
+                    className="react-select"
+                    id="timezoneInput"
+                    classNamePrefix="select"
+                    onChange={(timezone) => {
+                      setTimezone(timezone);
+                    }}
+                    theme={selectThemeColors}
+                    loadOptions={loadTimezonesOptions}
+                    onInputChange={handleTimezoneInputChange}
+                    noOptionsMessage={(input) => {
+                      return `No match found for ${input.inputValue}!`;
+                    }}
+                  />
+
+                  {timezoneError && (
+                    <div
+                      className="invalid-feedback"
+                      style={{ display: "block" }}
+                    >
+                      Please select Timezone
+                    </div>
+                  )}
+                </Col>
 
               <Col className="mt-2 d-flex" sm="12">
                 <Button
