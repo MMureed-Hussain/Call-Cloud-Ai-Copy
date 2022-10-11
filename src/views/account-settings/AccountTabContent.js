@@ -142,7 +142,7 @@ const AccountTabs = ({ data }) => {
   const [timezone, setTimezone] = useState(() => {
     if (data.timezone) {
       return {
-        label: data.timezone.timezone,
+        label: data.timezone.name,
         value: data.timezone.id,
         id: data.timezone.id,
       };
@@ -150,6 +150,8 @@ const AccountTabs = ({ data }) => {
       return null;
     }
   });
+
+  // const [timezone_list, setTimezoneList] = useState("");
 
   const [industryError, setIndustryError] = useState(false);
   const [timezoneError, setTimezoneError] = useState(false);
@@ -196,10 +198,10 @@ const AccountTabs = ({ data }) => {
       return {
         id: timezone.id,
         value: timezone.id,
-        // label: `${timezone.timezone} (${timezone.gmt_offset})`,
-        label: `${timezone.timezone}`,
+        label: `${new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier })} - ${timezone.name}`,
       };
     });
+    // setTimezoneList(timezones);
     return timezones;
   };
 
@@ -210,6 +212,12 @@ const AccountTabs = ({ data }) => {
   const handleTimezoneInputChange = (newValue) => {
     setTimezoneQuery(newValue);
   };
+
+  const handleTimezoneOpen = () => {
+    // console.log(timezone_list);
+    setTimezoneQuery("a");
+  };
+
 
   const [regionOptions, setRegionOptions] = useState(() => {
     if (data.country && data.region) {
@@ -715,6 +723,10 @@ const AccountTabs = ({ data }) => {
                     className="react-select"
                     id="timezoneInput"
                     classNamePrefix="select"
+                    onMenuOpen={() => {
+                      handleTimezoneOpen();
+                      // console.log('on menu open setTimezone');
+                    }}
                     onChange={(timezone) => {
                       setTimezone(timezone);
                     }}
