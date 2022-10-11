@@ -201,7 +201,7 @@ const WorkspaceSwitcher = () => {
                     ).then(() => {
                       dispatch(recentlyAccessedWorkspaces());
                     });
-                    navigate(`/workspace/${workspace.id}`);
+                    navigate(`/workspace/${workspace.id}/users`);
                     setPopoverOpen(false);
                     setTimeout(() => setPopoverOpen(true), 1000);
                   }}
@@ -209,7 +209,6 @@ const WorkspaceSwitcher = () => {
                   loadOptions={loadWorkspacesOptions}
                   onInputChange={handleWorkspaceInputChange}
                   noOptionsMessage={(input) => {
-                    console.log("input", input);
                     // prettier-ignore
                     return input.inputValue.length ? `No match found for ${input.inputValue}!` : ``;
                   }}
@@ -223,7 +222,7 @@ const WorkspaceSwitcher = () => {
                           <Link
                             key={index}
                             className="text-primary"
-                            to={`/workspace/${workspace.id}`}
+                            to={`/workspace/${workspace.id}/users`}
                             onClick={() => {
                               dispatch(
                                 storeCurrentWorkspace({

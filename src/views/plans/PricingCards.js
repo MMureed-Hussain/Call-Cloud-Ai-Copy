@@ -126,28 +126,30 @@ const PricingCards = ({
                       </ListGroupItem>
                     ))}
                   </ListGroup>
-                  <Button
-                    disabled={
-                      (currentPlan &&
-                        currentPlan.is_free_pan &&
-                        currentPlan.id === item.id) ||
-                      (currentPlan &&
-                        !currentPlan.is_free_pan &&
-                        currentPlan.id === item.id &&
-                        currentPlan.currentPrice.cycle === duration)
-                    }
-                    block
-                    // onClick={}
-                    // outline={item.title !== "Standard"}
-                    // color={item.title === "Basic" ? "success" : "primary"}
-                    color="primary"
-                  >
-                    {/* {item.title === "Basic" ? "Your current plan" : "Upgrade"} */}
-                    {
-                      // prettier-ignore
-                      currentPlan ? currentPlan.id === item.id && currentPlan.is_free_pan ? "Current Plan" : !currentPlan.is_free_pan && currentPlan.id === item.id && currentPlan.currentPrice.cycle === duration ? "Current Plan" : "Change Plan" : "Get Started"
-                    }
-                  </Button>
+                  {currentPlan && (
+                    <Button
+                      disabled={
+                        (currentPlan &&
+                          currentPlan.is_free_pan &&
+                          currentPlan.id === item.id) ||
+                        (currentPlan &&
+                          !currentPlan.is_free_pan &&
+                          currentPlan.id === item.id &&
+                          currentPlan.currentPrice.cycle === duration)
+                      }
+                      block
+                      // onClick={}
+                      // outline={item.title !== "Standard"}
+                      // color={item.title === "Basic" ? "success" : "primary"}
+                      color="primary"
+                    >
+                      {/* {item.title === "Basic" ? "Your current plan" : "Upgrade"} */}
+                      {
+                        // prettier-ignore
+                        currentPlan ? currentPlan.id === item.id && currentPlan.is_free_pan ? "Current Plan" : !currentPlan.is_free_pan && currentPlan.id === item.id && currentPlan.currentPrice.cycle === duration ? "Current Plan" : "Change Plan" : "Get Started"
+                      }
+                    </Button>
+                  )}
                 </CardBody>
               </Card>
             </Col>
