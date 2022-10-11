@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 // ** Axios Imports
 import axios from "axios";
 axios.defaults.withCredentials = true;
@@ -151,12 +151,12 @@ const AccountTabs = ({ data }) => {
     }
   });
 
-  // const [timezone_list, setTimezoneList] = useState("");
+  const [timezoneList, setTimezoneList] = useState("");
 
   const [industryError, setIndustryError] = useState(false);
   const [timezoneError, setTimezoneError] = useState(false);
   const [industryQuery, setIndustryQuery] = useState("");
-  const [timezoneQuery, setTimezoneQuery] = useState("");
+  // const [timezoneQuery, setTimezoneQuery] = useState("");
 
   const [companyName, setCompanyName] = useState(() => {
     return data.companyName ? data.companyName : "";
@@ -190,33 +190,91 @@ const AccountTabs = ({ data }) => {
     return industries;
   };
 
-  const loadTimezonesOptions = async () => {
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}/api/timezones?q=${timezoneQuery}`
-    );
-    const timezones = res.data.map((timezone) => {
-      return {
-        id: timezone.id,
-        value: timezone.id,
-        label: `${new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier })} - ${timezone.name}`,
-      };
+  // label: `${new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier })} - ${timezone.name}`,
+  // const loadTimezonesOptions = async () => {
+  //   const res = await axios.get(
+  //     `${process.env.REACT_APP_API_ENDPOINT}/api/timezones`
+  //   );
+  //   const timezones = res.data.map((timezone) => {
+  //     return {
+  //       id: timezone.id,
+  //       value: timezone.id,
+  //       label: timezone.name,
+  //     };
+  //   });
+  //   setTimezoneList(timezones);
+  //   return timezones;
+  // };
+
+  // const [time, setTime] = useState();
+
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/timezones`)
+    .then((res) => {
+      // const timezone_list = res.data;
+      // const arr = [];
+      // timezone_list.map((timezone, index) => {
+      //   arr[index] = new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier });
+      // });
+      // setTime(arr);
+
+      // console.log('time is', time);
+
+      const timezoneOptions = res.data.map((timezone) => {
+        return {
+          id: timezone.id,
+          value: timezone.id,
+          label: timezone.name,
+        };
+      });
+      
+      setTimezoneList(timezoneOptions);
+      // console.log(res.data);
     });
-    // setTimezoneList(timezones);
-    return timezones;
-  };
+    // console.log(res.data);
+  }, []);
+
+  // console.log(time);
+  // if (timezoneList) {
+  //   const timezoneOpions = timezoneList.map((timezone) => {
+  //     return {
+  //       id: timezone.id,
+  //       value: timezone.id,
+  //       label: timezone.label,
+  //     };
+  //   })
+  //   setTimezoneList(timezoneOpions);
+  //   console.log(timezoneList);
+  // }
+
+  // useEffect(() => {
+  //   if (timezoneList) {
+  //     const arr2 = [];
+  //     const timer = setInterval(() => {
+  //       timezoneList.map((timezone, index) => {
+  //         arr2[index] = new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier });
+  //       })
+  //       setTime(arr2);
+  //     }, 1000);
+
+  //     return () => {
+  //       clearInterval(timer);
+  //     };
+  //   }
+  // }, []);
 
   const handleIndustryInputChange = (newValue) => {
     setIndustryQuery(newValue);
   };
 
-  const handleTimezoneInputChange = (newValue) => {
-    setTimezoneQuery(newValue);
-  };
+  // const handleTimezoneInputChange = (newValue) => {
+  //   setTimezoneQuery(newValue);
+  // };
 
-  const handleTimezoneOpen = () => {
-    // console.log(timezone_list);
-    setTimezoneQuery("a");
-  };
+  // const handleTimezoneOpen = () => {
+  //   // console.log(timezone_list);
+  //   setTimezoneQuery("a");
+  // };
 
 
   const [regionOptions, setRegionOptions] = useState(() => {
@@ -715,24 +773,27 @@ const AccountTabs = ({ data }) => {
                   <Label className="form-label" for="timezoneInput">
                     Timezone
                   </Label>
-                  <AsyncSelect
+                  <Select
                     defaultOptions
                     isClearable={false}
+                    isSearchable={false}
                     value={timezone}
                     name="industry"
                     className="react-select"
                     id="timezoneInput"
                     classNamePrefix="select"
-                    onMenuOpen={() => {
-                      handleTimezoneOpen();
-                      // console.log('on menu open setTimezone');
-                    }}
+                    // onMenuOpen={() => {
+                    //   handleTimezoneOpen();
+                    //   // console.log('on menu open setTimezone');
+                    // }}
                     onChange={(timezone) => {
                       setTimezone(timezone);
                     }}
                     theme={selectThemeColors}
-                    loadOptions={loadTimezonesOptions}
-                    onInputChange={handleTimezoneInputChange}
+                    options={timezoneList}
+                    // loadOptions={loadTimezonesOptions}
+                    // loadOptions={timezoneList}
+                    // onInputChange={handleTimezoneInputChange}
                     noOptionsMessage={(input) => {
                       return `No match found for ${input.inputValue}!`;
                     }}
