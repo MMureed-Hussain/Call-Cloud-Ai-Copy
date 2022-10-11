@@ -30,6 +30,13 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
   const [subscriptionCreated, setSubscriptionCreated] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const [redirectAfter, setRedirectAfter] = useState(10);
+
+  useEffect(() => {
+    if (redirectAfter === 0) {
+      window.location.href = "/dashboard";
+    }
+  }, [redirectAfter]);
   const elements = useElements();
   const stripe = useStripe();
 
@@ -69,6 +76,10 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
       if (result.setupIntent.status === "succeeded") {
         toast.success("Subscription created successfully!");
         setSubscriptionCreated(true);
+        setRedirectAfter(10);
+        setInterval(() => {
+          setRedirectAfter((seconds) => seconds - 1);
+        }, 800);
         // Show a success message to your customer
         // There's a risk of the customer closing the window before callback
         // execution. Set up a webhook or plugin to listen for the
@@ -129,9 +140,11 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
             (selectedPlanObject && !selectedPlanObject.is_free_plan)) && (
             <CardBody className="py-2 my-25">
               {clientSecret && (
-                <Col lg="6" className="mt-2">
+                <Col lg="12" className="mt-2">
                   {/* <Elements stripe={stripePromise}> */}
-                  <CardElement />
+                  <Col lg="6">
+                    <CardElement />
+                  </Col>
                   <p className="d-flex invalid-feedback">{errorMessage}</p>
                   {/* </Elements> */}
 
@@ -180,14 +193,36 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
                     )}
                   </div>
                   {subscriptionCreated && (
-                    <div className="mt-2 p-1 bg-info rounded">
-                      <p color="primary">
-                        Your subscription created successfully. We will send you
-                        mail on activation of your subscription soon. No further
-                        action required from your side.
-                      </p>
-                      <p>Thank you!</p>
-                    </div>
+                    <>
+                      <div className="mt-2 p-1 text-primary shadow rounded">
+                        <p>
+                          Your subscription created successfully. We will send
+                          you mail on activation of your subscription soon. No
+                          further action required from your side.
+                        </p>
+                        <p>Thank you!</p>
+                      </div>
+
+                      <Button
+                        className="mt-2"
+                        //   prettier-ignore
+
+                        onClick={() => {
+                          window.location.href = "/dashboard"
+                        }}
+                        //   disabled={!stripe}
+                        color="primary"
+                      >
+                        Go To Dashboard
+                        <Spinner
+                          style={{ marginLeft: "5px", marginRight: "5px" }}
+                          size={"sm"}
+                          color="white"
+                          type="grow"
+                        />
+                        {redirectAfter}
+                      </Button>
+                    </>
                   )}
                 </Col>
               )}

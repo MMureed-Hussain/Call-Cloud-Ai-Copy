@@ -29,6 +29,7 @@ import {
   ChevronDown,
   MoreVertical,
   ArrowDownCircle,
+  AlertTriangle,
 } from "react-feather";
 
 // ** Reactstrap Imports
@@ -44,25 +45,86 @@ import {
   UncontrolledDropdown,
   UncontrolledButtonDropdown,
   Spinner,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Col,
+  Button,
+  CardBody,
 } from "reactstrap";
+
+import classnames from "classnames";
 
 // ** Styles
 import "@styles/react/apps/app-invoice.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import toast from "react-hot-toast";
 
 const columns = [
   {
+    name: "Status",
+    // sortable: true,
+    // minWidth: "107px",
+    // selector: ({ indexNo }) => indexNo,
+    cell: (row) => {
+      if (row.status === "paid") {
+        return (
+          <>
+            <CheckCircle
+              id={`invoice-status-tooltip-${row.indexNo}`}
+              className="text-primary"
+            />
+            <UncontrolledTooltip
+              placement="top"
+              target={`invoice-status-tooltip-${row.indexNo}`}
+            >
+              Paid
+            </UncontrolledTooltip>
+          </>
+        );
+      }
+
+      if (row.status === "open") {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => row.handlePayInvoice(row.id)}
+          >
+            <AlertTriangle
+              id={`invoice-status-tooltip-${row.indexNo}`}
+              className="text-danger"
+            />
+            <UncontrolledTooltip
+              placement="top"
+              target={`invoice-status-tooltip-${row.indexNo}`}
+            >
+              Pay now
+            </UncontrolledTooltip>
+          </div>
+        );
+      }
+
+      return null;
+    },
+  },
+  {
     name: "#",
     // sortable: true,
-    minWidth: "107px",
+    // minWidth: "107px",
     selector: ({ indexNo }) => indexNo,
     cell: (row) => row.indexNo,
   },
+  {
+    name: "Total",
+    minWidth: "150px",
+    selector: ({ total }) => total,
+    cell: (row) => <span>${row.total || 0}</span>,
+  },
   // {
-  //   name: 'Total',
-  //   minWidth: '150px',
-  //   selector: ({ total }) => total,
-  //   cell: row => <span>${row.total || 0}</span>
+  //   name: "Status",
+  //   minWidth: "150px",
+  //   // selector: ({ total }) => total,
+  //   cell: (row) => row.status,
   // },
   {
     minWidth: "200px",
@@ -93,8 +155,20 @@ const columns = [
   },
 ];
 
-const BillingHistory = () => {
+const BillingHistory = ({ paymentMethods }) => {
   const [data, setData] = useState([]);
+  const [payInvoiceModal, setPayInvoiceModal] = useState(false);
+  const [payInvoiceId, setPayInvoiceId] = useState(null);
+  const [payingInvoice, setPayingInvoice] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(() => {
+    // prettier-ignore
+    return paymentMethods.filter((card) => card.isPrimary).length ? paymentMethods.filter((card) => card.isPrimary)[0].id : null;
+  });
+
+  useEffect(() => {
+    // prettier-ignore
+    paymentMethods.filter((card) => card.isPrimary).length ? setSelectedPaymentMethod(paymentMethods.filter((card) => card.isPrimary)[0].id) : setSelectedPaymentMethod(null);
+  }, [paymentMethods]);
 
   const handleDownloadInvoice = (id) => {
     setData((data) => {
@@ -123,6 +197,34 @@ const BillingHistory = () => {
         console.log(e);
       });
   };
+
+  const handlePayInvoice = (id) => {
+    console.log(id);
+    setPayInvoiceModal(true);
+    setPayInvoiceId(id);
+  };
+
+  const handlePayInvoiceAPI = () => {
+    if (payInvoiceId && selectedPaymentMethod) {
+      setPayingInvoice(true);
+
+      axios
+        .post(`${process.env.REACT_APP_API_ENDPOINT}/api/pay-invoice`, {
+          invoice_id: payInvoiceId,
+          payment_method: selectedPaymentMethod,
+        })
+        .then((res) => {
+          toast.success(res.data.message);
+          setPayInvoiceId(null);
+          setPayInvoiceModal(false);
+          setPayingInvoice(false);
+        })
+        .catch((e) => {
+          toast.error(e.response.data.message);
+          setPayingInvoice(false);
+        });
+    }
+  };
   useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_API_ENDPOINT}/api/invoices`, {
@@ -134,6 +236,7 @@ const BillingHistory = () => {
           invoice.indexNo = index;
           invoice.downloadingPDF = false;
           invoice.handleDownloadInvoice = handleDownloadInvoice;
+          invoice.handlePayInvoice = handlePayInvoice;
           return invoice;
         });
         setData(invoices);
@@ -176,17 +279,104 @@ const BillingHistory = () => {
           </DropdownMenu>
         </UncontrolledButtonDropdown> */}
         </CardHeader>
-        <div className="invoice-list-dataTable react-dataTable">
-          <DataTable
-            noHeader
-            responsive
-            data={data}
-            columns={columns}
-            className="react-dataTable"
-            sortIcon={<ChevronDown size={10} />}
-          />
-        </div>
+        <CardBody>
+          <div className="invoice-list-dataTable react-dataTable">
+            <DataTable
+              noHeader
+              responsive
+              data={data}
+              columns={columns}
+              className="react-dataTable"
+              sortIcon={<ChevronDown size={10} />}
+            />
+          </div>
+        </CardBody>
       </Card>
+
+      <Modal
+        isOpen={payInvoiceModal}
+        toggle={() => setPayInvoiceModal(!payInvoiceModal)}
+        className="modal-dialog-centered"
+      >
+        <ModalHeader
+          className="bg-transparent"
+          toggle={() => setPayInvoiceModal(!payInvoiceModal)}
+        ></ModalHeader>
+        <ModalBody className="px-sm-5 mx-50 pb-5">
+          {payInvoiceModal && (
+            <Col lg="12" className="mt-2 mt-lg-0">
+              <h6 className="fw-bolder mb-2">Select Payment Method</h6>
+              <div className="added-cards">
+                {paymentMethods.map((card, index) => {
+                  // const isLastCard =
+                  //   index === paymentMethods[paymentMethods.length - 1];
+                  return (
+                    <Card
+                      style={{ cursor: "pointer" }}
+                      key={index}
+                      onClick={() => setSelectedPaymentMethod(card.id)}
+                      className={
+                        // prettier-ignore
+                        selectedPaymentMethod === card.id ? "shadow-lg bordered border-primary" : "shadow bordered"
+                      }
+                    >
+                      <div className={classnames("cardMaster rounded p-2")}>
+                        <div className="d-flex justify-content-between flex-sm-row flex-column">
+                          <div className="card-information">
+                            <img
+                              src={card.imgSrc}
+                              alt={card.imgAlt}
+                              className="mb-1 img-fluid"
+                            />
+                            <div className="d-flex align-items-center mb-50">
+                              {/* <h6 className="mb-0">{card.name}</h6> */}
+                              {card.isPrimary && (
+                                <Badge color="light-primary" className="ms-50">
+                                  Default
+                                </Badge>
+                              )}
+                            </div>
+                            <span className="card-number ">
+                              **** **** ****{" "}
+                              {card.cardNumber.substring(
+                                card.cardNumber.length - 4
+                              )}
+                            </span>
+                          </div>
+                          <div className="d-flex flex-column text-start text-lg-end">
+                            <span className="mt-2">
+                              Card expires at {card.expiryDate}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+
+                <Button
+                  disabled={!selectedPaymentMethod}
+                  // size="sm"
+                  onClick={() => {
+                    handlePayInvoiceAPI();
+                  }}
+                  color="primary"
+                  // className="mx-auto"
+                >
+                  Pay Invoice
+                  {payingInvoice && (
+                    <Spinner
+                      style={{ marginLeft: "5px" }}
+                      size={"sm"}
+                      color="white"
+                    />
+                  )}
+                </Button>
+              </div>
+            </Col>
+          )}
+        </ModalBody>
+      </Modal>
     </div>
   );
 };

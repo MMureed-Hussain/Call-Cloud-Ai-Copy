@@ -6,9 +6,12 @@ import PaymentMethods from "./PaymentMethods";
 // import BillingAddress from './BillingAddress'
 import BillingHistory from "./BillingHistory";
 import BillingCurrentPlan from "./BillingCurrentPlan";
+import UpcomingInvoice from "./UpcomingInvoice";
 
 const BillingTabContent = () => {
   const [hasPaymentMethod, setHasPaymentMethod] = useState(false);
+  const [data, setData] = useState([]);
+
   const paymentMethodRef = useRef();
 
   return (
@@ -18,10 +21,15 @@ const BillingTabContent = () => {
         paymentMethodRef={paymentMethodRef}
       />
       <div ref={paymentMethodRef}>
-        <PaymentMethods setHasPaymentMethod={setHasPaymentMethod} />
+        <PaymentMethods
+          data={data}
+          setData={setData}
+          setHasPaymentMethod={setHasPaymentMethod}
+        />
       </div>
       {/* <BillingAddress /> */}
-      <BillingHistory />
+      <UpcomingInvoice />
+      <BillingHistory paymentMethods={data} />
     </Fragment>
   );
 };

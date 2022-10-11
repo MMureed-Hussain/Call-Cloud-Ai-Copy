@@ -37,9 +37,9 @@ import { Elements } from "@stripe/react-stripe-js";
 
 import CardComponent from "./CardComponent";
 import toast from "react-hot-toast";
-const PaymentMethods = ({ setHasPaymentMethod }) => {
+const PaymentMethods = ({ setHasPaymentMethod, data, setData }) => {
   // ** States
-  const [data, setData] = useState([]);
+
   const [deleteLoader, setDeleteLoader] = useState(false);
   const [makeDefaultLoader, setMakeDefaultLoader] = useState(false);
 
@@ -47,8 +47,32 @@ const PaymentMethods = ({ setHasPaymentMethod }) => {
     axios
       .get(`${process.env.REACT_APP_API_ENDPOINT}/api/payment-methods`)
       .then((res) => {
-        console.log(res.data.paymentMethods);
-        const data = res.data.paymentMethods.map((paymentMethod) => {
+        console.log(res);
+        const paymentMethods = res.data.paymentMethods;
+        // const paymentMethods = [
+        //   {
+        //     id: "1",
+        //     brand: "visa",
+        //     is_primary: true,
+        //     last4: "1234",
+        //     expiryDate: "04/24",
+        //   },
+        //   {
+        //     id: "2",
+        //     brand: "visa",
+        //     is_primary: false,
+        //     last4: "2345",
+        //     expiryDate: "04/24",
+        //   },
+        //   {
+        //     id: "3",
+        //     brand: "visa",
+        //     is_primary: false,
+        //     last4: "3456",
+        //     expiryDate: "04/24",
+        //   },
+        // ];
+        const data = paymentMethods.map((paymentMethod) => {
           let imgSrc =
             require(`@src/assets/images/icons/payments/visa.png`).default;
 
