@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // ** Reactstrap Imports
-import { Button, Spinner, Label, Input } from "reactstrap";
+import { Button, Spinner, Label, Input, Row, Col } from "reactstrap";
 
 import { Check, X } from "react-feather";
 
@@ -10,7 +10,6 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-
 import { useStripe, CardElement, useElements } from "@stripe/react-stripe-js";
 
 const CardComponent = ({ refreshCardList }) => {
@@ -68,6 +67,7 @@ const CardComponent = ({ refreshCardList }) => {
       if (result.setupIntent.status === "succeeded") {
         toast.success("Payment method added successfully!");
         setClientSecret(null);
+        setErrorMessage(null);
         loadClientSecret();
         setTimeout(() => {
           refreshCardList();
@@ -77,7 +77,15 @@ const CardComponent = ({ refreshCardList }) => {
   };
 
   if (!clientSecret || !stripe || !elements) {
-    return null;
+    return (
+      <Row>
+        <Col md="6">
+          <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
+            <Spinner size={"sm"} color="primary" />
+          </div>
+        </Col>
+      </Row>
+    );
   }
   return (
     <>
