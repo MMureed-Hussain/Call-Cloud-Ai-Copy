@@ -144,17 +144,17 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
                 <div className="d-flex justify-content-between">
                   <h5 className="fw-bolder">Days</h5>
                   <h5 className="fw-bolder">
-                    {data.currentPlan.remainingDays} of{" "}
-                    {data.currentPlan.trial_days} Days
+                    {data.currentPlan.remainingDays} of {data.currentPlan.days}{" "}
+                    Days
                   </h5>
                 </div>
                 <Progress
                   className="mb-50"
                   value={
                     (100 *
-                      (data.currentPlan.trial_days -
+                      (data.currentPlan.days -
                         data.currentPlan.remainingDays)) /
-                    data.currentPlan.trial_days
+                    data.currentPlan.days
                   }
                 />
                 <p className="mt-50">

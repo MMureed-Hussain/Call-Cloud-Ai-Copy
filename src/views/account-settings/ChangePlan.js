@@ -29,7 +29,7 @@ import toast from "react-hot-toast";
 const ChangePlan = ({ currentPlan, handleChangePlanSuccess }) => {
   // ** States
   const [data, setData] = useState(null),
-    [duration, setDuration] = useState("monthly");
+    [duration, setDuration] = useState(currentPlan.currentPrice.cycle);
 
   const planStore = useSelector((store) => store.plans);
 
