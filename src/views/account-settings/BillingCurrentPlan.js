@@ -16,6 +16,7 @@ import {
   ModalBody,
   CardHeader,
   ModalHeader,
+  Spinner,
 } from "reactstrap";
 
 // ** Demo Components
@@ -94,12 +95,21 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
   };
 
   const handleChangePlanSuccess = () => {
-    loadCurrentPlan();
+    // loadCurrentPlan();
     setShow(false);
+    window.location.href = "/profile?active_tab=billing";
   };
 
   if (!data) {
-    return null;
+    return (
+      <Row>
+        <Col md="6">
+          <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
+            <Spinner size={"sm"} color="primary" />
+          </div>
+        </Col>
+      </Row>
+    );
   }
   return (
     <Fragment>
@@ -116,6 +126,37 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
                 </h5>
                 <span>{data.currentPlan.description}</span>
               </div>
+              {data.currentPlan.hasFreeSubscription ? (
+                data.currentPlan.hasFreeSubscriptionExpired ? (
+                  <Alert color="warning">
+                    <h4 className="alert-heading">We need your attention!</h4>
+                    <div className="alert-body">
+                      Your free plan expired, Please upgrade to continue!
+                    </div>
+                  </Alert>
+                ) : (
+                  <div className="mb-2 pb-50">
+                    <h5>Active until {data.currentPlan.active_until}</h5>
+                    <span>
+                      We will send you a notification upon Subscription
+                      expiration
+                    </span>
+                  </div>
+                )
+              ) : data.currentPlan.hasActiveSubscription ? (
+                <div className="mb-2 pb-50">
+                  <h5>Active until {data.currentPlan.active_until}</h5>
+                  <span>Your subscription will auto renew!</span>
+                </div>
+              ) : (
+                <Alert color="warning">
+                  <h4 className="alert-heading">We need your attention!</h4>
+                  <div className="alert-body">
+                    Your subscription is not active!
+                  </div>
+                </Alert>
+              )}
+              {/*
               <div className="mb-2 pb-50">
                 <h5>Active until {data.currentPlan.active_until}</h5>
                 <span>
@@ -125,42 +166,38 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
                   }
                 </span>
               </div>
-              {/* <div className="mb-2 mb-md-1">
-                <h5>
-                  $199 Per Month{" "}
-                  <Badge color="light-primary" className="ms-50">
-                    Popular
-                  </Badge>
-                </h5>
-                <span>Standard plan for small to medium businesses</span>
-              </div> */}
+               */}
             </Col>
             <Col md="6">
               {/* <Alert color="warning">
                 <h4 className="alert-heading">We need your attention!</h4>
                 <div className="alert-body">your plan requires update</div>
               </Alert> */}
-              <div className="plan-statistics pt-1">
-                <div className="d-flex justify-content-between">
-                  <h5 className="fw-bolder">Days</h5>
-                  <h5 className="fw-bolder">
-                    {data.currentPlan.remainingDays} of {data.currentPlan.days}{" "}
-                    Days
-                  </h5>
+              {((data.currentPlan.hasFreeSubscription &&
+                !data.currentPlan.hasFreeSubscriptionExpired) ||
+                data.currentPlan.hasActiveSubscription) && (
+                <div className="plan-statistics pt-1">
+                  <div className="d-flex justify-content-between">
+                    <h5 className="fw-bolder">Days</h5>
+                    <h5 className="fw-bolder">
+                      {data.currentPlan.remainingDays} of{" "}
+                      {data.currentPlan.days} Days
+                    </h5>
+                  </div>
+                  <Progress
+                    className="mb-50"
+                    value={
+                      (100 *
+                        (data.currentPlan.days -
+                          data.currentPlan.remainingDays)) /
+                      data.currentPlan.days
+                    }
+                  />
+                  <p className="mt-50">
+                    {data.currentPlan.remainingDays} days remaining
+                  </p>
                 </div>
-                <Progress
-                  className="mb-50"
-                  value={
-                    (100 *
-                      (data.currentPlan.days -
-                        data.currentPlan.remainingDays)) /
-                    data.currentPlan.days
-                  }
-                />
-                <p className="mt-50">
-                  {data.currentPlan.remainingDays} days remaining
-                </p>
-              </div>
+              )}
             </Col>
             <Col xs={12}>
               <Button
@@ -178,7 +215,10 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
                 Change Plan
               </Button>
               <Button
-                disabled={data.currentPlan.is_free_plan}
+                disabled={
+                  data.currentPlan.is_free_plan ||
+                  !data.currentPlan.hasActiveSubscription
+                }
                 outline
                 color="danger"
                 className="mt-1"

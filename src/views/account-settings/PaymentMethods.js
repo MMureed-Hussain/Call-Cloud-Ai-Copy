@@ -42,8 +42,10 @@ const PaymentMethods = ({ setHasPaymentMethod, data, setData }) => {
 
   const [deleteLoader, setDeleteLoader] = useState(false);
   const [makeDefaultLoader, setMakeDefaultLoader] = useState(false);
+  const [paymentMethodLoading, setPaymentMethodLoading] = useState(true);
 
   const loadPaymentMethods = () => {
+    setPaymentMethodLoading(true);
     axios
       .get(`${process.env.REACT_APP_API_ENDPOINT}/api/payment-methods`)
       .then((res) => {
@@ -109,6 +111,7 @@ const PaymentMethods = ({ setHasPaymentMethod, data, setData }) => {
         if (data.length) {
           setHasPaymentMethod(true);
         }
+        setPaymentMethodLoading(false);
         setData(data);
       });
   };
@@ -249,7 +252,9 @@ const PaymentMethods = ({ setHasPaymentMethod, data, setData }) => {
                             </Button>
                             <Button
                               size="sm"
-                              onClick={() => handleDeletePaymentMethod(card.id)}
+                              onClick={() => {
+                                handleDeletePaymentMethod(card.id);
+                              }}
                               outline
                             >
                               Delete
@@ -270,6 +275,16 @@ const PaymentMethods = ({ setHasPaymentMethod, data, setData }) => {
                     </div>
                   );
                 })}
+
+                {paymentMethodLoading && (
+                  <Row>
+                    <Col md="6">
+                      <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
+                        <Spinner size={"sm"} color="primary" />
+                      </div>
+                    </Col>
+                  </Row>
+                )}
               </div>
             </Col>
           </Row>

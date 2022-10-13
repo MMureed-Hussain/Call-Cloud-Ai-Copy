@@ -111,8 +111,8 @@ const columns = [
     name: "#",
     // sortable: true,
     // minWidth: "107px",
-    selector: ({ indexNo }) => indexNo,
-    cell: (row) => row.indexNo,
+    // selector: ({ indexNo }) => indexNo,
+    cell: (row) => row.indexNo + 1,
   },
   {
     name: "Total",
@@ -204,28 +204,7 @@ const BillingHistory = ({ paymentMethods }) => {
     setPayInvoiceId(id);
   };
 
-  const handlePayInvoiceAPI = () => {
-    if (payInvoiceId && selectedPaymentMethod) {
-      setPayingInvoice(true);
-
-      axios
-        .post(`${process.env.REACT_APP_API_ENDPOINT}/api/pay-invoice`, {
-          invoice_id: payInvoiceId,
-          payment_method: selectedPaymentMethod,
-        })
-        .then((res) => {
-          toast.success(res.data.message);
-          setPayInvoiceId(null);
-          setPayInvoiceModal(false);
-          setPayingInvoice(false);
-        })
-        .catch((e) => {
-          toast.error(e.response.data.message);
-          setPayingInvoice(false);
-        });
-    }
-  };
-  useEffect(() => {
+  const loadInvoices = () => {
     axios
       .post(`${process.env.REACT_APP_API_ENDPOINT}/api/invoices`, {
         perPage: 50,
@@ -244,7 +223,33 @@ const BillingHistory = ({ paymentMethods }) => {
       .catch(() => {
         setData([]);
       });
+  };
+  useEffect(() => {
+    loadInvoices();
   }, []);
+
+  const handlePayInvoiceAPI = () => {
+    if (payInvoiceId && selectedPaymentMethod) {
+      setPayingInvoice(true);
+
+      axios
+        .post(`${process.env.REACT_APP_API_ENDPOINT}/api/pay-invoice`, {
+          invoice_id: payInvoiceId,
+          payment_method: selectedPaymentMethod,
+        })
+        .then((res) => {
+          toast.success(res.data.message);
+          setPayInvoiceId(null);
+          setPayInvoiceModal(false);
+          setPayingInvoice(false);
+          loadInvoices();
+        })
+        .catch((e) => {
+          toast.error(e.response.data.message);
+          setPayingInvoice(false);
+        });
+    }
+  };
 
   return (
     <div className="invoice-list-wrapper">
