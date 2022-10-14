@@ -146,7 +146,19 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
               ) : data.currentPlan.hasActiveSubscription ? (
                 <div className="mb-2 pb-50">
                   <h5>Active until {data.currentPlan.active_until}</h5>
-                  <span>Your subscription will auto renew!</span>
+                  {data.currentPlan.willCancelAt ? (
+                    <Alert color="warning">
+                      <h4 className="alert-heading">
+                        Your subscription will be cancelled!
+                      </h4>
+                      <div className="alert-body">
+                        Your subscription will be cancelled at{" "}
+                        {data.currentPlan.willCancelAt}
+                      </div>
+                    </Alert>
+                  ) : (
+                    <span>Your subscription will auto renew!</span>
+                  )}
                 </div>
               ) : (
                 <Alert color="warning">
