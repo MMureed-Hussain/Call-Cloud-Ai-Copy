@@ -94,6 +94,40 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
     });
   };
 
+  const handleActivateSubscription = () => {
+    return MySwal.fire({
+      title: "",
+      text: "Are you sure you would like to continue your subscription?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      customClass: {
+        confirmButton: "btn btn-primary",
+        cancelButton: "btn btn-outline-danger ms-1",
+      },
+      buttonsStyling: false,
+    }).then(function (result) {
+      if (result.value) {
+        axios
+          .get(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/activate-canceled-subscription`
+          )
+          .then((res) => {
+            MySwal.fire({
+              icon: "success",
+              title: "Unsubscribed!",
+              text: res.data.message,
+              customClass: {
+                confirmButton: "btn btn-success",
+              },
+            }).then(() => {
+              window.location.href = "/profile?active_tab=billing";
+            });
+          });
+      }
+    });
+  };
+
   const handleChangePlanSuccess = () => {
     // loadCurrentPlan();
     setShow(false);
@@ -226,18 +260,30 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
               >
                 Change Plan
               </Button>
-              <Button
-                disabled={
-                  data.currentPlan.is_free_plan ||
-                  !data.currentPlan.hasActiveSubscription
-                }
-                outline
-                color="danger"
-                className="mt-1"
-                onClick={handleConfirmCancel}
-              >
-                Cancel Subscription
-              </Button>
+              {data.currentPlan.hasActiveSubscription &&
+              data.currentPlan.willCancelAt ? (
+                <Button
+                  outline
+                  color="primary"
+                  className="mt-1"
+                  onClick={handleActivateSubscription}
+                >
+                  Keep Active
+                </Button>
+              ) : (
+                <Button
+                  disabled={
+                    data.currentPlan.is_free_plan ||
+                    !data.currentPlan.hasActiveSubscription
+                  }
+                  outline
+                  color="danger"
+                  className="mt-1"
+                  onClick={handleConfirmCancel}
+                >
+                  Cancel Subscription
+                </Button>
+              )}
             </Col>
           </Row>
         </CardBody>
