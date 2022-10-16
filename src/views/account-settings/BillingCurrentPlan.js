@@ -195,8 +195,15 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
                       <span>Your subscription will auto renew!</span>
                       {data.currentPlan.balance && (
                         <div>
-                          <span>Your current balance is</span>
-                          <b>{data.currentPlan.balance}</b>
+                          <span>
+                            Your current{" "}
+                            {
+                              //prettier-ignore
+                              data.currentPlan.balance > 0 ? "amount owed" : "credit"
+                            }{" "}
+                            is
+                          </span>
+                          <b>{Math.abs(data.currentPlan.balance)}</b>
                         </div>
                       )}
                     </>
