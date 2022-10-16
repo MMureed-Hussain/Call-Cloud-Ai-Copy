@@ -346,7 +346,8 @@ export const getUsers = createAsyncThunk(
       toast.error(e.response.data.message);
       return {
         data: {
-          workspaces: [],
+          users: [],
+          total: 0,
         },
       };
     }
