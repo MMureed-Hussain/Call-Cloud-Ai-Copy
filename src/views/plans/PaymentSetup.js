@@ -78,7 +78,9 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
         setSubscriptionCreated(true);
         setRedirectAfter(10);
         setInterval(() => {
-          setRedirectAfter((seconds) => seconds - 1);
+          setRedirectAfter((seconds) => {
+            return seconds > 0 ? seconds - 1 : 0;
+          });
         }, 800);
         // Show a success message to your customer
         // There's a risk of the customer closing the window before callback
