@@ -8,6 +8,13 @@ axios.defaults.withCredentials = true;
 import { useSelector, useDispatch } from "react-redux";
 import { getActivePlans } from "@store/plans";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+// ** Styles
+import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
+const MySwal = withReactContent(Swal);
+
 // ** Demo Components
 // import PricingFaqs from './PricingFaqs'
 import PricingCards from "../plans/PricingCards";
@@ -95,17 +102,44 @@ const ChangePlan = ({ currentPlan, handleChangePlanSuccess }) => {
       payload.price_id = duration === "monthly" ? selectedPlanObject.monthlyPriceId : selectedPlanObject.yearlyPriceId;
     }
 
-    setSubscribeLoader(true);
-    axios
-      .post(`${process.env.REACT_APP_API_ENDPOINT}/api/change-plan`, payload)
-      .then((res) => {
-        setSubscribeLoader(false);
-        toast.success(res.data.message);
-        handleChangePlanSuccess();
-      })
-      .catch((e) => {
-        toast.error(e.response.data.message);
-      });
+    return MySwal.fire({
+      title: "",
+      text: "Are you sure you would like to change your plan?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      customClass: {
+        confirmButton: "btn btn-primary",
+        cancelButton: "btn btn-outline-danger ms-1",
+      },
+      buttonsStyling: false,
+    }).then(function (result) {
+      if (result.value) {
+        setSubscribeLoader(true);
+        axios
+          .post(
+            `${process.env.REACT_APP_API_ENDPOINT}/api/change-plan`,
+            payload
+          )
+          .then((res) => {
+            setSubscribeLoader(false);
+            toast.success(res.data.message);
+            handleChangePlanSuccess();
+          })
+          .catch((e) => {
+            toast.error(e.response.data.message);
+          });
+      } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        MySwal.fire({
+          title: "Cancelled",
+          text: "Change Plan Cancelled!!",
+          icon: "error",
+          customClass: {
+            confirmButton: "btn btn-success",
+          },
+        });
+      }
+    });
   };
 
   return (

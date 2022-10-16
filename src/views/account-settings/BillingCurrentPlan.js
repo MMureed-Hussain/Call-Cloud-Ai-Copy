@@ -115,7 +115,7 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
           .then((res) => {
             MySwal.fire({
               icon: "success",
-              title: "Unsubscribed!",
+              title: "Re-Activated Subscription!",
               text: res.data.message,
               customClass: {
                 confirmButton: "btn btn-success",
@@ -191,7 +191,15 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
                       </div>
                     </Alert>
                   ) : (
-                    <span>Your subscription will auto renew!</span>
+                    <>
+                      <span>Your subscription will auto renew!</span>
+                      {data.currentPlan.balance && (
+                        <div>
+                          <span>Your current balance is</span>
+                          <b>{data.currentPlan.balance}</b>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               ) : (
