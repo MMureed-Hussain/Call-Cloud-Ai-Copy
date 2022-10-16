@@ -136,13 +136,20 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
 
   if (!data) {
     return (
-      <Row>
-        <Col md="6">
-          <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
-            <Spinner size={"sm"} color="primary" />
-          </div>
-        </Col>
-      </Row>
+      <Card>
+        <CardHeader className="border-bottom">
+          <CardTitle tag="h4">Current plan</CardTitle>
+        </CardHeader>
+        <CardBody className="my-2 py-25">
+          <Row>
+            <Col md="6">
+              <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
+                <Spinner size={"sm"} color="primary" />
+              </div>
+            </Col>
+          </Row>
+        </CardBody>
+      </Card>
     );
   }
   return (
@@ -193,19 +200,20 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
                   ) : (
                     <>
                       <span>Your subscription will auto renew!</span>
-                      {data.currentPlan.balance && (
-                        <div>
-                          <span>
-                            Your current{" "}
-                            {
-                              //prettier-ignore
-                              data.currentPlan.balance > 0 ? "amount owed" : "credit"
-                            }{" "}
-                            is
-                          </span>
-                          <b>{Math.abs(data.currentPlan.balance)}</b>
-                        </div>
-                      )}
+                      {data.currentPlan.balance &&
+                        data.currentPlan.balance !== 0 && (
+                          <div>
+                            <span>
+                              Your current{" "}
+                              {
+                                //prettier-ignore
+                                data.currentPlan.balance > 0 ? "amount owed" : "credit"
+                              }{" "}
+                              is $
+                            </span>
+                            <b>{Math.abs(data.currentPlan.balance)}</b>
+                          </div>
+                        )}
                     </>
                   )}
                 </div>
