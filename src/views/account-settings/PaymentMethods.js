@@ -9,6 +9,9 @@ import withReactContent from "sweetalert2-react-content";
 // ** Styles
 import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const MySwal = withReactContent(Swal);
 
 // ** Reactstrap Imports
@@ -182,7 +185,8 @@ const PaymentMethods = ({ setHasPaymentMethod, data, setData }) => {
         <CardBody className="my-1 py-25">
           <Row className="gx-4">
             <Col lg="6">
-              <div className="mt-2">
+              <div>
+                <h6 className="fw-bolder mb-2">Add Payment Method</h6>
                 <Elements stripe={stripePromise}>
                   <CardComponent refreshCardList={refreshCardList} />
                 </Elements>
@@ -278,9 +282,10 @@ const PaymentMethods = ({ setHasPaymentMethod, data, setData }) => {
 
                 {paymentMethodLoading && (
                   <Row>
-                    <Col md="6">
-                      <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
-                        <Spinner size={"sm"} color="primary" />
+                    <Col>
+                      <div className="h-100 w-100">
+                        {/* <Spinner size={"sm"} color="primary" /> */}
+                        <Skeleton height={100} />
                       </div>
                     </Col>
                   </Row>
