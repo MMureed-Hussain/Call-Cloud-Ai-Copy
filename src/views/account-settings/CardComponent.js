@@ -5,6 +5,9 @@ import { Button, Spinner, Label, Input, Row, Col } from "reactstrap";
 
 import { Check, X } from "react-feather";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 // ** Third Party Components
 import axios from "axios";
 axios.defaults.withCredentials = true;
@@ -79,11 +82,13 @@ const CardComponent = ({ refreshCardList }) => {
   if (!clientSecret || !stripe || !elements) {
     return (
       <Row>
-        <Col md="6">
-          <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
+        {/* <Col md="6"> */}
+        {/* <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
             <Spinner size={"sm"} color="primary" />
-          </div>
-        </Col>
+          </div> */}
+        <Skeleton height={20} />
+        <Skeleton height={70} />
+        {/* </Col> */}
       </Row>
     );
   }
