@@ -59,6 +59,7 @@ import classnames from "classnames";
 import "@styles/react/apps/app-invoice.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 
 const columns = [
   {
@@ -157,6 +158,7 @@ const columns = [
 
 const BillingHistory = ({ paymentMethods }) => {
   const [data, setData] = useState([]);
+  const [invoicesLoading, setInvoicesLoading] = useState(true);
   const [payInvoiceModal, setPayInvoiceModal] = useState(false);
   const [payInvoiceId, setPayInvoiceId] = useState(null);
   const [payingInvoice, setPayingInvoice] = useState(false);
@@ -219,9 +221,11 @@ const BillingHistory = ({ paymentMethods }) => {
           return invoice;
         });
         setData(invoices);
+        setInvoicesLoading(false);
       })
       .catch(() => {
         setData([]);
+        setInvoicesLoading(false);
       });
   };
   useEffect(() => {
@@ -256,45 +260,28 @@ const BillingHistory = ({ paymentMethods }) => {
       <Card>
         <CardHeader className="py-1">
           <CardTitle tag="h4">Billing History</CardTitle>
-          {/* <UncontrolledButtonDropdown>
-          <DropdownToggle outline caret>
-            Export
-          </DropdownToggle>
-          <DropdownMenu end>
-            <DropdownItem className='w-100'>
-              <Printer className='font-small-4 me-50' />
-              <span>Print</span>
-            </DropdownItem>
-            <DropdownItem className='w-100'>
-              <FileText className='font-small-4 me-50' />
-              <span>CSV</span>
-            </DropdownItem>
-            <DropdownItem className='w-100'>
-              <File className='font-small-4 me-50' />
-              <span>Excel</span>
-            </DropdownItem>
-            <DropdownItem className='w-100'>
-              <Clipboard className='font-small-4 me-50' />
-              <span>PDF</span>
-            </DropdownItem>
-            <DropdownItem className='w-100'>
-              <Copy className='font-small-4 me-50' />
-              <span>Copy</span>
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledButtonDropdown> */}
         </CardHeader>
         <CardBody>
-          <div className="invoice-list-dataTable react-dataTable">
-            <DataTable
-              noHeader
-              responsive
-              data={data}
-              columns={columns}
-              className="react-dataTable"
-              sortIcon={<ChevronDown size={10} />}
-            />
-          </div>
+          {invoicesLoading ? (
+            <>
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+            </>
+          ) : (
+            <div className="invoice-list-dataTable react-dataTable">
+              <DataTable
+                noHeader
+                responsive
+                data={data}
+                columns={columns}
+                className="react-dataTable"
+                sortIcon={<ChevronDown size={10} />}
+              />
+            </div>
+          )}
         </CardBody>
       </Card>
 
