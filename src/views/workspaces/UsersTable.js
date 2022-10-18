@@ -13,6 +13,8 @@ import withReactContent from "sweetalert2-react-content";
 import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
 const MySwal = withReactContent(Swal);
 
+import Skeleton from "react-loading-skeleton";
+
 // ** Store & Actions
 // import { getAllData, getData } from "../store";
 import {
@@ -78,11 +80,8 @@ const CustomHeader = ({
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
         <Col xl="6" className="d-flex align-items-center p-0">
-
           <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
-            <label className="mb-0" htmlFor="search-invoice">
-              
-            </label>
+            {/* <label className="mb-0" htmlFor="search-invoice"></label> */}
             <Input
               id="search-invoice"
               className="ms-50 w-100"
@@ -97,7 +96,6 @@ const CustomHeader = ({
           xl="6"
           className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
         >
-
           <div className="d-flex align-items-center mx-50">
             <label htmlFor="rows-per-page">Show</label>
             <Input
@@ -415,6 +413,17 @@ const UsersList = ({ workspaceId }) => {
       })
     );
   };
+
+  if (store.usersLoading) {
+    return (
+      <Fragment>
+        <div className="vh-100">
+          <Skeleton height={"15%"} />
+          <Skeleton height={"7%"} count={9} />
+        </div>
+      </Fragment>
+    );
+  }
 
   return (
     <Fragment>
