@@ -23,7 +23,7 @@ const themeConfig = {
     footer: {
       type: "static", // static, sticky, hidden
     },
-    customizer: false,
+    customizer: true,
     scrollTop: true, // Enable scroll to top button
     toastPosition: "top-right", // top-left, top-center, top-right, bottom-left, bottom-center, bottom-right
   },
