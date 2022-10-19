@@ -19,6 +19,9 @@ import {
   Spinner,
 } from "reactstrap";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 // ** Demo Components
 // import PricingCard from "@src/views/pages/pricing/PricingCards";
 
@@ -142,10 +145,16 @@ const BillingCurrentPlan = ({ hasPaymentMethod, paymentMethodRef }) => {
         </CardHeader>
         <CardBody className="my-2 py-25">
           <Row>
-            <Col md="6">
-              <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
+            <Col md="6" style={{ minHeight: "150px" }}>
+              {/* <div className="d-flex my-2 py-25 justify-content-center h-100 w-100">
                 <Spinner size={"sm"} color="primary" />
-              </div>
+              </div> */}
+              <Skeleton height={"20%"} />
+              <Skeleton height={"70%"} />
+            </Col>
+            <Col md="6">
+              <Skeleton height={"20%"} />
+              <Skeleton height={"70%"} />
             </Col>
           </Row>
         </CardBody>

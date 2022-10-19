@@ -14,6 +14,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 import { ChevronDown, Clock } from "react-feather";
+import Skeleton from "react-loading-skeleton";
 
 const columns = [
   {
@@ -66,15 +67,18 @@ const columns = [
 
 const UpcomingInvoice = () => {
   const [invoice, setInvoice] = useState(null);
+  const [invoiceLoading, setInvoiceLoading] = useState(true);
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_ENDPOINT}/api/upcoming-invoice`)
       .then((res) => {
         setInvoice(res.data.invoice);
+        setInvoiceLoading(false);
       })
       .catch((e) => {
         console.log(e);
+        setInvoiceLoading(false);
       });
   }, []);
 
@@ -95,6 +99,11 @@ const UpcomingInvoice = () => {
                 className="react-dataTable"
                 sortIcon={<ChevronDown size={10} />}
               />
+            ) : invoiceLoading ? (
+              <>
+                <Skeleton height={20} />
+                <Skeleton height={20} />
+              </>
             ) : (
               <p>No upcoming invoice is there yet!</p>
             )}

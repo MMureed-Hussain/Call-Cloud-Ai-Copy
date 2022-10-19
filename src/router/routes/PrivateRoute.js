@@ -8,6 +8,8 @@ import UiLoader from "@components/ui-loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "@store/auth";
 import { getData, recentlyAccessedWorkspaces } from "@store/workspaces";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const PrivateRoute = ({ children, route }) => {
   // ** Hooks & Vars
@@ -30,7 +32,14 @@ const PrivateRoute = ({ children, route }) => {
   }
 
   if (store.loading) {
-    return <UiLoader blocking={true} />;
+    return (
+      <div className=" vh-100 vw-100">
+        <Skeleton height={"15%"} />
+        <Skeleton count={2} height={"25%"} />
+        <Skeleton count={2} height={"10%"} />
+      </div>
+    );
+    // return <UiLoader blocking={true} />;
   }
   if (route) {
     let restrictedRoute = false;
