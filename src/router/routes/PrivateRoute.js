@@ -35,8 +35,7 @@ const PrivateRoute = ({ children, route }) => {
     return (
       <div className=" vh-100 vw-100">
         <Skeleton height={"15%"} />
-        <Skeleton count={2} height={"25%"} />
-        <Skeleton count={2} height={"10%"} />
+        <Skeleton height={"7%"} count={9} />
       </div>
     );
     // return <UiLoader blocking={true} />;
