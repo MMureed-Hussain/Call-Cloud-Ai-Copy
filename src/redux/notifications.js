@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // ** Axios Imports
 import axios from "axios";
-import toast from "react-hot-toast";
 
 axios.defaults.withCredentials = true;
 
@@ -32,19 +31,20 @@ export const readNotification = createAsyncThunk(
   "notifications/readNotification",
   async (payload) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/notification/${payload.id}`,
         payload,
       );
 
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
       return {
         data: {
           notification: null,
         },
       };
     } catch (e) {
-      toast.error(e.response.data.message);
+      console.log(e);
+      // toast.error(e.response.data.message);
       return {
         data: {
           notification: null,

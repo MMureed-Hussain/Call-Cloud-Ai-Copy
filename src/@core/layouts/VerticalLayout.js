@@ -83,11 +83,9 @@ const VerticalLayout = (props) => {
   }, [store]);
 
   const notificationMarkRead = (id) => {
-    dispatch(readNotification({ id })).then((result) => {
-      if (result.payload) {
-        setNotification("");
-      }
-    });
+    setNotification("");
+    
+    dispatch(readNotification({ id }));
   }
 
   // ** Update Window Width
