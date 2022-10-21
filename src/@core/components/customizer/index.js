@@ -143,41 +143,6 @@ const Customizer = () => {
           </Button>
         </Form>
 
-{/*         <div className="px-2"> */}
-{/*           <div className="mb-2"> */}
-{/*             <p className="fw-bold">Rating</p> */}
-{/*             <div className="d-flex">{renderSkinsRadio()}</div> */}
-{/*           </div> */}
-{/*  */}
-{/*           <div className="mb-2"> */}
-{/*             <p className="fw-bold">Message</p> */}
-{/*             <div className="d-flex"> */}
-{/*               <div className="form-check me-1"> */}
-{/*                 <Input */}
-{/*                   type="radio" */}
-{/*                   id="full-width" */}
-{/*                   checked={contentWidth === "full"} */}
-{/*                   onChange={() => setContentWidth("full")} */}
-{/*                 /> */}
-{/*                 <Label className="form-check-label" for="full-width"> */}
-{/*                   Full Width */}
-{/*                 </Label> */}
-{/*               </div> */}
-{/*               <div className="form-check"> */}
-{/*                 <Input */}
-{/*                   id="boxed" */}
-{/*                   type="radio" */}
-{/*                   checked={contentWidth === "boxed"} */}
-{/*                   onChange={() => setContentWidth("boxed")} */}
-{/*                 /> */}
-{/*                 <Label className="form-check-label" for="boxed"> */}
-{/*                   Boxed */}
-{/*                 </Label> */}
-{/*               </div> */}
-{/*             </div> */}
-{/*           </div> */}
-{/*         </div> */}
-
       </PerfectScrollbar>
     </div>
   )
