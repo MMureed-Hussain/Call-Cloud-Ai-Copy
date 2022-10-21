@@ -444,8 +444,11 @@ const AccountTabs = ({ data }) => {
         country: country.id,
         region: region.id,
         city,
-        timezone: timezone.id,
       };
+
+      if (data.role === "member") {
+        payload.timezone = timezone.id;
+      }
 
       if (avatarFile) {
         payload.avatar = avatarFile;
