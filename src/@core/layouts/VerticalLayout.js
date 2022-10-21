@@ -15,7 +15,11 @@ import classnames from "classnames"
 import { ArrowUp } from "react-feather"
 
 // ** Reactstrap Imports
-import { Navbar, Button } from "reactstrap"
+import { UncontrolledAlert, Alert, Navbar, Button, Row, Col, Card, CardHeader, CardTitle, CardText } from "reactstrap"
+
+// ** Axios Imports
+import axios from "axios";
+axios.defaults.withCredentials = true;
 
 // ** Configs
 import themeConfig from "@configs/themeConfig"
@@ -35,6 +39,8 @@ import { useLayout } from "@hooks/useLayout"
 import { useNavbarType } from "@hooks/useNavbarType"
 import { useFooterType } from "@hooks/useFooterType"
 import { useNavbarColor } from "@hooks/useNavbarColor"
+
+import { readNotification } from "@store/notifications";
 
 // ** Styles
 import "@styles/base/core/menu/menu-types/vertical-menu.scss"
@@ -57,9 +63,30 @@ const VerticalLayout = (props) => {
   const [menuVisibility, setMenuVisibility] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  const [notification, setNotification] = useState("");
+
   // ** Vars
   const dispatch = useDispatch()
   const layoutStore = useSelector((state) => state.layout)
+  const store = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    // if (store.user) {
+    //   dispatch(getSingleNotification(store.user.id).then(resp => setNotification(resp.data)));
+    // }
+    if (store.user) {
+      const getNotification = async () => {
+        await  axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/user_notification/${store.user.id}`).then(response => setNotification(response.data))
+      }
+      getNotification();
+    }
+  }, [store]);
+
+  const notificationMarkRead = (id) => {
+    setNotification("");
+    
+    dispatch(readNotification({ id }));
+  }
 
   // ** Update Window Width
   const handleWindowWidth = () => {
@@ -161,6 +188,17 @@ const VerticalLayout = (props) => {
         />
       ) : null}
 
+      {/*{ notification ? (<div className="top-alert overflow-hidden cursor-pointer" onClick={ notificationMarkRead(notification.id) }>*/}
+      { notification ? (<div className="top-alert overflow-hidden cursor-pointer">
+        <div className='demo-spacing-0'>
+          <UncontrolledAlert  color='primary' toggle={() => notificationMarkRead(notification.id)}>
+            <div className='alert-body text-center'>
+              <span>{notification.message}</span>
+            </div>
+          </UncontrolledAlert >
+        </div>
+      </div>) : '' }
+
       <Navbar
         expand="lg"
         container={false}
@@ -173,6 +211,7 @@ const VerticalLayout = (props) => {
           } navbar-shadow`
         )}
       >
+
         <div className="navbar-container d-flex content">
           {navbar ? (
             navbar({ skin, setSkin, setMenuVisibility })
