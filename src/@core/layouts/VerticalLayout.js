@@ -40,7 +40,7 @@ import { useNavbarType } from "@hooks/useNavbarType"
 import { useFooterType } from "@hooks/useFooterType"
 import { useNavbarColor } from "@hooks/useNavbarColor"
 
-import { readNotification } from "@store/notifications";
+import { getSingleNotification, readNotification } from "@store/notifications";
 
 // ** Styles
 import "@styles/base/core/menu/menu-types/vertical-menu.scss"
@@ -71,18 +71,19 @@ const VerticalLayout = (props) => {
   const store = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // if (store.user) {
-    //   dispatch(getSingleNotification(store.user.id).then(resp => setNotification(resp.data)));
-    // }
     if (store.user) {
-      const getNotification = async () => {
-        await  axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/user_notification/${store.user.id}`).then(response => setNotification(response.data))
-      }
-      getNotification();
+      dispatch(getSingleNotification(store.user.id)).then(resp => setNotification(resp.payload.data));
     }
+    // if (store.user) {
+    //   const getNotification = async () => {
+    //     await  axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/user_notification/${store.user.id}`).then(response => setNotification(response.data))
+    //   }
+    //   getNotification();
+    // }
   }, [store]);
 
   const notificationMarkRead = (id) => {
+    // console.log('coming', id); return;
     setNotification("");
     
     dispatch(readNotification({ id }));
@@ -192,7 +193,7 @@ const VerticalLayout = (props) => {
       { notification ? (<div className="top-alert overflow-hidden cursor-pointer">
         <div className='demo-spacing-0'>
           <UncontrolledAlert  color='primary' toggle={() => notificationMarkRead(notification.id)}>
-            <div className='alert-body text-center'>
+            <div className='alert-body text-center' onClick={() => notificationMarkRead(notification.id)}>
               <span>{notification.message}</span>
             </div>
           </UncontrolledAlert >

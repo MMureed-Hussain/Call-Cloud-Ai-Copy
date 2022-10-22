@@ -12,7 +12,7 @@ export const getSingleNotification = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/user_notification/${payload.id}`
+        `${process.env.REACT_APP_API_ENDPOINT}/api/user_notification/${payload}`
       );
       // toast.success(response.data.message);
       return {
@@ -68,9 +68,6 @@ export const notificationsSlice = createSlice({
         state.notification = action.payload.data;
         state.loading = false;
       })
-      // .addCase(markReadNotification.fulfilled, (state) => {
-      //   state.notification = [];
-      // });
   },
 });
 
