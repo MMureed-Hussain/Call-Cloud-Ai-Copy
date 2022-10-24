@@ -190,7 +190,7 @@ const VerticalLayout = (props) => {
       ) : null}
 
       {/*{ notification ? (<div className="top-alert overflow-hidden cursor-pointer" onClick={ notificationMarkRead(notification.id) }>*/}
-      { notification ? (<div className="top-alert overflow-hidden cursor-pointer">
+      { notification.length !== 0 ? (<div className="top-alert overflow-hidden cursor-pointer">
         <div className='demo-spacing-0'>
           <UncontrolledAlert  color='primary' toggle={() => notificationMarkRead(notification.id)}>
             <div className='alert-body text-center' onClick={() => notificationMarkRead(notification.id)}>
