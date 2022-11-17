@@ -1,4 +1,4 @@
-import { Input, Row,Col, Button} from "reactstrap";
+import { Input, Row, Col, Button} from "reactstrap";
 import { Link } from "react-router-dom";
 
 export default ({

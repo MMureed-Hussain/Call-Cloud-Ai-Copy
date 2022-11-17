@@ -8,11 +8,11 @@ import CustomHeader from "./components/CustomHeader";
 
 export default () => {
     // ** States
-    const [sort, setSort] = useState("desc");
+    // const [sort, setSort] = useState("desc");
     const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [sortColumn, setSortColumn] = useState("id");
-    const [rowsPerPage, setRowsPerPage] = useState(25);
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const [sortColumn, setSortColumn] = useState("id");
+    // const [rowsPerPage, setRowsPerPage] = useState(25);
 
     const columns = [
         {
@@ -31,9 +31,9 @@ export default () => {
         },
     ];
 
-    const handlePagination = (page) => {
-        //todo add logic
-    }
+    // const handlePagination = (page) => {
+    //     //todo add logic
+    // }
 
     const handleSort = (column, sortDirection) => {
         console.log(column, sortDirection);
@@ -94,7 +94,7 @@ export default () => {
                     subHeaderComponent={
                         <CustomHeader
                             searchTerm={searchTerm}
-                            rowsPerPage={rowsPerPage}
+                            // rowsPerPage={rowsPerPage}
                             handleFilter={handleFilter}
                             handlePerPage={handlePerPage}
                         />

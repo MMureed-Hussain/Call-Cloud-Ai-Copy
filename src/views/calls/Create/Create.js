@@ -1,21 +1,22 @@
 import { useState } from 'react'
-import { Card, Form, Input, Label, FormFeedback, Col, FormGroup, CardBody } from 'reactstrap';
+import { Card, Form, Input, Label, FormFeedback, Col, FormGroup, CardBody, Button } from 'reactstrap';
+import MicIcon from '@mui/icons-material/Mic';
 
 export default () => {
-    const [audioDetails, setAudioDetails] = useState({
-        url: null,
-        blob: null,
-        chunks: null,
-        duration: {
-            h: 0,
-            m: 0,
-            s: 0
-        }
-    });
+    // const [audioDetails, setAudioDetails] = useState({
+    //     url: null,
+    //     blob: null,
+    //     chunks: null,
+    //     duration: {
+    //         h: 0,
+    //         m: 0,
+    //         s: 0
+    //     }
+    // });
 
     const [phone, setPhone] = useState("");
     const [note, setNote] = useState("");
-    const [tags, setTags] = useState("");
+    // const [tags, setTags] = useState("");
 
     const recordAudio = () => {
         return new Promise(resolve => {
@@ -68,6 +69,21 @@ export default () => {
                                 setPhone(e.target.value);
                             }}
                         />
+                        <Label className='form-label' for="title">
+                            Note<span className='text-danger'>*</span>
+                        </Label>
+                        <Input 
+                        id="note"
+                        placeholder="Enter note"
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                        />
+                        <Label className='form-label' for='title'>
+                            Voice<span className='text-danger'>*</span>
+                        </Label>
+                        <br/>
+                        <label><MicIcon/></label>
+                        <Button onClick={recordAudio}>voice</Button>
                         <FormFeedback>Please enter a valid Title</FormFeedback>
                     </FormGroup>
                     </CardBody>
