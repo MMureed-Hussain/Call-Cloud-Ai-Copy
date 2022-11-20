@@ -26,9 +26,9 @@ export default [
   //   navLink: "/booking-pages",
   // },
   {
-    id: "calls",
-    title: "Calls",
+    id: "callProfiles",
+    title: "Call Profiles",
     icon: <Phone size={20} />,
-    navLink: "/calls",
+    navLink: "/profiles",
   },
 ];

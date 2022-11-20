@@ -43,12 +43,12 @@ export default ({
           </div>
 
           <div className="d-flex align-items-center table-header-actions">
-            <Link to={"/new-call"}>
+            <Link to={"/profiles/create"}>
               <Button
                 className="add-new-user"
                 color="primary"
               >
-                Add New Call
+                Add New Profile
               </Button>
             </Link>
           </div>

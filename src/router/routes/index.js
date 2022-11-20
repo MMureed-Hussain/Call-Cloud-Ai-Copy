@@ -50,9 +50,9 @@ const CreateBookingPage = lazy(() => import("../../views/booking-pages/CreateBoo
 
 const Plans = lazy(() => import("../../views/plans"));
 
-const Calls = lazy(() => import("../../views/calls/Index"));
+const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
-const CreateCall = lazy(() => import("../../views/calls/Create/Create"));
+const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate/UpdateOrCreate"));
 
 // ** Merge Routes
 const Routes = [
@@ -139,15 +139,15 @@ const Routes = [
   //   },
   // },
   {
-    path: "/calls",
-    element: <Calls />,
+    path: "/profiles",
+    element: <CallProfiles />,
     meta: {
       isPrivate: true,
     },
   },
   {
-    path: "/new-call",
-    element: <CreateCall />,
+    path: "/profiles/create",
+    element: <UpdateOrCreateCallProfile />,
     meta: {
       isPrivate: true,
     },
