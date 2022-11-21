@@ -22,8 +22,29 @@ export const createProfile = createAsyncThunk(
         } catch (e) {
             toast.error(e.response.data.message);
             if (e.response.data?.errors) thunkAPI.dispatch(setErrors(e.response.data.errors));
-        }finally{
+        } finally {
             thunkAPI.dispatch(setLoading(false));
+        }
+    }
+);
+
+export const getProfiles = createAsyncThunk(
+    "profiles/index",
+    async (payload, { dispatch }) => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles`,
+                {
+                    params: payload
+                }
+            );
+            dispatch(setProfiles(response.data.data));
+            dispatch(setTotalRecords(response.data.total));
+            dispatch(setPageCount(response.data.last_page));
+        } catch (e) {
+            toast.error(e.response.data.message);
+        } finally {
+            dispatch(setLoadingProfiles(false));
         }
     }
 );
@@ -34,33 +55,40 @@ export const callProfileSlice = createSlice({
     initialState: {
         profiles: [],
         loading: false,
-        total: 0,
-        currentPage: 1,
-        rowsPerPage: 50,
+        totalRecords: 0,
+        pageCount: 0,
         selectedProfile: null,
-        errors: new ErrorHandler()
+        errors: new ErrorHandler(),
+        loadingProfiles: true
     },
     reducers: {
-        storeCurrentPage: (state, action) => {
-            state.currentPage = action.payload.currentPage
-        },
-        storeRowsPerPage: (state, action) => {
-            state.rowsPerPage = action.payload.rowsPerPage
-        },
         setLoading: (state, { payload }) => {
             state.loading = payload
         },
-        setErrors: (state, {payload}) => {
+        setErrors: (state, { payload }) => {
             state.errors.setErrors(payload);
-        }
+        },
+        setProfiles: (state, { payload }) => {
+            state.profiles = payload;
+        },
+        setTotalRecords: (state, { payload }) => {
+            state.totalRecords = payload;
+        },
+        setPageCount: (state, { payload }) => {
+            state.pageCount = payload;
+        },
+        setLoadingProfiles: (state, { payload }) => {
+            state.loadingProfiles = payload;
+        },
+        
     }
 });
 
 export const {
-    storeCurrentPage,
-    storeRowsPerPage,
     setLoading,
-    setErrors
+    setErrors,
+    setProfiles,
+    setLoadingProfiles
 } = callProfileSlice.actions;
 
 export default callProfileSlice.reducer;

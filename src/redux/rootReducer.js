@@ -8,9 +8,9 @@ import plans from "./plans";
 import bookingPages from "./bookingPages";
 import feedbacks from "./feedbacks";
 import notifications from "./notifications";
-import profile from "./profile";
+import profiles from "./profiles";
 
-const rootReducer = { navbar, layout, auth, workspaces, plans, feedbacks, notifications, bookingPages, profile };
+const rootReducer = { navbar, layout, auth, workspaces, plans, feedbacks, notifications, bookingPages, profiles };
 
 
 export default rootReducer;

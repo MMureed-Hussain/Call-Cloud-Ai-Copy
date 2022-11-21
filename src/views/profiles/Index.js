@@ -1,67 +1,103 @@
+/* eslint-disable */
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
+import Skeleton from "react-loading-skeleton";
 // ** Reactstrap Imports
 import { Card } from "reactstrap";
 import CustomHeader from "./components/CustomHeader";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfiles } from "../../redux/profiles";
 
 export default () => {
     // ** States
-    // const [sort, setSort] = useState("desc");
+    const [sort, setSort] = useState("desc");
     const [searchTerm, setSearchTerm] = useState("");
-    // const [currentPage, setCurrentPage] = useState(1);
-    // const [sortColumn, setSortColumn] = useState("id");
-    // const [rowsPerPage, setRowsPerPage] = useState(25);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [sortColumn, setSortColumn] = useState("id");
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    const dispatch = useDispatch();
+    //selectors
+    const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+    const profiles = useSelector((state) => state.profiles.profiles);
+    const loading = useSelector((state) => state.profiles.loadingProfiles);
+    const pageCount = useSelector((state) => state.profiles.pageCount);
+
+    const loadProfiles = (page) => {
+        dispatch(getProfiles({
+            records_per_page: rowsPerPage,
+            page,
+            workspace_id: currentWorkspace.id,
+            sort_by: sortColumn,
+            sort
+        }));
+        setCurrentPage(page);
+    }
+
+    useEffect(() => {
+        if (currentWorkspace) {
+            loadProfiles(1)
+        }
+    }, [currentWorkspace])
 
     const columns = [
+        {
+            name: "Name",
+            sortable: true,
+            minWidth: "172px",
+            sortField: "name",
+            selector: (row) => row.name,
+            cell: (row) => (
+                <div className="d-flex justify-content-left align-items-center">
+                    <div className="d-flex flex-column">
+                        <span className="fw-bolder">{row.name}</span>
+                    </div>
+                </div>
+            ),
+        },
         {
             name: "Phone number",
             sortable: true,
             minWidth: "172px",
             sortField: "phone",
             selector: (row) => row.phone,
-            cell: (row) => (
-                <div className="d-flex justify-content-left align-items-center">
-                    <div className="d-flex flex-column">
-                        <span className="fw-bolder">{row.phone}</span>
-                    </div>
-                </div>
-            ),
+            cell: (row) => row.phone,
         },
     ];
 
-    // const handlePagination = (page) => {
-    //     //todo add logic
-    // }
-
     const handleSort = (column, sortDirection) => {
-        console.log(column, sortDirection);
-        //todo add logic
+        setSort(sortDirection);
+        setSortColumn(column.sortField);
+        console.log(sortColumn, sort);
+        loadProfiles(1);
     };
 
     // ** Function in get data on rows per page
     const handlePerPage = (e) => {
         const value = parseInt(e.currentTarget.value);
-        console.log(value)
+        setRowsPerPage(value);
+        loadProfiles(1);
     };
 
     // ** Function in get data on search query change
     const handleFilter = (val) => {
         setSearchTerm(val);
+        loadProfiles(1);//todo add 
     };
 
     // ** Custom Pagination
     const CustomPagination = () => {
-        const count = Number(Math.ceil(0 / rowsPerPage));
         return (
             <ReactPaginate
                 previousLabel={""}
                 nextLabel={""}
-                pageCount={count || 1}
+                pageCount={pageCount || 1}
                 activeClassName="active"
                 forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-                onPageChange={(page) => handlePagination(page)}
+                onPageChange={({ selected }) => loadProfiles(selected)}
                 pageClassName={"page-item"}
                 nextLinkClassName={"page-link"}
                 nextClassName={"page-item next"}
@@ -75,6 +111,15 @@ export default () => {
         );
     };
 
+    if (loading) {
+        return (
+            <div className="vh-100">
+                <Skeleton height={"15%"} />
+                <Skeleton height={"7%"} count={9} />
+            </div>
+        );
+    }
+
     return (
         <Card className="overflow-hidden workspace-list">
             <div className="react-dataTable">
@@ -85,16 +130,18 @@ export default () => {
                     pagination
                     responsive
                     paginationServer
+                    defaultSortField={'id'}
                     columns={columns}
                     onSort={handleSort}
+                    defaultSortAsc={false}
                     sortIcon={<ChevronDown />}
                     className="react-dataTable"
                     paginationComponent={CustomPagination}
-                    data={[]}
+                    data={profiles}
                     subHeaderComponent={
                         <CustomHeader
                             searchTerm={searchTerm}
-                            // rowsPerPage={rowsPerPage}
+                            rowsPerPage={rowsPerPage}
                             handleFilter={handleFilter}
                             handlePerPage={handlePerPage}
                         />

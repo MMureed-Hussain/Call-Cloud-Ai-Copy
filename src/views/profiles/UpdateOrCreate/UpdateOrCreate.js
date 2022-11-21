@@ -17,7 +17,7 @@ import {
 import Cleave from 'cleave.js/react'
 import 'cleave.js/dist/addons/cleave-phone.us'
 import { useDispatch, useSelector } from "react-redux";
-import { createProfile } from "../../../redux/profile";
+import { createProfile } from "../../../redux/profiles";
 import { Link } from "react-router-dom";
 
 export default () => {
@@ -37,8 +37,8 @@ export default () => {
   const [phone, setPhone] = useState("");
   const [profileName, setProfileName] = useState("");
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.profile.loading);
-  const errors = useSelector((state) => state.profile.errors);
+  const loading = useSelector((state) => state.profiles.loading);
+  const errors = useSelector((state) => state.profiles.errors);
   const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
 
 
