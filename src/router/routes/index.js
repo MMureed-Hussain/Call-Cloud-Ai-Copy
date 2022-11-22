@@ -53,7 +53,8 @@ const Plans = lazy(() => import("../../views/plans"));
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
 const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate/UpdateOrCreate"));
-const FormAndRecordCallProfile = lazy(() => import("../../views/profiles/CreateUpdateCall/CreateUpdateCall"));
+const UpdateOrCreateCall = lazy(() => import("../../views/profiles/calls/UpdateOrCreate"));
+const CallProfileView = lazy(() => import("../../views/profiles/View"));
 
 
 // ** Merge Routes
@@ -155,8 +156,8 @@ const Routes = [
     },
   },
   {
-    path: "/profiles/form",
-    element: <FormAndRecordCallProfile />,
+    path: "/profiles/:id",
+    element: <CallProfileView />,
     meta: {
       isPrivate: true,
     },

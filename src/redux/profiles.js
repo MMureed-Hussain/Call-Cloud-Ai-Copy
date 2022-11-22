@@ -49,6 +49,31 @@ export const getProfiles = createAsyncThunk(
     }
 );
 
+export const getProfile = createAsyncThunk(
+    "profiles/find",
+    async ({ workspace_id, id }, { dispatch }) => {
+        try {
+            dispatch(setLoading(true))
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
+                {
+                    params: {
+                        workspace_id
+                    }
+                }
+            );
+            let profile = { ...response.data.data };
+            delete profile.calls;
+            dispatch(setSelectedProfile(profile));
+            dispatch(setSelectedProfileCalls(response.data.data.calls));
+        } catch (e) {
+            toast.error(e.response.data.message);
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+);
+
 // prettier-ignore
 export const callProfileSlice = createSlice({
     name: "profiles",
@@ -58,6 +83,7 @@ export const callProfileSlice = createSlice({
         totalRecords: 0,
         pageCount: 0,
         selectedProfile: null,
+        selectedProfileCalls: [],
         errors: new ErrorHandler(),
         loadingProfiles: true
     },
@@ -80,7 +106,13 @@ export const callProfileSlice = createSlice({
         setLoadingProfiles: (state, { payload }) => {
             state.loadingProfiles = payload;
         },
-        
+        setSelectedProfile: (state, { payload }) => {
+            state.selectedProfile = payload;
+        },
+        setSelectedProfileCalls: (state, { payload }) => {
+            state.selectedProfileCalls = payload;
+        },
+
     }
 });
 
@@ -88,7 +120,9 @@ export const {
     setLoading,
     setErrors,
     setProfiles,
-    setLoadingProfiles
+    setLoadingProfiles,
+    setSelectedProfile,
+    setSelectedProfileCalls
 } = callProfileSlice.actions;
 
 export default callProfileSlice.reducer;

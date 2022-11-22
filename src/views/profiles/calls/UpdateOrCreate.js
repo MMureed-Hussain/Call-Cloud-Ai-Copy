@@ -17,62 +17,60 @@ import {
   CardHeader,
   FormFeedback,
 } from "reactstrap";
-import Cleave from "cleave.js/react";
-import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
-import { createProfile } from "../../../redux/profiles";
-import { Link } from "react-router-dom";
 
 export default () => {
-  // const [audioDetails, setAudioDetails] = useState([
-  //   {
-  //     url: null,
-  //     blob: null,
-  //     chunks: [],
-  //     duration: {
-  //       h: 0,
-  //       m: 0,
-  //       s: 0,
-  //     },
-  //   }
-  // ]);
+  const [audioDetails, setAudioDetails] = useState([
+    {
+      url: null,
+      blob: null,
+      chunks: [],
+      duration: {
+        h: 0,
+        m: 0,
+        s: 0,
+      },
+    }
+  ]);
 
-  const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
-  const [selected, setSelected] = useState([]);
+  const [tags, setTags] = useState([]);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
- 
-  useEffect(() => {
-    return () => {
-      //todo remove event listeners
-    };
-  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(
-      createProfile({
-        name: note,
-        phone,
-        workspace_id: currentWorkspace.id,
-      })
-    );
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag="h4">Create Form</CardTitle>
+        <CardTitle tag="h4">Create Call</CardTitle>
       </CardHeader>
       <Form onSubmit={handleSubmit}>
         <CardBody>
-          <Row>
+          <div className="d-flex justify-content-between">
             <Col md="6" sm="12">
+              <FormGroup>
+                <Label className="form-label" for="title">
+                  Tags<span className="text-danger">*</span>
+                </Label>
+                <TagsInput
+                  value={tags}
+                  onChange={setTags}
+                  className={
+                    errors.has("tags")
+                      ? "is-invalid form-control"
+                      : "form-control"
+                  }
+                  name="Tags"
+                  placeHolder="Add tag"
+                />
+                {errors.has("tags") && (
+                  <FormFeedback>{errors.get("tags")}</FormFeedback>
+                )}
+              </FormGroup>
               <FormGroup>
                 <Label className="form-label" for="title">
                   Notes<span className="text-danger">*</span>
@@ -96,40 +94,24 @@ export default () => {
               </FormGroup>
             </Col>
             <Col md="6" sm="12">
-              <h1>Recorder</h1>
-            </Col>
-            <Col md="6" sm="12">
-              <FormGroup>
-                <Label className="form-label" for="title">
-                  Tags<span className="text-danger">*</span>
-                </Label>
-                <TagsInput
-                  value={selected}
-                  onChange={setSelected}
-                  name="Tags"
-                  placeHolder="Enter something here"
-                />
-                {errors.has("name") && (
-                  <FormFeedback>{errors.get("name")}</FormFeedback>
-                )}
-              </FormGroup>
+              <Recorder audioDetails={audioDetails} setAudioDetails={setAudioDetails} />
             </Col>
             <Col sm="12">
               <div className="d-flex">
-                {/* <Button
+                <Button
                   className="me-1"
                   color="primary"
                   disabled={loading}
                   type="submit"
                 >
-                  Add Form
+                  Submit
                 </Button>
                 <Button color="secondary" type="reset">
                   Cancel
-                </Button> */}
+                </Button>
               </div>
             </Col>
-          </Row>
+          </div>
         </CardBody>
       </Form>
     </Card>
