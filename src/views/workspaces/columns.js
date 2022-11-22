@@ -110,7 +110,7 @@ export const adminWorkspaceColumns = [
   //   cell: (row) => renderName(row),
   // },
   {
-    name: "Created At",
+    name: "Created Atttt",
     sortable: true,
     minWidth: "172px",
     sortField: "createdAt",
