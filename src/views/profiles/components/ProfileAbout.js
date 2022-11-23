@@ -1,7 +1,8 @@
 /* eslint-disable */
-import { Card, CardBody, CardText } from 'reactstrap'
+import { Card, CardBody, CardText } from 'reactstrap';
+import moment from 'moment';
 
-const ProfileAbout = (data) => {
+const ProfileAbout = ({ data }) => {
     return (
         <Card>
             <CardBody>
@@ -10,6 +11,10 @@ const ProfileAbout = (data) => {
                 <div className='mt-2'>
                     <h5 className='mb-75'>Phone:</h5>
                     <CardText>{data.phone}</CardText>
+                </div>
+                <div className='mt-2'>
+                    <h5 className='mb-75'>Created At:</h5>
+                    <CardText>{moment(data.created_at).format("YYYY-MM-DD HH:mm:ss")}</CardText>
                 </div>
             </CardBody>
         </Card>

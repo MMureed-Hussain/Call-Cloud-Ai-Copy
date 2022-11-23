@@ -18,35 +18,18 @@ import Cleave from 'cleave.js/react'
 import 'cleave.js/dist/addons/cleave-phone.us'
 import { useDispatch, useSelector } from "react-redux";
 import { createProfile } from "../../../redux/profiles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default () => {
-  // const [audioDetails, setAudioDetails] = useState([
-  //   {
-  //     url: null,
-  //     blob: null,
-  //     chunks: [],
-  //     duration: {
-  //       h: 0,
-  //       m: 0,
-  //       s: 0,
-  //     },
-  //   }
-  // ]);
-
   const [phone, setPhone] = useState("");
   const [profileName, setProfileName] = useState("");
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
   const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-
-
-  useEffect(() => {
-    return () => {
-      //todo remove event listeners
-    };
-  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -54,7 +37,11 @@ export default () => {
       name: profileName,
       phone,
       workspace_id: currentWorkspace.id
-    }))
+    })).then(res => {
+      if (res.payload.data){
+        navigate(`/profiles/${res.payload.data.id}`)
+      }
+    })
   }
 
   return (
@@ -107,6 +94,7 @@ export default () => {
                   <Button
                     color="secondary"
                     type="reset"
+                    outline
                   >
                     Cancel
                   </Button>

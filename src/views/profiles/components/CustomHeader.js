@@ -38,8 +38,7 @@ export default ({ handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
               </Input>
             </div>
             <div className="d-flex align-items-center table-header-actions">
-              {/* <Link to={"/profiles/create"}> */}
-              <Link to={"/profiles/form"}>
+              <Link to={"/profiles/create"}>
                 <Button className="add-new-user" color="primary">
                   Add New Profile
                 </Button>

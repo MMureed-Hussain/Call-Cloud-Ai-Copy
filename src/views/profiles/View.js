@@ -6,13 +6,13 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom"
 import { getProfile } from "../../redux/profiles";
 import Skeleton from "react-loading-skeleton";
+import CallsList from "./CallsList";
 
 export default () => {
     const params = useParams();
     const dispatch = useDispatch();
     //selectors
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-    const loading = useSelector((state) => state.profiles.loading);
     const profile = useSelector((state) => state.profiles.selectedProfile);
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export default () => {
     }, [currentWorkspace]);
 
    
-    if (loading) {
+    if (!profile) {
         return (
             <div className="vh-100">
                 <Skeleton height={"15%"} />
@@ -38,12 +38,12 @@ export default () => {
         <div id='user-profile'>
             <section id='profile-info'>
                 <Row>
-                    <Col lg={{ size: 4, order: 1 }} sm={{ size: 12 }} xs={{ order: 2 }}>
+                    <Col lg={{ size: 3, order: 1 }} sm={{ size: 12 }} xs={{ order: 2 }}>
                         <ProfileAbout data={profile} />
                     </Col>
-                    {/* <Col lg={{ size: 8, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
-                        <ProfilePosts data={data.post} />
-                    </Col> */}
+                    <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
+                        <CallsList />
+                    </Col>
                 </Row>
             </section>
         </div>

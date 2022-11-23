@@ -53,7 +53,6 @@ const Plans = lazy(() => import("../../views/plans"));
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
 const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate/UpdateOrCreate"));
-const UpdateOrCreateCall = lazy(() => import("../../views/profiles/calls/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
 
 

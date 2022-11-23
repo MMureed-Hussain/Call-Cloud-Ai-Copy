@@ -19,9 +19,15 @@ export const createProfile = createAsyncThunk(
                 payload,
             );
             toast.success(response.data.message);
+            return {
+                data: response.data.data
+            };
         } catch (e) {
             toast.error(e.response.data.message);
             if (e.response.data?.errors) thunkAPI.dispatch(setErrors(e.response.data.errors));
+            return {
+                data: null
+            };
         } finally {
             thunkAPI.dispatch(setLoading(false));
         }
@@ -53,7 +59,6 @@ export const getProfile = createAsyncThunk(
     "profiles/find",
     async ({ workspace_id, id }, { dispatch }) => {
         try {
-            dispatch(setLoading(true))
             const response = await axios.get(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
                 {
@@ -68,8 +73,38 @@ export const getProfile = createAsyncThunk(
             dispatch(setSelectedProfileCalls(response.data.data.calls));
         } catch (e) {
             toast.error(e.response.data.message);
-        } finally {
-            dispatch(setLoading(false))
+        }
+    }
+);
+
+export const createCall = createAsyncThunk(
+    "profiles/createCall",
+    async ({ formData, id }, { dispatch, getState }) => {
+        try {
+            const state = getState();
+            dispatch(setErrors({}));
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/calls`,
+                formData,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'multipart/form-data'  // multipart/form-data - as we need to upload with voice recording
+                    }
+                }
+            );
+            toast.success(response.data.message);
+            const calls = [response.data.data, ...state.profiles.selectedProfileCalls]
+            dispatch(setSelectedProfileCalls(calls))
+            return {
+                data: response.data.data
+            };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+            return {
+                data: null
+            };
         }
     }
 );
@@ -85,7 +120,7 @@ export const callProfileSlice = createSlice({
         selectedProfile: null,
         selectedProfileCalls: [],
         errors: new ErrorHandler(),
-        loadingProfiles: true
+        loadingProfiles: true,
     },
     reducers: {
         setLoading: (state, { payload }) => {
