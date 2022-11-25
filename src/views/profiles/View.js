@@ -18,7 +18,7 @@ export default () => {
     useEffect(() => {
         if (currentWorkspace) {
             dispatch(getProfile({
-                workspace_id: currentWorkspace.id,
+                params: { include_calls: "true" },
                 id: params.id
             }))
         }

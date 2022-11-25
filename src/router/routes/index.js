@@ -161,6 +161,13 @@ const Routes = [
       isPrivate: true,
     },
   },
+  {
+    path: "/profiles/:id/edit",
+    element: <UpdateOrCreateCallProfile/>,
+    meta: {
+      isPrivate: true,
+    },
+  },
   // {
   //   path: "/new-booking-page",
   //   element: <CreateBookingPage />,

@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler"
 axios.defaults.withCredentials = true;
 
-// Perform add workspace API
 export const createProfile = createAsyncThunk(
     "profiles/create",
     async (payload, thunkAPI) => {
@@ -30,6 +29,32 @@ export const createProfile = createAsyncThunk(
             };
         } finally {
             thunkAPI.dispatch(setLoading(false));
+        }
+    }
+);
+
+export const updateProfile = createAsyncThunk(
+    "profiles/update",
+    async ({ payload, id }, { dispatch }) => {
+        try {
+            dispatch(setLoading(true));
+            dispatch(setErrors({}));
+            const response = await axios.put(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
+                payload,
+            );
+            toast.success(response.data.message);
+            return {
+                data: response.data.data
+            };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+            return {
+                data: null
+            };
+        } finally {
+            dispatch(setLoading(false));
         }
     }
 );
@@ -57,22 +82,26 @@ export const getProfiles = createAsyncThunk(
 
 export const getProfile = createAsyncThunk(
     "profiles/find",
-    async ({ workspace_id, id }, { dispatch }) => {
+    async ({ params, id }, { dispatch }) => {
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
                 {
-                    params: {
-                        workspace_id
-                    }
+                    params
                 }
             );
             let profile = { ...response.data.data };
             delete profile.calls;
             dispatch(setSelectedProfile(profile));
             dispatch(setSelectedProfileCalls(response.data.data.calls));
+            return {
+                data: profile
+            }
         } catch (e) {
             toast.error(e.response.data.message);
+            return {
+                data: null
+            }
         }
     }
 );

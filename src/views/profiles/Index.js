@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProfiles } from "../../redux/profiles";
 import { Edit, Eye, Trash, MoreVertical } from 'react-feather'
 import { Link } from "react-router-dom";
+import { debounce } from "lodash"
 
 export default () => {
     // ** States
@@ -28,20 +29,21 @@ export default () => {
     const loading = useSelector((state) => state.profiles.loadingProfiles);
     const pageCount = useSelector((state) => state.profiles.pageCount);
 
-    const loadProfiles = (page) => {
+    const loadProfiles = (options) => {
         dispatch(getProfiles({
             records_per_page: rowsPerPage,
-            page,
-            workspace_id: currentWorkspace.id,
+            page: currentPage,
+            workspace_id: currentWorkspace?.id,
             sort_by: sortColumn,
-            sort
+            sort,
+            ...options
         }));
-        setCurrentPage(page);
+        setCurrentPage(options.page);
     }
 
     useEffect(() => {
         if (currentWorkspace) {
-            loadProfiles(1)
+            loadProfiles({ page: 1 })
         }
     }, [currentWorkspace])
 
@@ -85,10 +87,12 @@ export default () => {
                                         <span className='align-middle ms-50'>View</span>
                                     </DropdownItem>
                                 </Link>
-                                <DropdownItem>
-                                    <Edit size={15} />
-                                    <span className='align-middle ms-50'>Edit</span>
-                                </DropdownItem>
+                                <Link to={`/profiles/${row.id}/edit`}>
+                                    <DropdownItem>
+                                        <Edit size={15} />
+                                        <span className='align-middle ms-50'>Edit</span>
+                                    </DropdownItem>
+                                </Link>
                                 <DropdownItem>
                                     <Trash size={15} />
                                     <span className='align-middle ms-50'>Delete</span>
@@ -102,23 +106,36 @@ export default () => {
     ];
 
     const handleSort = (column, sortDirection) => {
-        setSort(state => sortDirection);
-        setSortColumn(state => column.sortField);
-        loadProfiles(1);
+        setSort(sortDirection);
+        setSortColumn(column.sortField);
+        loadProfiles({
+            page: 1,
+            sort: sortDirection,
+            sort_by: sortColumn
+        });
     };
 
     // ** Function in get data on rows per page
     const handlePerPage = (e) => {
         const value = parseInt(e.currentTarget.value);
-        setRowsPerPage(state => value);
-        loadProfiles(1);
+        setRowsPerPage(value);
+        loadProfiles({
+            page: 1,
+            records_per_page: value
+        });
     };
 
     // ** Function in get data on search query change
-    const handleFilter = (val) => {
-        setSearchTerm(val);
-        loadProfiles(1);//todo add 
-    };
+    const debounceLoadData = useCallback(debounce(loadProfiles, 1000), []);
+    useEffect(() => {
+        if (searchTerm) {
+            debounceLoadData({
+                page: 1,
+                search: searchTerm,
+                workspace_id: currentWorkspace.id
+            })
+        }
+    }, [searchTerm])
 
     // ** Custom Pagination
     const CustomPagination = () => {
@@ -129,7 +146,7 @@ export default () => {
                 pageCount={pageCount || 1}
                 activeClassName="active"
                 forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-                onPageChange={({ selected }) => loadProfiles(selected)}
+                onPageChange={({ selected }) => loadProfiles({ page: selected })}
                 pageClassName={"page-item"}
                 nextLinkClassName={"page-link"}
                 nextClassName={"page-item next"}
@@ -174,7 +191,7 @@ export default () => {
                         <CustomHeader
                             searchTerm={searchTerm}
                             rowsPerPage={rowsPerPage}
-                            handleFilter={handleFilter}
+                            handleFilter={setSearchTerm}
                             handlePerPage={handlePerPage}
                         />
                     }
