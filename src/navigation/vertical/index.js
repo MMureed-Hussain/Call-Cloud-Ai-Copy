@@ -1,4 +1,4 @@
-import { Layers, Home, Users } from "react-feather";
+import { Layers, Home, Users, Bookmark } from "react-feather";
 
 export default [
   {
@@ -20,10 +20,15 @@ export default [
     navLink: "/workspace/id/users",
   },
   {
+    id: "bookingPages",
+    title: "Booking Pages",
+    icon: <Bookmark size={20} />,
+    navLink: "/booking-pages",
+  },
+  {
     id: "clients",
     title: "Clients",
     icon: <Users size={20} />,
     navLink: "/clients",
   },
-
 ];
