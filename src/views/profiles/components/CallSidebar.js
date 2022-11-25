@@ -5,7 +5,7 @@ import { Button, Label, Form, Input, FormFeedback, Spinner, FormGroup } from "re
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import Recorder from '../UpdateOrCreate/components/Recorder';
+import Recorder from './Recorder';
 import { TagsInput } from "react-tag-input-component";
 import { useParams } from "react-router-dom";
 import { createCall } from "../../../redux/profiles";

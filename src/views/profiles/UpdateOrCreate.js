@@ -17,7 +17,7 @@ import {
 import Cleave from 'cleave.js/react'
 import 'cleave.js/dist/addons/cleave-phone.us'
 import { useDispatch, useSelector } from "react-redux";
-import { createProfile, getProfile, updateProfile } from "../../../redux/profiles";
+import { createProfile, getProfile, updateProfile } from "../../redux/profiles";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default () => {

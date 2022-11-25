@@ -10,7 +10,7 @@ import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit, Eye, Trash, MoreVertical,Play } from 'react-feather'
 import { Link } from "react-router-dom";
-import CallSidebar from "./calls/CallSidebar";
+import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 
 export default () => {

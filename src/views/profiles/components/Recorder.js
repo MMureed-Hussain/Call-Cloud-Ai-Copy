@@ -3,7 +3,7 @@ import {
     Button,
     Row
 } from "reactstrap";
-import { millisecondsToTime } from "../../../../utility/Utils";
+import { millisecondsToTime } from "../../../utility/Utils";
 import { Mic, Pause, StopCircle, Play } from 'react-feather';
 import { padStart } from "lodash"
 
@@ -85,7 +85,9 @@ export default ({ audioDetails, setAudioDetails }) => {
         setRecording(false);
         setRecordPaused(false);
         recorder.stop();
-        const audioBlob = new Blob(audioDetails.chunks);
+        const audioBlob = new Blob(audioDetails.chunks, {
+            type: 'audio/mp3'
+        });
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioDetails(details => {
             const clonedDetails = { ...details, url: audioUrl, blob: audioBlob };
