@@ -19,4 +19,11 @@ export default [
     icon: <Users size={20} />,
     navLink: "/workspace/id/users",
   },
+  {
+    id: "clients",
+    title: "Clients",
+    icon: <Users size={20} />,
+    navLink: "/clients",
+  },
+
 ];

@@ -45,6 +45,7 @@ const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
 
 const Plans = lazy(() => import("../../views/plans"));
+const Clients = lazy(() => import("../../views/clients"));
 
 // ** Merge Routes
 const Routes = [
@@ -177,6 +178,13 @@ const Routes = [
     meta: {
       layout: "blank",
       isPrivate: false,
+    },
+  },
+  {
+    path: "/clients",
+    element: <Clients />,
+    meta: {
+      isPrivate: true,
     },
   },
 ];
