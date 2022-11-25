@@ -28,7 +28,6 @@ export default ({
         }
     ]);
     const params = useParams();
-
     const [note, setNote] = useState("");
     const [tags, setTags] = useState([]);
     const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
@@ -81,8 +80,8 @@ export default ({
             toggleSidebar={toggleSidebar}
             onClosed={handleSidebarClosed}
         >
-            <Form onSubmit={handleSubmit}>
-                <Recorder audioDetails={audioDetails} setAudioDetails={setAudioDetails} />
+            <Form onSubmit={handleSubmit} >
+                <Recorder audioDetails={audioDetails} setAudioDetails={setAudioDetails}/>
                 <FormGroup>
                     <Label className="form-label" for="title">
                         Tags<span className="text-danger">*</span>

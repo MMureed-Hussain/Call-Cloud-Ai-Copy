@@ -95,21 +95,7 @@ export default ({ audioDetails, setAudioDetails }) => {
      /*eslint multiline-ternary: ["error", "always"]*/
     return (
         <>
-            <Row className="text-center mb-2">
-                {
-                    audioDetails.url !== null ?
-                        <audio controls>
-                            <source src={audioDetails.url} type='audio/ogg' />
-                            <source src={audioDetails.url} type='audio/mpeg' />
-                        </audio>
-                        :
-                        null
-                }
-                {recording ?
-                    <h1 style={{ fontSize: "3rem" }}>{`${padStart(audioDetails.duration.h, 2, '0')}:${padStart(audioDetails.duration.m, 2, '0')}:${padStart(audioDetails.duration.s, 2, '0')}`}</h1>
-                    : null}
-            </Row>
-            <div className="d-flex justify-content-center">
+          <div className="d-flex justify-content-center">
                 {recording ?
                     <div className='rounded-circle overflow-hidden me-1'>
                         <Button.Ripple className='btn-icon rounded-circle' color='danger' onClick={onStop}>
@@ -136,6 +122,22 @@ export default ({ audioDetails, setAudioDetails }) => {
                     </div> 
                     : null}
             </div>
+            <br/>
+            <Row className="text-center mb-2">
+                {
+                    audioDetails.url !== null ?
+                        <audio controls>
+                            <source src={audioDetails.url} type='audio/ogg' />
+                            <source src={audioDetails.url} type='audio/mpeg' />
+                        </audio>
+                        :
+                        null
+                }
+                {recording ?
+                    <h1 style={{ fontSize: "3rem" }}>{`${padStart(audioDetails.duration.h, 2, '0')}:${padStart(audioDetails.duration.m, 2, '0')}:${padStart(audioDetails.duration.s, 2, '0')}`}</h1>
+                    : null}
+            </Row>
+          
         </>
     )
 }

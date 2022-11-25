@@ -92,9 +92,9 @@ export default () => {
                                         <Edit size={15} />
                                         <span className='align-middle ms-50'>Edit</span>
                                     </DropdownItem>
-                                </Link>
+                                </Link>                   
                                 <DropdownItem>
-                                    <Trash size={15} />
+                                    <Trash size={15} className="me-50" />
                                     <span className='align-middle ms-50'>Delete</span>
                                 </DropdownItem>
                             </DropdownMenu>
@@ -104,7 +104,7 @@ export default () => {
             }
         }
     ];
-
+    // 
     const handleSort = (column, sortDirection) => {
         setSort(sortDirection);
         setSortColumn(column.sortField);
