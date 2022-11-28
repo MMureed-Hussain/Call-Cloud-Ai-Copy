@@ -2,11 +2,22 @@
 import { useState } from "react";
 import { Button } from "reactstrap";
 import { Play, Pause } from "react-feather";
+import { setNowPlaying } from "../../../redux/profiles"
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export default ({ callId }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [player, setPlayer] = useState(null);
 
+    const nowPlaying = useSelector(state => state.profiles.nowPlaying);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (player && nowPlaying != callId) {
+            handlePause(); //stop previous audio if new one is played
+        }
+    }, [nowPlaying])
     /**
      * Create the audio object on user click and play it
      */
@@ -16,6 +27,7 @@ export default ({ callId }) => {
         audio.addEventListener('ended', onEnded)
         audio.play().then(() => {
             setIsPlaying(true);
+            dispatch(setNowPlaying(callId));
         });
     }
 
@@ -28,7 +40,7 @@ export default ({ callId }) => {
      */
     const onEnded = () => {
         setIsPlaying(false);
-        player.removeEventListener('ended', onEnded);
+        player?.removeEventListener('ended', onEnded);
         setPlayer(null);
     }
 

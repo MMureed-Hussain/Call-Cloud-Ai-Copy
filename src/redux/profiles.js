@@ -150,6 +150,7 @@ export const callProfileSlice = createSlice({
         selectedProfileCalls: [],
         errors: new ErrorHandler(),
         loadingProfiles: true,
+        nowPlaying: null
     },
     reducers: {
         setLoading: (state, { payload }) => {
@@ -176,7 +177,9 @@ export const callProfileSlice = createSlice({
         setSelectedProfileCalls: (state, { payload }) => {
             state.selectedProfileCalls = payload;
         },
-
+        setNowPlaying: (state, { payload }) => {
+            state.nowPlaying = payload;
+        }
     }
 });
 
@@ -186,7 +189,8 @@ export const {
     setProfiles,
     setLoadingProfiles,
     setSelectedProfile,
-    setSelectedProfileCalls
+    setSelectedProfileCalls,
+    setNowPlaying
 } = callProfileSlice.actions;
 
 export default callProfileSlice.reducer;
