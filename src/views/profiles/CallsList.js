@@ -12,6 +12,7 @@ import { Edit, Eye, Trash, MoreVertical,Play } from 'react-feather'
 import { Link } from "react-router-dom";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
+import CallPlayer from "./components/CallPlayer";
 
 export default () => {
     // ** States
@@ -47,18 +48,7 @@ export default () => {
             sortable: false,
             minWidth: "172px",
             cell: (row) => {
-                return (<div className='rounded-circle overflow-hidden'>
-                    <Button.Ripple className='btn-icon rounded-circle' color='primary'>
-                        <Play size={14} />
-                    </Button.Ripple>
-                </div>
-                // :
-                //     <div className='rounded-circle overflow-hidden'>
-                //         <Button.Ripple className='btn-icon rounded-circle' color='warning' onClick={onPause}>
-                //             <Pause size={16} />
-                //         </Button.Ripple>
-                //     </div>
-                    )
+                return <CallPlayer callId={row.id} />
             },
         },
         {
