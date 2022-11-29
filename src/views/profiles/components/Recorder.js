@@ -126,12 +126,12 @@ export default ({ audioDetails, setAudioDetails }) => {
             </div>
             <br/>
             <Row className="text-center mb-2">
-                {
+            {
                     audioDetails.url !== null ?
-                        <audio controls>
+                         <audio controls>
                             <source src={audioDetails.url} type='audio/ogg' />
                             <source src={audioDetails.url} type='audio/mpeg' />
-                        </audio>
+                         </audio>
                         :
                         null
                 }

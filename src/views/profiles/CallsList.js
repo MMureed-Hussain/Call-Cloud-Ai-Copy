@@ -46,7 +46,7 @@ export default () => {
         {
             name: "Voice",
             sortable: false,
-            minWidth: "172px",
+            minWidth: "350px",
             cell: (row) => {
                 return <CallPlayer callId={row.id} />
             },

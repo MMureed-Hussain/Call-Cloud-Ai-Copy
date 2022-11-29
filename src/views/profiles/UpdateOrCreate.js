@@ -12,17 +12,21 @@ import {
   Button,
   CardTitle,
   CardHeader,
-  FormFeedback
+  FormFeedback,
 } from "reactstrap";
-import Cleave from 'cleave.js/react'
-import 'cleave.js/dist/addons/cleave-phone.us'
+import Cleave from "cleave.js/react";
+import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
 import { createProfile, getProfile, updateProfile } from "../../redux/profiles";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+import { BorderAll, Style } from "@material-ui/icons";
 
 export default () => {
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState();
   const [profileName, setProfileName] = useState("");
+  const [value, setValue] = useState();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,50 +34,54 @@ export default () => {
 
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
-  const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+  const currentWorkspace = useSelector(
+    (state) => state.workspaces.currentWorkspace
+  );
 
   useEffect(() => {
     if (params.id) {
-      dispatch(getProfile({
-        params: { include_calls: "false" },
-        id: params.id
-      })).then(res => {
+      dispatch(
+        getProfile({
+          params: { include_calls: "false" },
+          id: params.id,
+        })
+      ).then((res) => {
         if (res.payload.data) {
           let { data } = res.payload;
           setPhone(data.phone);
           setProfileName(data.name);
         }
-      })
+      });
     }
-  }, [params.id])
+  }, [params.id]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(
-      params.id ?
-        updateProfile({
-          payload: {
+      params.id
+        ? updateProfile({
+            payload: {
+              name: profileName,
+              phone: phone.replace(/ /g, ""), //remove all spaces from the phone
+            },
+            id: params.id,
+          })
+        : createProfile({
             name: profileName,
-            phone: phone.replace(/ /g, ''), //remove all spaces from the phone 
-          },
-          id: params.id
-        }) : createProfile({
-          name: profileName,
-          phone: phone.replace(/ /g, ''), //remove all spaces from the phone
-          workspace_id: currentWorkspace.id
-        })
-
-    ).then(res => {
+            phone: phone.replace(/ /g, ""), //remove all spaces from the phone
+            workspace_id: currentWorkspace.id,
+          })
+    ).then((res) => {
       if (res.payload.data) {
-        navigate(`/profiles/${res.payload.data.id}`)
+        navigate(`/profiles/${res.payload.data.id}`);
       }
-    })
-  }
+    });
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag='h4'>Create Profile</CardTitle>
+        <CardTitle tag="h4">Create Profile</CardTitle>
       </CardHeader>
       <Form onSubmit={handleSubmit}>
         <CardBody>
@@ -87,12 +95,18 @@ export default () => {
                   id="profile"
                   placeholder="Enter profile name"
                   value={profileName}
-                  className={errors.has('name') ? 'is-invalid form-control' : 'form-control'}
+                  className={
+                    errors.has("name")
+                      ? "is-invalid form-control"
+                      : "form-control"
+                  }
                   onChange={(e) => {
                     setProfileName(e.target.value);
                   }}
                 />
-                {errors.has('name') && <FormFeedback>{errors.get('name')}</FormFeedback>}
+                {errors.has("name") && (
+                  <FormFeedback>{errors.get("name")}</FormFeedback>
+                )}
               </FormGroup>
             </Col>
             <Col md="6" sm="12">
@@ -100,28 +114,37 @@ export default () => {
                 <Label className="form-label" for="phone-number">
                   Phone Number<span className="text-danger">*</span>
                 </Label>
-                <Cleave className={errors.has('phone') ? 'is-invalid form-control' : 'form-control'}
+                <PhoneInput
+                  className={
+                    errors.has("phone")
+                      ? "is-invalid form-control"
+                      : "form-control"
+                  }
+                  international
+                  countryCallingCodeEditable={false}
+                  defaultCountry="US"
+                  placeholder="1 234 567 8900"
                   value={phone}
-                  placeholder='1 234 567 8900'
-                  options={{ phone: true, phoneRegionCode: 'US' }}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
-                  id='phone-number' />
-                {errors.has('phone') && <FormFeedback>{errors.get('phone')}</FormFeedback>}
+                  onChange={setPhone}
+                  id="phone-number"
+                />
+                {errors.has("phone") && (
+                  <FormFeedback>{errors.get("phone")}</FormFeedback>
+                )}
               </FormGroup>
             </Col>
-            <Col sm='12'>
-              <div className='d-flex'>
-                <Button className='me-1' color='primary' disabled={loading} type='submit'>
+            <Col sm="12">
+              <div className="d-flex">
+                <Button
+                  className="me-1"
+                  color="primary"
+                  disabled={loading}
+                  type="submit"
+                >
                   Submit
                 </Button>
                 <Link to={"/profiles"}>
-                  <Button
-                    color="secondary"
-                    type="reset"
-                    outline
-                  >
+                  <Button color="secondary" type="reset" outline>
                     Cancel
                   </Button>
                 </Link>
