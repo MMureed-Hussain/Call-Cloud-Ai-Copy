@@ -14,19 +14,16 @@ import {
   CardHeader,
   FormFeedback,
 } from "reactstrap";
-import Cleave from "cleave.js/react";
 import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
 import { createProfile, getProfile, updateProfile } from "../../redux/profiles";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
-import { BorderAll, Style } from "@material-ui/icons";
+import 'react-phone-input-2/lib/style.css'
+import PhoneInput from "react-phone-input-2";
 
 export default () => {
-  const [phone, setPhone] = useState();
+  const [phone, setPhone] = useState("");
   const [profileName, setProfileName] = useState("");
-  const [value, setValue] = useState();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,17 +57,17 @@ export default () => {
     dispatch(
       params.id
         ? updateProfile({
-            payload: {
-              name: profileName,
-              phone: phone.replace(/ /g, ""), //remove all spaces from the phone
-            },
-            id: params.id,
-          })
-        : createProfile({
+          payload: {
             name: profileName,
-            phone: phone.replace(/ /g, ""), //remove all spaces from the phone
-            workspace_id: currentWorkspace.id,
-          })
+            phone: phone, 
+          },
+          id: params.id,
+        })
+        : createProfile({
+          name: profileName,
+          phone: phone,
+          workspace_id: currentWorkspace.id,
+        })
     ).then((res) => {
       if (res.payload.data) {
         navigate(`/profiles/${res.payload.data.id}`);
@@ -115,18 +112,20 @@ export default () => {
                   Phone Number<span className="text-danger">*</span>
                 </Label>
                 <PhoneInput
-                  className={
-                    errors.has("phone")
-                      ? "is-invalid form-control"
-                      : "form-control"
-                  }
-                  international
-                  countryCallingCodeEditable={false}
-                  defaultCountry="US"
-                  placeholder="1 234 567 8900"
+                  country={'us'}
                   value={phone}
+                  containerClass= {
+                    errors.has("phone")
+                    ? "is-invalid"
+                    : ""
+                  }
+                  inputClass={
+                    errors.has("phone")
+                      ? "is-invalid form-control w-100"
+                      : "form-control w-100"
+                  }
+                  placeholder="1 234 567 8900"
                   onChange={setPhone}
-                  id="phone-number"
                 />
                 {errors.has("phone") && (
                   <FormFeedback>{errors.get("phone")}</FormFeedback>

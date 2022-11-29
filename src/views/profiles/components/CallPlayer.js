@@ -1,78 +1,36 @@
 /* eslint-disable */
-import { useState } from "react";
-import { Button, Row } from "reactstrap";
-import { Play, Pause } from "react-feather";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useRef } from "react";
 import { setNowPlaying } from "../../../redux/profiles";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 
 export default ({ callId }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [player, setPlayer] = useState(null);
-  const nowPlaying = useSelector((state) => state.profiles.nowPlaying);
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (player && nowPlaying != callId) {
-      handlePause(); //stop previous audio if new one is played
-    }
-  }, [nowPlaying]);
-  /**
-   * Create the audio object on user click and play it
-   */
-  const handlePlay = () => {
-    let audio = new Audio(
-      `${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${callId}`
+    const nowPlaying = useSelector((state) => state.profiles.nowPlaying);
+    const audioElement = useRef();
+
+    useEffect(() => {
+        if (nowPlaying && nowPlaying != callId) {
+            audioElement.current.pause(); //stop previous audio if new one is played
+        }
+    }, [nowPlaying]);
+
+    return (
+        <>
+            <div className="d-flex justify-content-center">
+                <div className="overflow-hidden">
+                    <audio style={{"height":"30px"}} controls ref={audioElement} onPlay={() => dispatch(setNowPlaying(callId))}>
+                        <source
+                            src={`${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${callId}`}
+                            type="audio/ogg"
+                        />
+                        <source
+                            src={`${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${callId}`}
+                            type="audio/mpeg"
+                        />
+                    </audio>
+                </div>
+            </div>
+        </>
     );
-    setPlayer(audio);
-    audio.addEventListener("ended", onEnded);
-    audio.play().then(() => {
-      setIsPlaying(true);
-      dispatch(setNowPlaying(callId));
-    });
-  };
-
-  const handlePause = () => {
-    player.pause();
-    onEnded();
-  };
-  /**
-   * Remove the audio instance when user pause the audio. So a fresh audio instance can be created once user click on play
-   */
-  const onEnded = () => {
-    setIsPlaying(false);
-    player?.removeEventListener("ended", onEnded);
-    setPlayer(null);
-  };
-
-  return (
-    <>
-      <div className="d-flex justify-content-center">
-        {isPlaying ? (
-          <div className="overflow-hidden">
-            <audio  controls>
-              <source
-                src={`${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${callId}`}
-                type="audio/ogg"
-              />
-              <source
-                src={`${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${callId}`}
-                type="audio/mpeg"
-              />
-            </audio>
-          </div>
-        ) : (
-          <div className="rounded-circle overflow-hidden">
-            <Button.Ripple
-              className="btn-icon rounded-circle"
-              color="primary"
-              onClick={handlePlay}
-            >
-              <Play size={14} />
-            </Button.Ripple>
-          </div>
-        )}
-      </div>
-    </>
-  );
 };

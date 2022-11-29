@@ -90,12 +90,31 @@ export const getProfile = createAsyncThunk(
                     params
                 }
             );
-            let profile = { ...response.data.data };
-            delete profile.calls;
-            dispatch(setSelectedProfile(profile));
-            dispatch(setSelectedProfileCalls(response.data.data.calls));
+            dispatch(setSelectedProfile(response.data.data ));
             return {
                 data: profile
+            }
+        } catch (e) {
+            toast.error(e.response.data.message);
+            return {
+                data: null
+            }
+        }
+    }
+);
+
+export const getCallsByProfileId = createAsyncThunk(
+    "profiles/calls",
+    async ({ params, id }, { dispatch }) => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/calls`,
+                {
+                    params
+                }
+            );
+            return {
+                data: response.data
             }
         } catch (e) {
             toast.error(e.response.data.message);
@@ -123,8 +142,7 @@ export const createCall = createAsyncThunk(
                 }
             );
             toast.success(response.data.message);
-            const calls = [response.data.data, ...state.profiles.selectedProfileCalls]
-            dispatch(setSelectedProfileCalls(calls))
+            dispatch(setReloadCalls(true));
             return {
                 data: response.data.data
             };
@@ -147,10 +165,10 @@ export const callProfileSlice = createSlice({
         totalRecords: 0,
         pageCount: 0,
         selectedProfile: null,
-        selectedProfileCalls: [],
         errors: new ErrorHandler(),
         loadingProfiles: true,
-        nowPlaying: null
+        nowPlaying: null,
+        reloadCalls: false
     },
     reducers: {
         setLoading: (state, { payload }) => {
@@ -174,11 +192,11 @@ export const callProfileSlice = createSlice({
         setSelectedProfile: (state, { payload }) => {
             state.selectedProfile = payload;
         },
-        setSelectedProfileCalls: (state, { payload }) => {
-            state.selectedProfileCalls = payload;
-        },
         setNowPlaying: (state, { payload }) => {
             state.nowPlaying = payload;
+        },
+        setReloadCalls: (state, { payload }) => {
+            state.reloadCalls = payload;
         }
     }
 });
@@ -190,7 +208,8 @@ export const {
     setLoadingProfiles,
     setSelectedProfile,
     setSelectedProfileCalls,
-    setNowPlaying
+    setNowPlaying,
+    setReloadCalls
 } = callProfileSlice.actions;
 
 export default callProfileSlice.reducer;
