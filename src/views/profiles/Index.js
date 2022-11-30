@@ -15,10 +15,10 @@ import {
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfiles } from "../../redux/profiles";
+import { getProfiles, setReloadTable, deleteProfile } from "../../redux/profiles";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
-import { debounce, result } from "lodash";
+import { debounce } from "lodash";
 
 export default () => {
   // ** States
@@ -36,7 +36,9 @@ export default () => {
   const profiles = useSelector((state) => state.profiles.profiles);
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
+  const reloadTable = useSelector((state) => state.profiles.reloadTable);
 
+  // ** Factory method to dispatch the api call
   const loadProfiles = (options) => {
     dispatch(
       getProfiles({
@@ -50,23 +52,23 @@ export default () => {
     );
     setCurrentPage(options.page);
   };
-
-  function deleteCallProfile(id){
-    fetch(`http://127.0.0.1:8000/api/profiles/delete/${id}`,{
-      method:'POST'
-    }).then((result)=>{
-      result.json().then((resp)=>{
-        console.log(resp);
-      })
-    })
-  }
-
+  // ** Reload the table when record is deleted
+  useEffect(() => {
+    if (reloadTable) {
+      console.log("reloadTable")
+      dispatch(setReloadTable(false));
+      loadProfiles({
+        page: currentPage
+      });
+    }
+  }, [reloadTable]);
+  // ** Load the all call profiles for the selected workspace
   useEffect(() => {
     if (currentWorkspace) {
       loadProfiles({ page: 1 });
     }
   }, [currentWorkspace]);
-
+  // ** Columns meta for the data table
   const columns = [
     {
       name: "Name",
@@ -107,15 +109,15 @@ export default () => {
                     <span className="align-middle ms-50">View</span>
                   </DropdownItem>
                 </Link>
-                  <DropdownItem>
-                    <Edit size={15} />
-                    <span className="align-middle ms-50">Edit</span>
-                  </DropdownItem>
+                <DropdownItem>
+                  <Edit size={15} />
+                  <span className="align-middle ms-50">Edit</span>
+                </DropdownItem>
                 <DropdownItem>
                   <Trash size={15} className="me-50" />
                   <span
                     className="align-middle ms-50"
-                    onClick={()=>deleteCallProfile(id)}
+                    onClick={() => dispatch(deleteProfile(row.id))}
                   >
                     Delete
                   </span>
@@ -127,7 +129,7 @@ export default () => {
       },
     },
   ];
-  //
+  //Handle sorting
   const handleSort = (column, sortDirection) => {
     setSort(sortDirection);
     setSortColumn(column.sortField);

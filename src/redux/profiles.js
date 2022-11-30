@@ -60,35 +60,6 @@ export const updateProfile = createAsyncThunk(
     }
 );
 
-// delete 
-export const deleteProfile = createAsyncThunk(
-    "profiles/delete",
-    async ({ payload, id }, { dispatch }) => {
-        try {
-            dispatch(setLoading(true));
-            dispatch(setErrors({}));
-            const response = await axios.put(
-                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
-                payload,
-            );
-            // 
-            toast.success(response.data.message);
-            return {
-                data: response.data.data
-            };
-        } catch (e) {
-            toast.error(e.response.data.message);
-            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
-            return {
-                data: null
-            };
-        } finally {
-            dispatch(setLoading(false));
-        }
-    }
-);
-
-
 export const getProfiles = createAsyncThunk(
     "profiles/index",
     async (payload, { dispatch }) => {
@@ -120,7 +91,7 @@ export const getProfile = createAsyncThunk(
                     params
                 }
             );
-            dispatch(setSelectedProfile(response.data.data ));
+            dispatch(setSelectedProfile(response.data.data));
             return {
                 data: profile
             }
@@ -172,7 +143,7 @@ export const createCall = createAsyncThunk(
                 }
             );
             toast.success(response.data.message);
-            dispatch(setReloadCalls(true));
+            dispatch(setReloadTable(true));
             return {
                 data: response.data.data
             };
@@ -181,6 +152,26 @@ export const createCall = createAsyncThunk(
             if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
             return {
                 data: null
+            };
+        }
+    }
+);
+
+// delete 
+export const deleteProfile = createAsyncThunk(
+    "profiles/delete",
+    async (id, { dispatch }) => {
+        try {
+            const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`);
+            toast.success(response.data.message);
+            dispatch(setReloadTable(true));
+            return {
+                data: true
+            };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            return {
+                data: false
             };
         }
     }
@@ -198,7 +189,7 @@ export const callProfileSlice = createSlice({
         errors: new ErrorHandler(),
         loadingProfiles: true,
         nowPlaying: null,
-        reloadCalls: false
+        reloadTable: false
     },
     reducers: {
         setLoading: (state, { payload }) => {
@@ -225,8 +216,8 @@ export const callProfileSlice = createSlice({
         setNowPlaying: (state, { payload }) => {
             state.nowPlaying = payload;
         },
-        setReloadCalls: (state, { payload }) => {
-            state.reloadCalls = payload;
+        setReloadTable: (state, { payload }) => {
+            state.reloadTable = payload;
         }
     }
 });
@@ -239,7 +230,7 @@ export const {
     setSelectedProfile,
     setSelectedProfileCalls,
     setNowPlaying,
-    setReloadCalls
+    setReloadTable
 } = callProfileSlice.actions;
 
 export default callProfileSlice.reducer;
