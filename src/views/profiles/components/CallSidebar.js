@@ -6,9 +6,9 @@ import { Button, Label, Form, Input, FormFeedback, Spinner, FormGroup } from "re
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
 import Recorder from './Recorder';
-import { TagsInput } from "react-tag-input-component";
 import { useParams } from "react-router-dom";
 import { createCall, updateCall } from "../../../redux/profiles";
+import TagInput from './TagInput';
 
 export default ({
     open,
@@ -103,7 +103,7 @@ export default ({
                     <Label className="form-label" for="title">
                         Tags<span className="text-danger">*</span>
                     </Label>
-                    <TagsInput
+                    <TagInput
                         value={tags}
                         onChange={setTags}
                         className={{
