@@ -43,6 +43,7 @@ export const updateProfile = createAsyncThunk(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
                 payload,
             );
+            // 
             toast.success(response.data.message);
             return {
                 data: response.data.data
@@ -58,6 +59,35 @@ export const updateProfile = createAsyncThunk(
         }
     }
 );
+
+// delete 
+export const deleteProfile = createAsyncThunk(
+    "profiles/delete",
+    async ({ payload, id }, { dispatch }) => {
+        try {
+            dispatch(setLoading(true));
+            dispatch(setErrors({}));
+            const response = await axios.put(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
+                payload,
+            );
+            // 
+            toast.success(response.data.message);
+            return {
+                data: response.data.data
+            };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+            return {
+                data: null
+            };
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }
+);
+
 
 export const getProfiles = createAsyncThunk(
     "profiles/index",
