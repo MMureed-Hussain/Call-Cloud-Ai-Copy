@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "@components/sidebar";
 import { Button, Label, Form, Input, FormFeedback, Spinner, FormGroup } from "reactstrap";
 
@@ -8,14 +8,15 @@ import { useDispatch, useSelector } from "react-redux";
 import Recorder from './Recorder';
 import { TagsInput } from "react-tag-input-component";
 import { useParams } from "react-router-dom";
-import { createCall } from "../../../redux/profiles";
+import { createCall, updateCall } from "../../../redux/profiles";
 
 export default ({
     open,
     toggleSidebar,
+    call
 }) => {
     // ** States
-    const [audioDetails, setAudioDetails] = useState([
+    const [audioDetails, setAudioDetails] = useState(
         {
             url: null,
             blob: null,
@@ -26,7 +27,7 @@ export default ({
                 s: 0,
             },
         }
-    ]);
+    );
     const params = useParams();
     const [note, setNote] = useState("");
     const [tags, setTags] = useState([]);
@@ -40,20 +41,36 @@ export default ({
         const formData = new FormData();
         formData.append("note", note);
         formData.append("tags", tags);
-        formData.append("voice", audioDetails.blob);
+        if (audioDetails.blob) {
+            formData.append("voice", audioDetails.blob)
+        }
         formData.append("call_profile_id", params.id);
         setFormSubmissionLoader(true);
-        dispatch(createCall({
-            formData,
-            id: params.id
-        })).then(res => {
+        dispatch(
+            call ? updateCall({
+                formData,
+                id: call.id
+            }): createCall({
+                formData,
+                id: params.id
+            })
+        ).then((res) => {
             setFormSubmissionLoader(false)
-            if(res.payload.data){
+            if (res.payload.data) {
                 toggleSidebar();
             }
         })
-    
     };
+    // ** Set call fields in case of edit mode
+    useEffect(() => {
+        if (call) {
+            setNote(call.notes)
+            setAudioDetails( state => {
+                state.url = `${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${call.id}`;
+                return state;
+            })
+        }
+    }, [call])
 
     const handleSidebarClosed = () => {
         setAudioDetails({

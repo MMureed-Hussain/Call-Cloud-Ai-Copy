@@ -21,7 +21,7 @@ import { Link, useParams } from "react-router-dom";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
-import { getCallsByProfileId, setReloadTable } from "../../redux/profiles";
+import { getCallsByProfileId, setReloadTable, deleteResource } from "../../redux/profiles";
 
 export default () => {
     // ** States
@@ -33,6 +33,7 @@ export default () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [calls, setCalls] = useState([]);
     const [pageCount, setPageCount] = useState(1);
+    const [selectedCall, setSelectedCall] = useState(null);
 
     const dispatch = useDispatch();
     const params = useParams();
@@ -124,15 +125,16 @@ export default () => {
                                 <MoreVertical size={15} />
                             </DropdownToggle>
                             <DropdownMenu end>
-                                <Link to={`/profiles/${row.id}/edit`}>
-                                    <DropdownItem>
-                                        <Edit size={15} />
-                                        <span className="align-middle ms-50">Edit</span>
-                                    </DropdownItem>
-                                </Link>
-                                <DropdownItem>
+                                <DropdownItem onClick={() => {
+                                    setSelectedCall(row);
+                                    toggleSidebar();
+                                }}>
+                                    <Edit size={15} />
+                                    <span className="align-middle ms-50">Edit</span>
+                                </DropdownItem>
+                                <DropdownItem onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`))}>
                                     <Trash size={15} />
-                                    <span className="align-middle ms-50" onClick={() => deleteCall(row.id)}>Delete</span>
+                                    <span className="align-middle ms-50">Delete</span>
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
@@ -182,7 +184,7 @@ export default () => {
                 pageCount={pageCount}
                 activeClassName="active"
                 forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-                onPageChange={({ selected }) => console.log(selected)}
+                onPageChange={({ selected }) => loadCalls({ page: selected })}
                 pageClassName={"page-item"}
                 nextLinkClassName={"page-link"}
                 nextClassName={"page-item next"}
@@ -233,14 +235,17 @@ export default () => {
                                 rowsPerPage={rowsPerPage}
                                 handleFilter={handleFilter}
                                 handlePerPage={handlePerPage}
-                                toggleSidebar={toggleSidebar}
+                                toggleSidebar={() => {
+                                    setSelectedCall(null);
+                                    toggleSidebar();
+                                }}
                             />
                         }
                     />
                 </div>
             </Card>
             {sidebarOpen && (
-                <CallSidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+                <CallSidebar open={sidebarOpen} call={selectedCall} toggleSidebar={toggleSidebar} />
             )}
         </>
     );

@@ -128,9 +128,8 @@ export const getCallsByProfileId = createAsyncThunk(
 
 export const createCall = createAsyncThunk(
     "profiles/createCall",
-    async ({ formData, id }, { dispatch, getState }) => {
+    async ({ formData, id }, { dispatch }) => {
         try {
-            const state = getState();
             dispatch(setErrors({}));
             const response = await axios.post(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/calls`,
@@ -156,13 +155,12 @@ export const createCall = createAsyncThunk(
         }
     }
 );
-
 // delete 
-export const deleteProfile = createAsyncThunk(
+export const deleteResource = createAsyncThunk(
     "profiles/delete",
-    async (id, { dispatch }) => {
+    async (url, { dispatch }) => {
         try {
-            const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`);
+            const response = await axios.delete(url);
             toast.success(response.data.message);
             dispatch(setReloadTable(true));
             return {
@@ -176,6 +174,35 @@ export const deleteProfile = createAsyncThunk(
         }
     }
 );
+
+export const updateCall = createAsyncThunk(
+    "profiles/updateCall",
+    async ({ formData, id }, { dispatch }) => {
+        try {
+            dispatch(setErrors({}));
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/update-call/${id}`,
+                formData,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'multipart/form-data'  // multipart/form-data - as we need to upload with voice recording
+                    }
+                }
+            );
+            toast.success(response.data.message);
+            dispatch(setReloadTable(true));
+            return {
+                data: true
+            };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+            return {
+                data: false
+            }
+        }
+    });
 
 // prettier-ignore
 export const callProfileSlice = createSlice({

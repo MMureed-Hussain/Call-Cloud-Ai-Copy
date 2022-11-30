@@ -15,7 +15,7 @@ import {
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfiles, setReloadTable, deleteProfile } from "../../redux/profiles";
+import { getProfiles, setReloadTable, deleteResource } from "../../redux/profiles";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
@@ -55,7 +55,6 @@ export default () => {
   // ** Reload the table when record is deleted
   useEffect(() => {
     if (reloadTable) {
-      console.log("reloadTable")
       dispatch(setReloadTable(false));
       loadProfiles({
         page: currentPage
@@ -117,7 +116,7 @@ export default () => {
                   <Trash size={15} className="me-50" />
                   <span
                     className="align-middle ms-50"
-                    onClick={() => dispatch(deleteProfile(row.id))}
+                    onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${row.id}`))}
                   >
                     Delete
                   </span>
