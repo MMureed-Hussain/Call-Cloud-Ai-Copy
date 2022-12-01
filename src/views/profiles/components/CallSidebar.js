@@ -40,7 +40,7 @@ export default ({
         event.preventDefault();
         const formData = new FormData();
         formData.append("note", note);
-        formData.append("tags", tags);
+        formData.append("tags", JSON.stringify(tags));
         if (audioDetails.blob) {
             formData.append("voice", audioDetails.blob)
         }
@@ -65,10 +65,12 @@ export default ({
     useEffect(() => {
         if (call) {
             setNote(call.notes)
-            setAudioDetails( state => {
+            setAudioDetails(state => {
                 state.url = `${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${call.id}`;
                 return state;
             })
+            let tags = call.tags.map(tag => ({ value: tag.id, label: tag.label }));
+            setTags(tags)
         }
     }, [call])
 
@@ -91,7 +93,7 @@ export default ({
         <Sidebar
             size="lg"
             open={open}
-            title="New Call"
+            title={call ? "Update Call": "New Call"}
             headerClassName="mb-1"
             contentClassName="pt-0"
             toggleSidebar={toggleSidebar}

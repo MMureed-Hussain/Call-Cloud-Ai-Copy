@@ -209,7 +209,7 @@ export default () => {
 
     return (
         <>
-            <Card className="overflow-hidden workspace-list">
+            <Card className="workspace-list">
                 <CardHeader className="py-1">
                     <CardTitle tag="h4">Calls</CardTitle>
                 </CardHeader>
