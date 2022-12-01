@@ -108,15 +108,16 @@ export default () => {
                     <span className="align-middle ms-50">View</span>
                   </DropdownItem>
                 </Link>
-                <DropdownItem>
-                  <Edit size={15} />
-                  <span className="align-middle ms-50">Edit</span>
-                </DropdownItem>
-                <DropdownItem>
+                <Link to={`/profiles/${row.id}/edit`}>
+                  <DropdownItem>
+                    <Edit size={15} />
+                    <span className="align-middle ms-50">Edit</span>
+                  </DropdownItem>
+                </Link>
+                <DropdownItem onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${row.id}`))}>
                   <Trash size={15} className="me-50" />
                   <span
                     className="align-middle ms-50"
-                    onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${row.id}`))}
                   >
                     Delete
                   </span>

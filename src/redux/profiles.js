@@ -93,7 +93,7 @@ export const getProfile = createAsyncThunk(
             );
             dispatch(setSelectedProfile(response.data.data));
             return {
-                data: profile
+                data: response.data.data
             }
         } catch (e) {
             toast.error(e.response.data.message);

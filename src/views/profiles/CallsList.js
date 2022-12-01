@@ -145,7 +145,6 @@ export default () => {
     ];
 
     const handleSort = (column, sortDirection) => {
-        console.log(column, sortDirection);
         setSort(sortDirection);
         setSortColumn(column.sortField);
         loadCalls({
