@@ -11,7 +11,7 @@ export default ({ callId }) => {
     const [playBackRate, setPlayBackRate] = useState(1);
     const nowPlaying = useSelector((state) => state.profiles.nowPlaying);
     const audioElement = useRef();
-    const playBackRateOptions = [0.25, 0.5, 1, 1.5, 1.75, 2];
+    const playBackRateOptions = [1, 1.2, 1.6, 2];
 
     useEffect(() => {
         if (nowPlaying && nowPlaying != callId) {
@@ -46,9 +46,9 @@ export default ({ callId }) => {
                             borderColor: "#f6f6f6",
                             borderRadius: "15px"
                         }} outline color='light' size='sm'>
-                            <span className="me-1">Playback {playBackRate}x</span> <ChevronDown size={15}/>
+                            <span className="me-1">Play speed {playBackRate}x</span> <ChevronDown size={15}/>
                         </DropdownToggle>
-                        <DropdownMenu>
+                        <DropdownMenu container="body">
                             {
                                 playBackRateOptions.map(option => {
                                     return (<DropdownItem key={`playback-option-${option}`} onClick={() => setPlayBackRate(option)}>{`${option}x`}</DropdownItem>)

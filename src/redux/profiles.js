@@ -180,15 +180,9 @@ export const updateCall = createAsyncThunk(
     async ({ formData, id }, { dispatch }) => {
         try {
             dispatch(setErrors({}));
-            const response = await axios.post(
+            const response = await axios.put(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/update-call/${id}`,
-                formData,
-                {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'multipart/form-data'  // multipart/form-data - as we need to upload with voice recording
-                    }
-                }
+                formData
             );
             toast.success(response.data.message);
             dispatch(setReloadTable(true));
