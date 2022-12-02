@@ -40,8 +40,8 @@ export default ({ open, toggleSidebar, call }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const formData = new FormData();
         if (!call) {
-            const formData = new FormData();
             formData.append("note", note);
             formData.append("tags", JSON.stringify(tags));
             formData.append("voice", audioDetails.blob);

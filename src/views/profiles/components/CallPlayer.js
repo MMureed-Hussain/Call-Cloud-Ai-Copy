@@ -6,7 +6,7 @@ import { UncontrolledButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle 
 import { ChevronDown } from "react-feather"
 import { useState } from "react";
 
-export default ({ callId }) => {
+export default ({ callId, container = "body" }) => {
     const dispatch = useDispatch();
     const [playBackRate, setPlayBackRate] = useState(1);
     const nowPlaying = useSelector((state) => state.profiles.nowPlaying);
@@ -48,7 +48,7 @@ export default ({ callId }) => {
                         }} outline color='light' size='sm'>
                             <span className="me-1">Play speed {playBackRate}x</span> <ChevronDown size={15}/>
                         </DropdownToggle>
-                        <DropdownMenu container="body">
+                        <DropdownMenu container={container}>
                             {
                                 playBackRateOptions.map(option => {
                                     return (<DropdownItem key={`playback-option-${option}`} onClick={() => setPlayBackRate(option)}>{`${option}x`}</DropdownItem>)

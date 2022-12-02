@@ -17,11 +17,13 @@ import {
 import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
 import { getCallsByProfileId, setReloadTable, deleteResource } from "../../redux/profiles";
+import CallViewSidebar from "./components/CallViewSidebar";
+import UserInfo from "./components/UserInfo"
 
 export default () => {
     // ** States
@@ -34,6 +36,8 @@ export default () => {
     const [calls, setCalls] = useState([]);
     const [pageCount, setPageCount] = useState(1);
     const [selectedCall, setSelectedCall] = useState(null);
+
+    const [viewSidebarOpen, setViewSidebarOpen] = useState(false);
 
     const dispatch = useDispatch();
     const params = useParams();
@@ -79,7 +83,7 @@ export default () => {
         {
             name: "Id",
             sortable: true,
-            minWidth: "172px",
+            minWidth: "50px",
             sortField: "id",
             selector: (row) => row.id,
             cell: (row) => (
@@ -102,9 +106,12 @@ export default () => {
             name: "Created By",
             sortable: true,
             sortField: "created_by",
-            minWidth: "172px",
+            minWidth: "250px",
             selector: (row) => row.created_by,
-            cell: (row) => row.created_by.first_name,
+            cell: (row) => <UserInfo
+                name={`${row.created_by.first_name} ${row.created_by.last_name}`}
+                email={row.created_by.email}
+            />,
         },
         {
             name: "Created At",
@@ -125,6 +132,13 @@ export default () => {
                                 <MoreVertical size={15} />
                             </DropdownToggle>
                             <DropdownMenu end>
+                                <DropdownItem onClick={() => {
+                                    setSelectedCall(row);
+                                    toggleViewSidebar();
+                                }}>
+                                    <Eye size={15} />
+                                    <span className="align-middle ms-50">View</span>
+                                </DropdownItem>
                                 <DropdownItem onClick={() => {
                                     setSelectedCall(row);
                                     toggleSidebar();
@@ -172,6 +186,10 @@ export default () => {
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
+    };
+   
+    const toggleViewSidebar = () => {
+        setViewSidebarOpen(!viewSidebarOpen);
     };
 
     // ** Custom Pagination
@@ -245,6 +263,9 @@ export default () => {
             </Card>
             {sidebarOpen && (
                 <CallSidebar open={sidebarOpen} call={selectedCall} toggleSidebar={toggleSidebar} />
+            )}
+             {viewSidebarOpen && (
+                <CallViewSidebar open={viewSidebarOpen} call={selectedCall} toggleSidebar={toggleViewSidebar} />
             )}
         </>
     );
