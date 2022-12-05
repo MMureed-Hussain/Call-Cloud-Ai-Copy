@@ -54,6 +54,7 @@ const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
 const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
+const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 
 
 // ** Merge Routes
@@ -133,13 +134,6 @@ const Routes = [
       isPrivate: true,
     },
   },
-  // {
-  //   path: "/booking-pages",
-  //   element: <BookingPages />,
-  //   meta: {
-  //     isPrivate: true,
-  //   },
-  // },
   {
     path: "/profiles",
     element: <CallProfiles />,
@@ -168,13 +162,13 @@ const Routes = [
       isPrivate: true,
     },
   },
-  // {
-  //   path: "/new-booking-page",
-  //   element: <CreateBookingPage />,
-  //   meta: {
-  //     isPrivate: true,
-  //   },
-  // },
+  {
+    path: "/pipelines",
+    element: <Pipelines />,
+    meta: {
+      isPrivate: true,
+    },
+  },
   {
     path: "/login",
     element: <Login />,

@@ -1,4 +1,4 @@
-import { Layers, Home, Users, Bookmark, Phone } from "react-feather";
+import { Layers, Home, Users, Bookmark, Phone, AlignJustify } from "react-feather";
 
 export default [
   {
@@ -30,5 +30,11 @@ export default [
     title: "Call Profiles",
     icon: <Phone size={20} />,
     navLink: "/profiles",
+  },
+  {
+    id: "pipelines",
+    title: "Pipelines",
+    icon: <Layers size={20}/>,
+    navLink: "/pipelines",
   },
 ];
