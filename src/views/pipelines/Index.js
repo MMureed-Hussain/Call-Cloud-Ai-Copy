@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // ** Third Party Components
 import { ReactSortable } from 'react-sortablejs'
 
@@ -7,34 +7,30 @@ import { ReactSortable } from 'react-sortablejs'
 import { Card, CardHeader, CardTitle, CardBody, CardText, ListGroupItem, Button, UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { MoreVertical, Edit, Trash } from "react-feather"
 import PipelineSidebar from './components/PipelineSidebar'
-
-const listItems = [
-    {
-        id: '1',
-        name: 'New Call',
-    },
-    {
-        id: '2',
-        name: 'Pending',
-    },
-    {
-        id: '3',
-        name: 'Rejected',
-    },
-    {
-        id: '4',
-        name: 'Repeated',
-    },
-    {
-        id: '5',
-        name: 'Urgent',
-    },
-]
+import { useDispatch, useSelector } from "react-redux";
+import { getPipelines, setPipelines } from "../../redux/pipelines";
+import Skeleton from "react-loading-skeleton";
 
 export default () => {
     // ** State
-    const [pipelines, setPipelines] = useState(listItems);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [selectedPipeline, setSelectedPipeline] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const pipelines = useSelector(state => state.pipelines.pipelines);
+    const currentWorkspace = useSelector(state => state.workspaces.currentWorkspace);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (currentWorkspace) {
+            setIsLoading(true);
+            dispatch(getPipelines(currentWorkspace.id))
+        }
+    }, [currentWorkspace])
+
+    useEffect(() => {
+        setIsLoading(false);
+    }, [pipelines])
 
     const onUpdate = () => {
         console.log("onUpdate");
@@ -43,6 +39,15 @@ export default () => {
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
+    
+    if (isLoading) {
+        return (
+            <div className="vh-100">
+                <Skeleton height={"15%"} />
+                <Skeleton height={"7%"} count={9} />
+            </div>
+        );
+    }
 
     return (
         <>
@@ -59,7 +64,7 @@ export default () => {
                     <CardText>
                         Click on the row and sort up or down to sort pipelines.
                     </CardText>
-                    <ReactSortable onUpdate={onUpdate} tag='ul' animation={300} className='list-group' list={pipelines} setList={setPipelines} delayOnTouchStart={true} delay={2}>
+                    <ReactSortable onUpdate={onUpdate} tag='ul' animation={300} className='list-group' list={pipelines} setList={(data) => dispatch(setPipelines(data))} delayOnTouchStart={true} delay={2}>
                         {pipelines.map(item => {
                             return (
                                 <ListGroupItem className='draggable' key={item.name}>
@@ -71,7 +76,10 @@ export default () => {
                                                     <MoreVertical size={15} />
                                                 </DropdownToggle>
                                                 <DropdownMenu end>
-                                                    <DropdownItem>
+                                                    <DropdownItem onClick={() => {
+                                                        setSelectedPipeline(item);
+                                                        toggleSidebar();
+                                                    }}>
                                                         <Edit size={15} />
                                                         <span className="align-middle ms-50">Edit</span>
                                                     </DropdownItem>
@@ -94,7 +102,7 @@ export default () => {
                 </CardBody>
             </Card>
             {sidebarOpen && (
-                <PipelineSidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+                <PipelineSidebar open={sidebarOpen} toggleSidebar={toggleSidebar} pipeline={selectedPipeline} />
             )}
         </>
 
