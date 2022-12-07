@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 // ** Third Party Components
 import { ReactSortable } from "react-sortablejs";
 
@@ -24,14 +24,17 @@ import {
   getPipelines,
   setPipelines,
   deletePipeline,
+  updatePipelinesOrder,
 } from "../../redux/pipelines";
 import Skeleton from "react-loading-skeleton";
+import { debounce } from "lodash";
 
 export default () => {
   // ** State
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  //   const [isEnd, setIsEnd] = useState(false);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
@@ -50,9 +53,19 @@ export default () => {
     setIsLoading(false);
   }, [pipelines]);
 
-  const onUpdate = () => {
-    console.log("onUpdate");
+  const onUpdate = (data) => {
+    if (data.length) {
+      data = data.map((item, index) => ({
+        id: item.id,
+        workspace_id: item.workspace_id,
+        name: item.name,
+        order: index + 1,
+      }));
+      dispatch(updatePipelinesOrder(data));
+    }
   };
+
+  const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -87,12 +100,14 @@ export default () => {
             Click on the row and sort up or down to sort pipelines.
           </CardText>
           <ReactSortable
-            onUpdate={onUpdate}
             tag="ul"
             animation={300}
             className="list-group"
             list={pipelines}
-            setList={(data) => dispatch(setPipelines(data))}
+            setList={(data) => {
+              dispatch(setPipelines(data));
+              _onUpdate(data);
+            }}
             delayOnTouchStart={true}
             delay={2}
           >
@@ -116,12 +131,8 @@ export default () => {
                             <Edit size={15} />
                             <span className="align-middle ms-50">Edit</span>
                           </DropdownItem>
-
                           <DropdownItem
-                            onClick={() => dispatch(deletePipeline(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines/${item.id}`
-                                )
-                              )
-                            }
+                            onClick={() => dispatch(deletePipeline(item.id))}
                           >
                             <Trash size={15} className="me-50" />
                             <span className="align-middle ms-50">Delete</span>

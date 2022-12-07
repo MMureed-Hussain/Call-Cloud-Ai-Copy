@@ -15,7 +15,6 @@ export const pipelinesSlice = createSlice({
   initialState: {
     errors: new ErrorHandler(),
     pipelines: [],
-    reloadTable: false
   },
   reducers: {
     setErrors: (state, { payload }) => {
@@ -34,9 +33,9 @@ export const pipelinesSlice = createSlice({
       pipelines[index].name = payload.name;
       state.pipelines = pipelines;
     },
-    setReloadTable: (state, { payload }) => {
-        state.reloadTable = payload;
-    }
+    deleteResource: (state, { payload }) => {
+      state.pipelines = state.pipelines.filter((p) => p.id != payload);
+    },
   },
 });
 
@@ -94,15 +93,13 @@ export const updatePipeline = createAsyncThunk(
   }
 );
 
-// Delete
 export const deletePipeline = createAsyncThunk(
   "pipelines/delete",
-  async (url, { dispatch }) => {
+  async (id, { dispatch }) => {
     try {
-      const response = await axios.delete(url);
+      const response = await axios.delete(`/${id}`);
       toast.success(response.data.message);
-      dispatch(setReloadTable(true));
-    //   window.location.reload(false);
+      dispatch(deleteResource(id));
       return {
         data: true,
       };
@@ -115,8 +112,32 @@ export const deletePipeline = createAsyncThunk(
   }
 );
 
-export const { setErrors, setPipelines, setNewPipeline, setUpdatedPipeline, setReloadTable } =
-  pipelinesSlice.actions;
+export const updatePipelinesOrder = createAsyncThunk(
+  "pipelines/updateOrder",
+  async (payload) => {
+    try {
+      const response = await axios.post(`/update-order`, {
+        data: payload
+      });
+      toast.success(response.data.message);
+      return {
+        data: true,
+      };
+    } catch (e) {
+      toast.error(e.response.data.message);
+      return {
+        data: false,
+      };
+    }
+  }
+);
+
+export const {
+  setErrors,
+  setPipelines,
+  setNewPipeline,
+  setUpdatedPipeline,
+  deleteResource,
+} = pipelinesSlice.actions;
 
 export default pipelinesSlice.reducer;
-
