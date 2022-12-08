@@ -10,8 +10,9 @@ import feedbacks from "./feedbacks";
 import notifications from "./notifications";
 import profiles from "./profiles";
 import pipelines from "./pipelines";
+import statuses from "./statuses";
 
-const rootReducer = { navbar, layout, auth, workspaces, plans, feedbacks, notifications, bookingPages, profiles, pipelines };
+const rootReducer = { navbar, layout, auth, workspaces, plans, feedbacks, notifications, bookingPages, profiles, pipelines, statuses};
 
 
 export default rootReducer;

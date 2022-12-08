@@ -37,4 +37,10 @@ export default [
     icon: <Layers size={20}/>,
     navLink: "/pipelines",
   },
+  {
+    id: "callStatuses",
+    title: "Call Statuses",
+    icon: <AlignJustify size={20}/>,
+  navLink: "/statuses",
+  },
 ];
