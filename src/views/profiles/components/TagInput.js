@@ -2,6 +2,7 @@
 import React from 'react';
 import {debounce} from 'lodash';
 import AsyncSelect from 'react-select/async-creatable';
+import { selectThemeColors } from "@utils";
 
 import axios from "axios";
 axios.defaults.withCredentials = true;
@@ -17,16 +18,17 @@ const _loadSuggestions = async (query, callback) => {
     callback(tags)
 };
 
-const loadSuggestions = debounce(_loadSuggestions, 300);
-
-export default ({onChange, value}) => {
+export default ({onChange, value, className = "react-select"}) => {
     return (
-        <AsyncSelect
-            value={value}
-            loadOptions={_loadSuggestions}
-            isMulti
-            placeholder="Search or create new tag"
-            onChange={onChange}
-        />
-    )
+      <AsyncSelect
+        theme={selectThemeColors}
+        classNamePrefix="select"
+        className={className}
+        value={value}
+        loadOptions={_loadSuggestions}
+        isMulti
+        placeholder="Search or create new tag"
+        onChange={onChange}
+      />
+    );
 } 

@@ -13,6 +13,7 @@ import {
     DropdownItem,
     CardHeader,
     CardTitle,
+    Badge
 } from "reactstrap";
 import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
@@ -103,6 +104,14 @@ export default () => {
             },
         },
         {
+            name: "Status",
+            sortable: false,
+            minWidth: "172px",
+            cell: (row) => {
+              return row.call_status ? <Badge color="primary">{row.call_status.name}</Badge> : "-"
+            },
+          },
+        {
             name: "Created By",
             sortable: true,
             sortField: "created_by",
@@ -124,6 +133,7 @@ export default () => {
         {
             name: "Actions",
             allowOverflow: true,
+            right: true,
             cell: (row) => {
                 return (
                     <div className="d-flex">
@@ -242,6 +252,7 @@ export default () => {
                         columns={columns}
                         onSort={handleSort}
                         defaultSortAsc={false}
+                        style={{ width: "80vw" }} 
                         sortIcon={<ChevronDown />}
                         className="react-dataTable"
                         paginationComponent={CustomPagination}

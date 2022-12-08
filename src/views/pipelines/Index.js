@@ -34,7 +34,6 @@ export default () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  //   const [isEnd, setIsEnd] = useState(false);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace

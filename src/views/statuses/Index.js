@@ -1,8 +1,9 @@
 // ** React Imports
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // ** Third Party Components
 import { ReactSortable } from "react-sortablejs";
+import Skeleton from "react-loading-skeleton";
 // ** Reactstrap Imports
 import {
   Card,
@@ -19,23 +20,26 @@ import {
 } from "reactstrap";
 import { MoreVertical, Edit, Trash } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { getStatuses, deleteStatus } from "../../redux/statuses";
-import CallSliderSidebar from "./components/CallStatusesSidebar";
+import { getStatuses, deleteStatus, setStatuses, updateStatusOrder } from "../../redux/statuses";
+import CallStatusSidebar from "./components/CallStatusSidebar";
+import { debounce } from "lodash";
 
 export default () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedCallStatus, setSelectedCallStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const statuses = useSelector((state) => state.statuses.statuses);
-
+  const currentWorkspace = useSelector(
+    (state) => state.workspaces.currentWorkspace
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // if (currentWorkspace) {
-    setIsLoading(true);
-    dispatch(getStatuses());
-    // }
-  }, []);
+    if (currentWorkspace) {
+      setIsLoading(true);
+      dispatch(getStatuses(currentWorkspace.id));
+    }
+  }, [currentWorkspace]);
 
   useEffect(() => {
     setIsLoading(false);
@@ -45,6 +49,19 @@ export default () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const onUpdate = (data) => {
+    if (data.length) {
+      data = data.map((item, index) => ({
+        id: item.id,
+        workspace_id: item.workspace_id,
+        name: item.name,
+        order: index + 1,
+      }));
+      dispatch(updateStatusOrder(data));
+    }
+  };
+
+  const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
   if (isLoading) {
     return (
       <div className="vh-100">
@@ -65,68 +82,67 @@ export default () => {
               color="primary"
               onClick={toggleSidebar}
             >
-              Add Call-Status
+              Add Status
             </Button>
           </div>
         </CardHeader>
         <CardBody>
           <CardText>
-            Click and Check the status of each call in Call-Status.
+            Click on the row and sort up or down to sort statuses.
           </CardText>
-          {/* <ReactSortable
+          <ReactSortable
             tag="ul"
             animation={300}
             className="list-group"
             list={statuses}
             setList={(data) => {
-              dispatch(setPipelines(data));
+              dispatch(setStatuses(data));
               _onUpdate(data);
             }}
             delayOnTouchStart={true}
             delay={2}
-          > */}
-          {statuses.map((item) => {
-            return (
-              <ListGroupItem className="draggable" key={item.name}>
-                <div className="d-flex justify-content-between">
-                  <h5 className="mt-0">{item.name}</h5>
-                  <h5 className="mt-0">{item.order}</h5>
-                  <div className="d-flex">
-                    <UncontrolledDropdown>
-                      <DropdownToggle className="pe-1" tag="span">
-                        <MoreVertical size={15} />
-                      </DropdownToggle>
-                      <DropdownMenu end>
-                        <DropdownItem
-                          onClick={() => {
-                            setSelectedCallStatus(item);
-                            toggleSidebar();
-                          }}
-                        >
-                          <Edit size={15} />
-                          <span className="align-middle ms-50">Edit</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => dispatch(deleteStatus(item.id))}
-                        >
-                          <Trash size={15} className="me-50" />
-                          <span className="align-middle ms-50">Delete</span>
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
+          >
+            {statuses.map((item) => {
+              return (
+                <ListGroupItem className="draggable" key={item.name}>
+                  <div className="d-flex justify-content-between">
+                    <h5 className="mt-0">{item.name}</h5>
+                    <div className="d-flex">
+                      <UncontrolledDropdown>
+                        <DropdownToggle className="pe-1" tag="span">
+                          <MoreVertical size={15} />
+                        </DropdownToggle>
+                        <DropdownMenu end>
+                          <DropdownItem
+                            onClick={() => {
+                              setSelectedCallStatus(item);
+                              toggleSidebar();
+                            }}
+                          >
+                            <Edit size={15} />
+                            <span className="align-middle ms-50">Edit</span>
+                          </DropdownItem>
+                          <DropdownItem
+                            onClick={() => dispatch(deleteStatus(item.id))}
+                          >
+                            <Trash size={15} className="me-50" />
+                            <span className="align-middle ms-50">Delete</span>
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
+                    </div>
                   </div>
-                </div>
-              </ListGroupItem>
-            );
-          })}
-          {/* </ReactSortable> */}
+                </ListGroupItem>
+              );
+            })}
+          </ReactSortable>
         </CardBody>
       </Card>
       {sidebarOpen && (
-        <CallSliderSidebar
+        <CallStatusSidebar
           open={sidebarOpen}
           toggleSidebar={toggleSidebar}
-          pipeline={selectedCallStatus}
+          status={selectedCallStatus}
         />
       )}
     </>

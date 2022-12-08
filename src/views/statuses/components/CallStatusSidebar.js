@@ -17,12 +17,14 @@ import { createStatus, setErrors, updateStatus } from "../../../redux/statuses";
 
 export default ({ open, toggleSidebar, status }) => {
   const [name, setName] = useState("");
-  const [order, setOrder] = useState("");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
-
   //store
-  const dispatch = useDispatch();
   const errors = useSelector((state) => state.statuses.errors);
+  const currentWorkspace = useSelector(
+    (state) => state.workspaces.currentWorkspace
+  );
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (status) {
@@ -39,13 +41,12 @@ export default ({ open, toggleSidebar, status }) => {
         ? updateStatus({
             formData: {
               name,
-              order,
             },
             id: status.id,
           })
         : createStatus({
             name,
-            order,
+            workspace_id: currentWorkspace.id,
           })
     ).then((res) => {
       setFormSubmissionLoader(false);
@@ -82,24 +83,6 @@ export default ({ open, toggleSidebar, status }) => {
           />
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
-          )}
-        </FormGroup>
-        <FormGroup>
-          <Label className="form-label" for="title">
-            Order<span className="text-danger">*</span>
-          </Label>
-          <Input
-            placeholder="Enter Order here"
-            value={order}
-            className={
-              errors.has("name") ? "is-invalid form-control" : "form-control"
-            }
-            onChange={(e) => {
-              setOrder(e.target.value);
-            }}
-          />
-          {errors.has("order") && (
-            <FormFeedback>{errors.get("order")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary">
