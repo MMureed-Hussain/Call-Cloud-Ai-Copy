@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Card,
   Form,
@@ -17,13 +17,17 @@ import {
 import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
 import { createProfile, getProfile, updateProfile } from "../../redux/profiles";
+import { getPipelines } from "../../redux/pipelines";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'react-phone-input-2/lib/style.css'
 import PhoneInput from "react-phone-input-2";
+import Select from "react-select"
+import { selectThemeColors } from '@utils'
 
 export default () => {
   const [phone, setPhone] = useState("");
   const [profileName, setProfileName] = useState("");
+  const [pipeline, setPipeline] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,6 +35,12 @@ export default () => {
 
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
+  const pipelines = useSelector((state) => state.pipelines.pipelines);
+
+  const pipelinesOptions = useMemo(() => {
+    return pipelines.map((p) => ({ value: p.id, label: p.name }));
+  }, [pipelines]);
+  
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
@@ -47,9 +57,13 @@ export default () => {
           let { data } = res.payload;
           setPhone(data.phone);
           setProfileName(data.name);
+          if (data.pipeline) {
+            setPipeline({ value: data.pipeline.id, label: data.pipeline.name });
+          }
         }
       });
     }
+    dispatch(getPipelines(currentWorkspace.id));
   }, [params.id]);
 
   const handleSubmit = (event) => {
@@ -59,7 +73,8 @@ export default () => {
         ? updateProfile({
           payload: {
             name: profileName,
-            phone: phone, 
+            phone: phone,
+            pipeline: pipeline?.value
           },
           id: params.id,
         })
@@ -67,6 +82,7 @@ export default () => {
           name: profileName,
           phone: phone,
           workspace_id: currentWorkspace.id,
+          pipeline: pipeline?.value
         })
     ).then((res) => {
       if (res.payload.data) {
@@ -112,13 +128,9 @@ export default () => {
                   Phone Number<span className="text-danger">*</span>
                 </Label>
                 <PhoneInput
-                  country={'us'}
+                  country={"us"}
                   value={phone}
-                  containerClass= {
-                    errors.has("phone")
-                    ? "is-invalid"
-                    : ""
-                  }
+                  containerClass={errors.has("phone") ? "is-invalid" : ""}
                   inputClass={
                     errors.has("phone")
                       ? "is-invalid form-control w-100"
@@ -129,6 +141,29 @@ export default () => {
                 />
                 {errors.has("phone") && (
                   <FormFeedback>{errors.get("phone")}</FormFeedback>
+                )}
+              </FormGroup>
+            </Col>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label className="form-label" for="phone-number">
+                  Pipeline<span className="text-danger">*</span>
+                </Label>
+                <Select
+                  value={pipeline}
+                  theme={selectThemeColors}
+                  classNamePrefix="select"
+                  className={
+                    errors.has("pipeline")
+                      ? "is-invalid react-select"
+                      : "react-select"
+                  }
+                  placeholder="Select pipeline"
+                  options={pipelinesOptions}
+                  onChange={setPipeline}
+                />
+                {errors.has("pipeline") && (
+                  <FormFeedback>{errors.get("pipeline")}</FormFeedback>
                 )}
               </FormGroup>
             </Col>

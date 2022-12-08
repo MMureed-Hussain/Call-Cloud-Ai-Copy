@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Card, CardBody, CardText } from 'reactstrap';
+import { Card, CardBody, CardText, Badge } from 'reactstrap';
 import moment from 'moment';
 
 const ProfileAbout = ({ data }) => {
@@ -11,6 +11,10 @@ const ProfileAbout = ({ data }) => {
                 <div className='mt-2'>
                     <h5 className='mb-75'>Phone:</h5>
                     <CardText>{data.phone}</CardText>
+                </div>
+                <div className='mt-2'>
+                    <h5 className='mb-75'>Pipeline:</h5>
+                    {data.pipeline ? <Badge color="primary">{data.pipeline.name}</Badge> : "-"}
                 </div>
                 <div className='mt-2'>
                     <h5 className='mb-75'>Created At:</h5>

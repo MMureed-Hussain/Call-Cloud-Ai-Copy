@@ -11,6 +11,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Badge,
 } from "reactstrap";
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
@@ -90,6 +91,14 @@ export default () => {
       sortField: "phone",
       selector: (row) => row.phone,
       cell: (row) => row.phone,
+    },
+    {
+      name: "Pipeline",
+      sortable: false,
+      minWidth: "172px",
+      cell: (row) => {
+        return row.pipeline ? <Badge color="primary">{row.pipeline.name}</Badge> : "-"
+      },
     },
     {
       name: "Actions",

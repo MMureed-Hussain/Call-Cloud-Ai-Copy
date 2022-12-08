@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React from 'react';
 import {debounce} from 'lodash';
 import AsyncSelect from 'react-select/async-creatable';
 
