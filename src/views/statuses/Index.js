@@ -53,8 +53,6 @@ export default () => {
     if (data.length) {
       data = data.map((item, index) => ({
         id: item.id,
-        workspace_id: item.workspace_id,
-        name: item.name,
         order: index + 1,
       }));
       dispatch(updateStatusOrder(data));

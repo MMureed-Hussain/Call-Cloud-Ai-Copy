@@ -142,13 +142,6 @@ const Routes = [
     },
   },
   {
-    path: "/profiles/filter-value/:id",
-    // element: </>,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
     path: "/profiles/create",
     element: <UpdateOrCreateCallProfile />,
     meta: {
