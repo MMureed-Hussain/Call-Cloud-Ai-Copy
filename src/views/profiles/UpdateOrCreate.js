@@ -40,7 +40,7 @@ export default () => {
   const pipelinesOptions = useMemo(() => {
     return pipelines.map((p) => ({ value: p.id, label: p.name }));
   }, [pipelines]);
-  
+
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );

@@ -211,7 +211,8 @@ export const callProfileSlice = createSlice({
         loadingProfiles: true,
         nowPlaying: null,
         reloadTable: false,
-        filterValue: {label: "None", value: null}
+        filterValue: { label: "None", value: null },
+        callFilterValue: { label: "None", value: null },
     },
     reducers: {
         setLoading: (state, { payload }) => {
@@ -241,8 +242,11 @@ export const callProfileSlice = createSlice({
         setReloadTable: (state, { payload }) => {
             state.reloadTable = payload;
         },
-        setFilterValue: (state, {payload}) =>{
+        setFilterValue: (state, { payload }) => {
             state.filterValue = payload
+        },
+        setCallFilterValue: (state, { payload }) => {
+            state.callFilterValue = payload
         }
     }
 });
@@ -256,7 +260,8 @@ export const {
     setSelectedProfileCalls,
     setNowPlaying,
     setReloadTable,
-    setFilterValue
+    setFilterValue,
+    setCallFilterValue
 } = callProfileSlice.actions;
 
 export default callProfileSlice.reducer;

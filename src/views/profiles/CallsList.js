@@ -13,7 +13,7 @@ import {
     DropdownItem,
     CardHeader,
     CardTitle,
-    Badge
+    Badge,
 } from "reactstrap";
 import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,9 +22,14 @@ import { useParams } from "react-router-dom";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
-import { getCallsByProfileId, setReloadTable, deleteResource } from "../../redux/profiles";
+import {
+    getCallsByProfileId,
+    setReloadTable,
+    deleteResource,
+} from "../../redux/profiles";
 import CallViewSidebar from "./components/CallViewSidebar";
-import UserInfo from "./components/UserInfo"
+import UserInfo from "./components/UserInfo";
+import { getStatuses } from "../../redux/statuses";
 
 export default () => {
     // ** States
@@ -43,33 +48,59 @@ export default () => {
     const dispatch = useDispatch();
     const params = useParams();
     const reloadTable = useSelector((state) => state.profiles.reloadTable);
+    const filterValue = useSelector((state) => state.profiles.callFilterValue);
+    const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
 
     useEffect(() => {
         loadCalls({
             page: 1,
         });
-    }, []);
+        dispatch(getStatuses(currentWorkspace.id))
+    }, [currentWorkspace]);
 
     useEffect(() => {
         if (reloadTable) {
             dispatch(setReloadTable(false));
             loadCalls({
-                page: currentPage
+                page: currentPage,
             });
         }
     }, [reloadTable]);
+   
+    useEffect(() => {
+        if (reloadTable) {
+            dispatch(setReloadTable(false));
+            loadCalls({
+                page: currentPage,
+            });
+        }
+    }, [filterValue]);
+
+    useEffect(() => {
+        if (filterValue) {
+            loadCalls({
+                filter: "status",
+                filter_value: filterValue.value,
+                page: 1,
+            });
+        }
+    }, [filterValue]);
 
     const loadCalls = (options) => {
+        let queryParams = {
+            records_per_page: rowsPerPage,
+            page: currentPage,
+            sort_by: sortColumn,
+            sort,
+            ...options
+        };
+        if (filterValue) {
+            queryParams = { ...queryParams, filter: "status", filter_value: filterValue.value }
+        }
         dispatch(
             getCallsByProfileId({
                 id: params.id,
-                params: {
-                    records_per_page: rowsPerPage,
-                    page: currentPage,
-                    sort_by: sortColumn,
-                    sort,
-                    ...options,
-                },
+                params: queryParams,
             })
         ).then(({ payload }) => {
             if (payload.data !== null) {
@@ -108,19 +139,25 @@ export default () => {
             sortable: false,
             minWidth: "172px",
             cell: (row) => {
-              return row.call_status ? <Badge color="primary">{row.call_status.name}</Badge> : "-"
+                return row.call_status ? (
+                    <Badge color="primary">{row.call_status.name}</Badge>
+                ) : (
+                    "-"
+                );
             },
-          },
+        },
         {
             name: "Created By",
             sortable: true,
             sortField: "created_by",
             minWidth: "250px",
             selector: (row) => row.created_by,
-            cell: (row) => <UserInfo
-                name={`${row.created_by.first_name} ${row.created_by.last_name}`}
-                email={row.created_by.email}
-            />,
+            cell: (row) => (
+                <UserInfo
+                    name={`${row.created_by.first_name} ${row.created_by.last_name}`}
+                    email={row.created_by.email}
+                />
+            ),
         },
         {
             name: "Created At",
@@ -141,22 +178,34 @@ export default () => {
                             <DropdownToggle className="pe-1" tag="span">
                                 <MoreVertical size={15} />
                             </DropdownToggle>
-                            <DropdownMenu end>
-                                <DropdownItem onClick={() => {
-                                    setSelectedCall(row);
-                                    toggleViewSidebar();
-                                }}>
+                            <DropdownMenu container={'body'} end>
+                                <DropdownItem
+                                    onClick={() => {
+                                        setSelectedCall(row);
+                                        toggleViewSidebar();
+                                    }}
+                                >
                                     <Eye size={15} />
                                     <span className="align-middle ms-50">View</span>
                                 </DropdownItem>
-                                <DropdownItem onClick={() => {
-                                    setSelectedCall(row);
-                                    toggleSidebar();
-                                }}>
+                                <DropdownItem
+                                    onClick={() => {
+                                        setSelectedCall(row);
+                                        toggleSidebar();
+                                    }}
+                                >
                                     <Edit size={15} />
                                     <span className="align-middle ms-50">Edit</span>
                                 </DropdownItem>
-                                <DropdownItem onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`))}>
+                                <DropdownItem
+                                    onClick={() =>
+                                        dispatch(
+                                            deleteResource(
+                                                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`
+                                            )
+                                        )
+                                    }
+                                >
                                     <Trash size={15} />
                                     <span className="align-middle ms-50">Delete</span>
                                 </DropdownItem>
@@ -197,7 +246,7 @@ export default () => {
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
-   
+
     const toggleViewSidebar = () => {
         setViewSidebarOpen(!viewSidebarOpen);
     };
@@ -236,14 +285,23 @@ export default () => {
 
     return (
         <>
-            <Card className="workspace-list">
+            <Card>
                 <CardHeader className="py-1">
                     <CardTitle tag="h4">Calls</CardTitle>
                 </CardHeader>
+                <CallListHeader
+                    searchTerm={searchTerm}
+                    rowsPerPage={rowsPerPage}
+                    handleSearch={handleFilter}
+                    handlePerPage={handlePerPage}
+                    toggleSidebar={() => {
+                        setSelectedCall(null);
+                        toggleSidebar();
+                    }}
+                />
                 <div className="react-dataTable">
                     <DataTable
                         noHeader
-                        subHeader
                         sortServer
                         pagination
                         responsive
@@ -252,31 +310,27 @@ export default () => {
                         columns={columns}
                         onSort={handleSort}
                         defaultSortAsc={false}
-                        style={{ width: "80vw" }} 
+                        style={{ width: "80vw" }}
                         sortIcon={<ChevronDown />}
                         className="react-dataTable"
                         paginationComponent={CustomPagination}
                         data={calls}
-                        subHeaderComponent={
-                            <CallListHeader
-                                searchTerm={searchTerm}
-                                rowsPerPage={rowsPerPage}
-                                handleFilter={handleFilter}
-                                handlePerPage={handlePerPage}
-                                toggleSidebar={() => {
-                                    setSelectedCall(null);
-                                    toggleSidebar();
-                                }}
-                            />
-                        }
                     />
                 </div>
             </Card>
             {sidebarOpen && (
-                <CallSidebar open={sidebarOpen} call={selectedCall} toggleSidebar={toggleSidebar} />
+                <CallSidebar
+                    open={sidebarOpen}
+                    call={selectedCall}
+                    toggleSidebar={toggleSidebar}
+                />
             )}
-             {viewSidebarOpen && (
-                <CallViewSidebar open={viewSidebarOpen} call={selectedCall} toggleSidebar={toggleViewSidebar} />
+            {viewSidebarOpen && (
+                <CallViewSidebar
+                    open={viewSidebarOpen}
+                    call={selectedCall}
+                    toggleSidebar={toggleViewSidebar}
+                />
             )}
         </>
     );

@@ -1,18 +1,45 @@
+import { useMemo } from "react";
 import { Input, Row, Col, Button } from "reactstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { setCallFilterValue } from "../../../redux/profiles";
+import Select from "react-select";
+import { selectThemeColors } from "@utils";
 
-export default ({ handlePerPage, rowsPerPage, handleFilter, searchTerm, toggleSidebar }) => {
+export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, toggleSidebar }) => {
+    const statuses = useSelector((state) => state.statuses.statuses);
+    const filterValue = useSelector((state) => state.profiles.callFilterValue);
+  
+    const statusOptions = useMemo(() => {
+      return statuses.map((p) => ({ value: p.id, label: p.name }));
+    }, [statuses]);
+
+    const dispatch = useDispatch();
+
     return (
-        <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
-            <Row>
-                <Col xl="6" className="d-flex align-items-center p-0">
-                    <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
+        <div className="w-100 me-1 ms-50 mt-2 mb-75">
+            <Row className="p-1">
+                <Col xl="6" className="d-flex align-items-center p-0 justify-content-start">
+                    <div className="me-1">
                         <Input
-                            id="search-invoice"
-                            className="ms-50 w-100"
+                            className="dataTable-filter"
                             type="text"
                             placeholder="Type to find"
                             value={searchTerm}
-                            onChange={(e) => handleFilter(e.target.value)}
+                            onChange={(e) => handleSearch(e.target.value)}
+                        />
+                    </div>
+                    <div className="d-flex align-items-center w-50">
+                        <label className="me-1">Statuses: </label>
+                        <Select
+                            className="react-select w-100"
+                            type="select"
+                            value={filterValue}
+                            theme={selectThemeColors}
+                            classNamePrefix="select"
+                            placeholder="Select"
+                            options={[{ label: "None", value: null }, ...statusOptions]}
+                            onChange={(value) => dispatch(setCallFilterValue(value))}
+                            menuPortalTarget={document.body}
                         />
                     </div>
                 </Col>
@@ -36,7 +63,11 @@ export default ({ handlePerPage, rowsPerPage, handleFilter, searchTerm, toggleSi
                         </Input>
                     </div>
                     <div className="d-flex align-items-center table-header-actions">
-                        <Button className="add-new-user" onClick={toggleSidebar} color="primary">
+                        <Button
+                            className="add-new-user"
+                            onClick={toggleSidebar}
+                            color="primary"
+                        >
                             New Call
                         </Button>
                     </div>
