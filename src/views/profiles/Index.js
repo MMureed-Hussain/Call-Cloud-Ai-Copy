@@ -205,7 +205,7 @@ export default () => {
 
   return (
     <Card className="overflow-hidden workspace-list">
-      <div className="react-dataTable">
+      <div className="react-dataTable app-user-list">
         <DataTable
           noHeader
           subHeader
