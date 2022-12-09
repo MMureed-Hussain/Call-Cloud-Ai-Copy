@@ -1,73 +1,52 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { Input, Row, Col, Button } from "reactstrap";
-import { getPipelines } from "../../../redux/pipelines";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
+import { setFilterValue} from "../../../redux/profiles";
 
-export default ({ handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
-  const [pipeline, setPipeline] = useState(null);
+
+export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
   const pipelines = useSelector((state) => state.pipelines.pipelines);
-
-  const params = useParams();
-  const dispatch = useDispatch();
+  const filterValue = useSelector((state) => state.profiles.filterValue);
 
   const pipelinesOptions = useMemo(() => {
     return pipelines.map((p) => ({ value: p.id, label: p.name }));
   }, [pipelines]);
 
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
-
-  useEffect(() => {
-    if (params.id) {
-      dispatch(
-        getProfile({
-          params: { include_calls: "false" },
-          id: params.id,
-        })
-      ).then((res) => {
-        if (res.payload.data) {
-          const { data } = res.payload;
-          if (data.pipeline) {
-            setPipeline({ value: data.pipeline.id, label: data.pipeline.name });
-          }
-        }
-      });
-    }
-    dispatch(getPipelines(currentWorkspace.id));
-  }, [params.id]);
+  const dispatch = useDispatch();
 
   return (
-    <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
-      <Row>
-        <Col xl="6" className="d-flex align-items-center p-0">
-          <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
+    <div className="w-100 me-1 ms-50 mt-2 mb-75">
+      <Row className="p-1">
+        <Col
+          xl="6"
+          className="d-flex align-items-center p-0 justify-content-start"
+        >
+          <div className="me-1">
             <Input
-              id="search-invoice"
-              className="ms-50 w-100"
+              className='dataTable-filter'
               type="text"
               placeholder="Type to find"
               value={searchTerm}
-              onChange={(e) => handleFilter(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
-          <div className="d-flex align-items-center mx-50">
-            <label htmlFor="rows-per-page">Pipelines</label>
+          <div className="d-flex align-items-center w-50">
+            <label className="me-1">Pipelines: </label>
             <Select
-              className="mx-50"
+              className="react-select w-100"
               type="select"
-              id="rows-per-page"
-              value={pipeline}
+              value={filterValue}
               theme={selectThemeColors}
               classNamePrefix="select"
               placeholder="Select"
-              options={pipelinesOptions}
-              onChange={setPipeline}
+              options={[{label: "None", value: null}, ...pipelinesOptions]}
+              onChange={value => dispatch(setFilterValue(value))}
+              menuPortalTarget={document.body}
             />
           </div>
         </Col>

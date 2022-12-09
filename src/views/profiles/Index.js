@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -17,6 +17,7 @@ import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfiles, setReloadTable, deleteResource } from "../../redux/profiles";
+import { getPipelines } from "../../redux/pipelines";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
@@ -38,19 +39,22 @@ export default () => {
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);
+  const filterValue = useSelector((state) => state.profiles.filterValue);
 
   // ** Factory method to dispatch the api call
   const loadProfiles = (options) => {
-    dispatch(
-      getProfiles({
-        records_per_page: rowsPerPage,
-        page: currentPage,
-        workspace_id: currentWorkspace?.id,
-        sort_by: sortColumn,
-        sort,
-        ...options,
-      })
-    );
+    let params = {
+      records_per_page: rowsPerPage,
+      page: currentPage,
+      workspace_id: currentWorkspace?.id,
+      sort_by: sortColumn,
+      sort,
+      ...options,
+    };
+    if(filterValue){
+      params = {...params, filter: "pipeline", filter_value: filterValue.value}
+    }
+    dispatch(getProfiles(params));
     setCurrentPage(options.page);
   };
   // ** Reload the table when record is deleted
@@ -62,10 +66,21 @@ export default () => {
       });
     }
   }, [reloadTable]);
+  // ** load data when filter value is changed
+  useEffect(() => {
+    if (filterValue) {
+      loadProfiles({
+        filter: "pipeline",
+        filter_value: filterValue.value,
+        page: 1,
+      });
+    }
+  }, [filterValue]);
   // ** Load the all call profiles for the selected workspace
   useEffect(() => {
     if (currentWorkspace) {
       loadProfiles({ page: 1 });
+      dispatch(getPipelines(currentWorkspace.id));
     }
   }, [currentWorkspace]);
   // ** Columns meta for the data table
@@ -110,7 +125,7 @@ export default () => {
               <DropdownToggle className="pe-1" tag="span">
                 <MoreVertical size={15} />
               </DropdownToggle>
-              <DropdownMenu end>
+              <DropdownMenu container={'body'} end>
                 <Link to={`/profiles/${row.id}`}>
                   <DropdownItem>
                     <Eye size={15} />
@@ -204,11 +219,16 @@ export default () => {
   }
 
   return (
-    <Card className="overflow-hidden workspace-list">
-      <div className="react-dataTable app-user-list">
+    <Card className="overflow-hidden">
+      <CustomHeader
+        searchTerm={searchTerm}
+        rowsPerPage={rowsPerPage}
+        handleSearch={setSearchTerm}
+        handlePerPage={handlePerPage}
+      />
+      <div className="react-dataTable">
         <DataTable
           noHeader
-          subHeader
           sortServer
           pagination
           responsive
@@ -221,14 +241,6 @@ export default () => {
           className="react-dataTable"
           paginationComponent={CustomPagination}
           data={profiles}
-          subHeaderComponent={
-            <CustomHeader
-              searchTerm={searchTerm}
-              rowsPerPage={rowsPerPage}
-              handleFilter={setSearchTerm}
-              handlePerPage={handlePerPage}
-            />
-          }
         />
       </div>
     </Card>

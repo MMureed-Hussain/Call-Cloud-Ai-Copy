@@ -87,7 +87,10 @@ export default () => {
             <Button
               className="add-new-user"
               color="primary"
-              onClick={toggleSidebar}
+              onClick={() => {
+                setSelectedPipeline(null);
+                toggleSidebar();
+              }}
             >
               Add Pipeline
             </Button>
