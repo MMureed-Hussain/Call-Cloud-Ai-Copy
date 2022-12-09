@@ -92,11 +92,13 @@ export default () => {
       sortField: "name",
       selector: (row) => row.name,
       cell: (row) => (
-        <div className="d-flex justify-content-left align-items-center">
-          <div className="d-flex flex-column">
-            <span className="fw-bolder">{row.name}</span>
+        <Link to={`/profiles/${row.id}`}>
+          <div className="d-flex justify-content-left align-items-center">
+            <div className="d-flex flex-column">
+              <span className="fw-bolder">{row.name}</span>
+            </div>
           </div>
-        </div>
+        </Link>
       ),
     },
     {

@@ -1,4 +1,4 @@
-import { Layers, Home, Users, Bookmark, Phone, AlignJustify } from "react-feather";
+import { Layers, Home, Users, AlignJustify, UserCheck } from "react-feather";
 
 export default [
   {
@@ -26,9 +26,9 @@ export default [
   //   navLink: "/booking-pages",
   // },
   {
-    id: "callProfiles",
-    title: "Call Profiles",
-    icon: <Phone size={20} />,
+    id: "leadProfiles",
+    title: "Lead Profiles",
+    icon: <UserCheck size={20} />,
     navLink: "/profiles",
   },
   {
