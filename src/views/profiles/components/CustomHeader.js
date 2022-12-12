@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { Input, Row, Col, Button } from "reactstrap";
+import { Input, Row, Col, Button, Badge } from "reactstrap";
 import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -14,10 +14,17 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
   const filterValue = useSelector((state) => state.profiles.filterValue);
 
   const pipelinesOptions = useMemo(() => {
-    return pipelines.map((p) => ({ value: p.id, label: p.name }));
+    return pipelines.map((p) => ({ value: p.id, label: p.name, count: p.lead_profiles_count }));
   }, [pipelines]);
 
   const dispatch = useDispatch();
+
+  const formatOptionLabel = ({ label, count }) => (
+    <div className="d-flex justify-content-between">
+      <div>{label}</div>
+      <Badge color="light-primary">{count}</Badge>
+    </div>
+  );
 
   return (
     <div className="w-100 me-1 ms-50 mt-2 mb-75">
@@ -44,6 +51,7 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
               theme={selectThemeColors}
               classNamePrefix="select"
               placeholder="Select"
+              formatOptionLabel={formatOptionLabel}
               options={[{label: "None", value: null}, ...pipelinesOptions]}
               onChange={value => dispatch(setFilterValue(value))}
               menuPortalTarget={document.body}

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Card, CardBody, CardText, Badge } from 'reactstrap';
+import { Card, CardBody, CardText } from 'reactstrap';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,11 +18,11 @@ const ProfileAbout = ({ data }) => {
     }, [pipelines]);
   
     useEffect(() => {
-        dispatch(getPipelines(data.workspace_id));
+        dispatch(getPipelines({ workspace_id: data.workspace_id }));
     }, [])
    
     useEffect(() => {
-        if (pipeline && pipeline.id !== data.pipeline_id) {
+        if (pipeline && pipeline.value != data.pipeline_id) {
             dispatch(updateProfile({
                 payload:{
                     pipeline: pipeline.value,

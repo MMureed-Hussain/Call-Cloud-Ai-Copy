@@ -44,7 +44,7 @@ export default () => {
   useEffect(() => {
     if (currentWorkspace) {
       setIsLoading(true);
-      dispatch(getPipelines(currentWorkspace.id));
+      dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
     }
   }, [currentWorkspace]);
 

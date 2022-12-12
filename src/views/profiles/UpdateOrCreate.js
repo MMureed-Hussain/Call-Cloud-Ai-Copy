@@ -63,7 +63,7 @@ export default () => {
         }
       });
     }
-    dispatch(getPipelines(currentWorkspace.id));
+    dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
   }, [params.id]);
 
   const handleSubmit = (event) => {

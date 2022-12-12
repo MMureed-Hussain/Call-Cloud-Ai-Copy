@@ -80,7 +80,7 @@ export default () => {
   useEffect(() => {
     if (currentWorkspace) {
       loadProfiles({ page: 1 });
-      dispatch(getPipelines(currentWorkspace.id));
+      dispatch(getPipelines({ workspace_id: currentWorkspace.id, include_count: "true" }));
     }
   }, [currentWorkspace]);
   // ** Columns meta for the data table

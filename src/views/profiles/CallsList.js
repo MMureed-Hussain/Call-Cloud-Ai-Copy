@@ -66,16 +66,7 @@ export default () => {
             });
         }
     }, [reloadTable]);
-   
-    useEffect(() => {
-        if (reloadTable) {
-            dispatch(setReloadTable(false));
-            loadCalls({
-                page: currentPage,
-            });
-        }
-    }, [filterValue]);
-
+    
     useEffect(() => {
         if (filterValue) {
             loadCalls({
