@@ -96,7 +96,7 @@ export default ({ open, toggleSidebar, call }) => {
         });
       }
     }
-    dispatch(getStatuses(currentWorkspace.id));
+    dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true" }));
   }, [call]);
 
   const callStatusOptions = useMemo(() => {

@@ -46,6 +46,12 @@ export default () => {
   );
 
   useEffect(() => {
+    if (!params?.id) {
+      setPipeline(pipelinesOptions[0])
+    }
+  }, [pipelinesOptions])
+
+  useEffect(() => {
     if (params.id) {
       dispatch(
         getProfile({
