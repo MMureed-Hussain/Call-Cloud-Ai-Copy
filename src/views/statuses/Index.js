@@ -37,7 +37,7 @@ export default () => {
   useEffect(() => {
     if (currentWorkspace) {
       setIsLoading(true);
-      dispatch(getStatuses(currentWorkspace.id));
+      dispatch(getStatuses({ workspace_id: currentWorkspace.id }));
     }
   }, [currentWorkspace]);
 

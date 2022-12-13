@@ -39,10 +39,15 @@ export const pipelinesSlice = createSlice({
 
 export const getPipelines = createAsyncThunk(
   "pipelines/index",
-  async (workspaceId, { dispatch }) => {
+  async (params, { dispatch }) => {
     try {
+<<<<<<< HEAD
       const response = await axios.get(``, {
         params: { workspace_id: workspaceId },
+=======
+      const response = await axios.get(`/`, {
+        params
+>>>>>>> 525d0e432e7082224b1ca23b075509c4eedbbefa
       });
       dispatch(setPipelines(response.data.data));
     } catch (e) {

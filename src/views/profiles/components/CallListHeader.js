@@ -7,10 +7,10 @@ import { selectThemeColors } from "@utils";
 
 export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, toggleSidebar }) => {
     const statuses = useSelector((state) => state.statuses.statuses);
-    const filterValue = useSelector((state) => state.profiles.callFilterValue);
-  
+    const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
+
     const statusOptions = useMemo(() => {
-      return statuses.map((p) => ({ value: p.id, label: p.name }));
+        return statuses.map((p) => ({ value: p.id, label: p.name }));
     }, [statuses]);
 
     const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, toggleSi
                         <Select
                             className="react-select w-100"
                             type="select"
-                            value={filterValue}
+                            value={callFilterValue}
                             theme={selectThemeColors}
                             classNamePrefix="select"
                             placeholder="Select"
