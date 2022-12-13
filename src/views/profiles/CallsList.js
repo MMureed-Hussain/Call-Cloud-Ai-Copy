@@ -55,7 +55,7 @@ export default () => {
         loadCalls({
             page: 1,
         });
-        dispatch(getStatuses({ workspace_id: currentWorkspace.id}))
+        dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true", profile_id: params.id}))
     }, [currentWorkspace]);
 
     useEffect(() => {
