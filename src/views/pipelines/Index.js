@@ -28,10 +28,12 @@ import {
 } from "../../redux/pipelines";
 import Skeleton from "react-loading-skeleton";
 import { debounce } from "lodash";
+import PipelineCloneSidebar from "./components/PipelineCloneSidebar";
 
 export default () => {
   // ** State
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [cloneSidebarOpen, setCloneSidebarOpen] = useState(false);
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
@@ -69,6 +71,10 @@ export default () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const toggleCloneSidebar = () => {
+    setCloneSidebarOpen(!cloneSidebarOpen);
+  };
+
   if (isLoading) {
     return (
       <div className="vh-100">
@@ -85,7 +91,13 @@ export default () => {
           <CardTitle tag="h4">Pipelines</CardTitle>
           <div className="d-flex align-items-center table-header-actions">
             <Button
-              className="add-new-user"
+              color="primary"
+              className="me-1"
+              onClick={toggleCloneSidebar}
+            >
+            Clone Pipelines
+            </Button>
+            <Button
               color="primary"
               onClick={() => {
                 setSelectedPipeline(null);
@@ -153,6 +165,12 @@ export default () => {
           open={sidebarOpen}
           toggleSidebar={toggleSidebar}
           pipeline={selectedPipeline}
+        />
+      )}
+      {cloneSidebarOpen && (
+        <PipelineCloneSidebar
+          open={cloneSidebarOpen}
+          toggleSidebar={toggleCloneSidebar}
         />
       )}
     </>

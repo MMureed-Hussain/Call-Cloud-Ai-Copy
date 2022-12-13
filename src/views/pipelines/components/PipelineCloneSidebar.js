@@ -1,11 +1,10 @@
 /* eslint-disable */
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import Sidebar from "@components/sidebar";
 import {
     Button,
     Label,
     Form,
-    Input,
     FormFeedback,
     Spinner,
     FormGroup,
@@ -13,55 +12,41 @@ import {
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import { createPipeline, updatePipeline, setErrors } from "../../../redux/pipelines";
+import { clonePipelines, setErrors } from "../../../redux/pipelines";
+import Select from "react-select"
+import { selectThemeColors } from '@utils'
 
-export default ({ open, toggleSidebar, pipeline }) => {
-    const [name, setName] = useState("");
+export default ({ open, toggleSidebar }) => {
     const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
-
+    const [selectedWorkspace, setSelectedWorkspace] = useState(null);
     //store
     const dispatch = useDispatch();
     const errors = useSelector((state) => state.pipelines.errors);
-    const currentWorkspace = useSelector(
-        (state) => state.workspaces.currentWorkspace
-    );
+    const currentWorkspace = useSelector(state => state.workspaces.currentWorkspace);
+    const workspaces = useSelector( state => state.workspaces.workspaces);
 
-    useEffect(() => {
-        if (pipeline) {
-            setName(pipeline.name)
-        }
-    }, [pipeline])
+    const workspaceOptions = useMemo(() => {
+        return workspaces.filter(w => w.id !== currentWorkspace.id).map(w => ({ value: w.id, label: w.name }));
+    }, [workspaces]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setFormSubmissionLoader(true);
         dispatch(setErrors({}))
-        dispatch(
-            pipeline
-                ? updatePipeline({
-                    formData: {
-                        name
-                    },
-                    id: pipeline.id,
-                })
-                : createPipeline({
-                    name,
-                    workspace_id: currentWorkspace.id,
-                })
-        ).then((res) => {
+        dispatch(clonePipelines({
+            workspace: selectedWorkspace?.value,
+            current_workspace: currentWorkspace.id
+        })).then(res => {
             setFormSubmissionLoader(false);
-            if (res.payload.data) {
-                toggleSidebar();
-                dispatch(setErrors({}))
-            }
-        });
+            toggleSidebar();
+        })
     };
 
     return (
         <Sidebar
             size="lg"
             open={open}
-            title={pipeline ? "Update Pipeline" : "New Pipeline"}
+            title={"Clone pipelines"}
             headerClassName="mb-1"
             contentClassName="pt-0"
             toggleSidebar={toggleSidebar}
@@ -69,20 +54,23 @@ export default ({ open, toggleSidebar, pipeline }) => {
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label className="form-label" for="title">
-                        Name<span className="text-danger">*</span>
+                        Workspace<span className="text-danger">*</span>
                     </Label>
-                    <Input
-                        placeholder="Enter name here"
-                        value={name}
+                    <Select
+                        value={selectedWorkspace}
+                        theme={selectThemeColors}
+                        classNamePrefix="select"
                         className={
-                            errors.has("name") ? "is-invalid form-control" : "form-control"
+                            errors.has("workspace")
+                                ? "is-invalid react-select"
+                                : "react-select"
                         }
-                        onChange={(e) => {
-                            setName(e.target.value);
-                        }}
+                        placeholder="Select workspace"
+                        options={workspaceOptions}
+                        onChange={setSelectedWorkspace}
                     />
-                    {errors.has("name") && (
-                        <FormFeedback>{errors.get("name")}</FormFeedback>
+                    {errors.has("workspace") && (
+                        <FormFeedback>{errors.get("workspace")}</FormFeedback>
                     )}
                 </FormGroup>
                 <Button className="me-1" color="primary">
