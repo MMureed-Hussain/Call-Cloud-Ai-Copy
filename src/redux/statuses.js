@@ -2,14 +2,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // ** Axios Imports
-import axiosPkg from "axios";
+import axios from "axios";
 import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
+axios.defaults.withCredentials = true;
 
-const axios = axiosPkg.create({
-  baseURL: `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`,
-  withCredentials: true,
-});
+axios.defaults.baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`;
 
 export const statusesSlice = createSlice({
   name: "statuses",
@@ -44,7 +42,7 @@ export const createStatus = createAsyncThunk(
   "statuses/create",
   async (payload, { dispatch }) => {
     try {
-      const response = await axios.post(`/`, payload);
+      const response = await axios.post(``, payload);
       toast.success(response.data.message);
       dispatch(setNewStatus(response.data.data));
       return {
@@ -64,12 +62,9 @@ export const getStatuses = createAsyncThunk(
   "statuses/index",
   async (workspaceId, { dispatch }) => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`,
-        {
-          params: { workspace_id: workspaceId },
-        }
-      );
+      const response = await axios.get(``, {
+        params: { workspace_id: workspaceId },
+      });
       dispatch(setStatuses(response.data.data));
     } catch (e) {
       toast.error(e.response.data.message);
@@ -121,7 +116,7 @@ export const updateStatusOrder = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.post(`/update-order`, {
-        data: payload
+        data: payload,
       });
       // toast.success(response.data.message);
       return {
