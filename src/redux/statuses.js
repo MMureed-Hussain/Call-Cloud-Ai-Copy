@@ -5,9 +5,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
-axios.defaults.withCredentials = true;
 
-axios.defaults.baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`;
+axios.defaults.withCredentials = true;
 
 export const statusesSlice = createSlice({
   name: "statuses",
@@ -63,7 +62,7 @@ export const getStatuses = createAsyncThunk(
   async (params, { dispatch }) => {
     try {
       const response = await axios.get(
-        ``,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`,
         {
           params,
         }
@@ -79,7 +78,7 @@ export const deleteStatus = createAsyncThunk(
   "statuses/delete",
   async (id, { dispatch }) => {
     try {
-      const response = await axios.delete(`/${id}`);
+      const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses/${id}`);
       toast.success(response.data.message);
       dispatch(deleteCallStatus(id));
       return {
@@ -98,7 +97,7 @@ export const updateStatus = createAsyncThunk(
   "statuses/update",
   async ({ id, formData }, { dispatch }) => {
     try {
-      const response = await axios.put(`/${id}`, formData);
+      const response = await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses/${id}`, formData);
       toast.success(response.data.message);
       dispatch(setUpdatedStatus({ id, name: formData.name }));
       return {
@@ -118,7 +117,7 @@ export const updateStatusOrder = createAsyncThunk(
   "statuses/updateOrder",
   async (payload) => {
     try {
-      const response = await axios.post(`/update-order`, {
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses/update-order`, {
         data: payload,
       });
       // toast.success(response.data.message);
