@@ -132,7 +132,7 @@ export const updatePipelinesOrder = createAsyncThunk(
 
 export const clonePipelines = createAsyncThunk(
   "pipelines/clone",
-  async (payload, { dispatch }) => {
+  async (payload) => {
     try {
       const response = await axios.post(`${baseURL}/clone`, payload);
       toast.success(response.data.message);
@@ -141,7 +141,6 @@ export const clonePipelines = createAsyncThunk(
       };
     } catch (e) {
       toast.error(e.response.data.message);
-      if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
       return {
         data: false,
       };

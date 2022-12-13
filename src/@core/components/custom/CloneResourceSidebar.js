@@ -5,23 +5,19 @@ import {
     Button,
     Label,
     Form,
-    FormFeedback,
     Spinner,
     FormGroup,
 } from "reactstrap";
 
 // ** Store & Actions
-import { useDispatch, useSelector } from "react-redux";
-import { clonePipelines, setErrors } from "../../../redux/pipelines";
+import { useSelector } from "react-redux";
 import Select from "react-select"
 import { selectThemeColors } from '@utils'
 
-export default ({ open, toggleSidebar }) => {
+export default ({ open, toggleSidebar, targetAction }) => {
     const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
     const [selectedWorkspace, setSelectedWorkspace] = useState(null);
     //store
-    const dispatch = useDispatch();
-    const errors = useSelector((state) => state.pipelines.errors);
     const currentWorkspace = useSelector(state => state.workspaces.currentWorkspace);
     const workspaces = useSelector( state => state.workspaces.workspaces);
 
@@ -32,13 +28,14 @@ export default ({ open, toggleSidebar }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         setFormSubmissionLoader(true);
-        dispatch(setErrors({}))
-        dispatch(clonePipelines({
+        targetAction({
             workspace: selectedWorkspace?.value,
             current_workspace: currentWorkspace.id
-        })).then(res => {
+        }).then(res => {
             setFormSubmissionLoader(false);
-            toggleSidebar();
+            if (res) {
+                toggleSidebar();
+            }
         })
     };
 
@@ -60,18 +57,11 @@ export default ({ open, toggleSidebar }) => {
                         value={selectedWorkspace}
                         theme={selectThemeColors}
                         classNamePrefix="select"
-                        className={
-                            errors.has("workspace")
-                                ? "is-invalid react-select"
-                                : "react-select"
-                        }
+                        className="react-select"
                         placeholder="Select workspace"
                         options={workspaceOptions}
                         onChange={setSelectedWorkspace}
                     />
-                    {errors.has("workspace") && (
-                        <FormFeedback>{errors.get("workspace")}</FormFeedback>
-                    )}
                 </FormGroup>
                 <Button className="me-1" color="primary">
                     Submit

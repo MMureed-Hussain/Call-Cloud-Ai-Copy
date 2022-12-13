@@ -25,10 +25,11 @@ import {
   setPipelines,
   deletePipeline,
   updatePipelinesOrder,
+  clonePipelines,
 } from "../../redux/pipelines";
 import Skeleton from "react-loading-skeleton";
 import { debounce } from "lodash";
-import PipelineCloneSidebar from "./components/PipelineCloneSidebar";
+import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
 
 export default () => {
   // ** State
@@ -74,6 +75,17 @@ export default () => {
   const toggleCloneSidebar = () => {
     setCloneSidebarOpen(!cloneSidebarOpen);
   };
+
+  const onCloneSubmit = (data) => {
+    return new Promise(resolve => {
+      dispatch(clonePipelines(data)).then(res => {
+        if (res.payload.data) {
+          return resolve(true)
+        }
+        resolve(false)
+      })
+    })
+  }
 
   if (isLoading) {
     return (
@@ -168,9 +180,10 @@ export default () => {
         />
       )}
       {cloneSidebarOpen && (
-        <PipelineCloneSidebar
+        <CloneResourceSidebar
           open={cloneSidebarOpen}
           toggleSidebar={toggleCloneSidebar}
+          targetAction={onCloneSubmit}
         />
       )}
     </>
