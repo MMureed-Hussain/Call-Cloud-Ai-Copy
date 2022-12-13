@@ -41,7 +41,7 @@ export const createStatus = createAsyncThunk(
   "statuses/create",
   async (payload, { dispatch }) => {
     try {
-      const response = await axios.post(``, payload);
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses`, payload);
       toast.success(response.data.message);
       dispatch(setNewStatus(response.data.data));
       return {
