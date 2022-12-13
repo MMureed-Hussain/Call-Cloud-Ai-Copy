@@ -20,7 +20,7 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
   }, [pipelines]);
 
   const statusOptions = useMemo(() => {
-    return statuses.map((p) => ({ value: p.id, label: p.name, count: 0 }));
+    return statuses.map((s) => ({ value: s.id, label: s.name, count: s.lead_profiles_count }));
   }, [statuses]);
 
   const dispatch = useDispatch();
@@ -72,6 +72,7 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
               theme={selectThemeColors}
               classNamePrefix="select"
               placeholder="Select"
+              formatOptionLabel={formatOptionLabel}
               options={[{ label: "None", value: null }, ...statusOptions]}
               onChange={value => dispatch(setCallFilterValue(value))}
               menuPortalTarget={document.body}
