@@ -1,14 +1,12 @@
 /* eslint-disable */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // ** Axios Imports
-import axiosPkg from "axios";
+import axios from "axios";
 import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
+axios.defaults.withCredentials = true;
 
-const axios = axiosPkg.create({
-  baseURL: `${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`,
-  withCredentials: true,
-});
+axios.defaults.baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`;
 
 export const pipelinesSlice = createSlice({
   name: "pipelines",
@@ -43,7 +41,7 @@ export const getPipelines = createAsyncThunk(
   "pipelines/index",
   async (workspaceId, { dispatch }) => {
     try {
-      const response = await axios.get(`/`, {
+      const response = await axios.get(``, {
         params: { workspace_id: workspaceId },
       });
       dispatch(setPipelines(response.data.data));
@@ -57,7 +55,7 @@ export const createPipeline = createAsyncThunk(
   "pipelines/create",
   async (payload, { dispatch }) => {
     try {
-      const response = await axios.post(`/`, payload);
+      const response = await axios.post(``, payload);
       toast.success(response.data.message);
       dispatch(setNewPipeline(response.data.data));
       return {
@@ -117,7 +115,7 @@ export const updatePipelinesOrder = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.post(`/update-order`, {
-        data: payload
+        data: payload,
       });
       // toast.success(response.data.message);
       return {
