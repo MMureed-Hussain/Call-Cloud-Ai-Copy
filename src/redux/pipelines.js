@@ -42,7 +42,7 @@ export const getPipelines = createAsyncThunk(
   async (params, { dispatch }) => {
     try {
       const response = await axios.get(``, {
-        params: { workspace_id: workspaceId },
+        params: params,
       });
       dispatch(setPipelines(response.data.data));
     } catch (e) {
