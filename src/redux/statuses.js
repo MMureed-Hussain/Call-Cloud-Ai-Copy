@@ -62,18 +62,12 @@ export const getStatuses = createAsyncThunk(
   "statuses/index",
   async (params, { dispatch }) => {
     try {
-<<<<<<< HEAD
-      const response = await axios.get(``, {
-        params: { workspace_id: workspaceId },
-      });
-=======
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`,
+        ``,
         {
           params,
         }
       );
->>>>>>> 525d0e432e7082224b1ca23b075509c4eedbbefa
       dispatch(setStatuses(response.data.data));
     } catch (e) {
       toast.error(e.response.data.message);
