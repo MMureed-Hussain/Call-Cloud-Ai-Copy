@@ -22,8 +22,9 @@ import { MoreVertical, Edit, Trash } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { getStatuses, deleteStatus, setStatuses, updateStatusOrder, cloneStatuses } from "../../redux/statuses";
 import CallStatusSidebar from "./components/CallStatusSidebar";
-import { debounce } from "lodash";
+import { debounce, map } from "lodash";
 import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
+import useTransition from "../../utility/hooks/useTransition";
 
 export default () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,10 +44,6 @@ export default () => {
     }
   }, [currentWorkspace]);
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, [statuses]);
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -56,13 +53,11 @@ export default () => {
   };
 
   const onUpdate = (data) => {
-    if (data.length) {
-      data = data.map((item, index) => ({
-        id: item.id,
-        order: index + 1,
-      }));
-      dispatch(updateStatusOrder(data));
-    }
+    data = data.map((item, index) => ({
+      id: item.id,
+      order: index + 1,
+    }));
+    dispatch(updateStatusOrder(data));
   };
 
   const onCloneSubmit = (data) => {
@@ -77,6 +72,14 @@ export default () => {
   }
 
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
+
+  useTransition((prevStatuses) => {
+    setIsLoading(false);
+    if (prevStatuses.length && JSON.stringify(map(prevStatuses, "id")) !== JSON.stringify(map(statuses, "id"))) {
+      _onUpdate(statuses)
+    }
+  }, [statuses]);
+
   if (isLoading) {
     return (
       <div className="vh-100">
@@ -118,7 +121,6 @@ export default () => {
             list={statuses}
             setList={(data) => {
               dispatch(setStatuses(data));
-              _onUpdate(data);
             }}
             delayOnTouchStart={true}
             delay={2}

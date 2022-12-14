@@ -118,7 +118,7 @@ export const updateStatusOrder = createAsyncThunk(
       const response = await axios.post(`${baseURL}/update-order`, {
         data: payload,
       });
-      // toast.success(response.data.message);
+      toast.success(response.data.message);
       return {
         data: true,
       };

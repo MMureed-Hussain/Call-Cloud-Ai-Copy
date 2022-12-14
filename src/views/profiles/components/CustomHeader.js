@@ -118,6 +118,7 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
               theme={selectThemeColors}
               classNamePrefix="select"
               placeholder="Select"
+              formatOptionLabel={formatOptionLabel}
               options={[{ label: "None", value: null }, ...statusOptions]}
               onChange={(value) => dispatch(setCallFilterValue(value))}
               menuPortalTarget={document.body}

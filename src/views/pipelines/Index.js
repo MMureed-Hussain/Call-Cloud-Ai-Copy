@@ -28,8 +28,9 @@ import {
   clonePipelines,
 } from "../../redux/pipelines";
 import Skeleton from "react-loading-skeleton";
-import { debounce } from "lodash";
+import { debounce, map } from "lodash";
 import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
+import useTransition from "../../utility/hooks/useTransition";
 
 export default () => {
   // ** State
@@ -51,22 +52,23 @@ export default () => {
     }
   }, [currentWorkspace]);
 
-  useEffect(() => {
-    setIsLoading(false);
-    
-  }, [pipelines]);
-
   const onUpdate = (data) => {
-    if (data.length) {
-      data = data.map((item, index) => ({
-        id: item.id,
-        order: index + 1,
-      }));
-      dispatch(updatePipelinesOrder(data));
-    }
+    data = data.map((item, index) => ({
+      id: item.id,
+      order: index + 1,
+    }));
+    dispatch(updatePipelinesOrder(data));
   };
 
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
+
+  useTransition((prevPipelines) => {
+    setIsLoading(false);
+    if (prevPipelines.length && JSON.stringify(map(prevPipelines, "id")) !== JSON.stringify(map(pipelines, "id"))) {
+      _onUpdate(pipelines)
+    }
+  }, [pipelines]);
+
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -131,7 +133,6 @@ export default () => {
             list={pipelines}
             setList={(data) => {
               dispatch(setPipelines(data));
-              _onUpdate(data);
             }}
             delayOnTouchStart={true}
             delay={2}
