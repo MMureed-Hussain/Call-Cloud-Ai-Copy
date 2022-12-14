@@ -25,6 +25,13 @@ export default ({
     }));
   }, [statuses]);
 
+  const formatOptionLabel = ({ label, count }) => (
+    <div className="d-flex justify-content-between">
+      <div>{label}</div>
+      <Badge color="light-primary">{count}</Badge>
+    </div>
+  );
+
   const dispatch = useDispatch();
 
   return (
@@ -51,6 +58,7 @@ export default ({
               value={callFilterValue}
               theme={selectThemeColors}
               classNamePrefix="select"
+              formatOptionLabel={formatOptionLabel}
               placeholder="Select"
               options={[{ label: "None", value: null }, ...statusOptions]}
               onChange={(value) => dispatch(setCallFilterValue(value))}

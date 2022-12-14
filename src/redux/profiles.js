@@ -9,26 +9,27 @@ axios.defaults.withCredentials = true;
 
 export const createProfile = createAsyncThunk(
     "profiles/create",
-    async (payload, thunkAPI) => {
+    async (payload, { dispatch }) => {
         try {
-            thunkAPI.dispatch(setLoading(true));
-            thunkAPI.dispatch(setErrors({}));
+            dispatch(setLoading(true));
+            dispatch(setErrors({}));
             const response = await axios.post(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles`,
                 payload,
             );
             toast.success(response.data.message);
+            dispatch(setReloadTable(true));
             return {
                 data: response.data.data
             };
         } catch (e) {
             toast.error(e.response.data.message);
-            if (e.response.data?.errors) thunkAPI.dispatch(setErrors(e.response.data.errors));
+            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
             return {
                 data: null
             };
         } finally {
-            thunkAPI.dispatch(setLoading(false));
+            dispatch(setLoading(false));
         }
     }
 );
@@ -43,8 +44,8 @@ export const updateProfile = createAsyncThunk(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
                 payload,
             );
-            // 
             toast.success(response.data.message);
+            dispatch(setReloadTable(true));
             return {
                 data: response.data.data
             };

@@ -43,16 +43,10 @@ const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWor
 // prettier-ignore
 const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
-// prettier-ignore
-const BookingPages = lazy(() => import("../../views/booking-pages/BookingPages"));
-// prettier-ignore
-const CreateBookingPage = lazy(() => import("../../views/booking-pages/CreateBookingPage"));
-
 const Plans = lazy(() => import("../../views/plans"));
 
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
-const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
 const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 const CallStatuses = lazy(() => import("../../views/statuses/Index"));
@@ -142,22 +136,8 @@ const Routes = [
     },
   },
   {
-    path: "/profiles/create",
-    element: <UpdateOrCreateCallProfile />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
     path: "/profiles/:id",
     element: <CallProfileView />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles/:id/edit",
-    element: <UpdateOrCreateCallProfile/>,
     meta: {
       isPrivate: true,
     },

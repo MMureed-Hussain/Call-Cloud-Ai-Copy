@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 
 import { Input, Row, Col, Button, Badge } from "reactstrap";
-import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
@@ -11,7 +10,7 @@ import {
   setPipelineFilterValue,
 } from "../../../redux/profiles";
 
-export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
+export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, onNewProfileClick }) => {
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const statuses = useSelector((state) => state.statuses.statuses);
   const pipelineFilterValue = useSelector(
@@ -83,11 +82,9 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm }) => {
             </Input>
           </div>
           <div className="d-flex align-items-center table-header-actions mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1">
-            <Link to={"/profiles/create"}>
-              <Button className="add-new-user" color="primary">
-                Add New Profile
-              </Button>
-            </Link>
+            <Button className="add-new-user" color="primary" onClick={onNewProfileClick}>
+              Add New Profile
+            </Button>
           </div>
         </Col>
         <Col

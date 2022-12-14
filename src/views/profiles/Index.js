@@ -22,6 +22,7 @@ import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
 import { getStatuses } from "../../redux/statuses";
+import ProfileSidebar from "./components/ProfileSidebar";
 
 export default () => {
   // ** States
@@ -30,6 +31,8 @@ export default () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(false);
 
   const dispatch = useDispatch();
   //selectors
@@ -139,12 +142,13 @@ export default () => {
                     <span className="align-middle ms-50">View</span>
                   </DropdownItem>
                 </Link>
-                <Link to={`/profiles/${row.id}/edit`}>
-                  <DropdownItem>
-                    <Edit size={15} />
-                    <span className="align-middle ms-50">Edit</span>
-                  </DropdownItem>
-                </Link>
+                <DropdownItem onClick={() => {
+                  setSelectedProfile(row);
+                  toggleSidebar();
+                }}>
+                  <Edit size={15} />
+                  <span className="align-middle ms-50">Edit</span>
+                </DropdownItem>
                 <DropdownItem onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${row.id}`))}>
                   <Trash size={15} className="me-50" />
                   <span
@@ -225,31 +229,45 @@ export default () => {
     );
   }
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
+
+  const onNewProfileClick = () => {
+    setSelectedProfile(null);
+    toggleSidebar();
+  }
+
   return (
-    <Card className="overflow-hidden">
-      <CustomHeader
-        searchTerm={searchTerm}
-        rowsPerPage={rowsPerPage}
-        handleSearch={setSearchTerm}
-        handlePerPage={handlePerPage}
-      />
-      <div className="react-dataTable">
-        <DataTable
-          noHeader
-          sortServer
-          pagination
-          responsive
-          paginationServer
-          defaultSortField={"id"}
-          columns={columns}
-          onSort={handleSort}
-          defaultSortAsc={false}
-          sortIcon={<ChevronDown />}
-          className="react-dataTable"
-          paginationComponent={CustomPagination}
-          data={profiles}
+    <>
+      <Card className="overflow-hidden">
+        <CustomHeader
+          searchTerm={searchTerm}
+          rowsPerPage={rowsPerPage}
+          handleSearch={setSearchTerm}
+          handlePerPage={handlePerPage}
+          onNewProfileClick={onNewProfileClick}
         />
-      </div>
-    </Card>
+        <div className="react-dataTable">
+          <DataTable
+            noHeader
+            sortServer
+            pagination
+            responsive
+            paginationServer
+            defaultSortField={"id"}
+            columns={columns}
+            onSort={handleSort}
+            defaultSortAsc={false}
+            sortIcon={<ChevronDown />}
+            className="react-dataTable"
+            paginationComponent={CustomPagination}
+            data={profiles}
+          />
+        </div>
+      </Card>
+      {sidebarOpen && <ProfileSidebar open={sidebarOpen} toggleSidebar={toggleSidebar} profile={selectedProfile} />}
+    </>
+
   );
 };
