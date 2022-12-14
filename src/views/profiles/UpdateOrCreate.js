@@ -120,7 +120,11 @@ export default () => {
                       : "form-control"
                   }
                   onChange={(e) => {
-                    setProfileName(e.target.value);
+                    const value = e.target.value.replace(
+                      /(^\w{1})|(\s+\w{1})/g,
+                      (letter) => letter.toUpperCase()
+                    );
+                    setProfileName(value);
                   }}
                 />
                 {errors.has("name") && (

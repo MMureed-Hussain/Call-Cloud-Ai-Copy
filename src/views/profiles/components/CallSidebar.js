@@ -184,7 +184,11 @@ export default ({ open, toggleSidebar, call }) => {
               errors.has("note") ? "is-invalid form-control" : "form-control"
             }
             onChange={(e) => {
-              setNote(e.target.value);
+              const value = e.target.value.replace(
+                /(^\w{1})|(\s+\w{1})/g,
+                (letter) => letter.toUpperCase()
+              );
+              setNote(value);
             }}
           />
           {errors.has("note") && (

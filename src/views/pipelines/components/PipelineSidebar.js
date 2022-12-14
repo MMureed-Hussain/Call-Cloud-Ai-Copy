@@ -78,7 +78,11 @@ export default ({ open, toggleSidebar, pipeline }) => {
                             errors.has("name") ? "is-invalid form-control" : "form-control"
                         }
                         onChange={(e) => {
-                            setName(e.target.value);
+                            const value = e.target.value.replace(
+                                /(^\w{1})|(\s+\w{1})/g,
+                                (letter) => letter.toUpperCase()
+                              );
+                            setName(value);
                         }}
                     />
                     {errors.has("name") && (
