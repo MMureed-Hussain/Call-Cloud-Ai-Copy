@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
 
 axios.defaults.withCredentials = true;
-const baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`
+const baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`;
 
 export const statusesSlice = createSlice({
   name: "statuses",
@@ -62,12 +62,9 @@ export const getStatuses = createAsyncThunk(
   "statuses/index",
   async (params, { dispatch }) => {
     try {
-      const response = await axios.get(
-        `${baseURL}`,
-        {
-          params,
-        }
-      );
+      const response = await axios.get(`${baseURL}`, {
+        params,
+      });
       dispatch(setStatuses(response.data.data));
     } catch (e) {
       toast.error(e.response.data.message);
