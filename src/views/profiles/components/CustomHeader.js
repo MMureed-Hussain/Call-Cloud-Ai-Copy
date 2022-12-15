@@ -10,7 +10,13 @@ import {
   setPipelineFilterValue,
 } from "../../../redux/profiles";
 
-export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, onNewProfileClick }) => {
+export default ({
+  handlePerPage,
+  rowsPerPage,
+  handleSearch,
+  searchTerm,
+  onNewProfileClick,
+}) => {
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const statuses = useSelector((state) => state.statuses.statuses);
   const pipelineFilterValue = useSelector(
@@ -82,7 +88,11 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, onNewPro
             </Input>
           </div>
           <div className="d-flex align-items-center table-header-actions mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1">
-            <Button className="add-new-user" color="primary" onClick={onNewProfileClick}>
+            <Button
+              className="add-new-user"
+              color="primary"
+              onClick={onNewProfileClick}
+            >
               Add New Profile
             </Button>
           </div>
@@ -91,10 +101,10 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, onNewPro
           xl="12"
           className="d-flex  flex-md-row flex-lg-row flex-xl-row flex-column justify-content-start mt-2"
         >
-          <div className="d-flex align-items-center w-50 mt-xl-0 mt-l-0 mt-sm-1 mt-md-1 mt-1">
+          <div className="d-flex align-items-center w-100 mt-xl-0 mt-l-0 mt-sm-1 mt-md-1 mt-1">
             <label className="me-1 mx-0">Pipelines: </label>
             <Select
-              className="react-select w-75"
+              className="react-select w-100"
               type="select"
               value={pipelineFilterValue}
               theme={selectThemeColors}
@@ -106,10 +116,10 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, onNewPro
               menuPortalTarget={document.body}
             />
           </div>
-          <div className="d-flex align-items-center w-50 mt-xl-0  mt-l-0 mt-sm-1 mt-md-1 mt-1">
+          <div className="d-flex align-items-center w-100 mt-xl-0  mt-l-0 mt-sm-1 mt-md-1 mt-1">
             <label className="mr-0 me-1">Call Status: </label>
             <Select
-              className="react-select w-75"
+              className="react-select w-100"
               type="select"
               value={callFilterValue}
               theme={selectThemeColors}

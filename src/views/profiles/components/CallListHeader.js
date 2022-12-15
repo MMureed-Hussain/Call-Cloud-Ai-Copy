@@ -38,19 +38,19 @@ export default ({
     <div className="w-100 me-1 ms-50 mt-2 mb-75">
       <Row className="p-1">
         <Col
-          xl="6"
-          className="d-flex justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-lg-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
+          xl="7"
+          className="d-flex  flex-md-row flex-lg-row flex-xl-row flex-column justify-content-start mt-0"
         >
-          <div className="me-1">
+          <div className="me-1 w-100 mt-xl-1 mt-l-1 mt-sm-0 mt-md-1 mt-1">
             <Input
-              className="dataTable-filter"
+              className="dataTable-filter w-90"
               type="text"
               placeholder="Type to find"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
-          <div className="d-flex align-items-center w-85 me-1 mt-xl-0 mt-l-0 mt-sm-0 mt-md-0 mt-1">
+          <div className="d-flex align-items-center w-100 me-1 mt-xl-1 mt-l-1 mt-sm-1 mt-md-1 mt-1">
             <label className="me-1">Statuses: </label>
             <Select
               className="react-select w-100"
@@ -67,7 +67,7 @@ export default ({
           </div>
         </Col>
         <Col
-          xl="6"
+          xl="5"
           className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
         >
           <div className="d-flex align-items-center mx-50">
