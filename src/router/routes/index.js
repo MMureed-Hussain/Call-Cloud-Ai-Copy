@@ -49,6 +49,7 @@ const BookingPages = lazy(() => import("../../views/booking-pages/BookingPages")
 const CreateBookingPage = lazy(() => import("../../views/booking-pages/CreateBookingPage"));
 
 const Plans = lazy(() => import("../../views/plans"));
+const Clients = lazy(() => import("../../views/clients"));
 
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
@@ -230,6 +231,13 @@ const Routes = [
     meta: {
       layout: "blank",
       isPrivate: false,
+    },
+  },
+  {
+    path: "/clients",
+    element: <Clients />,
+    meta: {
+      isPrivate: true,
     },
   },
 ];
