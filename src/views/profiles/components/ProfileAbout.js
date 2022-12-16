@@ -9,6 +9,7 @@ import { selectThemeColors } from '@utils'
 import { updateProfile } from '../../../redux/profiles';
 import { Edit } from 'react-feather';
 import ProfileSidebar from './ProfileSidebar';
+import PhoneInput from 'react-phone-input-2';
 
 const ProfileAbout = ({ data }) => {
     const dispatch = useDispatch();
@@ -37,6 +38,12 @@ const ProfileAbout = ({ data }) => {
         }
     }, [pipeline])
 
+    useEffect(() => {
+        if (data?.pipeline) {
+            setPipeline({ value: data.pipeline.id, label: data.pipeline.name })
+        }
+    }, [data])
+
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen)
     }
@@ -45,7 +52,7 @@ const ProfileAbout = ({ data }) => {
         <>
             <Card>
                 <div className='d-flex justify-content-end'>
-                    <Button onClick={toggleSidebar} color="rounded-circle btn-icon">
+                    <Button onClick={toggleSidebar} className="rounded-circle btn-icon" color="primary">
                         <Edit size={20} />
                     </Button>
                 </div>
@@ -54,7 +61,14 @@ const ProfileAbout = ({ data }) => {
                     <CardText>{data.name}</CardText>
                     <div className='mt-2'>
                         <h5 className='mb-75'>Phone:</h5>
-                        <CardText>{data.phone}</CardText>
+                        <PhoneInput
+                            className="phone-placeholder"
+                            country={"us"}
+                            value={data.phone}
+                            disableSearchIcon
+                            disabled
+                            placeholder="1 234 567 8900"
+                        />
                     </div>
                     <div className='mt-2'>
                         <h5 className='mb-75'>Pipeline:</h5>

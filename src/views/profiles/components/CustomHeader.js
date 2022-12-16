@@ -101,8 +101,8 @@ export default ({
           xl="12"
           className="d-flex  flex-md-row flex-lg-row flex-xl-row flex-column justify-content-start mt-2"
         >
-          <div className="d-flex align-items-center w-100 mt-xl-0 mt-l-0 mt-sm-1 mt-md-1 mt-1">
-            <label className="me-1 mx-0">Pipelines: </label>
+          <div className="d-flex align-items-center w-100 mt-xl-0 mt-l-0 mt-sm-1 mt-md-1 mt-1 me-1">
+            <label className="me-1">Pipelines: </label>
             <Select
               className="react-select w-100"
               type="select"
@@ -117,7 +117,7 @@ export default ({
             />
           </div>
           <div className="d-flex align-items-center w-100 mt-xl-0  mt-l-0 mt-sm-1 mt-md-1 mt-1">
-            <label className="mr-0 me-1">Call Status: </label>
+            <label className="mr-0">Call Status: </label>
             <Select
               className="react-select w-100"
               type="select"

@@ -46,6 +46,7 @@ export const updateProfile = createAsyncThunk(
             );
             toast.success(response.data.message);
             dispatch(setReloadTable(true));
+            dispatch(setSelectedProfile(response.data.data))
             return {
                 data: response.data.data
             };

@@ -23,6 +23,8 @@ import { Link } from "react-router-dom";
 import { debounce } from "lodash";
 import { getStatuses } from "../../redux/statuses";
 import ProfileSidebar from "./components/ProfileSidebar";
+import PhoneInput from "react-phone-input-2";
+import useTransition from "../../utility/hooks/useTransition";
 
 export default () => {
   // ** States
@@ -75,13 +77,22 @@ export default () => {
     }
   }, [reloadTable]);
   // ** load data when filter value is changed
-  useEffect(() => {
+
+  useTransition((prevPipelineFilterValue, prevCallFilterValue) => {
+    //change when filter set to None
+    if ((prevPipelineFilterValue?.value || prevCallFilterValue?.value) && (!pipelineFilterValue.value || !callFilterValue.value)) {
+      loadProfiles({
+        page: 1
+      });
+    }
+    //when filter value is changed
     if (pipelineFilterValue?.value || callFilterValue?.value) {
       loadProfiles({
         page: 1
       });
     }
-  }, [pipelineFilterValue, callFilterValue]);
+
+  }, [pipelineFilterValue, callFilterValue])
   // ** Load the all call profiles for the selected workspace
   useEffect(() => {
     if (currentWorkspace) {
@@ -115,7 +126,14 @@ export default () => {
       minWidth: "172px",
       sortField: "phone",
       selector: (row) => row.phone,
-      cell: (row) => row.phone,
+      cell: (row) => <PhoneInput
+        className="phone-placeholder"
+        country={"us"}
+        value={row.phone}
+        disableSearchIcon
+        disabled
+        placeholder="1 234 567 8900"
+      />,
     },
     {
       name: "Pipeline",

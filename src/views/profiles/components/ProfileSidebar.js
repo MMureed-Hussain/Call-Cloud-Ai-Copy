@@ -76,8 +76,6 @@ export default ({ open, toggleSidebar, profile }) => {
     ).then((res) => {
       if (res.payload.data) {
         toggleSidebar();
-        // setPipeline({ value: res.payload.data.pipeline.id, label: res.payload.data.pipeline.name });
-        dispatch(setSelectedProfile(res.payload.data))
       }
     });
   };
