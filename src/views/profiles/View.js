@@ -1,12 +1,13 @@
 /* eslint-disable */
 import ProfileAbout from "./components/ProfileAbout";
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Offcanvas } from 'reactstrap';
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom"
 import { getProfile } from "../../redux/profiles";
 import Skeleton from "react-loading-skeleton";
 import CallsList from "./CallsList";
+import CallFollowUpList from "./CallFollowUpList";
 
 export default () => {
     const params = useParams();
@@ -34,7 +35,7 @@ export default () => {
         );
     }
 
-    return (
+    return (        
         <div id='user-profile'>
             <section id='profile-info'>
                 <Row>
@@ -42,11 +43,12 @@ export default () => {
                         <ProfileAbout data={profile} />
                     </Col>
                     <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
+                        <CallFollowUpList />
                         <CallsList />
                     </Col>
                 </Row>
             </section>
-        </div>
+        </div>   
     )
 
 }

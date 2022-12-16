@@ -43,4 +43,10 @@ export default [
     icon: <AlignJustify size={20}/>,
   navLink: "/statuses",
   },
+  {
+    id: "clients",
+    title: "Clients",
+    icon: <Users size={20} />,
+    navLink: "/clients",
+  },
 ];

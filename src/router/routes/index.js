@@ -44,6 +44,7 @@ const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWor
 const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
 const Plans = lazy(() => import("../../views/plans"));
+const Clients = lazy(() => import("../../views/clients"));
 
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
@@ -210,6 +211,13 @@ const Routes = [
     meta: {
       layout: "blank",
       isPrivate: false,
+    },
+  },
+  {
+    path: "/clients",
+    element: <Clients />,
+    meta: {
+      isPrivate: true,
     },
   },
 ];

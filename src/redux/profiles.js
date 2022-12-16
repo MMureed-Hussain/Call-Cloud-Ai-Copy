@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
 // ** Axios Imports
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -36,7 +35,8 @@ export const createProfile = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
     "profiles/update",
-    async ({ payload, id }, { dispatch }) => {
+    async ({ payload, id }, { dispatch }) =>
+    {
         try {
             dispatch(setLoading(true));
             dispatch(setErrors({}));
@@ -63,7 +63,8 @@ export const updateProfile = createAsyncThunk(
 
 export const getProfiles = createAsyncThunk(
     "profiles/index",
-    async (payload, { dispatch }) => {
+    async (payload, { dispatch }) =>
+    {
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles`,
@@ -84,7 +85,8 @@ export const getProfiles = createAsyncThunk(
 
 export const getProfile = createAsyncThunk(
     "profiles/find",
-    async ({ params, id }, { dispatch }) => {
+    async ({ params, id }, { dispatch }) =>
+    {
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
@@ -107,7 +109,8 @@ export const getProfile = createAsyncThunk(
 
 export const getCallsByProfileId = createAsyncThunk(
     "profiles/calls",
-    async ({ params, id }, { dispatch }) => {
+    async ({ params, id }, { dispatch }) =>
+    {
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/calls`,
@@ -129,7 +132,8 @@ export const getCallsByProfileId = createAsyncThunk(
 
 export const createCall = createAsyncThunk(
     "profiles/createCall",
-    async ({ formData, id }, { dispatch }) => {
+    async ({ formData, id }, { dispatch }) =>
+    {
         try {
             dispatch(setErrors({}));
             const response = await axios.post(
@@ -159,7 +163,8 @@ export const createCall = createAsyncThunk(
 // delete 
 export const deleteResource = createAsyncThunk(
     "profiles/delete",
-    async (url, { dispatch }) => {
+    async (url, { dispatch }) =>
+    {
         try {
             const response = await axios.delete(url);
             toast.success(response.data.message);
@@ -178,7 +183,8 @@ export const deleteResource = createAsyncThunk(
 
 export const updateCall = createAsyncThunk(
     "profiles/updateCall",
-    async ({ formData, id }, { dispatch }) => {
+    async ({ formData, id }, { dispatch }) =>
+    {
         try {
             dispatch(setErrors({}));
             const response = await axios.put(
@@ -197,7 +203,76 @@ export const updateCall = createAsyncThunk(
                 data: false
             }
         }
-    });
+    }
+);
+
+
+// Call Follow up section
+
+export const getCallFollowUpsByProfileId = createAsyncThunk(
+    "profiles/followups",
+    async ({ params, id }, { dispatch }) =>
+    {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`,
+                {
+                    params
+                }
+            );
+            return {
+                data: response.data
+            }
+        } catch (e) {
+            toast.error(e.response.data.message);
+            return {
+                data: null
+            }
+        }
+    }
+);
+
+export const storeOrUpdateCallFollowUp = createAsyncThunk(
+    "profiles/storeOrUpdateCallFollowUp",
+    async ({ data, id }, { dispatch }) =>
+    {
+        console.log(data, id);
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`, data);
+            toast.success(response.data.message);
+            dispatch(setReloadTable(true));
+            return { data: true };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+            return { data: false };
+        }
+    }
+);
+
+// delete 
+export const deleteCallFollowUp = createAsyncThunk(
+    "profiles/deleteCallFollowUp",
+    async (id, { dispatch }) =>
+    {
+        try {
+            const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-followup/${id}`);
+            toast.success(response.data.message);
+            dispatch(setReloadTable(true));
+            return {
+                data: true
+            };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            return {
+                data: false
+            };
+        }
+    }
+);
+
+
+// Call Follow-up section END Here 
 
 // prettier-ignore
 export const callProfileSlice = createSlice({
@@ -216,40 +291,52 @@ export const callProfileSlice = createSlice({
         callFilterValue: { label: "None", value: null },
     },
     reducers: {
-        setLoading: (state, { payload }) => {
+        setLoading: (state, { payload }) =>
+        {
             state.loading = payload
         },
-        setErrors: (state, { payload }) => {
+        setErrors: (state, { payload }) =>
+        {
             state.errors.setErrors(payload);
         },
-        setProfiles: (state, { payload }) => {
+        setProfiles: (state, { payload }) =>
+        {
             state.profiles = payload;
         },
-        setTotalRecords: (state, { payload }) => {
+        setTotalRecords: (state, { payload }) =>
+        {
             state.totalRecords = payload;
         },
-        setPageCount: (state, { payload }) => {
+        setPageCount: (state, { payload }) =>
+        {
             state.pageCount = payload;
         },
-        setLoadingProfiles: (state, { payload }) => {
+        setLoadingProfiles: (state, { payload }) =>
+        {
             state.loadingProfiles = payload;
         },
-        setSelectedProfile: (state, { payload }) => {
+        setSelectedProfile: (state, { payload }) =>
+        {
             state.selectedProfile = payload;
         },
-        setNowPlaying: (state, { payload }) => {
+        setNowPlaying: (state, { payload }) =>
+        {
             state.nowPlaying = payload;
         },
-        setReloadTable: (state, { payload }) => {
+        setReloadTable: (state, { payload }) =>
+        {
             state.reloadTable = payload;
         },
-        setPipelineFilterValue: (state, { payload }) => {
+        setPipelineFilterValue: (state, { payload }) =>
+        {
             state.pipelineFilterValue = payload
         },
-        setCallFilterValue: (state, { payload }) => {
+        setCallFilterValue: (state, { payload }) =>
+        {
             state.callFilterValue = payload
         },
-        resetFilters: (state, { payload }) => {
+        resetFilters: (state, { payload }) =>
+        {
             state.callFilterValue = { label: "None", value: null };
             state.pipelineFilterValue = { label: "None", value: null };
         }
