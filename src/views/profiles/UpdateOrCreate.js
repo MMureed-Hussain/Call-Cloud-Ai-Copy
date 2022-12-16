@@ -46,6 +46,12 @@ export default () => {
   );
 
   useEffect(() => {
+    if (!params?.id) {
+      setPipeline(pipelinesOptions[0])
+    }
+  }, [pipelinesOptions])
+
+  useEffect(() => {
     if (params.id) {
       dispatch(
         getProfile({
@@ -63,7 +69,7 @@ export default () => {
         }
       });
     }
-    dispatch(getPipelines(currentWorkspace.id));
+    dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
   }, [params.id]);
 
   const handleSubmit = (event) => {

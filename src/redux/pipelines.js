@@ -1,14 +1,10 @@
 /* eslint-disable */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // ** Axios Imports
-import axiosPkg from "axios";
+import axios from "axios";
 import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
-
-const axios = axiosPkg.create({
-  baseURL: `${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`,
-  withCredentials: true,
-});
+axios.defaults.withCredentials = true;
 
 export const pipelinesSlice = createSlice({
   name: "pipelines",
@@ -41,10 +37,10 @@ export const pipelinesSlice = createSlice({
 
 export const getPipelines = createAsyncThunk(
   "pipelines/index",
-  async (workspaceId, { dispatch }) => {
+  async (params, { dispatch }) => {
     try {
-      const response = await axios.get(`/`, {
-        params: { workspace_id: workspaceId },
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`, {
+        params: params,
       });
       dispatch(setPipelines(response.data.data));
     } catch (e) {
@@ -57,7 +53,7 @@ export const createPipeline = createAsyncThunk(
   "pipelines/create",
   async (payload, { dispatch }) => {
     try {
-      const response = await axios.post(`/`, payload);
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`, payload);
       toast.success(response.data.message);
       dispatch(setNewPipeline(response.data.data));
       return {
@@ -77,7 +73,7 @@ export const updatePipeline = createAsyncThunk(
   "pipelines/update",
   async ({ id, formData }, { dispatch }) => {
     try {
-      const response = await axios.put(`/${id}`, formData);
+      const response = await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines/${id}`, formData);
       toast.success(response.data.message);
       dispatch(setUpdatedPipeline({ id, name: formData.name }));
       return {
@@ -97,7 +93,7 @@ export const deletePipeline = createAsyncThunk(
   "pipelines/delete",
   async (id, { dispatch }) => {
     try {
-      const response = await axios.delete(`/${id}`);
+      const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines/${id}`);
       toast.success(response.data.message);
       dispatch(deleteResource(id));
       return {
@@ -116,8 +112,8 @@ export const updatePipelinesOrder = createAsyncThunk(
   "pipelines/updateOrder",
   async (payload) => {
     try {
-      const response = await axios.post(`/update-order`, {
-        data: payload
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines/update-order`, {
+        data: payload,
       });
       // toast.success(response.data.message);
       return {

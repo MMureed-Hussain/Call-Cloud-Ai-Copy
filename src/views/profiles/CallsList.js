@@ -48,14 +48,14 @@ export default () => {
     const dispatch = useDispatch();
     const params = useParams();
     const reloadTable = useSelector((state) => state.profiles.reloadTable);
-    const filterValue = useSelector((state) => state.profiles.callFilterValue);
+    const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
 
     useEffect(() => {
         loadCalls({
             page: 1,
         });
-        dispatch(getStatuses(currentWorkspace.id))
+        dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true", profile_id: params.id}))
     }, [currentWorkspace]);
 
     useEffect(() => {
@@ -66,25 +66,16 @@ export default () => {
             });
         }
     }, [reloadTable]);
-   
-    useEffect(() => {
-        if (reloadTable) {
-            dispatch(setReloadTable(false));
-            loadCalls({
-                page: currentPage,
-            });
-        }
-    }, [filterValue]);
 
     useEffect(() => {
-        if (filterValue) {
+        if (callFilterValue) {
             loadCalls({
                 filter: "status",
-                filter_value: filterValue.value,
+                filter_value: callFilterValue.value,
                 page: 1,
             });
         }
-    }, [filterValue]);
+    }, [callFilterValue]);
 
     const loadCalls = (options) => {
         let queryParams = {
@@ -94,8 +85,8 @@ export default () => {
             sort,
             ...options
         };
-        if (filterValue) {
-            queryParams = { ...queryParams, filter: "status", filter_value: filterValue.value }
+        if (callFilterValue) {
+            queryParams = { ...queryParams, filter: "status", filter_value: callFilterValue.value }
         }
          
         // dispatch(

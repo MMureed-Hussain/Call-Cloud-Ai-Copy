@@ -16,11 +16,12 @@ import {
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfiles, setReloadTable, deleteResource } from "../../redux/profiles";
+import { getProfiles, setReloadTable, deleteResource, setPipelineFilterValue, setCallFilterValue, resetFilters } from "../../redux/profiles";
 import { getPipelines } from "../../redux/pipelines";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
+import { getStatuses } from "../../redux/statuses";
 
 export default () => {
   // ** States
@@ -39,7 +40,8 @@ export default () => {
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);
-  const filterValue = useSelector((state) => state.profiles.filterValue);
+  const pipelineFilterValue = useSelector((state) => state.profiles.pipelineFilterValue);
+  const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
 
   // ** Factory method to dispatch the api call
   const loadProfiles = (options) => {
@@ -51,8 +53,11 @@ export default () => {
       sort,
       ...options,
     };
-    if(filterValue){
-      params = {...params, filter: "pipeline", filter_value: filterValue.value}
+    if (pipelineFilterValue?.value) {
+      params = { pipeline_id: pipelineFilterValue.value, ...params }
+    }
+    if (callFilterValue?.value) {
+      params = { call_status_id: callFilterValue.value, ...params }
     }
     dispatch(getProfiles(params));
     setCurrentPage(options.page);
@@ -68,19 +73,19 @@ export default () => {
   }, [reloadTable]);
   // ** load data when filter value is changed
   useEffect(() => {
-    if (filterValue) {
+    if (pipelineFilterValue?.value || callFilterValue?.value) {
       loadProfiles({
-        filter: "pipeline",
-        filter_value: filterValue.value,
-        page: 1,
+        page: 1
       });
     }
-  }, [filterValue]);
+  }, [pipelineFilterValue, callFilterValue]);
   // ** Load the all call profiles for the selected workspace
   useEffect(() => {
     if (currentWorkspace) {
+      dispatch(resetFilters())
       loadProfiles({ page: 1 });
-      dispatch(getPipelines(currentWorkspace.id));
+      dispatch(getPipelines({ workspace_id: currentWorkspace.id, include_count: "true" }));
+      dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_profile_count: "true" }));
     }
   }, [currentWorkspace]);
   // ** Columns meta for the data table

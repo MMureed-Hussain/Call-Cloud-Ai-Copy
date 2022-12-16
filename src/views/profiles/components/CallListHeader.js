@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Input, Row, Col, Button } from "reactstrap";
+import { Input, Row, Col, Button, Badge } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { setCallFilterValue } from "../../../redux/profiles";
 import Select from "react-select";
@@ -7,13 +7,20 @@ import { selectThemeColors } from "@utils";
 
 export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, toggleSidebar }) => {
     const statuses = useSelector((state) => state.statuses.statuses);
-    const filterValue = useSelector((state) => state.profiles.callFilterValue);
-  
+    const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
+
     const statusOptions = useMemo(() => {
-      return statuses.map((p) => ({ value: p.id, label: p.name }));
+        return statuses.map((p) => ({ value: p.id, label: p.name, count: p.calls_count }));
     }, [statuses]);
 
     const dispatch = useDispatch();
+
+    const formatOptionLabel = ({ label, count }) => (
+        <div className="d-flex justify-content-between">
+          <div>{label}</div>
+          <Badge color="light-primary">{count}</Badge>
+        </div>
+      );
 
     return (
         <div className="w-100 me-1 ms-50 mt-2 mb-75">
@@ -33,8 +40,9 @@ export default ({ handlePerPage, rowsPerPage, handleSearch, searchTerm, toggleSi
                         <Select
                             className="react-select w-100"
                             type="select"
-                            value={filterValue}
+                            value={callFilterValue}
                             theme={selectThemeColors}
+                            formatOptionLabel={formatOptionLabel}
                             classNamePrefix="select"
                             placeholder="Select"
                             options={[{ label: "None", value: null }, ...statusOptions]}
