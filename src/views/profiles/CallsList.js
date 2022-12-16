@@ -97,17 +97,18 @@ export default () => {
         if (filterValue) {
             queryParams = { ...queryParams, filter: "status", filter_value: filterValue.value }
         }
-        dispatch(
-            getCallsByProfileId({
-                id: params.id,
-                params: queryParams,
-            })
-        ).then(({ payload }) => {
-            if (payload.data !== null) {
-                setCalls(payload.data.data);
-                setPageCount(payload.data.last_page);
-            }
-        });
+         
+        // dispatch(
+        //     getCallsByProfileId({
+        //         id: params.id,
+        //         params: queryParams,
+        //     })
+        // ).then(({ payload }) => {
+        //     if (payload.data !== null) {
+        //         setCalls(payload.data.data);
+        //         setPageCount(payload.data.last_page);
+        //     }
+        // });
         setCurrentPage(options.page);
     };
 
