@@ -473,5 +473,4 @@ const UsersList = ({ workspaceId }) => {
     </Fragment>
   );
 };
-
 export default UsersList;

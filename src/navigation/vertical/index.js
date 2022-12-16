@@ -1,4 +1,4 @@
-import { Layers, Home, Users, Bookmark } from "react-feather";
+import { Layers, Home, Users, AlignJustify, UserCheck } from "react-feather";
 
 export default [
   {
@@ -19,11 +19,29 @@ export default [
     icon: <Users size={20} />,
     navLink: "/workspace/id/users",
   },
+  // {
+  //   id: "bookingPages",
+  //   title: "Booking Pages",
+  //   icon: <Bookmark size={20} />,
+  //   navLink: "/booking-pages",
+  // },
   {
-    id: "bookingPages",
-    title: "Booking Pages",
-    icon: <Bookmark size={20} />,
-    navLink: "/booking-pages",
+    id: "leadProfiles",
+    title: "Lead Profiles",
+    icon: <UserCheck size={20} />,
+    navLink: "/profiles",
+  },
+  {
+    id: "pipelines",
+    title: "Pipelines",
+    icon: <Layers size={20}/>,
+    navLink: "/pipelines",
+  },
+  {
+    id: "callStatuses",
+    title: "Call Statuses",
+    icon: <AlignJustify size={20}/>,
+  navLink: "/statuses",
   },
   {
     id: "clients",
