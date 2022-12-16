@@ -1,4 +1,5 @@
 // ** Reducers Imports
+/* eslint-disable */
 import layout from "./layout";
 import navbar from "./navbar";
 import auth from "./auth";
@@ -13,6 +14,6 @@ import profiles from "./profiles";
 import pipelines from "./pipelines";
 import statuses from "./statuses";
 
-const rootReducer = { navbar, layout, auth, workspaces, plans, feedbacks, companies, bookingPages, notifications };
+const rootReducer = { navbar, layout, auth, workspaces, plans, feedbacks, companies, bookingPages, notifications, profiles, pipelines, statuses };
 
 export default rootReducer;
