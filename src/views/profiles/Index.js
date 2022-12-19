@@ -136,6 +136,16 @@ export default () => {
       />,
     },
     {
+      name: "Type",
+      sortable: true,
+      sortField: "type",
+      minWidth: "172px",
+      selector: row => row.type,
+      cell: (row) => {
+        return <Badge className='ms-1' color={`light-${row.type === 'client' ? 'success' : 'warning'}`}> {row.type}</Badge>
+      },
+    },
+    {
       name: "Pipeline",
       sortable: false,
       minWidth: "172px",

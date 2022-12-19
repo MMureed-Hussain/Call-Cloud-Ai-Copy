@@ -35,8 +35,8 @@ export default ({
   const dispatch = useDispatch();
 
   return (
-    <div className="w-100 me-1 ms-50 mt-2 mb-75">
-      <Row className="p-1">
+    <div className="w-100 me-1 ms-50 mb-75">
+      <Row className="p-1 pt-0">
         <Col
           xl="7"
           className="d-flex  flex-md-row flex-lg-row flex-xl-row flex-column justify-content-start mt-0"

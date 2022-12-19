@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Button, Card, CardBody, CardHeader, CardText } from 'reactstrap';
+import { Button, Card, CardBody, Input, CardText, Badge } from 'reactstrap';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,6 +38,18 @@ const ProfileAbout = ({ data }) => {
         }
     }, [pipeline])
 
+    const updateProfileType = () => {
+        dispatch(updateProfile({
+            payload: {
+                pipeline: pipeline.value,
+                name: data.name,
+                phone: data.phone,
+                type: data.type === "lead" ? "client" : "lead"
+            },
+            id: data.id
+        }))
+    }
+
     useEffect(() => {
         if (data?.pipeline) {
             setPipeline({ value: data.pipeline.id, label: data.pipeline.name })
@@ -51,13 +63,16 @@ const ProfileAbout = ({ data }) => {
     return (
         <>
             <Card>
-                <div className='d-flex justify-content-end'>
+                <div className='d-flex justify-content-between'>
+                    <div className='form-switch form-check-success mt-1 ms-1'>
+                        <Input type='switch' id='switch-success' name='success' checked = {data.type === 'client'} onChange={updateProfileType} />
+                    </div>
                     <Button onClick={toggleSidebar} className="rounded-circle btn-icon" color="primary">
                         <Edit size={20} />
                     </Button>
                 </div>
                 <CardBody>
-                    <h5 className='mb-75'>Profile</h5>
+                    <h5 className='mb-75'>Profile <Badge className='ms-1' color={`light-${data.type === 'client' ? 'success' : 'warning'}`}> {data.type}</Badge></h5>
                     <CardText>{data.name}</CardText>
                     <div className='mt-2'>
                         <h5 className='mb-75'>Phone:</h5>
