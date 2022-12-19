@@ -25,13 +25,17 @@ import {
   setPipelines,
   deletePipeline,
   updatePipelinesOrder,
+  clonePipelines,
 } from "../../redux/pipelines";
 import Skeleton from "react-loading-skeleton";
-import { debounce } from "lodash";
+import { debounce, map } from "lodash";
+import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
+import useTransition from "../../utility/hooks/useTransition";
 
 export default () => {
   // ** State
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [cloneSidebarOpen, setCloneSidebarOpen] = useState(false);
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
@@ -48,26 +52,42 @@ export default () => {
     }
   }, [currentWorkspace]);
 
-  useEffect(() => {
-    setIsLoading(false);
-    
-  }, [pipelines]);
-
   const onUpdate = (data) => {
-    if (data.length) {
-      data = data.map((item, index) => ({
-        id: item.id,
-        order: index + 1,
-      }));
-      dispatch(updatePipelinesOrder(data));
-    }
+    data = data.map((item, index) => ({
+      id: item.id,
+      order: index + 1,
+    }));
+    dispatch(updatePipelinesOrder(data));
   };
 
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
 
+  useTransition((prevPipelines) => {
+    setIsLoading(false);
+    if (prevPipelines.length && JSON.stringify(map(prevPipelines, "id")) !== JSON.stringify(map(pipelines, "id"))) {
+      _onUpdate(pipelines)
+    }
+  }, [pipelines]);
+
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const toggleCloneSidebar = () => {
+    setCloneSidebarOpen(!cloneSidebarOpen);
+  };
+
+  const onCloneSubmit = (data) => {
+    return new Promise(resolve => {
+      dispatch(clonePipelines(data)).then(res => {
+        if (res.payload.data) {
+          return resolve(true)
+        }
+        resolve(false)
+      })
+    })
+  }
 
   if (isLoading) {
     return (
@@ -85,7 +105,13 @@ export default () => {
           <CardTitle tag="h4">Pipelines</CardTitle>
           <div className="d-flex align-items-center table-header-actions">
             <Button
-              className="add-new-user"
+              color="primary"
+              className="me-1"
+              onClick={toggleCloneSidebar}
+            >
+            Clone Pipelines
+            </Button>
+            <Button
               color="primary"
               onClick={() => {
                 setSelectedPipeline(null);
@@ -107,7 +133,6 @@ export default () => {
             list={pipelines}
             setList={(data) => {
               dispatch(setPipelines(data));
-              _onUpdate(data);
             }}
             delayOnTouchStart={true}
             delay={2}
@@ -153,6 +178,13 @@ export default () => {
           open={sidebarOpen}
           toggleSidebar={toggleSidebar}
           pipeline={selectedPipeline}
+        />
+      )}
+      {cloneSidebarOpen && (
+        <CloneResourceSidebar
+          open={cloneSidebarOpen}
+          toggleSidebar={toggleCloneSidebar}
+          targetAction={onCloneSubmit}
         />
       )}
     </>

@@ -13,7 +13,7 @@ import {
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import { createPipeline, updatePipeline, setErrors, setNewPipeline } from "../../../redux/pipelines";
+import { createPipeline, updatePipeline, setErrors } from "../../../redux/pipelines";
 
 export default ({ open, toggleSidebar, pipeline }) => {
     const [name, setName] = useState("");
@@ -78,7 +78,11 @@ export default ({ open, toggleSidebar, pipeline }) => {
                             errors.has("name") ? "is-invalid form-control" : "form-control"
                         }
                         onChange={(e) => {
-                            setName(e.target.value);
+                            const value = e.target.value.replace(
+                                /(^\w{1})|(\s+\w{1})/g,
+                                (letter) => letter.toUpperCase()
+                              );
+                            setName(value);
                         }}
                     />
                     {errors.has("name") && (

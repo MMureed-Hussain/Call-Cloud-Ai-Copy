@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -26,10 +26,13 @@ import {
     getCallsByProfileId,
     setReloadTable,
     deleteResource,
+    updateCall,
 } from "../../redux/profiles";
 import CallViewSidebar from "./components/CallViewSidebar";
 import UserInfo from "./components/UserInfo";
 import { getStatuses } from "../../redux/statuses";
+import Select from "react-select";
+import { selectThemeColors } from "@utils";
 
 export default () => {
     // ** States
@@ -50,6 +53,11 @@ export default () => {
     const reloadTable = useSelector((state) => state.profiles.reloadTable);
     const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+    const statuses = useSelector((state) => state.statuses.statuses);
+
+    const statusOptions = useMemo(() => {
+        return statuses.map(s => ({ value: s.id, label: s.name }))
+    }, [statuses])
 
     useEffect(() => {
         loadCalls({
@@ -87,21 +95,32 @@ export default () => {
         };
         if (callFilterValue) {
             queryParams = { ...queryParams, filter: "status", filter_value: callFilterValue.value }
-        }
-         
-        // dispatch(
-        //     getCallsByProfileId({
-        //         id: params.id,
-        //         params: queryParams,
-        //     })
-        // ).then(({ payload }) => {
-        //     if (payload.data !== null) {
-        //         setCalls(payload.data.data);
-        //         setPageCount(payload.data.last_page);
-        //     }
-        // });
+        }   
+        dispatch(
+            getCallsByProfileId({
+                id: params.id,
+                params: queryParams,
+            })
+        ).then(({ payload }) => {
+            if (payload.data !== null) {
+                setCalls(payload.data.data);
+                setPageCount(payload.data.last_page);
+            }
+        });
         setCurrentPage(options.page);
     };
+
+    const onChangeCallStatus = (call, status) => {
+        console.log(call, status)
+        dispatch(updateCall({
+            formData: {
+                tags: JSON.stringify(call.tags.map((tag) => ({ value: tag.id, label: tag.label }))),
+                call_status: status,
+            },
+            id: call.id,
+        })
+        );
+    }
 
     const columns = [
         {
@@ -131,12 +150,17 @@ export default () => {
             sortable: false,
             minWidth: "172px",
             cell: (row) => {
-                return row.call_status ? (
-                    <Badge color="primary">{row.call_status.name}</Badge>
-                ) : (
-                    "-"
-                );
-            },
+                return <Select
+                    value={{ value: row.call_status.id, label: row.call_status.name }}
+                    theme={selectThemeColors}
+                    classNamePrefix="select"
+                    className="react-select"
+                    placeholder="Select call status"
+                    options={statusOptions}
+                    menuPortalTarget={document.body}
+                    onChange={e => onChangeCallStatus(row, e.value)}
+                />
+            }
         },
         {
             name: "Created By",

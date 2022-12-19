@@ -84,7 +84,7 @@ const CustomHeader = ({
             {/* <label className="mb-0" htmlFor="search-invoice"></label> */}
             <Input
               id="search-invoice"
-              className="ms-50 w-100"
+              className="ms-50 w-80 d-flex flex-column mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1"
               type="text"
               placeholder="Type to find"
               value={searchTerm}
@@ -115,7 +115,7 @@ const CustomHeader = ({
           </div>
 
           {userData.user.role === "company" && (
-            <div className="d-flex align-items-center table-header-actions">
+            <div className="d-flex mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1">
               <Button
                 className="add-new-user"
                 color="primary"

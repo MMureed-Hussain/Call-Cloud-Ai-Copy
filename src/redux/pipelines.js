@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
 axios.defaults.withCredentials = true;
 
+const baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`;
+
 export const pipelinesSlice = createSlice({
   name: "pipelines",
   initialState: {
@@ -39,7 +41,7 @@ export const getPipelines = createAsyncThunk(
   "pipelines/index",
   async (params, { dispatch }) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`, {
+      const response = await axios.get(`${baseURL}`, {
         params: params,
       });
       dispatch(setPipelines(response.data.data));
@@ -53,7 +55,7 @@ export const createPipeline = createAsyncThunk(
   "pipelines/create",
   async (payload, { dispatch }) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines`, payload);
+      const response = await axios.post(`${baseURL}`, payload);
       toast.success(response.data.message);
       dispatch(setNewPipeline(response.data.data));
       return {
@@ -73,7 +75,7 @@ export const updatePipeline = createAsyncThunk(
   "pipelines/update",
   async ({ id, formData }, { dispatch }) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines/${id}`, formData);
+      const response = await axios.put(`${baseURL}/${id}`, formData);
       toast.success(response.data.message);
       dispatch(setUpdatedPipeline({ id, name: formData.name }));
       return {
@@ -93,7 +95,7 @@ export const deletePipeline = createAsyncThunk(
   "pipelines/delete",
   async (id, { dispatch }) => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines/${id}`);
+      const response = await axios.delete(`${baseURL}/${id}`);
       toast.success(response.data.message);
       dispatch(deleteResource(id));
       return {
@@ -112,10 +114,28 @@ export const updatePipelinesOrder = createAsyncThunk(
   "pipelines/updateOrder",
   async (payload) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/pipelines/update-order`, {
+      const response = await axios.post(`${baseURL}/update-order`, {
         data: payload,
       });
-      // toast.success(response.data.message);
+      toast.success(response.data.message);
+      return {
+        data: true,
+      };
+    } catch (e) {
+      toast.error(e.response.data.message);
+      return {
+        data: false,
+      };
+    }
+  }
+);
+
+export const clonePipelines = createAsyncThunk(
+  "pipelines/clone",
+  async (payload) => {
+    try {
+      const response = await axios.post(`${baseURL}/clone`, payload);
+      toast.success(response.data.message);
       return {
         data: true,
       };

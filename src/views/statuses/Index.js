@@ -20,13 +20,16 @@ import {
 } from "reactstrap";
 import { MoreVertical, Edit, Trash } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { getStatuses, deleteStatus, setStatuses, updateStatusOrder } from "../../redux/statuses";
+import { getStatuses, deleteStatus, setStatuses, updateStatusOrder, cloneStatuses } from "../../redux/statuses";
 import CallStatusSidebar from "./components/CallStatusSidebar";
-import { debounce } from "lodash";
+import { debounce, map } from "lodash";
+import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
+import useTransition from "../../utility/hooks/useTransition";
 
 export default () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedCallStatus, setSelectedCallStatus] = useState(null);
+  const [cloneSidebarOpen, setCloneSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const statuses = useSelector((state) => state.statuses.statuses);
   const currentWorkspace = useSelector(
@@ -41,25 +44,42 @@ export default () => {
     }
   }, [currentWorkspace]);
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, [statuses]);
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const onUpdate = (data) => {
-    if (data.length) {
-      data = data.map((item, index) => ({
-        id: item.id,
-        order: index + 1,
-      }));
-      dispatch(updateStatusOrder(data));
-    }
+  const toggleCloneSidebar = () => {
+    setCloneSidebarOpen(!cloneSidebarOpen);
   };
 
+  const onUpdate = (data) => {
+    data = data.map((item, index) => ({
+      id: item.id,
+      order: index + 1,
+    }));
+    dispatch(updateStatusOrder(data));
+  };
+
+  const onCloneSubmit = (data) => {
+    return new Promise(resolve => {
+      dispatch(cloneStatuses(data)).then(res => {
+        if (res.payload.data) {
+          return resolve(true)
+        }
+        resolve(false)
+      })
+    })
+  }
+
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
+
+  useTransition((prevStatuses) => {
+    setIsLoading(false);
+    if (prevStatuses.length && JSON.stringify(map(prevStatuses, "id")) !== JSON.stringify(map(statuses, "id"))) {
+      _onUpdate(statuses)
+    }
+  }, [statuses]);
+
   if (isLoading) {
     return (
       <div className="vh-100">
@@ -76,7 +96,13 @@ export default () => {
           <CardTitle tag="h4">Call Statuses</CardTitle>
           <div className="d-flex align-items-center table-header-actions">
             <Button
-              className="add-new-user"
+              color="primary"
+              className="me-1"
+              onClick={toggleCloneSidebar}
+            >
+              Clone Statuses
+            </Button>
+            <Button
               color="primary"
               onClick={toggleSidebar}
             >
@@ -95,7 +121,6 @@ export default () => {
             list={statuses}
             setList={(data) => {
               dispatch(setStatuses(data));
-              _onUpdate(data);
             }}
             delayOnTouchStart={true}
             delay={2}
@@ -141,6 +166,13 @@ export default () => {
           open={sidebarOpen}
           toggleSidebar={toggleSidebar}
           status={selectedCallStatus}
+        />
+      )}
+      {cloneSidebarOpen && (
+        <CloneResourceSidebar
+          open={cloneSidebarOpen}
+          toggleSidebar={toggleCloneSidebar}
+          targetAction={onCloneSubmit}
         />
       )}
     </>

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
 
 axios.defaults.withCredentials = true;
+const baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`;
 
 export const statusesSlice = createSlice({
   name: "statuses",
@@ -41,7 +42,7 @@ export const createStatus = createAsyncThunk(
   "statuses/create",
   async (payload, { dispatch }) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses`, payload);
+      const response = await axios.post(`${baseURL}`, payload);
       toast.success(response.data.message);
       dispatch(setNewStatus(response.data.data));
       return {
@@ -61,12 +62,9 @@ export const getStatuses = createAsyncThunk(
   "statuses/index",
   async (params, { dispatch }) => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/statuses`,
-        {
-          params,
-        }
-      );
+      const response = await axios.get(`${baseURL}`, {
+        params,
+      });
       dispatch(setStatuses(response.data.data));
     } catch (e) {
       toast.error(e.response.data.message);
@@ -78,7 +76,7 @@ export const deleteStatus = createAsyncThunk(
   "statuses/delete",
   async (id, { dispatch }) => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses/${id}`);
+      const response = await axios.delete(`${baseURL}/${id}`);
       toast.success(response.data.message);
       dispatch(deleteCallStatus(id));
       return {
@@ -97,7 +95,7 @@ export const updateStatus = createAsyncThunk(
   "statuses/update",
   async ({ id, formData }, { dispatch }) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses/${id}`, formData);
+      const response = await axios.put(`${baseURL}/${id}`, formData);
       toast.success(response.data.message);
       dispatch(setUpdatedStatus({ id, name: formData.name }));
       return {
@@ -117,10 +115,10 @@ export const updateStatusOrder = createAsyncThunk(
   "statuses/updateOrder",
   async (payload) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/statuses/update-order`, {
+      const response = await axios.post(`${baseURL}/update-order`, {
         data: payload,
       });
-      // toast.success(response.data.message);
+      toast.success(response.data.message);
       return {
         data: true,
       };
@@ -132,6 +130,25 @@ export const updateStatusOrder = createAsyncThunk(
     }
   }
 );
+
+export const cloneStatuses = createAsyncThunk(
+  "statuses/clone",
+  async (payload) => {
+    try {
+      const response = await axios.post(`${baseURL}/clone`, payload);
+      toast.success(response.data.message);
+      return {
+        data: true,
+      };
+    } catch (e) {
+      toast.error(e.response.data.message);
+      return {
+        data: false,
+      };
+    }
+  }
+);
+
 export const {
   setErrors,
   setStatuses,

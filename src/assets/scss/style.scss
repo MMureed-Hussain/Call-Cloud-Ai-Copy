@@ -160,3 +160,17 @@ span.divider{
 .cursor-pointer {
 	cursor: pointer;
 }
+
+.phone-placeholder input {
+	border: none !important;
+	cursor: auto !important;
+}
+
+.phone-placeholder .flag .arrow {
+	display: none !important;
+}
+
+.phone-placeholder .flag-dropdown {
+	border: none !important;
+	background: none !important;
+}
