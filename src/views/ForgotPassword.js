@@ -67,7 +67,7 @@ const ForgotPassword = () => {
   };
   // prettier-ignore
   const illustration = skin === "dark" ? "forgot-password-v2-dark.svg" : "forgot-password-v2.svg",
-    source = require(`@src/assets/images/pages/${illustration}`).default;
+    source = require(`@src/assets/images/pages/${illustration}`);
 
   if (store.user) {
     return <Navigate to="/dashboard" />;

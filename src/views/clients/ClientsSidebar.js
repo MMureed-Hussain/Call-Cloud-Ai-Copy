@@ -47,7 +47,7 @@ const CompanySidebar = ({
 
   const [avatarFile, setAvatarFile] = useState(null);
   // prettier-ignore
-  const [avatar, setAvatar] = useState(company && company.logo ? company.logo : require("@src/assets/images/avatars/company-logo.jpeg").default);
+  const [avatar, setAvatar] = useState(company && company.logo ? company.logo : require("@src/assets/images/avatars/company-logo.jpeg"));
 
   const [cropper, setCropper] = useState(null);
 
@@ -113,7 +113,7 @@ const CompanySidebar = ({
 
   const handleImgReset = () => {
     //prettier-ignore
-    setAvatar(company && company.logo ? company.logo : require("@src/assets/images/avatars/company-logo.jpeg").default);
+    setAvatar(company && company.logo ? company.logo : require("@src/assets/images/avatars/company-logo.jpeg"));
     setAvatarFile(null);
   };
 
