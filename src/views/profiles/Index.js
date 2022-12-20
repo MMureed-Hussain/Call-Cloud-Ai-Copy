@@ -24,7 +24,7 @@ import { debounce } from "lodash";
 import { getStatuses } from "../../redux/statuses";
 import ProfileSidebar from "./components/ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
-import useTransition from "../../utility/hooks/useTransition";
+import usePrevious from "../../utility/hooks/usePrevious";
 
 export default () => {
   // ** States
@@ -78,7 +78,7 @@ export default () => {
   }, [reloadTable]);
   // ** load data when filter value is changed
 
-  useTransition((prevPipelineFilterValue, prevCallFilterValue) => {
+  usePrevious((prevPipelineFilterValue, prevCallFilterValue) => {
     //change when filter set to None
     if ((prevPipelineFilterValue?.value || prevCallFilterValue?.value) && (!pipelineFilterValue.value || !callFilterValue.value)) {
       loadProfiles({

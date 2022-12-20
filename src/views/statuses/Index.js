@@ -24,7 +24,7 @@ import { getStatuses, deleteStatus, setStatuses, updateStatusOrder, cloneStatuse
 import CallStatusSidebar from "./components/CallStatusSidebar";
 import { debounce, map } from "lodash";
 import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
-import useTransition from "../../utility/hooks/useTransition";
+import usePrevious from "../../utility/hooks/usePrevious";
 
 export default () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -73,7 +73,7 @@ export default () => {
 
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
 
-  useTransition((prevStatuses) => {
+  usePrevious((prevStatuses) => {
     setIsLoading(false);
     if (prevStatuses.length && JSON.stringify(map(prevStatuses, "id")) !== JSON.stringify(map(statuses, "id"))) {
       _onUpdate(statuses)

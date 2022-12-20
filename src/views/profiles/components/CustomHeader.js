@@ -52,7 +52,7 @@ export default ({
   );
 
   return (
-    <div className="w-100 me-1 ms-50 mt-2 mb-75">
+    <div className="w-100 me-1 ms-50 mb-75">
       <Row className="p-1">
         <Col
           xl="6"
