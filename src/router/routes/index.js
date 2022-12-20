@@ -51,6 +51,7 @@ const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
 const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 const CallStatuses = lazy(() => import("../../views/statuses/Index"));
+const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
 
 // ** Merge Routes
 const Routes = [
@@ -146,6 +147,13 @@ const Routes = [
   {
     path: "/pipelines",
     element: <Pipelines />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/lead-statuses",
+    element: <LeadStatuses />,
     meta: {
       isPrivate: true,
     },

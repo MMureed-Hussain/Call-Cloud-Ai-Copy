@@ -38,6 +38,12 @@ export default [
     navLink: "/pipelines",
   },
   {
+    id: "leadStatuses",
+    title: "Lead Statuses",
+    icon: <AlignJustify size={20}/>,
+    navLink: "/lead-statuses",
+  },
+  {
     id: "callStatuses",
     title: "Call Statuses",
     icon: <AlignJustify size={20}/>,
