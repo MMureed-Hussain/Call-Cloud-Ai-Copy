@@ -21,8 +21,8 @@ const ProfileAbout = ({ data }) => {
       : null
   );
   const [leadStatus, setLeadStatus] = useState(
-    data.leadStatus
-      ? { value: data.leadStatus.id, label: data.leadStatus.name }
+    data.lead_status
+      ? { value: data.lead_status.id, label: data.lead_status.name }
       : null
   );
   const pipelines = useSelector((state) => state.pipelines.pipelines);
@@ -37,49 +37,33 @@ const ProfileAbout = ({ data }) => {
   }, [leadStatuses]);
 
   useEffect(() => {
+    dispatch(getLeadStatuses({ workspace_id: data.workspace_id }));
     dispatch(getPipelines({ workspace_id: data.workspace_id }));
   }, []);
 
   useEffect(() => {
-    dispatch(getLeadStatuses({ workspace_id: data.workspace_id }));
-  }, []);
-
-  useEffect(() => {
-    if (pipeline && pipeline.value != data.pipeline_id) {
+    if ((pipeline && pipeline.value != data.pipeline_id) ||
+      (leadStatus && leadStatus.value != data.lead_status_id)) {
       dispatch(
         updateProfile({
           payload: {
-            pipeline: pipeline.value,
+            pipeline: pipeline?.value,
             name: data.name,
+            lead_status_id: leadStatus?.value,
             phone: data.phone,
           },
           id: data.id,
         })
       );
     }
-  }, [pipeline]);
-
-  useEffect(() => {
-    if (leadStatus && leadStatus.value != data.leadStatus_id) {
-      dispatch(
-        updateProfile({
-          payload: {
-            leadStatus: leadStatus.value,
-            name: data.name,
-            phone: data.phone,
-          },
-          id: data.id,
-        })
-      );
-    }
-  }, [leadStatus]);
+  }, [pipeline, leadStatus]);
 
   const updateProfileType = () => {
     dispatch(
       updateProfile({
         payload: {
           pipeline: pipeline.value,
-          leadStatus: leadStatus.value,
+          leadStatus: leadStatus?.value,
           name: data.name,
           phone: data.phone,
           type: data.type === "lead" ? "client" : "lead",
@@ -93,11 +77,8 @@ const ProfileAbout = ({ data }) => {
     if (data?.pipeline) {
       setPipeline({ value: data.pipeline.id, label: data.pipeline.name });
     }
-  }, [data]);
-
-  useEffect(() => {
-    if (data?.leadStatus) {
-      setLeadStatus({ value: data.leadStatus.id, label: data.leadStatus.name });
+    if (data?.lead_status) {
+      setLeadStatus({ value: data.lead_status.id, label: data.lead_status.name });
     }
   }, [data]);
 
@@ -161,18 +142,22 @@ const ProfileAbout = ({ data }) => {
               onChange={setPipeline}
             />
           </div>
-          <div className="mt-2">
-            <h5 className="mb-75">Lead Status:</h5>
-            <Select
-              value={leadStatus}
-              theme={selectThemeColors}
-              classNamePrefix="select"
-              className="react-select"
-              placeholder="Select leadStatus"
-              options={leadStatusesOptions}
-              onChange={setLeadStatus}
-            />
-          </div>
+          {
+            data.type === "lead" && (
+              <div className="mt-2">
+                <h5 className="mb-75">Lead Status:</h5>
+                <Select
+                  value={leadStatus}
+                  theme={selectThemeColors}
+                  classNamePrefix="select"
+                  className="react-select"
+                  placeholder="Select lead status"
+                  options={leadStatusesOptions}
+                  onChange={setLeadStatus}
+                />
+              </div>
+            )
+          }
           <div className="mt-2">
             <h5 className="mb-75">Created At:</h5>
             <CardText>

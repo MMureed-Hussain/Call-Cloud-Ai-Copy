@@ -18,21 +18,28 @@ import PhoneInput from "react-phone-input-2";
 import Select from "react-select"
 import { selectThemeColors } from '@utils';
 import Sidebar from "@components/sidebar";
+import { getLeadStatuses } from "../../../redux/leadStatuses";
 
 export default ({ open, toggleSidebar, profile }) => {
   const [phone, setPhone] = useState("");
   const [profileName, setProfileName] = useState("");
   const [pipeline, setPipeline] = useState(null);
+  const [leadStatus, setLeadStatus] = useState(null);
 
   const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
+  const leadStatuses = useSelector((state) => state.leadStatuses.leadStatuses);
 
   const pipelinesOptions = useMemo(() => {
     return pipelines.map((p) => ({ value: p.id, label: p.name }));
   }, [pipelines]);
+
+  const leadStatusOptions = useMemo(() => {
+    return leadStatuses.map((s) => ({ value: s.id, label: s.name }));
+  }, [leadStatuses]);
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
@@ -41,19 +48,24 @@ export default ({ open, toggleSidebar, profile }) => {
   useEffect(() => {
     dispatch(setErrors({}))
     dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
-  }, []);
+    dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
+  }, [currentWorkspace]);
 
   useEffect(() => {
     if (!profile) {
       setPipeline(pipelinesOptions[0])
+      setLeadStatus(leadStatusOptions[0])
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
       if (profile.pipeline) {
         setPipeline({ value: profile.pipeline.id, label: profile.pipeline.name });
       }
+      if (profile.lead_status) {
+        setLeadStatus({ value: profile.lead_status.id, label: profile.lead_status.name });
+      }
     }
-  }, [pipelinesOptions, profile])
+  }, [profile])
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -63,7 +75,8 @@ export default ({ open, toggleSidebar, profile }) => {
           payload: {
             name: profileName,
             phone: phone,
-            pipeline: pipeline?.value
+            pipeline: pipeline?.value,
+            lead_status: leadStatus?.value
           },
           id: profile.id,
         })
@@ -71,7 +84,8 @@ export default ({ open, toggleSidebar, profile }) => {
           name: profileName,
           phone: phone,
           workspace_id: currentWorkspace.id,
-          pipeline: pipeline?.value
+          pipeline: pipeline?.value,
+          lead_status: leadStatus?.value
         })
     ).then((res) => {
       if (res.payload.data) {
@@ -156,6 +170,27 @@ export default ({ open, toggleSidebar, profile }) => {
           />
           {errors.has("pipeline") && (
             <FormFeedback>{errors.get("pipeline")}</FormFeedback>
+          )}
+        </FormGroup>
+        <FormGroup>
+          <Label className="form-label" for="phone-number">
+            Status<span className="text-danger">*</span>
+          </Label>
+          <Select
+            value={leadStatus}
+            theme={selectThemeColors}
+            classNamePrefix="select"
+            className={
+              errors.has("lead_status")
+                ? "is-invalid react-select"
+                : "react-select"
+            }
+            placeholder="Select pipeline"
+            options={leadStatusOptions}
+            onChange={setLeadStatus}
+          />
+          {errors.has("lead_status") && (
+            <FormFeedback>{errors.get("lead_status")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary" type="submit">

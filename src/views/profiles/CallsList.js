@@ -111,7 +111,6 @@ export default () => {
     };
 
     const onChangeCallStatus = (call, status) => {
-        console.log(call, status)
         dispatch(updateCall({
             formData: {
                 tags: JSON.stringify(call.tags.map((tag) => ({ value: tag.id, label: tag.label }))),

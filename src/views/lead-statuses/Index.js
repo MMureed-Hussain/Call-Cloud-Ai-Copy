@@ -63,12 +63,12 @@ export default () => {
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
 
   usePrevious(
-    (prevPipelines) => {
+    (prevValues) => {
       setIsLoading(false);
       if (
-        prevPipelines.length &&
-        JSON.stringify(map(prevPipelines, "id")) !==
-          JSON.stringify(map(leadStatuses, "id"))
+        prevValues.length &&
+        JSON.stringify(map(prevValues, "id")) !==
+        JSON.stringify(map(leadStatuses, "id"))
       ) {
         _onUpdate(leadStatuses);
       }

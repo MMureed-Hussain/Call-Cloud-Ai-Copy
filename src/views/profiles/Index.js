@@ -68,6 +68,7 @@ export default () => {
       workspace_id: currentWorkspace?.id,
       sort_by: sortColumn,
       sort,
+      type: "lead",
       ...options,
     };
     if (pipelineFilterValue?.value) {
@@ -171,30 +172,12 @@ export default () => {
       ),
     },
     {
-      name: "Type",
-      sortable: true,
-      sortField: "type",
-      minWidth: "172px",
-      selector: (row) => row.type,
-      cell: (row) => {
-        return (
-          <Badge
-            className="ms-1"
-            color={`light-${row.type === "client" ? "success" : "warning"}`}
-          >
-            {" "}
-            {row.type}
-          </Badge>
-        );
-      },
-    },
-    {
-      name: "Lead Status",
+      name: "Status",
       sortable: false,
       minWidth: "172px",
       cell: (row) => {
-        return row.leadStatus ? (
-          <Badge color="primary">{row.leadStatus.name}</Badge>
+        return row.lead_status ? (
+          <Badge color="warning">{row.lead_status.name}</Badge>
         ) : (
           "-"
         );
