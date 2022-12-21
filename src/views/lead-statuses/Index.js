@@ -62,13 +62,19 @@ export default () => {
 
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
 
-  usePrevious((prevPipelines) => {
-    setIsLoading(false);
-    if (prevPipelines.length && JSON.stringify(map(prevPipelines, "id")) !== JSON.stringify(map(leadStatuses, "id"))) {
-      _onUpdate(leadStatuses)
-    }
-  }, [leadStatuses]);
-
+  usePrevious(
+    (prevPipelines) => {
+      setIsLoading(false);
+      if (
+        prevPipelines.length &&
+        JSON.stringify(map(prevPipelines, "id")) !==
+          JSON.stringify(map(leadStatuses, "id"))
+      ) {
+        _onUpdate(leadStatuses);
+      }
+    },
+    [leadStatuses]
+  );
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -79,15 +85,15 @@ export default () => {
   };
 
   const onCloneSubmit = (data) => {
-    return new Promise(resolve => {
-      dispatch(cloneLeadStatuses(data)).then(res => {
+    return new Promise((resolve) => {
+      dispatch(cloneLeadStatuses(data)).then((res) => {
         if (res.payload.data) {
-          return resolve(true)
+          return resolve(true);
         }
-        resolve(false)
-      })
-    })
-  }
+        resolve(false);
+      });
+    });
+  };
 
   if (isLoading) {
     return (
@@ -140,7 +146,39 @@ export default () => {
             {leadStatuses.map((item) => {
               return (
                 <ListGroupItem className="draggable" key={item.name}>
-                  <div className="d-flex justify-content-between">
+                  {item.is_default === 1 ? (
+                    <h5 className="mt-0">{item.name}</h5>
+                  ) : (
+                    <div className="d-flex justify-content-between">
+                      <h5 className="mt-0">{item.name}</h5>
+                      <div className="d-flex">
+                        <UncontrolledDropdown>
+                          <DropdownToggle className="pe-1" tag="span">
+                            <MoreVertical size={15} />
+                          </DropdownToggle>
+                          <DropdownMenu end>
+                            <DropdownItem
+                              onClick={() => {
+                                setSelectedLeadStatus(item);
+                                toggleSidebar();
+                              }}
+                            >
+                              <Edit size={15} />
+                              <span className="align-middle ms-50">Edit</span>
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() =>  dispatch(deleteLeadStatus(item.id))
+                              }
+                            >
+                              <Trash size={15} className="me-50" />
+                              <span className="align-middle ms-50">Delete</span>
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </div>
+                    </div>
+                  )}
+                  {/* <div className="d-flex justify-content-between">
                     <h5 className="mt-0">{item.name}</h5>
                     <div className="d-flex">
                       <UncontrolledDropdown>
@@ -166,7 +204,7 @@ export default () => {
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </div>
-                  </div>
+                  </div> */}
                 </ListGroupItem>
               );
             })}

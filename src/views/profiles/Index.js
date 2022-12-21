@@ -16,8 +16,16 @@ import {
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfiles, setReloadTable, deleteResource, setPipelineFilterValue, setCallFilterValue, resetFilters } from "../../redux/profiles";
+import {
+  getProfiles,
+  setReloadTable,
+  deleteResource,
+  setPipelineFilterValue,
+  setCallFilterValue,
+  resetFilters,
+} from "../../redux/profiles";
 import { getPipelines } from "../../redux/pipelines";
+import { getLeadStatuses } from "../../redux/leadStatuses";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
@@ -45,8 +53,12 @@ export default () => {
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);
-  const pipelineFilterValue = useSelector((state) => state.profiles.pipelineFilterValue);
-  const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
+  const pipelineFilterValue = useSelector(
+    (state) => state.profiles.pipelineFilterValue
+  );
+  const callFilterValue = useSelector(
+    (state) => state.profiles.callFilterValue
+  );
 
   // ** Factory method to dispatch the api call
   const loadProfiles = (options) => {
@@ -59,10 +71,10 @@ export default () => {
       ...options,
     };
     if (pipelineFilterValue?.value) {
-      params = { pipeline_id: pipelineFilterValue.value, ...params }
+      params = { pipeline_id: pipelineFilterValue.value, ...params };
     }
     if (callFilterValue?.value) {
-      params = { call_status_id: callFilterValue.value, ...params }
+      params = { call_status_id: callFilterValue.value, ...params };
     }
     dispatch(getProfiles(params));
     setCurrentPage(options.page);
@@ -72,34 +84,55 @@ export default () => {
     if (reloadTable) {
       dispatch(setReloadTable(false));
       loadProfiles({
-        page: currentPage
+        page: currentPage,
       });
     }
   }, [reloadTable]);
   // ** load data when filter value is changed
 
-  usePrevious((prevPipelineFilterValue, prevCallFilterValue) => {
-    //change when filter set to None
-    if ((prevPipelineFilterValue?.value || prevCallFilterValue?.value) && (!pipelineFilterValue.value || !callFilterValue.value)) {
-      loadProfiles({
-        page: 1
-      });
-    }
-    //when filter value is changed
-    if (pipelineFilterValue?.value || callFilterValue?.value) {
-      loadProfiles({
-        page: 1
-      });
-    }
-
-  }, [pipelineFilterValue, callFilterValue])
+  usePrevious(
+    (prevPipelineFilterValue, prevCallFilterValue) => {
+      //change when filter set to None
+      if (
+        (prevPipelineFilterValue?.value || prevCallFilterValue?.value) &&
+        (!pipelineFilterValue.value || !callFilterValue.value)
+      ) {
+        loadProfiles({
+          page: 1,
+        });
+      }
+      //when filter value is changed
+      if (pipelineFilterValue?.value || callFilterValue?.value) {
+        loadProfiles({
+          page: 1,
+        });
+      }
+    },
+    [pipelineFilterValue, callFilterValue]
+  );
   // ** Load the all call profiles for the selected workspace
   useEffect(() => {
     if (currentWorkspace) {
-      dispatch(resetFilters())
+      dispatch(resetFilters());
       loadProfiles({ page: 1 });
-      dispatch(getPipelines({ workspace_id: currentWorkspace.id, include_count: "true" }));
-      dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_profile_count: "true" }));
+      dispatch(
+        getPipelines({
+          workspace_id: currentWorkspace.id,
+          include_count: "true",
+        })
+      );
+      dispatch(
+        getLeadStatuses({
+          workspace_id: currentWorkspace.id,
+          include_count: "true",
+        })
+      );
+      dispatch(
+        getStatuses({
+          workspace_id: currentWorkspace.id,
+          include_profile_count: "true",
+        })
+      );
     }
   }, [currentWorkspace]);
   // ** Columns meta for the data table
@@ -126,23 +159,45 @@ export default () => {
       minWidth: "172px",
       sortField: "phone",
       selector: (row) => row.phone,
-      cell: (row) => <PhoneInput
-        className="phone-placeholder"
-        country={"us"}
-        value={row.phone}
-        disableSearchIcon
-        disabled
-        placeholder="1 234 567 8900"
-      />,
+      cell: (row) => (
+        <PhoneInput
+          className="phone-placeholder"
+          country={"us"}
+          value={row.phone}
+          disableSearchIcon
+          disabled
+          placeholder="1 234 567 8900"
+        />
+      ),
     },
     {
       name: "Type",
       sortable: true,
       sortField: "type",
       minWidth: "172px",
-      selector: row => row.type,
+      selector: (row) => row.type,
       cell: (row) => {
-        return <Badge className='ms-1' color={`light-${row.type === 'client' ? 'success' : 'warning'}`}> {row.type}</Badge>
+        return (
+          <Badge
+            className="ms-1"
+            color={`light-${row.type === "client" ? "success" : "warning"}`}
+          >
+            {" "}
+            {row.type}
+          </Badge>
+        );
+      },
+    },
+    {
+      name: "Lead Status",
+      sortable: false,
+      minWidth: "172px",
+      cell: (row) => {
+        return row.leadStatus ? (
+          <Badge color="primary">{row.leadStatus.name}</Badge>
+        ) : (
+          "-"
+        );
       },
     },
     {
@@ -150,7 +205,11 @@ export default () => {
       sortable: false,
       minWidth: "172px",
       cell: (row) => {
-        return row.pipeline ? <Badge color="primary">{row.pipeline.name}</Badge> : "-"
+        return row.pipeline ? (
+          <Badge color="primary">{row.pipeline.name}</Badge>
+        ) : (
+          "-"
+        );
       },
     },
     {
@@ -163,27 +222,33 @@ export default () => {
               <DropdownToggle className="pe-1" tag="span">
                 <MoreVertical size={15} />
               </DropdownToggle>
-              <DropdownMenu container={'body'} end>
+              <DropdownMenu container={"body"} end>
                 <Link to={`/profiles/${row.id}`}>
                   <DropdownItem>
                     <Eye size={15} />
                     <span className="align-middle ms-50">View</span>
                   </DropdownItem>
                 </Link>
-                <DropdownItem onClick={() => {
-                  setSelectedProfile(row);
-                  toggleSidebar();
-                }}>
+                <DropdownItem
+                  onClick={() => {
+                    setSelectedProfile(row);
+                    toggleSidebar();
+                  }}
+                >
                   <Edit size={15} />
                   <span className="align-middle ms-50">Edit</span>
                 </DropdownItem>
-                <DropdownItem onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${row.id}`))}>
+                <DropdownItem
+                  onClick={() =>
+                    dispatch(
+                      deleteResource(
+                        `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${row.id}`
+                      )
+                    )
+                  }
+                >
                   <Trash size={15} className="me-50" />
-                  <span
-                    className="align-middle ms-50"
-                  >
-                    Delete
-                  </span>
+                  <span className="align-middle ms-50">Delete</span>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
@@ -258,13 +323,13 @@ export default () => {
   }
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
-  }
+    setSidebarOpen(!sidebarOpen);
+  };
 
   const onNewProfileClick = () => {
     setSelectedProfile(null);
     toggleSidebar();
-  }
+  };
 
   return (
     <>
@@ -294,8 +359,13 @@ export default () => {
           />
         </div>
       </Card>
-      {sidebarOpen && <ProfileSidebar open={sidebarOpen} toggleSidebar={toggleSidebar} profile={selectedProfile} />}
+      {sidebarOpen && (
+        <ProfileSidebar
+          open={sidebarOpen}
+          toggleSidebar={toggleSidebar}
+          profile={selectedProfile}
+        />
+      )}
     </>
-
   );
 };
