@@ -14,7 +14,23 @@ import profiles from "./profiles";
 import pipelines from "./pipelines";
 import statuses from "./statuses";
 import leadStatuses from "./leadStatuses";
+import clientStatuses from "./clientStatuses";
 
-const rootReducer = { navbar, layout, auth, workspaces, plans, feedbacks, companies, bookingPages, notifications, profiles, pipelines, statuses, leadStatuses };
+const rootReducer = {
+  navbar,
+  layout,
+  auth,
+  workspaces,
+  plans,
+  feedbacks,
+  companies,
+  bookingPages,
+  notifications,
+  profiles,
+  pipelines,
+  statuses,
+  leadStatuses,
+  clientStatuses,
+};
 
 export default rootReducer;

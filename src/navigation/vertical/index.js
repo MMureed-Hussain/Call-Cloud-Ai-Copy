@@ -34,21 +34,36 @@ export default [
   {
     id: "pipelines",
     title: "Pipelines",
-    icon: <Layers size={20}/>,
+    icon: <Layers size={20} />,
     navLink: "/pipelines",
   },
   {
-    id: "leadStatuses",
-    title: "Lead Statuses",
-    icon: <AlignJustify size={20}/>,
-    navLink: "/lead-statuses",
+    id: "statuses",
+    title: "Statuses",
+    icon: <Home size={20} />,
+    badge: "light-warning",
+    children: [
+      {
+        id: "leadStatuses",
+        title: "Lead Statuses",
+        icon: <AlignJustify size={20} />,
+        navLink: "/lead-statuses",
+      },
+      {
+        id: "callStatuses",
+        title: "Call Statuses",
+        icon: <AlignJustify size={20} />,
+        navLink: "/statuses",
+      },
+      {
+        id: "clientStatuses",
+        title: "Client Statuses",
+        icon: <AlignJustify size={20} />,
+        navLink: "/client-statuses",
+      },
+    ],
   },
-  {
-    id: "callStatuses",
-    title: "Call Statuses",
-    icon: <AlignJustify size={20}/>,
-  navLink: "/statuses",
-  },
+
   {
     id: "clients",
     title: "Clients",
