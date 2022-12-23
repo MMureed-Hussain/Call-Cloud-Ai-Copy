@@ -45,19 +45,19 @@ export default [
     children: [
       {
         id: "leadStatuses",
-        title: "Lead Statuses",
+        title: "Lead",
         icon: <AlignJustify size={20} />,
         navLink: "/lead-statuses",
       },
       {
         id: "callStatuses",
-        title: "Call Statuses",
+        title: "Call",
         icon: <AlignJustify size={20} />,
         navLink: "/statuses",
       },
       {
         id: "clientStatuses",
-        title: "Client Statuses",
+        title: "Client",
         icon: <AlignJustify size={20} />,
         navLink: "/client-statuses",
       },

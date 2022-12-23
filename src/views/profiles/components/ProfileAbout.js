@@ -42,8 +42,10 @@ const ProfileAbout = ({ data }) => {
   }, []);
 
   useEffect(() => {
-    if ((pipeline && pipeline.value != data.pipeline_id) ||
-      (leadStatus && leadStatus.value != data.lead_status_id)) {
+    if (
+      (pipeline && pipeline.value != data.pipeline_id) ||
+      (leadStatus && leadStatus.value != data.lead_status_id)
+    ) {
       dispatch(
         updateProfile({
           payload: {
@@ -63,7 +65,7 @@ const ProfileAbout = ({ data }) => {
       updateProfile({
         payload: {
           pipeline: pipeline.value,
-          leadStatus: leadStatus?.value,
+          lead_status: leadStatus?.value,
           name: data.name,
           phone: data.phone,
           type: data.type === "lead" ? "client" : "lead",
@@ -78,7 +80,10 @@ const ProfileAbout = ({ data }) => {
       setPipeline({ value: data.pipeline.id, label: data.pipeline.name });
     }
     if (data?.lead_status) {
-      setLeadStatus({ value: data.lead_status.id, label: data.lead_status.name });
+      setLeadStatus({
+        value: data.lead_status.id,
+        label: data.lead_status.name,
+      });
     }
   }, [data]);
 
@@ -142,22 +147,20 @@ const ProfileAbout = ({ data }) => {
               onChange={setPipeline}
             />
           </div>
-          {
-            data.type === "lead" && (
-              <div className="mt-2">
-                <h5 className="mb-75">Lead Status:</h5>
-                <Select
-                  value={leadStatus}
-                  theme={selectThemeColors}
-                  classNamePrefix="select"
-                  className="react-select"
-                  placeholder="Select lead status"
-                  options={leadStatusesOptions}
-                  onChange={setLeadStatus}
-                />
-              </div>
-            )
-          }
+          {data.type === "lead" && (
+            <div className="mt-2">
+              <h5 className="mb-75">Lead Status:</h5>
+              <Select
+                value={leadStatus}
+                theme={selectThemeColors}
+                classNamePrefix="select"
+                className="react-select"
+                placeholder="Select lead status"
+                options={leadStatusesOptions}
+                onChange={setLeadStatus}
+              />
+            </div>
+          )}
           <div className="mt-2">
             <h5 className="mb-75">Created At:</h5>
             <CardText>
