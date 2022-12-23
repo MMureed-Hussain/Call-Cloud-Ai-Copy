@@ -27,7 +27,7 @@
     "apexcharts-clevision": "^3.28.5",
     "axios": "^0.27.2",
     "axios-mock-adapter": "^1.20.0",
-    "bootstrap": "5.1.0",
+    "bootstrap": "5.2.3",
     "bootstrap-icons": "^1.10.2",
     "bs-stepper": "1.7.0",
     "chart.js": "^3.7.1",
@@ -67,7 +67,7 @@
     "react-draft-wysiwyg": "^1.14.7",
     "react-dropzone": "^14.2.1",
     "react-feather": "~2.0.3",
-    "react-flatpickr": "^3.10.12",
+    "react-flatpickr": "^3.10.12",   
     "react-hook-form": "^7.31.1",
     "react-hot-toast": "2.2.0",
     "react-i18next": "^11.16.9",
@@ -141,11 +141,13 @@
   },
   "resolutions": {
     "react-error-overlay": "6.0.9",
-    "postcss-custom-properties": "10.0.0"
+    "postcss-custom-properties": "10.0.0",
+    "autoprefixer": "10.4.5"
   },
   "overrides": {
     "react-error-overlay": "6.0.9",
-    "postcss-custom-properties": "10.0.0"
+    "postcss-custom-properties": "10.0.0",
+    "autoprefixer": "10.4.5"
   },
   "homepage": ""
 }

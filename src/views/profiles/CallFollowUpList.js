@@ -17,12 +17,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCallFollowUpsByProfileId, setReloadTable, deleteCallFollowUp } from "../../redux/profiles";
 import FollowUpSidebar from "./components/FollowUpSidebar";
 import FollowUpViewSidebar from "./components/FollowUpViewSidebar";
+import ViewCalendarModal from "./components/ViewCalendarModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
+
 
 export default () =>
 {
     // ** States
     const followUpSidebarRef = useRef(null);
     const followViewUpSidebarRef = useRef(null);
+    const ViewCalendarModalRef = useRef(null);
     const dispatch = useDispatch();
     const params = useParams();
     const reloadTable = useSelector((state) => state.profiles.reloadTable);
@@ -119,7 +124,11 @@ export default () =>
             name: "Meeting At",
             sortable: false,
             minWidth: "50px",
-            cell: (row) => row.meeting_at,
+            cell: (row) =>
+                <div className="d-flex justify-content-left align-items-center">
+                    <span className="me-2">{row.meeting_at}</span>
+                    <FontAwesomeIcon className="text-info cursor-pointer" icon={faCalendarCheck} fontSize={20} onClick={() => ViewCalendarModalRef.current.open(row)} />
+                </div>,
         },
         {
             name: "Notes",
@@ -234,7 +243,7 @@ export default () =>
 
             <FollowUpSidebar ref={followUpSidebarRef} />
             <FollowUpViewSidebar ref={followViewUpSidebarRef} />
-
+            <ViewCalendarModal ref={ViewCalendarModalRef} />
         </>
     );
 };
