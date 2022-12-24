@@ -18,7 +18,7 @@ import PhoneInput from "react-phone-input-2";
 import Select from "react-select"
 import { selectThemeColors } from '@utils';
 import Sidebar from "@components/sidebar";
-import { getLeadStatuses } from "../../../redux/leadStatuses";
+import { getStatuses as  getLeadStatuses } from "../../../redux/leadStatuses";
 
 export default ({ open, toggleSidebar, profile }) => {
   const [phone, setPhone] = useState("");
@@ -31,7 +31,7 @@ export default ({ open, toggleSidebar, profile }) => {
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
-  const leadStatuses = useSelector((state) => state.leadStatuses.leadStatuses);
+  const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
 
   const pipelinesOptions = useMemo(() => {
     return pipelines.map((p) => ({ value: p.id, label: p.name }));

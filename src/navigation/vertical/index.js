@@ -1,4 +1,4 @@
-import { Layers, Home, Users, AlignJustify, UserCheck } from "react-feather";
+import { Layers, Home, Users, UserCheck, Circle } from "react-feather";
 
 export default [
   {
@@ -29,7 +29,7 @@ export default [
     id: "leadProfiles",
     title: "Lead Profiles",
     icon: <UserCheck size={20} />,
-    navLink: "/profiles",
+    navLink: "/leads",
   },
   {
     id: "pipelines",
@@ -46,19 +46,19 @@ export default [
       {
         id: "leadStatuses",
         title: "Lead",
-        icon: <AlignJustify size={20} />,
+        icon: <Circle size={20} />,
         navLink: "/lead-statuses",
       },
       {
         id: "callStatuses",
         title: "Call",
-        icon: <AlignJustify size={20} />,
+        icon: <Circle size={20} />,
         navLink: "/statuses",
       },
       {
         id: "clientStatuses",
         title: "Client",
-        icon: <AlignJustify size={20} />,
+        icon: <Circle size={20} />,
         navLink: "/client-statuses",
       },
     ],

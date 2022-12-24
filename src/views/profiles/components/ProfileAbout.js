@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPipelines } from "../../../redux/pipelines";
-import { getLeadStatuses } from "../../../redux/leadStatuses";
+import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import { updateProfile } from "../../../redux/profiles";
@@ -37,45 +37,6 @@ const ProfileAbout = ({ data }) => {
   }, [leadStatuses]);
 
   useEffect(() => {
-    dispatch(getLeadStatuses({ workspace_id: data.workspace_id }));
-    dispatch(getPipelines({ workspace_id: data.workspace_id }));
-  }, []);
-
-  useEffect(() => {
-    if (
-      (pipeline && pipeline.value != data.pipeline_id) ||
-      (leadStatus && leadStatus.value != data.lead_status_id)
-    ) {
-      dispatch(
-        updateProfile({
-          payload: {
-            pipeline: pipeline?.value,
-            name: data.name,
-            lead_status_id: leadStatus?.value,
-            phone: data.phone,
-          },
-          id: data.id,
-        })
-      );
-    }
-  }, [pipeline, leadStatus]);
-
-  const updateProfileType = () => {
-    dispatch(
-      updateProfile({
-        payload: {
-          pipeline: pipeline.value,
-          lead_status: leadStatus?.value,
-          name: data.name,
-          phone: data.phone,
-          type: data.type === "lead" ? "client" : "lead",
-        },
-        id: data.id,
-      })
-    );
-  };
-
-  useEffect(() => {
     if (data?.pipeline) {
       setPipeline({ value: data.pipeline.id, label: data.pipeline.name });
     }
@@ -86,6 +47,30 @@ const ProfileAbout = ({ data }) => {
       });
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!pipelines.length) {
+      dispatch(getPipelines({ workspace_id: data.workspace_id }));
+    }
+    if (!leadStatuses.length) {
+      dispatch(getLeadStatuses({ workspace_id: data.workspace_id }));
+    }
+  }, []);
+
+  const handleProfileUpdate = (params) => {
+    dispatch(
+      updateProfile({
+        payload: {
+          pipeline: pipeline.value,
+          lead_status: leadStatus?.value,
+          name: data.name,
+          phone: data.phone,
+          ...params
+        },
+        id: data.id,
+      })
+    );
+  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -101,7 +86,7 @@ const ProfileAbout = ({ data }) => {
               id="switch-success"
               name="success"
               checked={data.type === "client"}
-              onChange={updateProfileType}
+              onChange={()=> handleProfileUpdate({ type: data.type === "client" ? "lead": "client"})}
             />
           </div>
           <Button
@@ -144,7 +129,10 @@ const ProfileAbout = ({ data }) => {
               className="react-select"
               placeholder="Select pipeline"
               options={pipelinesOptions}
-              onChange={setPipeline}
+              onChange={(value)=>{
+                setPipeline(value)
+                handleProfileUpdate({pipeline: value.value});
+              }}
             />
           </div>
           {data.type === "lead" && (
@@ -157,7 +145,10 @@ const ProfileAbout = ({ data }) => {
                 className="react-select"
                 placeholder="Select lead status"
                 options={leadStatusesOptions}
-                onChange={setLeadStatus}
+                onChange={(val)=>{
+                  setLeadStatus(val);
+                  handleProfileUpdate({lead_status: val.value})
+                }}
               />
             </div>
           )}

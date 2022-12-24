@@ -148,7 +148,7 @@ export const createCall = createAsyncThunk(
                 }
             );
             toast.success(response.data.message);
-            dispatch(setReloadTable(true));
+            dispatch(setReloadCallTable(true));
             return {
                 data: response.data.data
             };
@@ -193,7 +193,7 @@ export const updateCall = createAsyncThunk(
                 formData
             );
             toast.success(response.data.message);
-            dispatch(setReloadTable(true));
+            dispatch(setReloadCallTable(true));
             return {
                 data: true
             };
@@ -288,6 +288,7 @@ export const callProfileSlice = createSlice({
         loadingProfiles: true,
         nowPlaying: null,
         reloadTable: false,
+        reloadCallTable: false,
         pipelineFilterValue: { label: "None", value: null },
         callFilterValue: { label: "None", value: null },
     },
@@ -328,6 +329,10 @@ export const callProfileSlice = createSlice({
         {
             state.reloadTable = payload;
         },
+        setReloadCallTable: (state, { payload }) =>
+        {
+            state.reloadCallTable = payload;
+        },
         setPipelineFilterValue: (state, { payload }) =>
         {
             state.pipelineFilterValue = payload
@@ -353,6 +358,7 @@ export const {
     setSelectedProfileCalls,
     setNowPlaying,
     setReloadTable,
+    setReloadCallTable,
     setPipelineFilterValue,
     setCallFilterValue,
     resetFilters

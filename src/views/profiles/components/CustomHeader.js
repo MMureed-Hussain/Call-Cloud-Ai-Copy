@@ -18,7 +18,7 @@ export default ({
   onNewProfileClick,
 }) => {
   const pipelines = useSelector((state) => state.pipelines.pipelines);
-  const statuses = useSelector((state) => state.statuses.statuses);
+  const statuses = useSelector((state) => state.callStatuses.statuses);
   const pipelineFilterValue = useSelector(
     (state) => state.profiles.pipelineFilterValue
   );

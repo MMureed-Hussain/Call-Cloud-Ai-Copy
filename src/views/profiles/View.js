@@ -1,8 +1,8 @@
 /* eslint-disable */
 import ProfileAbout from "./components/ProfileAbout";
-import { Row, Col, Offcanvas } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom"
 import { getProfile } from "../../redux/profiles";
 import Skeleton from "react-loading-skeleton";
@@ -44,7 +44,7 @@ export default () => {
                     </Col>
                     <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
                         <CallFollowUpList />
-                        <CallsList />
+                        <CallsList profileId={params.id}/>
                     </Col>
                 </Row>
             </section>

@@ -18,7 +18,7 @@ import Recorder from "./Recorder";
 import { useParams } from "react-router-dom";
 import { createCall, updateCall } from "../../../redux/profiles";
 import TagInput from "./TagInput";
-import { getStatuses } from "../../../redux/statuses";
+import { getStatuses } from "../../../redux/callStatuses";
 
 export default ({ open, toggleSidebar, call }) => {
   // ** States
@@ -61,17 +61,17 @@ export default ({ open, toggleSidebar, call }) => {
     dispatch(
       call
         ? updateCall({
-            formData: {
-              note,
-              tags: JSON.stringify(tags),
-              call_status: callStatus?.value,
-            },
-            id: call.id,
-          })
+          formData: {
+            note,
+            tags: JSON.stringify(tags),
+            call_status: callStatus?.value,
+          },
+          id: call.id,
+        })
         : createCall({
-            formData,
-            id: params.id,
-          })
+          formData,
+          id: params.id,
+        })
     ).then((res) => {
       setFormSubmissionLoader(false);
       if (res.payload.data) {

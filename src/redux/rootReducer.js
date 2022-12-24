@@ -12,7 +12,7 @@ import feedbacks from "./feedbacks";
 import notifications from "./notifications";
 import profiles from "./profiles";
 import pipelines from "./pipelines";
-import statuses from "./statuses";
+import callStatuses from "./callStatuses";
 import leadStatuses from "./leadStatuses";
 import clientStatuses from "./clientStatuses";
 
@@ -28,7 +28,7 @@ const rootReducer = {
   notifications,
   profiles,
   pipelines,
-  statuses,
+  callStatuses,
   leadStatuses,
   clientStatuses,
 };

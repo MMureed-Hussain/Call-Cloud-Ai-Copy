@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -13,28 +13,26 @@ import {
     DropdownItem,
     CardHeader,
     CardTitle,
-    Badge,
 } from "reactstrap";
 import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
-import { useParams } from "react-router-dom";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
 import {
     getCallsByProfileId,
-    setReloadTable,
+    setReloadCallTable,
     deleteResource,
     updateCall,
 } from "../../redux/profiles";
 import CallViewSidebar from "./components/CallViewSidebar";
 import UserInfo from "./components/UserInfo";
-import { getStatuses } from "../../redux/statuses";
+import { getStatuses } from "../../redux/callStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 
-export default () => {
+const CallList = ({ profileId }) => {
     // ** States
     const [sort, setSort] = useState("desc");
     const [searchTerm, setSearchTerm] = useState("");
@@ -49,8 +47,7 @@ export default () => {
     const [viewSidebarOpen, setViewSidebarOpen] = useState(false);
 
     const dispatch = useDispatch();
-    const params = useParams();
-    const reloadTable = useSelector((state) => state.profiles.reloadTable);
+    const reloadCallTable = useSelector((state) => state.profiles.reloadCallTable);
     const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const statuses = useSelector((state) => state.statuses.statuses);
@@ -60,30 +57,32 @@ export default () => {
     }, [statuses])
 
     useEffect(() => {
-        loadCalls({
-            page: 1,
-        });
-        dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true", profile_id: params.id}))
+        if (currentWorkspace) {
+            loadCalls({
+                page: 1,
+            });
+            dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true", profile_id: profileId }))
+        }
     }, [currentWorkspace]);
 
     useEffect(() => {
-        if (reloadTable) {
-            dispatch(setReloadTable(false));
+        if (reloadCallTable) {
+            dispatch(setReloadCallTable(false));
             loadCalls({
                 page: currentPage,
             });
         }
-    }, [reloadTable]);
+    }, [reloadCallTable]);
 
     useEffect(() => {
-        if (callFilterValue) {
+        if (callFilterValue.value) {
             loadCalls({
                 filter: "status",
                 filter_value: callFilterValue.value,
                 page: 1,
             });
         }
-    }, [callFilterValue]);
+    }, [callFilterValue.value]);
 
     const loadCalls = (options) => {
         let queryParams = {
@@ -95,10 +94,10 @@ export default () => {
         };
         if (callFilterValue) {
             queryParams = { ...queryParams, filter: "status", filter_value: callFilterValue.value }
-        }   
+        }
         dispatch(
             getCallsByProfileId({
-                id: params.id,
+                id: profileId,
                 params: queryParams,
             })
         ).then(({ payload }) => {
@@ -350,3 +349,5 @@ export default () => {
         </>
     );
 };
+
+export default CallList

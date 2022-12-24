@@ -4,19 +4,19 @@ import {
   deleteStatus,
   updateStatusesOrder,
   cloneStatuses,
-} from "../../redux/clientStatuses";
+} from "../../redux/callStatuses";
 import Statuses from "../statuses/Index"
 
 const props = {
-  moduleName: "clientStatuses",
+  moduleName: "callStatuses",
   getStatuses,
   setStatuses,
   deleteStatus,
   updateStatusesOrder,
   cloneStatuses
 }
-export default () => {
 
+export default () => {
   return (
     <Statuses {
       ...props

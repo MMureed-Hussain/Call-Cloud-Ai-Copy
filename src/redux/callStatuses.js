@@ -14,7 +14,7 @@ const {
   setNewStatuses,
   setUpdatedStatus,
   deleteResource
-} = getStatusesScaffolding("leadStatuses", "lead-statuses");
+} = getStatusesScaffolding("callStatuses", "call-statuses");
 
 export {
   getStatuses,

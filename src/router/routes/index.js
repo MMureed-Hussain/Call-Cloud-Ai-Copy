@@ -44,13 +44,11 @@ const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWor
 const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
 const Plans = lazy(() => import("../../views/plans"));
-const Clients = lazy(() => import("../../views/clients"));
-
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
 const Pipelines = lazy(() => import("../../views/pipelines/Index"));
-const CallStatuses = lazy(() => import("../../views/statuses/Index"));
+const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
 const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
 const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
 
@@ -132,14 +130,28 @@ const Routes = [
     },
   },
   {
-    path: "/profiles",
+    path: "/leads",
     element: <CallProfiles />,
     meta: {
       isPrivate: true,
     },
   },
   {
-    path: "/profiles/:id",
+    path: "/leads/:id",
+    element: <CallProfileView />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/clients",
+    element: <CallProfiles />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/clients/:id",
     element: <CallProfileView />,
     meta: {
       isPrivate: true,
@@ -228,14 +240,7 @@ const Routes = [
       layout: "blank",
       isPrivate: false,
     },
-  },
-  {
-    path: "/clients",
-    element: <Clients />,
-    meta: {
-      isPrivate: true,
-    },
-  },
+  }
 ];
 
 const getRouteMeta = (route) => {
@@ -274,15 +279,14 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
               ? // eslint-disable-next-line multiline-ternary
                 LayoutWrapper
               : Fragment;
-
           route.element = (
             <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
-              <RouteTag route={route}>{route.element}</RouteTag>
+              <RouteTag  route={route}>{route.element}</RouteTag>
             </Wrapper>
           );
         }
 
-        // Push route to LayoutRoutes
+        // Push route to LayoutRouRouteTagtes
         LayoutRoutes.push(route);
       }
       return LayoutRoutes;

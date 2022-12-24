@@ -20,22 +20,29 @@ import {
   getProfiles,
   setReloadTable,
   deleteResource,
-  setPipelineFilterValue,
-  setCallFilterValue,
   resetFilters,
 } from "../../redux/profiles";
 import { getPipelines } from "../../redux/pipelines";
-import { getLeadStatuses } from "../../redux/leadStatuses";
+import { getStatuses as getLeadStatuses  } from "../../redux/leadStatuses";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { debounce } from "lodash";
-import { getStatuses } from "../../redux/statuses";
+import { getStatuses } from "../../redux/callStatuses";
 import ProfileSidebar from "./components/ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
 import usePrevious from "../../utility/hooks/usePrevious";
 
-export default () => {
+const getProfileType = (path) => {
+  if (path === '/leads') return "lead";
+  return "client"
+}
+
+export default (props) => {
+  // const {profileType} = props
   // ** States
+  const location = useLocation();
+  const profileType = getProfileType(location.pathname)
+
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,6 +60,7 @@ export default () => {
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);
+
   const pipelineFilterValue = useSelector(
     (state) => state.profiles.pipelineFilterValue
   );
@@ -68,7 +76,7 @@ export default () => {
       workspace_id: currentWorkspace?.id,
       sort_by: sortColumn,
       sort,
-      type: "lead",
+      type: profileType,
       ...options,
     };
     if (pipelineFilterValue?.value) {
@@ -145,7 +153,7 @@ export default () => {
       sortField: "name",
       selector: (row) => row.name,
       cell: (row) => (
-        <Link to={`/profiles/${row.id}`}>
+        <Link to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
           <div className="d-flex justify-content-left align-items-center">
             <div className="d-flex flex-column">
               <span className="fw-bolder">{row.name}</span>
@@ -206,7 +214,7 @@ export default () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu container={"body"} end>
-                <Link to={`/profiles/${row.id}`}>
+                <Link to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
                   <DropdownItem>
                     <Eye size={15} />
                     <span className="align-middle ms-50">View</span>
