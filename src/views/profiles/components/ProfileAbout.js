@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPipelines } from "../../../redux/pipelines";
 import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
+import { getStatuses as getClientStatuses } from "../../../redux/clientStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import { updateProfile } from "../../../redux/profiles";
@@ -25,8 +26,14 @@ const ProfileAbout = ({ data }) => {
       ? { value: data.lead_status.id, label: data.lead_status.name }
       : null
   );
+  const [clientStatus, setClientStatus] = useState(
+    data.client_status
+      ? { value: data.client_status.id, label: data.client_status.name }
+      : null
+  );
   const pipelines = useSelector((state) => state.pipelines.pipelines);
-  const leadStatuses = useSelector((state) => state.leadStatuses.leadStatuses);
+  const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
+  const clientStatuses = useSelector((state) => state.clientStatuses.statuses);
 
   const pipelinesOptions = useMemo(() => {
     return pipelines.map((p) => ({ value: p.id, label: p.name }));
@@ -35,6 +42,10 @@ const ProfileAbout = ({ data }) => {
   const leadStatusesOptions = useMemo(() => {
     return leadStatuses.map((p) => ({ value: p.id, label: p.name }));
   }, [leadStatuses]);
+
+  const clientStatusesOptions = useMemo(() => {
+    return clientStatuses.map((p) => ({ value: p.id, label: p.name }));
+  }, [clientStatuses]);
 
   useEffect(() => {
     if (data?.pipeline) {
@@ -46,6 +57,14 @@ const ProfileAbout = ({ data }) => {
         label: data.lead_status.name,
       });
     }
+    if (data?.client_status) {
+      setClientStatus({
+        value: data.client_status.id,
+        label: data.client_status.name,
+      });
+    } else {
+      setClientStatus(clientStatusesOptions[0]);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -55,6 +74,9 @@ const ProfileAbout = ({ data }) => {
     if (!leadStatuses.length) {
       dispatch(getLeadStatuses({ workspace_id: data.workspace_id }));
     }
+    if (!clientStatuses.length) {
+      dispatch(getClientStatuses({ workspace_id: data.workspace_id }));
+    }
   }, []);
 
   const handleProfileUpdate = (params) => {
@@ -63,9 +85,10 @@ const ProfileAbout = ({ data }) => {
         payload: {
           pipeline: pipeline.value,
           lead_status: leadStatus?.value,
+          client_status: clientStatus?.value,
           name: data.name,
           phone: data.phone,
-          ...params
+          ...params,
         },
         id: data.id,
       })
@@ -86,7 +109,11 @@ const ProfileAbout = ({ data }) => {
               id="switch-success"
               name="success"
               checked={data.type === "client"}
-              onChange={()=> handleProfileUpdate({ type: data.type === "client" ? "lead": "client"})}
+              onChange={() =>
+                handleProfileUpdate({
+                  type: data.type === "client" ? "lead" : "client",
+                })
+              }
             />
           </div>
           <Button
@@ -129,9 +156,9 @@ const ProfileAbout = ({ data }) => {
               className="react-select"
               placeholder="Select pipeline"
               options={pipelinesOptions}
-              onChange={(value)=>{
-                setPipeline(value)
-                handleProfileUpdate({pipeline: value.value});
+              onChange={(value) => {
+                setPipeline(value);
+                handleProfileUpdate({ pipeline: value.value });
               }}
             />
           </div>
@@ -145,9 +172,26 @@ const ProfileAbout = ({ data }) => {
                 className="react-select"
                 placeholder="Select lead status"
                 options={leadStatusesOptions}
-                onChange={(val)=>{
+                onChange={(val) => {
                   setLeadStatus(val);
-                  handleProfileUpdate({lead_status: val.value})
+                  handleProfileUpdate({ lead_status: val.value });
+                }}
+              />
+            </div>
+          )}
+          {data.type === "client" && (
+            <div className="mt-2">
+              <h5 className="mb-75">Client Status:</h5>
+              <Select
+                value={clientStatus}
+                theme={selectThemeColors}
+                classNamePrefix="select"
+                className="react-select"
+                placeholder="Select client status"
+                options={clientStatusesOptions}
+                onChange={(val) => {
+                  setClientStatus(val);
+                  handleProfileUpdate({ client_status: val.value });
                 }}
               />
             </div>

@@ -50,7 +50,7 @@ const CallList = ({ profileId }) => {
     const reloadCallTable = useSelector((state) => state.profiles.reloadCallTable);
     const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-    const statuses = useSelector((state) => state.statuses.statuses);
+    const statuses = useSelector((state) => state.callStatuses.statuses);
 
     const statusOptions = useMemo(() => {
         return statuses.map(s => ({ value: s.id, label: s.name }))
