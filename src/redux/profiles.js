@@ -290,7 +290,7 @@ export const callProfileSlice = createSlice({
         reloadTable: false,
         reloadCallTable: false,
         pipelineFilterValue: { label: "None", value: null },
-        callFilterValue: { label: "None", value: null },
+        statusFilterValue: { label: "None", value: null },
     },
     reducers: {
         setLoading: (state, { payload }) =>
@@ -337,13 +337,13 @@ export const callProfileSlice = createSlice({
         {
             state.pipelineFilterValue = payload
         },
-        setCallFilterValue: (state, { payload }) =>
+        setStatusFilterValue: (state, { payload }) =>
         {
-            state.callFilterValue = payload
+            state.statusFilterValue = payload
         },
         resetFilters: (state, { payload }) =>
         {
-            state.callFilterValue = { label: "None", value: null };
+            state.statusFilterValue = { label: "None", value: null };
             state.pipelineFilterValue = { label: "None", value: null };
         }
     }
@@ -360,7 +360,7 @@ export const {
     setReloadTable,
     setReloadCallTable,
     setPipelineFilterValue,
-    setCallFilterValue,
+    setStatusFilterValue,
     resetFilters
 } = callProfileSlice.actions;
 

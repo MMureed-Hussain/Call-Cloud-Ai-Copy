@@ -153,31 +153,31 @@ export default ({
                                     ) : (
                                         <div className="d-flex justify-content-between">
                                             <h5 className="mt-0">{item.name}</h5>
-                                            <div className="d-flex">
-                                                <UncontrolledDropdown>
-                                                    <DropdownToggle className="pe-1" tag="span">
-                                                        <MoreVertical size={15} />
-                                                    </DropdownToggle>
-                                                    <DropdownMenu end>
-                                                        <DropdownItem
-                                                            onClick={() => {
-                                                                setSelectedStatus(item);
-                                                                toggleSidebar();
-                                                            }}
-                                                        >
-                                                            <Edit size={15} />
-                                                            <span className="align-middle ms-50">Edit</span>
-                                                        </DropdownItem>
-                                                        <DropdownItem
-                                                            onClick={() => dispatch(deleteStatus(item.id))
-                                                            }
-                                                        >
-                                                            <Trash size={15} className="me-50" />
-                                                            <span className="align-middle ms-50">Delete</span>
-                                                        </DropdownItem>
-                                                    </DropdownMenu>
-                                                </UncontrolledDropdown>
-                                            </div>
+                                                {!(item?.is_default) && <div className="d-flex">
+                                                    <UncontrolledDropdown>
+                                                        <DropdownToggle className="pe-1" tag="span">
+                                                            <MoreVertical size={15} />
+                                                        </DropdownToggle>
+                                                        <DropdownMenu end>
+                                                            <DropdownItem
+                                                                onClick={() => {
+                                                                    setSelectedStatus(item);
+                                                                    toggleSidebar();
+                                                                }}
+                                                            >
+                                                                <Edit size={15} />
+                                                                <span className="align-middle ms-50">Edit</span>
+                                                            </DropdownItem>
+                                                            <DropdownItem
+                                                                onClick={() => dispatch(deleteStatus(item.id))
+                                                                }
+                                                            >
+                                                                <Trash size={15} className="me-50" />
+                                                                <span className="align-middle ms-50">Delete</span>
+                                                            </DropdownItem>
+                                                        </DropdownMenu>
+                                                    </UncontrolledDropdown>
+                                                </div>}
                                         </div>
                                     )}
                                 </ListGroupItem>

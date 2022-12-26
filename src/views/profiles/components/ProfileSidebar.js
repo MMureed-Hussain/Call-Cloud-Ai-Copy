@@ -25,21 +25,15 @@ export default ({ open, toggleSidebar, profile }) => {
   const [profileName, setProfileName] = useState("");
   const [pipeline, setPipeline] = useState(null);
   const [leadStatus, setLeadStatus] = useState(null);
+  const [clientStatus, setClientStatus] = useState(null);
 
   const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
-  const pipelines = useSelector((state) => state.pipelines.pipelines);
-  const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
-
-  const pipelinesOptions = useMemo(() => {
-    return pipelines.map((p) => ({ value: p.id, label: p.name }));
-  }, [pipelines]);
-
-  const leadStatusOptions = useMemo(() => {
-    return leadStatuses.map((s) => ({ value: s.id, label: s.name }));
-  }, [leadStatuses]);
+  const pipelines = useSelector((state) => state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name })));
+  const leadStatuses = useSelector((state) => state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
+  const clientStatuses = useSelector((state) => state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
@@ -53,8 +47,9 @@ export default ({ open, toggleSidebar, profile }) => {
 
   useEffect(() => {
     if (!profile) {
-      setPipeline(pipelinesOptions[0])
-      setLeadStatus(leadStatusOptions[0])
+      setPipeline(pipelines[0]);
+      setLeadStatus(leadStatuses[0]);
+      setClientStatus(clientStatuses[0]);
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
@@ -63,6 +58,9 @@ export default ({ open, toggleSidebar, profile }) => {
       }
       if (profile.lead_status) {
         setLeadStatus({ value: profile.lead_status.id, label: profile.lead_status.name });
+      }
+      if (profile.client_status) {
+        setClientStatus({ value: profile.client_status.id, label: profile.client_status.name });
       }
     }
   }, [profile])
@@ -165,7 +163,7 @@ export default ({ open, toggleSidebar, profile }) => {
                 : "react-select"
             }
             placeholder="Select pipeline"
-            options={pipelinesOptions}
+            options={pipelines}
             onChange={setPipeline}
           />
           {errors.has("pipeline") && (
@@ -177,7 +175,7 @@ export default ({ open, toggleSidebar, profile }) => {
             Status<span className="text-danger">*</span>
           </Label>
           <Select
-            value={leadStatus}
+            value={profile?.type === "client" ? clientStatus: leadStatus}
             theme={selectThemeColors}
             classNamePrefix="select"
             className={
@@ -185,9 +183,9 @@ export default ({ open, toggleSidebar, profile }) => {
                 ? "is-invalid react-select"
                 : "react-select"
             }
-            placeholder="Select pipeline"
-            options={leadStatusOptions}
-            onChange={setLeadStatus}
+            placeholder="Select status"
+            options={profile?.type === "client" ? clientStatuses: leadStatuses}
+            onChange={profile?.type === "client" ? setClientStatus: setLeadStatus}
           />
           {errors.has("lead_status") && (
             <FormFeedback>{errors.get("lead_status")}</FormFeedback>

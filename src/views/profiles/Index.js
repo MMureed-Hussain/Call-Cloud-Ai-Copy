@@ -27,7 +27,8 @@ import { getStatuses as getLeadStatuses  } from "../../redux/leadStatuses";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link, useLocation } from "react-router-dom";
 import { debounce } from "lodash";
-import { getStatuses } from "../../redux/callStatuses";
+import { getStatuses as getCallStatuses } from "../../redux/callStatuses";
+import { getStatuses as getClientStatuses } from "../../redux/clientStatuses";
 import ProfileSidebar from "./components/ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
 import usePrevious from "../../utility/hooks/usePrevious";
@@ -37,8 +38,7 @@ const getProfileType = (path) => {
   return "client"
 }
 
-export default (props) => {
-  // const {profileType} = props
+export default () => {
   // ** States
   const location = useLocation();
   const profileType = getProfileType(location.pathname)
@@ -64,8 +64,8 @@ export default (props) => {
   const pipelineFilterValue = useSelector(
     (state) => state.profiles.pipelineFilterValue
   );
-  const callFilterValue = useSelector(
-    (state) => state.profiles.callFilterValue
+  const statusFilterValue = useSelector(
+    (state) => state.profiles.statusFilterValue
   );
 
   // ** Factory method to dispatch the api call
@@ -82,8 +82,8 @@ export default (props) => {
     if (pipelineFilterValue?.value) {
       params = { pipeline_id: pipelineFilterValue.value, ...params };
     }
-    if (callFilterValue?.value) {
-      params = { call_status_id: callFilterValue.value, ...params };
+    if (statusFilterValue?.value) {
+      params = { [profileType === "client" ? "client_status_id" : 'call_status_id']: statusFilterValue.value, ...params };
     }
     dispatch(getProfiles(params));
     setCurrentPage(options.page);
@@ -100,24 +100,24 @@ export default (props) => {
   // ** load data when filter value is changed
 
   usePrevious(
-    (prevPipelineFilterValue, prevCallFilterValue) => {
+    (prevPipelineFilterValue, prevStatusFilterValue) => {
       //change when filter set to None
       if (
-        (prevPipelineFilterValue?.value || prevCallFilterValue?.value) &&
-        (!pipelineFilterValue.value || !callFilterValue.value)
+        (prevPipelineFilterValue?.value || prevStatusFilterValue?.value) &&
+        (!pipelineFilterValue.value || !statusFilterValue.value)
       ) {
         loadProfiles({
           page: 1,
         });
       }
       //when filter value is changed
-      if (pipelineFilterValue?.value || callFilterValue?.value) {
+      if (pipelineFilterValue?.value || statusFilterValue?.value) {
         loadProfiles({
           page: 1,
         });
       }
     },
-    [pipelineFilterValue, callFilterValue]
+    [pipelineFilterValue, statusFilterValue]
   );
   // ** Load the all call profiles for the selected workspace
   useEffect(() => {
@@ -128,20 +128,32 @@ export default (props) => {
         getPipelines({
           workspace_id: currentWorkspace.id,
           include_count: "true",
+          profile_type: profileType
         })
       );
-      dispatch(
-        getLeadStatuses({
-          workspace_id: currentWorkspace.id,
-          include_count: "true",
-        })
-      );
-      dispatch(
-        getStatuses({
-          workspace_id: currentWorkspace.id,
-          include_profile_count: "true",
-        })
-      );
+      if (profileType === "lead") {
+        dispatch(
+          getLeadStatuses({
+            workspace_id: currentWorkspace.id
+          })
+        );
+      //load call statuses in case of leads
+        dispatch(
+          getCallStatuses({
+            workspace_id: currentWorkspace.id,
+            include_profile_count: "true",
+          })
+        );
+      }
+      //load client statuses with count
+      if (profileType === "client") {
+        dispatch(
+          getClientStatuses({
+            workspace_id: currentWorkspace.id,
+            include_profile_count: "true",
+          })
+        );
+      }
     }
   }, [currentWorkspace]);
   // ** Columns meta for the data table
@@ -184,8 +196,9 @@ export default (props) => {
       sortable: false,
       minWidth: "172px",
       cell: (row) => {
-        return row.lead_status ? (
-          <Badge color="warning">{row.lead_status.name}</Badge>
+        const status = row[`${profileType}_status`]; //client_status or lead_status
+        return status ? (
+          <Badge color="warning">{status.name}</Badge>
         ) : (
           "-"
         );
@@ -331,6 +344,7 @@ export default (props) => {
           handleSearch={setSearchTerm}
           handlePerPage={handlePerPage}
           onNewProfileClick={onNewProfileClick}
+          profileType={profileType}
         />
         <div className="react-dataTable">
           <DataTable

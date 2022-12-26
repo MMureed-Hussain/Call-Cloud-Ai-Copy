@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { memo, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -31,6 +31,7 @@ import UserInfo from "./components/UserInfo";
 import { getStatuses } from "../../redux/callStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
+import usePrevious from "../../utility/hooks/usePrevious";
 
 const CallList = ({ profileId }) => {
     // ** States
@@ -48,13 +49,9 @@ const CallList = ({ profileId }) => {
 
     const dispatch = useDispatch();
     const reloadCallTable = useSelector((state) => state.profiles.reloadCallTable);
-    const callFilterValue = useSelector((state) => state.profiles.callFilterValue);
+    const statusFilterValue = useSelector((state) => state.profiles.statusFilterValue);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-    const statuses = useSelector((state) => state.callStatuses.statuses);
-
-    const statusOptions = useMemo(() => {
-        return statuses.map(s => ({ value: s.id, label: s.name }))
-    }, [statuses])
+    const statuses = useSelector((state) => state.callStatuses.statuses.map(s => ({ value: s.id, label: s.name })));
 
     useEffect(() => {
         if (currentWorkspace) {
@@ -74,15 +71,23 @@ const CallList = ({ profileId }) => {
         }
     }, [reloadCallTable]);
 
-    useEffect(() => {
-        if (callFilterValue.value) {
+    usePrevious((prevStatusFilterValue) => {
+        //change when filter set to None
+        if (prevStatusFilterValue?.value && !statusFilterValue.value) {
             loadCalls({
-                filter: "status",
-                filter_value: callFilterValue.value,
                 page: 1,
             });
         }
-    }, [callFilterValue.value]);
+        //when filter value is changed
+        if (statusFilterValue?.value) {
+            loadCalls({
+                filter: "status",
+                filter_value: statusFilterValue.value,
+                page: 1,
+            });
+        }
+    }, [statusFilterValue]);
+
 
     const loadCalls = (options) => {
         let queryParams = {
@@ -92,8 +97,8 @@ const CallList = ({ profileId }) => {
             sort,
             ...options
         };
-        if (callFilterValue) {
-            queryParams = { ...queryParams, filter: "status", filter_value: callFilterValue.value }
+        if (statusFilterValue) {
+            queryParams = { ...queryParams, filter: "status", filter_value: statusFilterValue.value }
         }
         dispatch(
             getCallsByProfileId({
@@ -154,7 +159,7 @@ const CallList = ({ profileId }) => {
                     classNamePrefix="select"
                     className="react-select"
                     placeholder="Select call status"
-                    options={statusOptions}
+                    options={statuses}
                     menuPortalTarget={document.body}
                     onChange={e => onChangeCallStatus(row, e.value)}
                 />

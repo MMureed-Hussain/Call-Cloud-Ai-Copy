@@ -162,24 +162,22 @@ const ProfileAbout = ({ data }) => {
               }}
             />
           </div>
-          {data.type === "lead" && (
-            <div className="mt-2">
-              <h5 className="mb-75">Lead Status:</h5>
+          <div className="mt-2">
+              <h5 className="mb-75">Status:</h5>
               <Select
-                value={leadStatus}
+                value={data.type === "lead" ? leadStatus : clientStatus}
                 theme={selectThemeColors}
                 classNamePrefix="select"
                 className="react-select"
-                placeholder="Select lead status"
-                options={leadStatusesOptions}
+                placeholder="Select status"
+                options={ data.type === "lead" ? leadStatusesOptions : clientStatusesOptions}
                 onChange={(val) => {
-                  setLeadStatus(val);
-                  handleProfileUpdate({ lead_status: val.value });
+                  data.type === "lead" ? setLeadStatus(val): setClientStatus(val);
+                  handleProfileUpdate({ [`${data.type}_status`]: val.value });
                 }}
               />
             </div>
-          )}
-          {data.type === "client" && (
+          {/* {data.type === "client" && (
             <div className="mt-2">
               <h5 className="mb-75">Client Status:</h5>
               <Select
@@ -195,7 +193,7 @@ const ProfileAbout = ({ data }) => {
                 }}
               />
             </div>
-          )}
+          )} */}
           <div className="mt-2">
             <h5 className="mb-75">Created At:</h5>
             <CardText>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import { Input, Row, Col, Button, Badge } from "reactstrap";
 
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import {
-  setCallFilterValue,
+  setStatusFilterValue,
   setPipelineFilterValue,
 } from "../../../redux/profiles";
 
@@ -16,31 +16,26 @@ export default ({
   handleSearch,
   searchTerm,
   onNewProfileClick,
+  profileType
 }) => {
-  const pipelines = useSelector((state) => state.pipelines.pipelines);
-  const statuses = useSelector((state) => state.callStatuses.statuses);
+  const pipelines = useSelector((state) => state.pipelines.pipelines.map((p) => ({
+    value: p.id,
+    label: p.name,
+    count: p[`${profileType}_profiles_count`],
+  })));
+
+  const statuses = useSelector((state) => state[profileType === "lead" ? 'callStatuses' : 'clientStatuses'].statuses.map((s) => ({
+    value: s.id,
+    label: s.name,
+    count: s[`${profileType}_profiles_count`],
+  })));
+ 
   const pipelineFilterValue = useSelector(
     (state) => state.profiles.pipelineFilterValue
   );
-  const callFilterValue = useSelector(
-    (state) => state.profiles.callFilterValue
+  const statusFilterValue = useSelector(
+    (state) => state.profiles.statusFilterValue
   );
-
-  const pipelinesOptions = useMemo(() => {
-    return pipelines.map((p) => ({
-      value: p.id,
-      label: p.name,
-      count: p.lead_profiles_count,
-    }));
-  }, [pipelines]);
-
-  const statusOptions = useMemo(() => {
-    return statuses.map((s) => ({
-      value: s.id,
-      label: s.name,
-      count: s.lead_profiles_count,
-    }));
-  }, [statuses]);
 
   const dispatch = useDispatch();
 
@@ -87,15 +82,17 @@ export default ({
               <option value="50">50</option>
             </Input>
           </div>
-          <div className="d-flex align-items-center table-header-actions mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1">
-            <Button
-              className="add-new-user"
-              color="primary"
-              onClick={onNewProfileClick}
-            >
-              Add New Profile
-            </Button>
-          </div>
+          {profileType === "lead" && (
+            <div className="d-flex align-items-center table-header-actions mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1">
+              <Button
+                className="add-new-user"
+                color="primary"
+                onClick={onNewProfileClick}
+              >
+                Add New Profile
+              </Button>
+            </div>
+          )}
         </Col>
         <Col
           xl="12"
@@ -111,23 +108,23 @@ export default ({
               classNamePrefix="select"
               placeholder="Select"
               formatOptionLabel={formatOptionLabel}
-              options={[{ label: "None", value: null }, ...pipelinesOptions]}
+              options={[{ label: "None", value: null }, ...pipelines]}
               onChange={(value) => dispatch(setPipelineFilterValue(value))}
               menuPortalTarget={document.body}
             />
           </div>
           <div className="d-flex align-items-center w-100 mt-xl-0  mt-l-0 mt-sm-1 mt-md-1 mt-1">
-            <label className="mr-0">Call Status: </label>
+            <label className="mr-0"> {profileType === "lead" ? 'Call Status' : 'Status'}: </label>
             <Select
               className="react-select w-100"
               type="select"
-              value={callFilterValue}
+              value={statusFilterValue}
               theme={selectThemeColors}
               classNamePrefix="select"
               placeholder="Select"
               formatOptionLabel={formatOptionLabel}
-              options={[{ label: "None", value: null }, ...statusOptions]}
-              onChange={(value) => dispatch(setCallFilterValue(value))}
+              options={[{ label: "None", value: null }, ...statuses]}
+              onChange={(value) => dispatch(setStatusFilterValue(value))}
               menuPortalTarget={document.body}
             />
           </div>
