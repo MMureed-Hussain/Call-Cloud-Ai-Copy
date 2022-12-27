@@ -11,14 +11,18 @@ import {
 } from "reactstrap";
 import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
-import { createProfile, setSelectedProfile, updateProfile } from "../../../redux/profiles";
+import {
+  createProfile,
+  setSelectedProfile,
+  updateProfile,
+} from "../../../redux/profiles";
 import { getPipelines, setErrors } from "../../../redux/pipelines";
-import 'react-phone-input-2/lib/style.css'
+import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
-import Select from "react-select"
-import { selectThemeColors } from '@utils';
+import Select from "react-select";
+import { selectThemeColors } from "@utils";
 import Sidebar from "@components/sidebar";
-import { getStatuses as  getLeadStatuses } from "../../../redux/leadStatuses";
+import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
 
 export default ({ open, toggleSidebar, profile }) => {
   const [phone, setPhone] = useState("");
@@ -26,21 +30,28 @@ export default ({ open, toggleSidebar, profile }) => {
   const [pipeline, setPipeline] = useState(null);
   const [leadStatus, setLeadStatus] = useState(null);
   const [clientStatus, setClientStatus] = useState(null);
+  const [note, setNote] = useState("");
 
   const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
-  const pipelines = useSelector((state) => state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name })));
-  const leadStatuses = useSelector((state) => state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
-  const clientStatuses = useSelector((state) => state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
+  const pipelines = useSelector((state) =>
+    state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name }))
+  );
+  const leadStatuses = useSelector((state) =>
+    state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name }))
+  );
+  const clientStatuses = useSelector((state) =>
+    state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name }))
+  );
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
 
   useEffect(() => {
-    dispatch(setErrors({}))
+    dispatch(setErrors({}));
     dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
     dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
   }, [currentWorkspace]);
@@ -53,38 +64,50 @@ export default ({ open, toggleSidebar, profile }) => {
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
+      setNote(profile.note);
       if (profile.pipeline) {
-        setPipeline({ value: profile.pipeline.id, label: profile.pipeline.name });
+        setPipeline({
+          value: profile.pipeline.id,
+          label: profile.pipeline.name,
+        });
       }
       if (profile.lead_status) {
-        setLeadStatus({ value: profile.lead_status.id, label: profile.lead_status.name });
+        setLeadStatus({
+          value: profile.lead_status.id,
+          label: profile.lead_status.name,
+        });
       }
       if (profile.client_status) {
-        setClientStatus({ value: profile.client_status.id, label: profile.client_status.name });
+        setClientStatus({
+          value: profile.client_status.id,
+          label: profile.client_status.name,
+        });
       }
     }
-  }, [profile])
+  }, [profile]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(
       profile
         ? updateProfile({
-          payload: {
+            payload: {
+              name: profileName,
+              phone: phone,
+              pipeline: pipeline?.value,
+              lead_status: leadStatus?.value,
+              note: note,
+            },
+            id: profile.id,
+          })
+        : createProfile({
             name: profileName,
             phone: phone,
+            workspace_id: currentWorkspace.id,
             pipeline: pipeline?.value,
-            lead_status: leadStatus?.value
-          },
-          id: profile.id,
-        })
-        : createProfile({
-          name: profileName,
-          phone: phone,
-          workspace_id: currentWorkspace.id,
-          pipeline: pipeline?.value,
-          lead_status: leadStatus?.value
-        })
+            lead_status: leadStatus?.value,
+            note: note,
+          })
     ).then((res) => {
       if (res.payload.data) {
         toggleSidebar();
@@ -111,9 +134,7 @@ export default ({ open, toggleSidebar, profile }) => {
             placeholder="Enter profile name"
             value={profileName}
             className={
-              errors.has("name")
-                ? "is-invalid form-control"
-                : "form-control"
+              errors.has("name") ? "is-invalid form-control" : "form-control"
             }
             onChange={(e) => {
               const value = e.target.value.replace(
@@ -175,7 +196,7 @@ export default ({ open, toggleSidebar, profile }) => {
             Status<span className="text-danger">*</span>
           </Label>
           <Select
-            value={profile?.type === "client" ? clientStatus: leadStatus}
+            value={profile?.type === "client" ? clientStatus : leadStatus}
             theme={selectThemeColors}
             classNamePrefix="select"
             className={
@@ -184,11 +205,37 @@ export default ({ open, toggleSidebar, profile }) => {
                 : "react-select"
             }
             placeholder="Select status"
-            options={profile?.type === "client" ? clientStatuses: leadStatuses}
-            onChange={profile?.type === "client" ? setClientStatus: setLeadStatus}
+            options={profile?.type === "client" ? clientStatuses : leadStatuses}
+            onChange={
+              profile?.type === "client" ? setClientStatus : setLeadStatus
+            }
           />
           {errors.has("lead_status") && (
             <FormFeedback>{errors.get("lead_status")}</FormFeedback>
+          )}
+        </FormGroup>
+        <FormGroup>
+          <Label className="form-label" for="phone-number">
+            Notes<span className="text-danger">*</span>
+          </Label>
+          <Input
+            type="textarea"
+            id="note"
+            placeholder="Enter notes here"
+            value={note}
+            className={
+              errors.has("note") ? "is-invalid form-control" : "form-control"
+            }
+            onChange={(e) => {
+              // const value = e.target.value.replace(
+              //   /(^\w{1})|(\s+\w{1})/g,
+              //   (letter) => letter.toUpperCase()
+              // );
+              setNote(value);
+            }}
+          />
+          {errors.has("note") && (
+            <FormFeedback>{errors.get("note")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary" type="submit">
