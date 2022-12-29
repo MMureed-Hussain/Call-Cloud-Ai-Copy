@@ -15,6 +15,7 @@ import pipelines from "./pipelines";
 import callStatuses from "./callStatuses";
 import leadStatuses from "./leadStatuses";
 import clientStatuses from "./clientStatuses";
+import note from "./note";
 
 const rootReducer = {
   navbar,
@@ -31,6 +32,7 @@ const rootReducer = {
   callStatuses,
   leadStatuses,
   clientStatuses,
+  note,
 };
 
 export default rootReducer;

@@ -23,7 +23,7 @@ import {
   resetFilters,
 } from "../../redux/profiles";
 import { getPipelines } from "../../redux/pipelines";
-import { getStatuses as getLeadStatuses  } from "../../redux/leadStatuses";
+import { getStatuses as getLeadStatuses } from "../../redux/leadStatuses";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import { Link, useLocation } from "react-router-dom";
 import { debounce } from "lodash";
@@ -34,14 +34,14 @@ import PhoneInput from "react-phone-input-2";
 import usePrevious from "../../utility/hooks/usePrevious";
 
 const getProfileType = (path) => {
-  if (path === '/leads') return "lead";
-  return "client"
-}
+  if (path === "/leads") return "lead";
+  return "client";
+};
 
 export default () => {
   // ** States
   const location = useLocation();
-  const profileType = getProfileType(location.pathname)
+  const profileType = getProfileType(location.pathname);
 
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,6 +57,7 @@ export default () => {
     (state) => state.workspaces.currentWorkspace
   );
   const profiles = useSelector((state) => state.profiles.profiles);
+  console.log("--------", profiles);
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);
@@ -83,7 +84,11 @@ export default () => {
       params = { pipeline_id: pipelineFilterValue.value, ...params };
     }
     if (statusFilterValue?.value) {
-      params = { [profileType === "client" ? "client_status_id" : 'call_status_id']: statusFilterValue.value, ...params };
+      params = {
+        [profileType === "client" ? "client_status_id" : "call_status_id"]:
+          statusFilterValue.value,
+        ...params,
+      };
     }
     dispatch(getProfiles(params));
     setCurrentPage(options.page);
@@ -128,16 +133,16 @@ export default () => {
         getPipelines({
           workspace_id: currentWorkspace.id,
           include_count: "true",
-          profile_type: profileType
+          profile_type: profileType,
         })
       );
       if (profileType === "lead") {
         dispatch(
           getLeadStatuses({
-            workspace_id: currentWorkspace.id
+            workspace_id: currentWorkspace.id,
           })
         );
-      //load call statuses in case of leads
+        //load call statuses in case of leads
         dispatch(
           getCallStatuses({
             workspace_id: currentWorkspace.id,
@@ -197,11 +202,7 @@ export default () => {
       minWidth: "172px",
       cell: (row) => {
         const status = row[`${profileType}_status`]; //client_status or lead_status
-        return status ? (
-          <Badge color="warning">{status.name}</Badge>
-        ) : (
-          "-"
-        );
+        return status ? <Badge color="warning">{status.name}</Badge> : "-";
       },
     },
     {
@@ -227,7 +228,11 @@ export default () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu container={"body"} end>
-                <Link to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
+                <Link
+                  to={`/${profileType === "lead" ? "leads" : "clients"}/${
+                    row.id
+                  }`}
+                >
                   <DropdownItem>
                     <Eye size={15} />
                     <span className="align-middle ms-50">View</span>

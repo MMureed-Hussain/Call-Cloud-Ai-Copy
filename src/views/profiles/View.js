@@ -8,7 +8,7 @@ import { getProfile } from "../../redux/profiles";
 import Skeleton from "react-loading-skeleton";
 import CallsList from "./CallsList";
 import CallFollowUpList from "./CallFollowUpList";
-import UserNotes from "./components/UserNotes";
+import AllNotes from "./components/AllNotes";
 
 export default () => {
   const params = useParams();
@@ -23,7 +23,7 @@ export default () => {
     if (currentWorkspace) {
       dispatch(
         getProfile({
-          params: { include_calls: "false" },
+          // params: { include_calls: "false" },
           id: params.id,
         })
       );
@@ -45,12 +45,11 @@ export default () => {
         <Row>
           <Col lg={{ size: 3, order: 1 }} sm={{ size: 12 }} xs={{ order: 2 }}>
             <ProfileAbout data={profile} />
-            <UserNotes data={profile} />
+            <AllNotes />
           </Col>
           <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
             <CallFollowUpList />
             <CallsList profileId={params.id} />
-            {/* <UserNotes data={profile} /> */}
           </Col>
         </Row>
       </section>

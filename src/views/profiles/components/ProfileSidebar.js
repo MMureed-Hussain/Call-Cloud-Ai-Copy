@@ -96,7 +96,7 @@ export default ({ open, toggleSidebar, profile }) => {
               phone: phone,
               pipeline: pipeline?.value,
               lead_status: leadStatus?.value,
-              note: note,
+              notes: note,
             },
             id: profile.id,
           })
@@ -106,7 +106,7 @@ export default ({ open, toggleSidebar, profile }) => {
             workspace_id: currentWorkspace.id,
             pipeline: pipeline?.value,
             lead_status: leadStatus?.value,
-            note: note,
+            notes: note,
           })
     ).then((res) => {
       if (res.payload.data) {
@@ -227,10 +227,10 @@ export default ({ open, toggleSidebar, profile }) => {
               errors.has("note") ? "is-invalid form-control" : "form-control"
             }
             onChange={(e) => {
-              // const value = e.target.value.replace(
-              //   /(^\w{1})|(\s+\w{1})/g,
-              //   (letter) => letter.toUpperCase()
-              // );
+              const value = e.target.value.replace(
+                /(^\w{1})|(\s+\w{1})/g,
+                (letter) => letter.toUpperCase()
+              );
               setNote(value);
             }}
           />
