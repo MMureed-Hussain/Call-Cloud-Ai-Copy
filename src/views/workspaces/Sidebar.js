@@ -46,7 +46,7 @@ const SidebarWorkspace = ({
 
   const [avatarFile, setAvatarFile] = useState(null);
   // prettier-ignore
-  const [avatar, setAvatar] = useState(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
+  const [avatar, setAvatar] = useState(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg"));
 
   const [cropper, setCropper] = useState(null);
 
@@ -111,7 +111,7 @@ const SidebarWorkspace = ({
 
   const handleImgReset = () => {
     //prettier-ignore
-    setAvatar(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
+    setAvatar(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg"));
     setAvatarFile(null);
   };
 

@@ -30,7 +30,7 @@ import {
 import Skeleton from "react-loading-skeleton";
 import { debounce, map } from "lodash";
 import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
-import useTransition from "../../utility/hooks/useTransition";
+import usePrevious from "../../utility/hooks/usePrevious";
 
 export default () => {
   // ** State
@@ -62,13 +62,19 @@ export default () => {
 
   const _onUpdate = useCallback(debounce(onUpdate, 1500), []);
 
-  useTransition((prevPipelines) => {
-    setIsLoading(false);
-    if (prevPipelines.length && JSON.stringify(map(prevPipelines, "id")) !== JSON.stringify(map(pipelines, "id"))) {
-      _onUpdate(pipelines)
-    }
-  }, [pipelines]);
-
+  usePrevious(
+    (prevPipelines) => {
+      setIsLoading(false);
+      if (
+        prevPipelines.length &&
+        JSON.stringify(map(prevPipelines, "id")) !==
+          JSON.stringify(map(pipelines, "id"))
+      ) {
+        _onUpdate(pipelines);
+      }
+    },
+    [pipelines]
+  );
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -79,15 +85,15 @@ export default () => {
   };
 
   const onCloneSubmit = (data) => {
-    return new Promise(resolve => {
-      dispatch(clonePipelines(data)).then(res => {
+    return new Promise((resolve) => {
+      dispatch(clonePipelines(data)).then((res) => {
         if (res.payload.data) {
-          return resolve(true)
+          return resolve(true);
         }
-        resolve(false)
-      })
-    })
-  }
+        resolve(false);
+      });
+    });
+  };
 
   if (isLoading) {
     return (
@@ -109,7 +115,7 @@ export default () => {
               className="me-1"
               onClick={toggleCloneSidebar}
             >
-            Clone Pipelines
+              Clone Pipelines
             </Button>
             <Button
               color="primary"

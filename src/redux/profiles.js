@@ -149,7 +149,7 @@ export const createCall = createAsyncThunk(
                 }
             );
             toast.success(response.data.message);
-            dispatch(setReloadTable(true));
+            dispatch(setReloadCallTable(true));
             return {
                 data: response.data.data
             };
@@ -194,7 +194,7 @@ export const updateCall = createAsyncThunk(
                 formData
             );
             toast.success(response.data.message);
-            dispatch(setReloadTable(true));
+            dispatch(setReloadCallTable(true));
             return {
                 data: true
             };
@@ -289,8 +289,9 @@ export const callProfileSlice = createSlice({
         loadingProfiles: true,
         nowPlaying: null,
         reloadTable: false,
+        reloadCallTable: false,
         pipelineFilterValue: { label: "None", value: null },
-        callFilterValue: { label: "None", value: null },
+        statusFilterValue: { label: "None", value: null },
     },
     reducers: {
         setLoading: (state, { payload }) =>
@@ -329,17 +330,21 @@ export const callProfileSlice = createSlice({
         {
             state.reloadTable = payload;
         },
+        setReloadCallTable: (state, { payload }) =>
+        {
+            state.reloadCallTable = payload;
+        },
         setPipelineFilterValue: (state, { payload }) =>
         {
             state.pipelineFilterValue = payload
         },
-        setCallFilterValue: (state, { payload }) =>
+        setStatusFilterValue: (state, { payload }) =>
         {
-            state.callFilterValue = payload
+            state.statusFilterValue = payload
         },
         resetFilters: (state, { payload }) =>
         {
-            state.callFilterValue = { label: "None", value: null };
+            state.statusFilterValue = { label: "None", value: null };
             state.pipelineFilterValue = { label: "None", value: null };
         }
     }
@@ -354,8 +359,9 @@ export const {
     setSelectedProfileCalls,
     setNowPlaying,
     setReloadTable,
+    setReloadCallTable,
     setPipelineFilterValue,
-    setCallFilterValue,
+    setStatusFilterValue,
     resetFilters
 } = callProfileSlice.actions;
 

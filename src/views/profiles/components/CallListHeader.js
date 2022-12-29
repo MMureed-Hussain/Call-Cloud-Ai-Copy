@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Input, Row, Col, Button, Badge } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { setCallFilterValue } from "../../../redux/profiles";
+import { setStatusFilterValue } from "../../../redux/profiles";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 
@@ -12,9 +12,9 @@ export default ({
   searchTerm,
   toggleSidebar,
 }) => {
-  const statuses = useSelector((state) => state.statuses.statuses);
-  const callFilterValue = useSelector(
-    (state) => state.profiles.callFilterValue
+  const statuses = useSelector((state) => state.callStatuses.statuses);
+  const statusFilterValue = useSelector(
+    (state) => state.profiles.statusFilterValue
   );
 
   const statusOptions = useMemo(() => {
@@ -35,8 +35,8 @@ export default ({
   const dispatch = useDispatch();
 
   return (
-    <div className="w-100 me-1 ms-50 mt-2 mb-75">
-      <Row className="p-1">
+    <div className="w-100 me-1 ms-50 mb-75">
+      <Row className="p-1 pt-0">
         <Col
           xl="7"
           className="d-flex  flex-md-row flex-lg-row flex-xl-row flex-column justify-content-start mt-0"
@@ -55,13 +55,13 @@ export default ({
             <Select
               className="react-select w-100"
               type="select"
-              value={callFilterValue}
+              value={statusFilterValue}
               theme={selectThemeColors}
               classNamePrefix="select"
               formatOptionLabel={formatOptionLabel}
               placeholder="Select"
               options={[{ label: "None", value: null }, ...statusOptions]}
-              onChange={(value) => dispatch(setCallFilterValue(value))}
+              onChange={(value) => dispatch(setStatusFilterValue(value))}
               menuPortalTarget={document.body}
             />
           </div>

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Layers, Home, Users, AlignJustify, UserCheck, Calendar } from "react-feather";
+=======
+import { Layers, Home, Users, UserCheck, Circle } from "react-feather";
+>>>>>>> umair_dev
 
 export default [
   {
@@ -29,7 +33,7 @@ export default [
     id: "leadProfiles",
     title: "Lead Profiles",
     icon: <UserCheck size={20} />,
-    navLink: "/profiles",
+    navLink: "/leads",
   },
   {
     id: "pipelines",
@@ -38,11 +42,39 @@ export default [
     navLink: "/pipelines",
   },
   {
+<<<<<<< HEAD
     id: "callStatuses",
     title: "Call Statuses",
     icon: <AlignJustify size={20} />,
     navLink: "/statuses",
+=======
+    id: "statuses",
+    title: "Statuses",
+    icon: <Home size={20} />,
+    badge: "light-warning",
+    children: [
+      {
+        id: "leadStatuses",
+        title: "Lead",
+        icon: <Circle size={20} />,
+        navLink: "/lead-statuses",
+      },
+      {
+        id: "callStatuses",
+        title: "Call",
+        icon: <Circle size={20} />,
+        navLink: "/statuses",
+      },
+      {
+        id: "clientStatuses",
+        title: "Client",
+        icon: <Circle size={20} />,
+        navLink: "/client-statuses",
+      },
+    ],
+>>>>>>> umair_dev
   },
+
   {
     id: "clients",
     title: "Clients",

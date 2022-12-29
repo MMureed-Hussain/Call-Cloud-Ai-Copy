@@ -18,7 +18,7 @@ import Recorder from "./Recorder";
 import { useParams } from "react-router-dom";
 import { createCall, updateCall } from "../../../redux/profiles";
 import TagInput from "./TagInput";
-import { getStatuses } from "../../../redux/statuses";
+import { getStatuses } from "../../../redux/callStatuses";
 
 export default ({ open, toggleSidebar, call }) => {
   // ** States
@@ -40,7 +40,7 @@ export default ({ open, toggleSidebar, call }) => {
   //store
   const dispatch = useDispatch();
   const errors = useSelector((state) => state.profiles.errors);
-  const statuses = useSelector((state) => state.statuses.statuses);
+  const statuses = useSelector((state) => state.callStatuses.statuses);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
@@ -96,7 +96,12 @@ export default ({ open, toggleSidebar, call }) => {
         });
       }
     }
-    dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true" }));
+    dispatch(
+      getStatuses({
+        workspace_id: currentWorkspace.id,
+        include_call_count: "true",
+      })
+    );
   }, [call]);
 
   const callStatusOptions = useMemo(() => {

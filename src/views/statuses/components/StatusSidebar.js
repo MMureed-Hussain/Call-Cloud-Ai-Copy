@@ -13,36 +13,40 @@ import {
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import { createStatus, setErrors, updateStatus } from "../../../redux/statuses";
+import {
+  createStatus,
+  updateStatus,
+  setErrors,
+} from "../../../redux/clientStatuses";
 
-export default ({ open, toggleSidebar, status }) => {
+export default ({ open, toggleSidebar, clientStatus }) => {
   const [name, setName] = useState("");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
+
   //store
-  const errors = useSelector((state) => state.statuses.errors);
+  const dispatch = useDispatch();
+  const errors = useSelector((state) => state.clientStatuses.errors);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    if (status) {
-      setName(status.name);
+    if (clientStatus) {
+      setName(clientStatus.name);
     }
-  }, [status]);
+  }, [clientStatus]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSubmissionLoader(true);
     dispatch(setErrors({}));
     dispatch(
-      status
+      clientStatus
         ? updateStatus({
             formData: {
               name,
             },
-            id: status.id,
+            id: clientStatus.id,
           })
         : createStatus({
             name,
@@ -61,7 +65,7 @@ export default ({ open, toggleSidebar, status }) => {
     <Sidebar
       size="lg"
       open={open}
-      title={status ? "Update Status" : "New Status"}
+      title={clientStatus ? "Update Client Status" : "New Client Status"}
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
