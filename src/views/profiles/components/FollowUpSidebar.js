@@ -7,7 +7,7 @@ import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import axios from "axios";
 axios.defaults.withCredentials = true;
-
+import toast from "react-hot-toast";
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -26,6 +26,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 	const user = useSelector(state => state.auth.user);
 	const errors = useSelector(state => state.profiles.errors);
 	const [followUp, setFollowUp] = useState(null);
+	const workspaces = useSelector((state) => state.workspaces);
 
 	const [open, setOpen] = useState(false);
 	const [loader, setLoader] = useState(false);
@@ -103,21 +104,30 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 	useImperativeHandle(ref, () => ({
 		handleShow: (obj = null) =>
 		{
-			let arg = obj ? {
-				...obj,
-				is_created: 0,
-				type: 'datetime'
-			} : {
-				type: 'number',
-				meeting_at: '',
-				meeting_type: 'phone',
-				call_profile_id: params.id,
-				is_created: 1,
-			};
 
-			setFollowUp(obj);
-			setData(arg);
-			setOpen(true);
+			if (workspaces && workspaces.currentWorkspace) {
+
+				let arg = obj ? {
+					...obj,
+					is_created: 0,
+					type: 'datetime'
+				} : {
+					type: 'number',
+					meeting_at: '',
+					meeting_type: 'phone',
+					call_profile_id: params.id,
+					is_created: 1,
+					workspace_id: workspaces.currentWorkspace.id,
+				};
+
+				setFollowUp(obj);
+				setData(arg);
+				setOpen(true);
+
+			} else {
+
+				toast.error('Please select a workspace first!');
+			}
 		},
 	}));
 

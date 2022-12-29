@@ -8,7 +8,8 @@ axios.defaults.withCredentials = true;
 
 export const createProfile = createAsyncThunk(
     "profiles/create",
-    async (payload, { dispatch }) => {
+    async (payload, { dispatch }) =>
+    {
         try {
             dispatch(setLoading(true));
             dispatch(setErrors({}));
@@ -237,9 +238,9 @@ export const storeOrUpdateCallFollowUp = createAsyncThunk(
     "profiles/storeOrUpdateCallFollowUp",
     async ({ data, id }, { dispatch }) =>
     {
-        console.log(data, id);
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`, data);
+            console.log((response.data))
             toast.success(response.data.message);
             dispatch(setReloadTable(true));
             return { data: true };
