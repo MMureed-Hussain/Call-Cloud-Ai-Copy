@@ -1,4 +1,4 @@
-import { Layers, Home, Users, AlignJustify, UserCheck } from "react-feather";
+import { Layers, Home, Users, AlignJustify, UserCheck, Calendar } from "react-feather";
 
 export default [
   {
@@ -34,19 +34,25 @@ export default [
   {
     id: "pipelines",
     title: "Pipelines",
-    icon: <Layers size={20}/>,
+    icon: <Layers size={20} />,
     navLink: "/pipelines",
   },
   {
     id: "callStatuses",
     title: "Call Statuses",
-    icon: <AlignJustify size={20}/>,
-  navLink: "/statuses",
+    icon: <AlignJustify size={20} />,
+    navLink: "/statuses",
   },
   {
     id: "clients",
     title: "Clients",
     icon: <Users size={20} />,
     navLink: "/clients",
+  },
+  {
+    id: "followups",
+    title: "Follow-ups",
+    icon: <Calendar size={20} />,
+    navLink: "/followups",
   },
 ];
