@@ -45,12 +45,8 @@ const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWor
 const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
 const Plans = lazy(() => import("../../views/plans"));
-<<<<<<< HEAD
-const Clients = lazy(() => import("../../views/clients"));
+// const Clients = lazy(() => import("../../views/clients"));
 const Followups = lazy(() => import("../../views/followups"));
-
-=======
->>>>>>> umair_dev
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
@@ -247,15 +243,14 @@ const Routes = [
       layout: "blank",
       isPrivate: false,
     },
-<<<<<<< HEAD
   },
-  {
-    path: "/clients",
-    element: <Clients />,
-    meta: {
-      isPrivate: true,
-    },
-  },
+  // {
+  //   path: "/clients",
+  //   element: <Clients />,
+  //   meta: {
+  //     isPrivate: true,
+  //   },
+  // },
   {
     path: "/followups",
     element: <Followups />,
@@ -263,9 +258,6 @@ const Routes = [
       isPrivate: true,
     },
   },
-=======
-  }
->>>>>>> umair_dev
 ];
 
 const getRouteMeta = (route) =>
@@ -309,7 +301,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
               : Fragment;
           route.element = (
             <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
-              <RouteTag  route={route}>{route.element}</RouteTag>
+              <RouteTag route={route}>{route.element}</RouteTag>
             </Wrapper>
           );
         }
