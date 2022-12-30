@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Layers, Home, Users, AlignJustify, UserCheck, Calendar } from "react-feather";
-=======
-import { Layers, Home, Users, UserCheck, Circle } from "react-feather";
->>>>>>> umair_dev
+import { Layers, Home, Users, AlignJustify, UserCheck, Calendar, Circle } from "react-feather";
 
 export default [
   {
@@ -42,12 +38,6 @@ export default [
     navLink: "/pipelines",
   },
   {
-<<<<<<< HEAD
-    id: "callStatuses",
-    title: "Call Statuses",
-    icon: <AlignJustify size={20} />,
-    navLink: "/statuses",
-=======
     id: "statuses",
     title: "Statuses",
     icon: <Home size={20} />,
@@ -72,7 +62,6 @@ export default [
         navLink: "/client-statuses",
       },
     ],
->>>>>>> umair_dev
   },
 
   {

@@ -12,7 +12,6 @@ import feedbacks from "./feedbacks";
 import notifications from "./notifications";
 import profiles from "./profiles";
 import pipelines from "./pipelines";
-import statuses from "./statuses";
 import followups from "./followups";
 import callStatuses from "./callStatuses";
 import leadStatuses from "./leadStatuses";
@@ -31,7 +30,6 @@ const rootReducer = {
     notifications,
     profiles,
     pipelines,
-    statuses,
     followups,
     callStatuses,
     leadStatuses,
