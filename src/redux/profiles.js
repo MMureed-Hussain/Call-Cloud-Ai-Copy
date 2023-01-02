@@ -276,6 +276,63 @@ export const deleteCallFollowUp = createAsyncThunk(
 
 // Call Follow-up section END Here 
 
+
+// Profile Contact section
+export const profileContactList = createAsyncThunk(
+    "profiles/contacts",
+    async ({ params, id }, { dispatch }) =>
+    {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/contacts`, { params });
+            return { data: response.data }
+        } catch (e) {
+            toast.error(e.response.data.message);
+            return { data: null }
+        }
+    }
+);
+
+export const storeOrUpdateProfileContact = createAsyncThunk(
+    "profiles/storeOrUpdateProfileContact",
+    async ({ data, id }, { dispatch }) =>
+    {
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${parseInt(id)}/contacts`, data);
+            toast.success(response.data.message);
+            dispatch(setReloadTable(true));
+            return { data: true };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+            return { data: false };
+        }
+    }
+);
+
+// delete 
+export const deleteProfileContact = createAsyncThunk(
+    "profiles/deleteProfileContact",
+    async (id, { dispatch }) =>
+    {
+        try {
+            const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-contact/${id}`);
+            toast.success(response.data.message);
+            dispatch(setReloadTable(true));
+            return {
+                data: true
+            };
+        } catch (e) {
+            toast.error(e.response.data.message);
+            return {
+                data: false
+            };
+        }
+    }
+);
+
+// Profile Contact section END Here 
+
+
 // prettier-ignore
 export const callProfileSlice = createSlice({
     name: "profiles",
