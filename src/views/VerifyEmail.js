@@ -29,7 +29,7 @@ const VerifyEmail = () => {
 
   //prettier-ignore
   const illustration = skin === "dark" ? "verify-email-illustration-dark.svg" : "verify-email-illustration.svg",
-    source = require(`@src/assets/images/pages/${illustration}`);
+    source = require(`@src/assets/images/pages/${illustration}`).default;
 
   if (store.user && store.user.emailVerified) {
     return <Navigate to="/dashboard" />;

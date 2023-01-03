@@ -24,7 +24,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
 // ** Store & Actions
-import { addWorkspace, updateWorkspace } from "@store/workspaces";
+import { addWorkspace, csvWorkspaceImport } from "@store/workspaces";
 import { useDispatch } from "react-redux";
 
 const SidebarWorkspace = ({
@@ -35,11 +35,9 @@ const SidebarWorkspace = ({
 }) => {
   // ** States
   console.log("workspace", workspace);
-  const [name, setName] = useState(() => {
-    return workspace ? workspace.name : "";
-  });
-  const [nameError, setNameError] = useState(false);
-  const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
+  const [file, setFile] = useState("");
+  // const [nameError, setNameError] = useState(false);
+  // const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   // const [plan, setPlan] = useState("basic");
   // const [role, setRole] = useState("subscriber");
@@ -48,18 +46,23 @@ const SidebarWorkspace = ({
   // prettier-ignore
   const [avatar, setAvatar] = useState(workspace && workspace.logo ? workspace.logo : require("@src/assets/images/avatars/workspace-logo.jpeg").default);
 
-  const [cropper, setCropper] = useState(null);
+  // const [cropper, setCropper] = useState(null);
+
 
   // ** Store Vars
   const dispatch = useDispatch();
 
   const submitForm = (payload) => {
+    console.log("payload", payload);
     if (workspace) {
+     
       payload.id = workspace.id;
-      dispatch(updateWorkspace(payload)).then((result) => {
+
+      // const file = 
+      dispatch(csvWorkspaceImport({payload})).then((result) => {
         setFormSubmissionLoader(false);
         if (result.payload.data.workspace) {
-          setName("");
+          setFile("");
           refreshTable();
           toggleSidebar();
         }
@@ -82,31 +85,31 @@ const SidebarWorkspace = ({
 
     let valid = true;
 
-    if (!name) {
+    if (!file) {
       valid = false;
-      setNameError(true);
+      // setNameError(true);
     } else {
-      setNameError(false);
+      // setNameError(false);
     }
 
     if (valid) {
       setFormSubmissionLoader(true);
 
-      const payload = { name };
-      if (avatarFile) {
-        cropper.getCroppedCanvas().toBlob((blob) => {
-          payload.logo = new File([blob], "logo.jpeg");
-          submitForm(payload);
-        }, "image/jpeg");
-      } else {
+      const payload = { workspace, file };
+      // if (avatarFile) {
+      //   cropper.getCroppedCanvas().toBlob((blob) => {
+      //     payload.id = new File([blob], "");
+      //     submitForm(payload);
+      //   }, "image/jpeg");
+      // } else {
         submitForm(payload);
-      }
+      // }
     }
   };
 
   const handleSidebarClosed = () => {
-    setName("");
-    setNameError(false);
+    setFile("");
+    // setNameError(false);
   };
 
   const handleImgReset = () => {
@@ -152,7 +155,7 @@ const SidebarWorkspace = ({
             />
           ) : (
             <div className="rounded">
-              <Cropper
+              {/* <Cropper
                 style={{ height: "150px", width: "60%" }}
                 zoomTo={0}
                 initialAspectRatio={1}
@@ -168,7 +171,7 @@ const SidebarWorkspace = ({
                   setCropper(instance);
                 }}
                 guides={true}
-              />
+              /> */}
             </div>
           )}
         </div>
@@ -181,7 +184,7 @@ const SidebarWorkspace = ({
               color="primary"
             >
               Upload
-              <Input type="file" onChange={onChange} hidden accept="image/*" />
+              <Input type="file" onChange={onChange} hidden accept=".csv" />
             </Button>
             <Button
               className="mb-75"
@@ -192,41 +195,16 @@ const SidebarWorkspace = ({
             >
               Reset
             </Button>
-            <p className="mb-0">Allowed JPG, GIF or PNG. Max size of 800kB</p>
+            <p className="mb-0">Allowed csv only</p>
           </div>
         </div>
       </div>
 
       <Form>
-        <div className="mb-1 mt-2">
-          <Label className="form-label" for="name">
-            Name <span className="text-danger">*</span>
-          </Label>
-
-          <Input
-            id="name"
-            placeholder="Some Workspace"
-            invalid={nameError}
-            value={name}
-            // onChange={(e) => setName(e.target.value)}
-
-            onChange={(e) => {
-              const name = e.target.value.replace(
-                /(^\w{1})|(\s+\w{1})/g,
-                (letter) => letter.toUpperCase()
-              );
-              setName(name);
-            }}
-          />
-
-          <FormFeedback>Please enter a valid Workspace Name</FormFeedback>
-        </div>
+      
 
         <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">
-          {workspace ? "Update Workspace" : "Add Workspace"}
-          {formSubmissionLoader && (
-            <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="white" />
-          )}
+         Save
         </Button>
         <Button type="reset" color="secondary" outline onClick={toggleSidebar}>
           Cancel

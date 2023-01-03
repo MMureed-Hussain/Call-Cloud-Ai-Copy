@@ -101,7 +101,7 @@ const ResetPassword = () => {
   };
   // prettier-ignore
   const illustration = skin === "dark" ? "forgot-password-v2-dark.svg" : "forgot-password-v2.svg",
-    source = require(`@src/assets/images/pages/${illustration}`);
+    source = require(`@src/assets/images/pages/${illustration}`).default;
 
   //   if (store.user) {
   //     return <Navigate to="/dashboard" />;

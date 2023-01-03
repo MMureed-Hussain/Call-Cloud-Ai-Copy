@@ -106,7 +106,7 @@ const Register = () => {
 
   const illustration =
       skin === "dark" ? "register-v2-dark.svg" : "register-v2.svg",
-    source = require(`@src/assets/images/pages/${illustration}`);
+    source = require(`@src/assets/images/pages/${illustration}`).default;
 
   if (store.user) {
     return <Navigate to="/dashboard" />;

@@ -9,16 +9,20 @@ axios.defaults.withCredentials = true;
 
 // Perform Login API and set user data in store
 export const login = createAsyncThunk("auth/login", async (payload) => {
+  
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/login`,
       payload
     );
-    window.location.href = "/";
+    // window.location.href = "/";
+    console.log("res", response.data)
     return {
+      
       data: {
         user: response.data,
       },
+      
     };
   } catch (e) {
     console.log(e);
@@ -155,11 +159,12 @@ export const updatePassword = createAsyncThunk(
 
 // Perform CSRF API to set cookie for future API calls
 export const csrf = createAsyncThunk("auth/csrf", async () => {
+
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_API_ENDPOINT}/sanctum/csrf-cookie`
     );
-    console.log("csrf set", response);
+    console.log("csrf set", response.data);
   } catch (e) {
     console.log(e);
   }

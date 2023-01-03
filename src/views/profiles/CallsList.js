@@ -17,23 +17,13 @@ import {
 import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
+import { Link, useParams } from "react-router-dom";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
-import {
-    getCallsByProfileId,
-    setReloadCallTable,
-    deleteResource,
-    updateCall,
-} from "../../redux/profiles";
-import CallViewSidebar from "./components/CallViewSidebar";
-import UserInfo from "./components/UserInfo";
-import { getStatuses } from "../../redux/callStatuses";
-import Select from "react-select";
-import { selectThemeColors } from "@utils";
-import usePrevious from "../../utility/hooks/usePrevious";
+import { getCallsByProfileId, setReloadTable, deleteResource } from "../../redux/profiles";
 
-const CallList = ({ profileId }) => {
+export default () => {
     // ** States
     const [sort, setSort] = useState("desc");
     const [searchTerm, setSearchTerm] = useState("");
@@ -45,65 +35,36 @@ const CallList = ({ profileId }) => {
     const [pageCount, setPageCount] = useState(1);
     const [selectedCall, setSelectedCall] = useState(null);
 
-    const [viewSidebarOpen, setViewSidebarOpen] = useState(false);
-
     const dispatch = useDispatch();
-    const reloadCallTable = useSelector((state) => state.profiles.reloadCallTable);
-    const statusFilterValue = useSelector((state) => state.profiles.statusFilterValue);
-    const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-    const statuses = useSelector((state) => state.callStatuses.statuses.map(s => ({ value: s.id, label: s.name })));
+    const params = useParams();
+    const reloadTable = useSelector((state) => state.profiles.reloadTable);
 
     useEffect(() => {
-        if (currentWorkspace) {
-            loadCalls({
-                page: 1,
-            });
-            dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true", profile_id: profileId }))
-        }
-    }, [currentWorkspace]);
+        loadCalls({
+            page: 1,
+        });
+    }, []);
 
     useEffect(() => {
-        if (reloadCallTable) {
-            dispatch(setReloadCallTable(false));
+        if (reloadTable) {
+            dispatch(setReloadTable(false));
             loadCalls({
-                page: currentPage,
+                page: currentPage
             });
         }
-    }, [reloadCallTable]);
-
-    usePrevious((prevStatusFilterValue) => {
-        //change when filter set to None
-        if (prevStatusFilterValue?.value && !statusFilterValue.value) {
-            loadCalls({
-                page: 1,
-            });
-        }
-        //when filter value is changed
-        if (statusFilterValue?.value) {
-            loadCalls({
-                filter: "status",
-                filter_value: statusFilterValue.value,
-                page: 1,
-            });
-        }
-    }, [statusFilterValue]);
-
+    }, [reloadTable]);
 
     const loadCalls = (options) => {
-        let queryParams = {
-            records_per_page: rowsPerPage,
-            page: currentPage,
-            sort_by: sortColumn,
-            sort,
-            ...options
-        };
-        if (statusFilterValue) {
-            queryParams = { ...queryParams, filter: "status", filter_value: statusFilterValue.value }
-        }
         dispatch(
             getCallsByProfileId({
-                id: profileId,
-                params: queryParams,
+                id: params.id,
+                params: {
+                    records_per_page: rowsPerPage,
+                    page: currentPage,
+                    sort_by: sortColumn,
+                    sort,
+                    ...options,
+                },
             })
         ).then(({ payload }) => {
             if (payload.data !== null) {
@@ -114,22 +75,11 @@ const CallList = ({ profileId }) => {
         setCurrentPage(options.page);
     };
 
-    const onChangeCallStatus = (call, status) => {
-        dispatch(updateCall({
-            formData: {
-                tags: JSON.stringify(call.tags.map((tag) => ({ value: tag.id, label: tag.label }))),
-                call_status: status,
-            },
-            id: call.id,
-        })
-        );
-    }
-
     const columns = [
         {
             name: "Id",
             sortable: true,
-            minWidth: "50px",
+            minWidth: "172px",
             sortField: "id",
             selector: (row) => row.id,
             cell: (row) => (
@@ -149,34 +99,12 @@ const CallList = ({ profileId }) => {
             },
         },
         {
-            name: "Status",
-            sortable: false,
-            minWidth: "172px",
-            cell: (row) => {
-                return <Select
-                    value={{ value: row.call_status.id, label: row.call_status.name }}
-                    theme={selectThemeColors}
-                    classNamePrefix="select"
-                    className="react-select"
-                    placeholder="Select call status"
-                    options={statuses}
-                    menuPortalTarget={document.body}
-                    onChange={e => onChangeCallStatus(row, e.value)}
-                />
-            }
-        },
-        {
             name: "Created By",
             sortable: true,
             sortField: "created_by",
-            minWidth: "250px",
+            minWidth: "172px",
             selector: (row) => row.created_by,
-            cell: (row) => (
-                <UserInfo
-                    name={`${row.created_by.first_name} ${row.created_by.last_name}`}
-                    email={row.created_by.email}
-                />
-            ),
+            cell: (row) => row.created_by.first_name,
         },
         {
             name: "Created At",
@@ -189,7 +117,6 @@ const CallList = ({ profileId }) => {
         {
             name: "Actions",
             allowOverflow: true,
-            right: true,
             cell: (row) => {
                 return (
                     <div className="d-flex">
@@ -197,34 +124,15 @@ const CallList = ({ profileId }) => {
                             <DropdownToggle className="pe-1" tag="span">
                                 <MoreVertical size={15} />
                             </DropdownToggle>
-                            <DropdownMenu container={'body'} end>
-                                <DropdownItem
-                                    onClick={() => {
-                                        setSelectedCall(row);
-                                        toggleViewSidebar();
-                                    }}
-                                >
-                                    <Eye size={15} />
-                                    <span className="align-middle ms-50">View</span>
-                                </DropdownItem>
-                                <DropdownItem
-                                    onClick={() => {
-                                        setSelectedCall(row);
-                                        toggleSidebar();
-                                    }}
-                                >
+                            <DropdownMenu end>
+                                <DropdownItem onClick={() => {
+                                    setSelectedCall(row);
+                                    toggleSidebar();
+                                }}>
                                     <Edit size={15} />
                                     <span className="align-middle ms-50">Edit</span>
                                 </DropdownItem>
-                                <DropdownItem
-                                    onClick={() =>
-                                        dispatch(
-                                            deleteResource(
-                                                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`
-                                            )
-                                        )
-                                    }
-                                >
+                                <DropdownItem onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`))}>
                                     <Trash size={15} />
                                     <span className="align-middle ms-50">Delete</span>
                                 </DropdownItem>
@@ -266,10 +174,6 @@ const CallList = ({ profileId }) => {
         setSidebarOpen(!sidebarOpen);
     };
 
-    const toggleViewSidebar = () => {
-        setViewSidebarOpen(!viewSidebarOpen);
-    };
-
     // ** Custom Pagination
     const CustomPagination = () => {
         return (
@@ -304,23 +208,14 @@ const CallList = ({ profileId }) => {
 
     return (
         <>
-            <Card>
+            <Card className="workspace-list">
                 <CardHeader className="py-1">
                     <CardTitle tag="h4">Calls</CardTitle>
                 </CardHeader>
-                <CallListHeader
-                    searchTerm={searchTerm}
-                    rowsPerPage={rowsPerPage}
-                    handleSearch={handleFilter}
-                    handlePerPage={handlePerPage}
-                    toggleSidebar={() => {
-                        setSelectedCall(null);
-                        toggleSidebar();
-                    }}
-                />
                 <div className="react-dataTable">
                     <DataTable
                         noHeader
+                        subHeader
                         sortServer
                         pagination
                         responsive
@@ -329,30 +224,28 @@ const CallList = ({ profileId }) => {
                         columns={columns}
                         onSort={handleSort}
                         defaultSortAsc={false}
-                        style={{ width: "80vw" }}
                         sortIcon={<ChevronDown />}
                         className="react-dataTable"
                         paginationComponent={CustomPagination}
                         data={calls}
+                        subHeaderComponent={
+                            <CallListHeader
+                                searchTerm={searchTerm}
+                                rowsPerPage={rowsPerPage}
+                                handleFilter={handleFilter}
+                                handlePerPage={handlePerPage}
+                                toggleSidebar={() => {
+                                    setSelectedCall(null);
+                                    toggleSidebar();
+                                }}
+                            />
+                        }
                     />
                 </div>
             </Card>
             {sidebarOpen && (
-                <CallSidebar
-                    open={sidebarOpen}
-                    call={selectedCall}
-                    toggleSidebar={toggleSidebar}
-                />
-            )}
-            {viewSidebarOpen && (
-                <CallViewSidebar
-                    open={viewSidebarOpen}
-                    call={selectedCall}
-                    toggleSidebar={toggleViewSidebar}
-                />
+                <CallSidebar open={sidebarOpen} call={selectedCall} toggleSidebar={toggleSidebar} />
             )}
         </>
     );
 };
-
-export default CallList
