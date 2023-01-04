@@ -204,6 +204,126 @@ export const updateCall = createAsyncThunk(
         }
     });
 
+    export const getCallFollowUpsByProfileId = createAsyncThunk(
+        "profiles/followups",
+        async ({ params, id }, { dispatch }) =>
+        {
+            try {
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`,
+                    formData,
+                    {
+                        params,
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'multipart/form-data'  // multipart/form-data - as we need to upload with voice recording
+                        }
+                    }
+                );
+                return {
+                    data: response.data
+                }
+            } catch (e) {
+                toast.error(e.response.data.message);
+                return {
+                    data: null
+                }
+            }
+        }
+    );
+    
+    export const deleteCallFollowUp = createAsyncThunk(
+        "profiles/deleteCallFollowUp",
+        async (id, { dispatch }) =>
+        {
+            try {
+                const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-followup/${id}`);
+                toast.success(response.data.message);
+                dispatch(setReloadTable(true));
+                return {
+                    data: true
+                };
+            } catch (e) {
+                toast.error(e.response.data.message);
+                return {
+                    data: false
+                };
+            }
+        }
+    );
+
+    export const profileContactList = createAsyncThunk(
+        "profiles/contacts",
+        async ({ params, id }, { dispatch }) =>
+        {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/contacts`, { params });
+                return { data: response.data }
+            } catch (e) {
+                toast.error(e.response.data.message);
+                return { data: null }
+            }
+        }
+    );
+
+    export const storeOrUpdateProfileContact = createAsyncThunk(
+        "profiles/storeOrUpdateProfileContact",
+        async ({ data, id }, { dispatch }) =>
+        {
+            try {
+                const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${parseInt(id)}/contacts`, data);
+                toast.success(response.data.message);
+                dispatch(setReloadTable(true));
+                return { data: true };
+            } catch (e) {
+                toast.error(e.response.data.message);
+                if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+                return { data: false };
+            }
+        }
+    );
+    export const storeOrUpdateCallFollowUp = createAsyncThunk(
+        "profiles/storeOrUpdateCallFollowUp",
+        async ({ data, id }, { dispatch }) =>
+        {
+            try {
+                const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`, data);
+                console.log((response.data))
+                toast.success(response.data.message);
+                dispatch(setReloadTable(true));
+                return { data: true };
+            } catch (e) {
+                toast.error(e.response.data.message);
+                if (e.response.data?.errors) dispatch(setErrors(e.response.data.errors));
+                return { data: false };
+            }
+        }
+    );
+
+    export const deleteProfileContact = createAsyncThunk(
+        "profiles/deleteProfileContact",
+        async (id, { dispatch }) =>
+        {
+            try {
+                const response = await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-contact/${id}`);
+                toast.success(response.data.message);
+                dispatch(setReloadTable(true));
+                return {
+                    data: true
+                };
+            } catch (e) {
+                toast.error(e.response.data.message);
+                return {
+                    data: false
+                };
+                }
+            }
+        
+    );
+    
+    
+    
+    
 // prettier-ignore
 export const callProfileSlice = createSlice({
     name: "profiles",
