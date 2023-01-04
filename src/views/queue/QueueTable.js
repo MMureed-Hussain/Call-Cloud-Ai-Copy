@@ -2,10 +2,10 @@
 import { Fragment, useEffect, useState } from "react";
 
 // ** Invoice List Sidebar
-import UserSidebar from "./UserSidebar";
+import QueueSidebar from "./QueueSidebar";
 
 // ** Table Columns
-import { userColumns } from "./columns";
+import { QueueTable } from "../../views/workspaces/columns";
 
 // ** Confirm box
 import Swal from "sweetalert2";
@@ -18,11 +18,11 @@ import Skeleton from "react-loading-skeleton";
 // ** Store & Actions
 // import { getAllData, getData } from "../store";
 import {
-  getUsers,
-  storeCurrentPageUser,
-  storeRowsPerPageUser,
-  //   deleteUser,
-  deleteMemberFromWorkspace,
+
+  storeCurrentPageQueue,
+  storeRowsPerPageQueue,
+  getQueue,
+  deleteQueueFromWorkspace
 } from "@store/workspaces";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -32,12 +32,6 @@ import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import {
   ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
 } from "react-feather";
 
 // ** Utils
@@ -50,15 +44,7 @@ import {
   Col,
   Card,
   Input,
-  Label,
   Button,
-  CardBody,
-  CardTitle,
-  CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
 } from "reactstrap";
 
 // ** Styles
@@ -73,15 +59,14 @@ const CustomHeader = ({
   rowsPerPage,
   handleFilter,
   searchTerm,
-  userData,
-  setEditUser,
+  queueData,
+  setEditQueue,
 }) => {
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
         <Col xl="6" className="d-flex align-items-center p-0">
           <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
-            {/* <label className="mb-0" htmlFor="search-invoice"></label> */}
             <Input
               id="search-invoice"
               className="ms-50 w-100"
@@ -111,20 +96,19 @@ const CustomHeader = ({
               <option value="25">25</option>
               <option value="50">50</option>
             </Input>
-            {/* <label htmlFor="rows-per-page">Entries</label> */}
           </div>
 
-          {userData.user.role === "company" && (
+          {queueData.user.role === "company" && (
             <div className="d-flex align-items-center table-header-actions">
               <Button
-                className="add-new-user"
+                className="add-new-queue"
                 color="primary"
                 onClick={() => {
-                  setEditUser(null);
+                  setEditQueue(null);
                   toggleSidebar();
                 }}
               >
-                Add New User
+                Create New Queue
               </Button>
             </div>
           )}
@@ -134,22 +118,21 @@ const CustomHeader = ({
   );
 };
 
-const UsersList = ({ workspaceId }) => {
-  console.log("workspaceId", workspaceId);
+const Queue = ({ workspaceId }) => {
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
-  const userData = useSelector((state) => state.auth);
+  const queueData = useSelector((state) => state.auth);
 
   // ** States
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(() => store.currentPageUser);
+  const [currentPage, setCurrentPage] = useState(() => store.currentPageQueue);
   const [sortColumn, setSortColumn] = useState("id");
-  const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPageUser);
+  const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPageQueue);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [editUser, setEditUser] = useState(null);
+  const [editQueue, setEditQueue] = useState(null);
 
   // ** Function to toggle sidebar
   const toggleSidebar = () => {
@@ -158,7 +141,7 @@ const UsersList = ({ workspaceId }) => {
 
   const refreshTable = () => {
     dispatch(
-      getUsers({
+      getQueue({
         sort,
         sortColumn,
         q: searchTerm,
@@ -166,15 +149,14 @@ const UsersList = ({ workspaceId }) => {
         perPage: rowsPerPage,
         id: workspaceId,
       })
-      );
+    );
   };
 
   // ** Get data on mount
-
   useEffect(() => {
-    if (!store.usersLoading) {
+    if (store.queueLoading && workspaceId) {
       dispatch(
-        getUsers({
+        getQueue({
           sort,
           sortColumn,
           q: searchTerm,
@@ -185,81 +167,52 @@ const UsersList = ({ workspaceId }) => {
       );
     }
   }, [workspaceId]);
-  if (store.usersLoading) {
-    dispatch(
-      getUsers({
-        sort,
-        sortColumn,
-        q: searchTerm,
-        page: currentPage,
-        perPage: rowsPerPage,
-        id: workspaceId,
-      })
-    );
-  }
+
   // ** Function in get data on page change
   const handlePagination = (page) => {
     dispatch(
-      getUsers({
+      getQueue({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: rowsPerPage,
         page: page.selected + 1,
         id: workspaceId,
-        // role: currentRole.value,
-        // status: currentStatus.value,
-        // currentPlan: currentPlan.value,
       })
     );
     const newPage = page.selected + 1;
     setCurrentPage(newPage);
-    dispatch(storeCurrentPageUser({ currentPage: newPage }));
+    dispatch(storeCurrentPageQueue({ currentPage: newPage }));
   };
 
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
     const value = parseInt(e.currentTarget.value);
     dispatch(
-      getUsers({
+      getQueue({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: value,
         page: 1,
         id: workspaceId,
-        // role: currentRole.value,
-        // currentPlan: currentPlan.value,
-        // status: currentStatus.value,
       })
     );
     setCurrentPage(1);
     setRowsPerPage(value);
-    dispatch(storeCurrentPageUser({ currentPage: 1 }));
-    dispatch(storeRowsPerPageUser({ rowsPerPage: value }));
+    dispatch(storeCurrentPageQueue({ currentPage: 1 }));
+    dispatch(storeRowsPerPageQueue({ rowsPerPage: value }));
   };
 
   // ** Function in get data on search query change
   const handleFilter = (val) => {
     setSearchTerm(val);
-    dispatch(
-      getUsers({
-        sort,
-        q: val,
-        sortColumn,
-        page: currentPage,
-        perPage: rowsPerPage,
-        id: workspaceId,
-        // role: currentRole.value,
-        // status: currentStatus.value,
-        // currentPlan: currentPlan.value,
-      })
-    );
+    refreshTable();
   };
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.totalUsers / rowsPerPage));
+    const count = Number(Math.ceil(store.totalQueue / rowsPerPage));
 
     return (
       <ReactPaginate
@@ -285,9 +238,6 @@ const UsersList = ({ workspaceId }) => {
   // ** Table data to render
   const dataToRender = () => {
     const filters = {
-      //   role: currentRole.value,
-      //   currentPlan: currentPlan.value,
-      //   status: currentStatus.value,
       q: searchTerm,
     };
 
@@ -295,23 +245,23 @@ const UsersList = ({ workspaceId }) => {
       return filters[k].length > 0;
     });
 
-    if (store.users.length > 0) {
-      const users = store.users.map((user) => {
-        const tempUser = { ...user };
-        // console.log("userstemp", tempUser)
+    if (store.queue.length > 0) {
+      const queue = store.queue.map((queue) => {
+        const tempUser = { ...queue };
         tempUser.handleEdit = (id) => {
-          const editUser = store.users.filter((user) => user.id === id);
-          if (editUser.length) {
-            setEditUser(editUser[0]);
+          const editQueue = store.queue.filter((queue) => queue.id === id);
+          if (editQueue.length) {
+            setEditQueue(editQueue[0]);
             toggleSidebar();
           }
         };
         tempUser.handleDelete = async (id, joinedAt) => {
           console.log("joinedAt", id);
           // prettier-ignore
-          const text = joinedAt ? "Are you sure you would like to remove this user?" : "Are you sure you would like to cancel this invitation?";
+          const text = joinedAt ? "Are you sure you would like to delete this queue?" : "Are you sure you would like to delete this queue?";
           // prettier-ignore
-          const confirmButtonText = joinedAt ? "Yes, remove it!" : "Yes, cancel it!";
+          const confirmButtonText = joinedAt ? "Yes, delete it!" : "Yes, delete it!";
+          console.log("jinnedatt", joinedAt)
 
           const result = await MySwal.fire({
             title: "Are you sure?",
@@ -326,8 +276,8 @@ const UsersList = ({ workspaceId }) => {
             buttonsStyling: false,
           });
           if (result.value) {
-            dispatch(deleteMemberFromWorkspace({ id }));
-            console.log("delete workspace", id);
+            dispatch(deleteQueueFromWorkspace({ id, workspaceId }));
+            console.log("delete queue", id);
             refreshTable();
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({
@@ -343,11 +293,11 @@ const UsersList = ({ workspaceId }) => {
         return tempUser;
       });
 
-      return users;
-    } else if (store.users.length === 0 && isFiltered) {
+      return queue;
+    } else if (store.queue.length === 0 && isFiltered) {
       return [];
     } else {
-      return store.users.slice(0, rowsPerPage);
+      return store.queue.slice(0, rowsPerPage);
     }
   };
 
@@ -356,21 +306,18 @@ const UsersList = ({ workspaceId }) => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
     dispatch(
-      getUsers({
+      getQueue({
         sort: sortDirection,
         sortColumn: column.sortField,
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
         id: workspaceId,
-        // role: currentRole.value,
-        // status: currentStatus.value,
-        // currentPlan: currentPlan.value,
       })
     );
   };
 
-  if (store.usersLoading) {
+  if (store.queueLoading) {
     return (
       <Fragment>
         <div className="vh-100">
@@ -383,9 +330,6 @@ const UsersList = ({ workspaceId }) => {
 
   return (
     <Fragment>
-      {/* {store.currentWorkspace && (
-        <p>Manage workspace: {store.currentWorkspace.name}</p>
-      )} */}
       <Card className="overflow-hidden workspace-list">
         <div className="react-dataTable">
           <DataTable
@@ -395,7 +339,7 @@ const UsersList = ({ workspaceId }) => {
             pagination
             responsive
             paginationServer
-            columns={userColumns}
+            columns={QueueTable}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
@@ -409,8 +353,8 @@ const UsersList = ({ workspaceId }) => {
                 handleFilter={handleFilter}
                 handlePerPage={handlePerPage}
                 toggleSidebar={toggleSidebar}
-                userData={userData}
-                setEditUser={setEditUser}
+                queueData={queueData}
+                setEditQueue={setEditQueue}
               />
             }
           />
@@ -418,15 +362,15 @@ const UsersList = ({ workspaceId }) => {
       </Card>
 
       {sidebarOpen && (
-        <UserSidebar
+        <QueueSidebar
           open={sidebarOpen}
           refreshTable={refreshTable}
           toggleSidebar={toggleSidebar}
           workspaceId={workspaceId}
-          user={editUser}
+          queue={editQueue}
         />
       )}
     </Fragment>
   );
 };
-export default UsersList;
+export default Queue;

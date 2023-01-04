@@ -1,4 +1,3 @@
-/*eslint-disable*/
 // ** React Imports
 import { Fragment, lazy } from "react";
 import { Navigate } from "react-router-dom";
@@ -33,6 +32,10 @@ const Workspaces = lazy(() => import("../../views/workspaces/Workspaces"));
 const WorkspaceDetails = lazy(() => import("../../views/workspaces/WorkspaceDetails"));
 // prettier-ignore
 const WorkspaceManageUsers = lazy(() => import("../../views/workspaces/WorkspaceManageUsers"));
+const WorkspaceManageLeadlist = lazy(() => import("../../views/workspaces/WorkspaceManageLeadlist"));
+const WorkspaceManageQueue = lazy(() => import("../../views/queue/WorkspaceManageQueue"));
+const WorkspaceManageTeam = lazy(() => import("../../views/team/WorkspaceManageTeam"));
+
 const Login = lazy(() => import("../../views/Login"));
 const Register = lazy(() => import("../../views/Register"));
 const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
@@ -44,17 +47,17 @@ const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWor
 // prettier-ignore
 const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
+// prettier-ignore
+const BookingPages = lazy(() => import("../../views/booking-pages/BookingPages"));
+// prettier-ignore
+const CreateBookingPage = lazy(() => import("../../views/booking-pages/CreateBookingPage"));
+
 const Plans = lazy(() => import("../../views/plans"));
-// const Clients = lazy(() => import("../../views/clients"));
-const Followups = lazy(() => import("../../views/followups"));
+
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
+const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
-const Pipelines = lazy(() => import("../../views/pipelines/Index"));
-const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
-const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
-const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
-
 // ** Merge Routes
 const Routes = [
   {
@@ -133,61 +136,63 @@ const Routes = [
     },
   },
   {
-    path: "/leads",
+    path: "/workspace/leadlist",
+    element: <WorkspaceManageLeadlist />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/workspace/queue",
+    element: <WorkspaceManageQueue />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/workspace/team",
+    element: <WorkspaceManageTeam />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+ 
+  // {
+  //   path: "/booking-pages",
+  //   element: <BookingPages />,
+  //   meta: {
+  //     isPrivate: true,
+  //   },
+  // },
+  {
+    path: "/profiles",
     element: <CallProfiles />,
     meta: {
       isPrivate: true,
     },
   },
   {
-    path: "/leads/:id",
+    path: "/profiles/create",
+    element: <UpdateOrCreateCallProfile />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/profiles/:id",
     element: <CallProfileView />,
     meta: {
       isPrivate: true,
     },
   },
   {
-    path: "/clients",
-    element: <CallProfiles />,
+    path: "/profiles/:id/edit",
+    element: <UpdateOrCreateCallProfile/>,
     meta: {
       isPrivate: true,
     },
   },
-  {
-    path: "/clients/:id",
-    element: <CallProfileView />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/pipelines",
-    element: <Pipelines />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/lead-statuses",
-    element: <LeadStatuses />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/statuses",
-    element: <CallStatuses />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/client-statuses",
-    element: <ClientStatuses />,
-    meta: {
-      isPrivate: true,
-    },
-  },
+
   {
     path: "/login",
     element: <Login />,
@@ -244,24 +249,9 @@ const Routes = [
       isPrivate: false,
     },
   },
-  // {
-  //   path: "/clients",
-  //   element: <Clients />,
-  //   meta: {
-  //     isPrivate: true,
-  //   },
-  // },
-  {
-    path: "/followups",
-    element: <Followups />,
-    meta: {
-      isPrivate: true,
-    },
-  },
 ];
 
-const getRouteMeta = (route) =>
-{
+const getRouteMeta = (route) => {
   if (isObjEmpty(route.element.props)) {
     if (route.meta) {
       return { routeMeta: route.meta };
@@ -272,13 +262,11 @@ const getRouteMeta = (route) =>
 };
 
 // ** Return Filtered Array of Routes & Paths
-const MergeLayoutRoutes = (layout, defaultLayout) =>
-{
+const MergeLayoutRoutes = (layout, defaultLayout) => {
   const LayoutRoutes = [];
 
   if (Routes) {
-    Routes.filter((route) =>
-    {
+    Routes.filter((route) => {
       let isBlank = false;
       // ** Checks if Route layout or Default layout matches current layout
       if (
@@ -297,8 +285,9 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-              LayoutWrapper
+                LayoutWrapper
               : Fragment;
+
           route.element = (
             <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
               <RouteTag route={route}>{route.element}</RouteTag>
@@ -306,7 +295,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
           );
         }
 
-        // Push route to LayoutRouRouteTagtes
+        // Push route to LayoutRoutes
         LayoutRoutes.push(route);
       }
       return LayoutRoutes;
@@ -315,15 +304,13 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
   return LayoutRoutes;
 };
 
-const getRoutes = (layout) =>
-{
+const getRoutes = (layout) => {
   const defaultLayout = layout || "vertical";
   const layouts = ["vertical", "horizontal", "blank"];
 
   const AllRoutes = [];
 
-  layouts.forEach((layoutItem) =>
-  {
+  layouts.forEach((layoutItem) => {
     const LayoutRoutes = MergeLayoutRoutes(layoutItem, defaultLayout);
 
     AllRoutes.push({

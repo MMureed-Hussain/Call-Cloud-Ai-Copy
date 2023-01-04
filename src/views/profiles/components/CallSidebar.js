@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "@components/sidebar";
 import {
   Button,
@@ -10,15 +10,13 @@ import {
   Spinner,
   FormGroup,
 } from "reactstrap";
-import Select from "react-select";
-import { selectThemeColors } from "@utils";
+
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
 import Recorder from "./Recorder";
 import { useParams } from "react-router-dom";
 import { createCall, updateCall } from "../../../redux/profiles";
 import TagInput from "./TagInput";
-import { getStatuses } from "../../../redux/callStatuses";
 
 export default ({ open, toggleSidebar, call }) => {
   // ** States
@@ -36,36 +34,24 @@ export default ({ open, toggleSidebar, call }) => {
   const [note, setNote] = useState("");
   const [tags, setTags] = useState([]);
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
-  const [callStatus, setCallStatus] = useState(null);
   //store
   const dispatch = useDispatch();
   const errors = useSelector((state) => state.profiles.errors);
-  const statuses = useSelector((state) => state.callStatuses.statuses);
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData();
-    if (!call) {
-      formData.append("note", note);
-      formData.append("tags", JSON.stringify(tags));
+    formData.append("note", note);
+    formData.append("tags", JSON.stringify(tags));
+    if (audioDetails.blob) {
       formData.append("voice", audioDetails.blob);
-      formData.append("call_profile_id", params.id);
-      if (callStatus) {
-        formData.append("call_status", callStatus.value);
-      }
     }
+    formData.append("call_profile_id", params.id);
     setFormSubmissionLoader(true);
     dispatch(
       call
         ? updateCall({
-            formData: {
-              note,
-              tags: JSON.stringify(tags),
-              call_status: callStatus?.value,
-            },
+            formData,
             id: call.id,
           })
         : createCall({
@@ -89,24 +75,8 @@ export default ({ open, toggleSidebar, call }) => {
       });
       let tags = call.tags.map((tag) => ({ value: tag.id, label: tag.label }));
       setTags(tags);
-      if (call.call_status) {
-        setCallStatus({
-          value: call.call_status.id,
-          label: call.call_status.name,
-        });
-      }
     }
-    dispatch(
-      getStatuses({
-        workspace_id: currentWorkspace.id,
-        include_call_count: "true",
-      })
-    );
   }, [call]);
-
-  const callStatusOptions = useMemo(() => {
-    return statuses.map((p) => ({ value: p.id, label: p.name }));
-  }, [statuses]);
 
   const handleSidebarClosed = () => {
     setAudioDetails({
@@ -134,33 +104,14 @@ export default ({ open, toggleSidebar, call }) => {
       onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit}>
-        {!call && (
+        {!call ? (
           <Recorder
             audioDetails={audioDetails}
             setAudioDetails={setAudioDetails}
           />
+        ) : (
+          null
         )}
-        <FormGroup>
-          <Label className="form-label" for="phone-number">
-            Call Status<span className="text-danger">*</span>
-          </Label>
-          <Select
-            value={callStatus}
-            theme={selectThemeColors}
-            classNamePrefix="select"
-            className={
-              errors.has("call_status")
-                ? "is-invalid react-select"
-                : "react-select"
-            }
-            placeholder="Select call status"
-            options={callStatusOptions}
-            onChange={setCallStatus}
-          />
-          {errors.has("call_status") && (
-            <FormFeedback>{errors.get("call_status")}</FormFeedback>
-          )}
-        </FormGroup>
         <FormGroup>
           <Label className="form-label" for="title">
             Tags<span className="text-danger">*</span>
@@ -168,9 +119,11 @@ export default ({ open, toggleSidebar, call }) => {
           <TagInput
             value={tags}
             onChange={setTags}
-            className={
-              errors.has("tags") ? "is-invalid react-select" : "react-select"
-            }
+            className={{
+              input: errors.has("tags")
+                ? "is-invalid form-control"
+                : "form-control",
+            }}
             name="Tags"
             placeHolder="Add tag"
           />
@@ -180,7 +133,7 @@ export default ({ open, toggleSidebar, call }) => {
         </FormGroup>
         <FormGroup>
           <Label className="form-label" for="title">
-            Notes
+            Notes<span className="text-danger">*</span>
           </Label>
           <Input
             placeholder="Enter Note here"
@@ -189,11 +142,7 @@ export default ({ open, toggleSidebar, call }) => {
               errors.has("note") ? "is-invalid form-control" : "form-control"
             }
             onChange={(e) => {
-              const value = e.target.value.replace(
-                /(^\w{1})|(\s+\w{1})/g,
-                (letter) => letter.toUpperCase()
-              );
-              setNote(value);
+              setNote(e.target.value);
             }}
           />
           {errors.has("note") && (

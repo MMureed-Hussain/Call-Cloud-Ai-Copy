@@ -1,12 +1,12 @@
 // ** React Imports
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 
 // ** Invoice List Sidebar
-import UserSidebar from "./UserSidebar";
+import LeadlistSidebar from "./LeadlistSidebar";
+import CsvSidebar from "./CsvSidebar";
 
 // ** Table Columns
-import { userColumns } from "./columns";
-
+import { LeadlistColumns, NewTable } from "./columns";
 // ** Confirm box
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -14,15 +14,17 @@ import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
 const MySwal = withReactContent(Swal);
 
 import Skeleton from "react-loading-skeleton";
+import { isEmpty } from "lodash";
 
 // ** Store & Actions
 // import { getAllData, getData } from "../store";
 import {
-  getUsers,
-  storeCurrentPageUser,
-  storeRowsPerPageUser,
-  //   deleteUser,
-  deleteMemberFromWorkspace,
+  getLeadlist,
+  getRecord,
+  storeCurrentPageLeadlist,
+  storeRowsPerPageLeadlist,
+  getCsv,
+  deleteLeadlistWorkspace,
 } from "@store/workspaces";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -30,15 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
-import {
-  ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
-} from "react-feather";
+import { ChevronDown } from "react-feather";
 
 // ** Utils
 // eslint-disable-next-line no-unused-vars
@@ -50,20 +44,16 @@ import {
   Col,
   Card,
   Input,
-  Label,
   Button,
-  CardBody,
-  CardTitle,
-  CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
+  Modal,
+  ModalHeader,
+  ModalBody,
 } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import SidebarWorkspace from "./Sidebar";
 
 // ** Table Header
 const CustomHeader = ({
@@ -75,7 +65,9 @@ const CustomHeader = ({
   searchTerm,
   userData,
   setEditUser,
+  handleDownloadCsv,
 }) => {
+  const ref = useRef();
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -111,11 +103,55 @@ const CustomHeader = ({
               <option value="25">25</option>
               <option value="50">50</option>
             </Input>
-            {/* <label htmlFor="rows-per-page">Entries</label> */}
           </div>
 
           {userData.user.role === "company" && (
             <div className="d-flex align-items-center table-header-actions">
+              <Input
+                id="fileName"
+                className="ms-50 w-100"
+                title="import"
+                ref={ref}
+                type="file"
+                style={{ display: "none" }}
+                onChange={(e) => handleFilter(e.target.value)}
+              />
+              {/* <Button
+              // ref={ref}
+                className="add-new-user me-1"
+                color="primary"
+                onClick={() => {
+                  // setEditUser(null);
+                  toggleSidebarImport()
+                }}
+                
+              >
+            
+                Import
+              </Button> */}
+              {/* <input ref={ref} type="file" /> */}
+              {/* <Button
+                className="add-new-user me-1"
+                color="primary"
+                onClick={() => {
+                  handleDownloadExp()
+                  // setEditUser(null);
+                  // toggleSidebar();
+                }}
+              >
+                Export
+              </Button> */}
+
+              <Button
+                className="add-new-user me-1"
+                color="primary"
+                onClick={() => {
+                  handleDownloadCsv();
+                }}
+              >
+                Sample CSV
+              </Button>
+
               <Button
                 className="add-new-user"
                 color="primary"
@@ -124,7 +160,7 @@ const CustomHeader = ({
                   toggleSidebar();
                 }}
               >
-                Add New User
+                Add List
               </Button>
             </div>
           )}
@@ -134,13 +170,12 @@ const CustomHeader = ({
   );
 };
 
-const UsersList = ({ workspaceId }) => {
-  console.log("workspaceId", workspaceId);
+const LeadList = ({ workspaceId }) => {
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
   const userData = useSelector((state) => state.auth);
-
+  const csvData = useSelector((state) => state.workspaces?.csv);
   // ** States
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -148,17 +183,46 @@ const UsersList = ({ workspaceId }) => {
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPageUser);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpenImport, setSidebarOpenImport] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [record, setRecord] = useState({});
 
   const [editUser, setEditUser] = useState(null);
+  const [recordColums, setRecordColmns] = useState([]);
+  const [recordData, setRecordData] = useState([]);
 
-  // ** Function to toggle sidebar
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+  const toggleSidebarImport = () => {
+    setSidebarOpenImport(!sidebarOpenImport);
   };
 
+  useEffect(() => {
+    console.log("runing record effect");
+    if (!isEmpty(record)) {
+      const localCols = [];
+      let localData = [];
+      Object.values(record.headers).map((entry) => {
+        localCols.push({
+          name: entry.external_header,
+          sortable: true,
+          minWidth: '172px',
+          selector: (row) =>  {
+            return row[entry.header]
+          },
+          cell: (row) =>  {
+            return row[entry.header]
+          }
+        });
+      });
+
+      localData = [...record.rows];
+
+      setRecordColmns(localCols);
+      setRecordData(localData);
+    }
+  }, [record]);
   const refreshTable = () => {
     dispatch(
-      getUsers({
+      getLeadlist({
         sort,
         sortColumn,
         q: searchTerm,
@@ -166,15 +230,48 @@ const UsersList = ({ workspaceId }) => {
         perPage: rowsPerPage,
         id: workspaceId,
       })
-      );
+    );
+  };
+  const handleRowClicked = (row) => {
+    console.log('handleRowClicked called');
+    toggleModal();
+    dispatch(getRecord(row.id)).then((result) => {
+      console.log('setRecord called');
+      setRecord(result.payload.data.record);
+    });
+  };
+  const toggleSidebar = () => {
+    refreshTable();
+    setSidebarOpen(!sidebarOpen);
   };
 
   // ** Get data on mount
+  const getCsvData = () => {
+    dispatch(getCsv(csvData));
+  };
+  const handleDownloadCsv = () => {
+    const tempLink = document.createElement("a");
+    // const response = await axios.get(
+    //   `${process.env.REACT_APP_API_ENDPOINT}/api/dummycsv/`
+    // );
+    tempLink.href = `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/dummycsv`;
+    tempLink.download = `dummycsv`;
+    tempLink.click();
+  };
 
+  const handleDownloadExp = () => {
+    const tempLink = document.createElement("a");
+    // if (workspaceState) {
+
+    tempLink.href = `${process.env.REACT_APP_API_ENDPOINT}/api/leadlist/export/${workspaceId}/`;
+    tempLink.download = `dummycsv`;
+    tempLink.click();
+    // }
+  };
   useEffect(() => {
-    if (!store.usersLoading) {
+    if (!store.leadlistLoading) {
       dispatch(
-        getUsers({
+        getLeadlist({
           sort,
           sortColumn,
           q: searchTerm,
@@ -184,10 +281,13 @@ const UsersList = ({ workspaceId }) => {
         })
       );
     }
+
+    if (workspaceId) {
+    }
   }, [workspaceId]);
-  if (store.usersLoading) {
+  if (store.leadlistLoading) {
     dispatch(
-      getUsers({
+      getLeadlist({
         sort,
         sortColumn,
         q: searchTerm,
@@ -197,62 +297,55 @@ const UsersList = ({ workspaceId }) => {
       })
     );
   }
+
   // ** Function in get data on page change
   const handlePagination = (page) => {
     dispatch(
-      getUsers({
+      getLeadlist({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: rowsPerPage,
         page: page.selected + 1,
         id: workspaceId,
-        // role: currentRole.value,
-        // status: currentStatus.value,
-        // currentPlan: currentPlan.value,
       })
     );
     const newPage = page.selected + 1;
     setCurrentPage(newPage);
-    dispatch(storeCurrentPageUser({ currentPage: newPage }));
+    dispatch(storeCurrentPageLeadlist({ currentPage: newPage }));
   };
 
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
     const value = parseInt(e.currentTarget.value);
     dispatch(
-      getUsers({
+      getLeadlist({
         sort,
         sortColumn,
         q: searchTerm,
         perPage: value,
         page: 1,
         id: workspaceId,
-        // role: currentRole.value,
-        // currentPlan: currentPlan.value,
-        // status: currentStatus.value,
       })
     );
     setCurrentPage(1);
     setRowsPerPage(value);
-    dispatch(storeCurrentPageUser({ currentPage: 1 }));
-    dispatch(storeRowsPerPageUser({ rowsPerPage: value }));
+    dispatch(storeCurrentPageLeadlist({ currentPage: 1 }));
+    dispatch(storeRowsPerPageLeadlist({ rowsPerPage: value }));
   };
 
   // ** Function in get data on search query change
   const handleFilter = (val) => {
+    console.log("search q", val);
     setSearchTerm(val);
     dispatch(
-      getUsers({
+      getLeadlist({
         sort,
         q: val,
         sortColumn,
         page: currentPage,
         perPage: rowsPerPage,
         id: workspaceId,
-        // role: currentRole.value,
-        // status: currentStatus.value,
-        // currentPlan: currentPlan.value,
       })
     );
   };
@@ -260,7 +353,6 @@ const UsersList = ({ workspaceId }) => {
   // ** Custom Pagination
   const CustomPagination = () => {
     const count = Number(Math.ceil(store.totalUsers / rowsPerPage));
-
     return (
       <ReactPaginate
         previousLabel={""}
@@ -285,9 +377,6 @@ const UsersList = ({ workspaceId }) => {
   // ** Table data to render
   const dataToRender = () => {
     const filters = {
-      //   role: currentRole.value,
-      //   currentPlan: currentPlan.value,
-      //   status: currentStatus.value,
       q: searchTerm,
     };
 
@@ -295,19 +384,18 @@ const UsersList = ({ workspaceId }) => {
       return filters[k].length > 0;
     });
 
-    if (store.users.length > 0) {
-      const users = store.users.map((user) => {
+    if (store?.leadlist?.length > 0) {
+      const users = store.leadlist?.map((user) => {
         const tempUser = { ...user };
-        // console.log("userstemp", tempUser)
         tempUser.handleEdit = (id) => {
-          const editUser = store.users.filter((user) => user.id === id);
+          const editUser = store.leadlist.filter((user) => user.id === id);
           if (editUser.length) {
             setEditUser(editUser[0]);
             toggleSidebar();
           }
         };
+
         tempUser.handleDelete = async (id, joinedAt) => {
-          console.log("joinedAt", id);
           // prettier-ignore
           const text = joinedAt ? "Are you sure you would like to remove this user?" : "Are you sure you would like to cancel this invitation?";
           // prettier-ignore
@@ -326,8 +414,7 @@ const UsersList = ({ workspaceId }) => {
             buttonsStyling: false,
           });
           if (result.value) {
-            dispatch(deleteMemberFromWorkspace({ id }));
-            console.log("delete workspace", id);
+            dispatch(deleteLeadlistWorkspace({ id }));
             refreshTable();
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({
@@ -344,10 +431,10 @@ const UsersList = ({ workspaceId }) => {
       });
 
       return users;
-    } else if (store.users.length === 0 && isFiltered) {
+    } else if (store.leadlist.length === 0 && isFiltered) {
       return [];
     } else {
-      return store.users.slice(0, rowsPerPage);
+      return store.leadlist.slice(0, rowsPerPage);
     }
   };
 
@@ -356,21 +443,18 @@ const UsersList = ({ workspaceId }) => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
     dispatch(
-      getUsers({
+      getLeadlist({
         sort: sortDirection,
         sortColumn: column.sortField,
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
         id: workspaceId,
-        // role: currentRole.value,
-        // status: currentStatus.value,
-        // currentPlan: currentPlan.value,
       })
     );
   };
 
-  if (store.usersLoading) {
+  if (store.leadlistLoading) {
     return (
       <Fragment>
         <div className="vh-100">
@@ -381,11 +465,34 @@ const UsersList = ({ workspaceId }) => {
     );
   }
 
+  const downloadXLS = () => {
+    const ws = XLSX.utils.json_to_sheet([csvData]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "People");
+    XLSX.writeFile(wb, "leadlistData.xlsx");
+  };
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
   return (
     <Fragment>
       {/* {store.currentWorkspace && (
         <p>Manage workspace: {store.currentWorkspace.name}</p>
       )} */}
+      <Modal  size="xl" id="my_modal" style={{width : "1000px !imporatant ", height : "100vh !important"}} isOpen={showModal} toggle={toggleModal}>
+        <ModalHeader toggle={() => setShowModal(!showModal)}>
+          Lead List
+        </ModalHeader>
+
+        <ModalBody>
+          <DataTable
+            columns={recordColums}
+            data={recordData}
+          ></DataTable>
+        </ModalBody>
+      </Modal>
       <Card className="overflow-hidden workspace-list">
         <div className="react-dataTable">
           <DataTable
@@ -395,12 +502,15 @@ const UsersList = ({ workspaceId }) => {
             pagination
             responsive
             paginationServer
-            columns={userColumns}
+            onRowClicked={handleRowClicked}
+            // columns={LeadlistColumns}
+            columns={NewTable}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
             paginationComponent={CustomPagination}
             data={dataToRender()}
+            // actions={getCsvData}
             subHeaderComponent={
               <CustomHeader
                 store={store}
@@ -409,8 +519,14 @@ const UsersList = ({ workspaceId }) => {
                 handleFilter={handleFilter}
                 handlePerPage={handlePerPage}
                 toggleSidebar={toggleSidebar}
+                toggleSidebarImport={toggleSidebarImport}
                 userData={userData}
                 setEditUser={setEditUser}
+                csvData={csvData}
+                getCsvData={getCsvData}
+                downloadXLS={downloadXLS}
+                handleDownloadCsv={handleDownloadCsv}
+                handleDownloadExp={handleDownloadExp}
               />
             }
           />
@@ -418,7 +534,7 @@ const UsersList = ({ workspaceId }) => {
       </Card>
 
       {sidebarOpen && (
-        <UserSidebar
+        <LeadlistSidebar
           open={sidebarOpen}
           refreshTable={refreshTable}
           toggleSidebar={toggleSidebar}
@@ -426,7 +542,15 @@ const UsersList = ({ workspaceId }) => {
           user={editUser}
         />
       )}
+      {sidebarOpenImport && (
+        <CsvSidebar
+          open={sidebarOpenImport}
+          refreshTable={refreshTable}
+          toggleSidebar={toggleSidebarImport}
+          workspace={workspaceId}
+        />
+      )}
     </Fragment>
   );
 };
-export default UsersList;
+export default LeadList;
