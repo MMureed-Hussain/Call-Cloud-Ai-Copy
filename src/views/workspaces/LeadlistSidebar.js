@@ -119,7 +119,8 @@ const SidebarLeadlist = ({
             setFileHeaders("");
             refreshTable();
             toggleSidebar();
-          }});
+          }
+        });
       } else {
         dispatch(inviteLeadlist({ lead, csvFile, id: workspaceId })).then(
           (result) => {
@@ -138,7 +139,7 @@ const SidebarLeadlist = ({
   };
   // Create select option
   const createOption = (label) => ({
-    label: label,
+    label,
     value: label,
     disabled: false,
   });
@@ -286,15 +287,19 @@ const SidebarLeadlist = ({
                               (x) => x.id === fields.id
                             );
                             const key = keyOptions.findIndex(
-                              (x) => x.value === e.value
+                              (x) => (x.value === e.value)
                             );
                             let prevKey;
-                            const prev = inputHeaders[index].external_header; prev.length > 0 ? ((prevKey = keyOptions.findIndex(
-                                  (x) => x.value === prev)),
-                                (keyOptions[prevKey].disabled = false),
-                                (inputHeaders[index].external_header = e.value),
-                                (keyOptions[key].disabled = true)) : ((inputHeaders[index].external_header = e.value),
-                                (keyOptions[key].disabled = true));
+                            const prev = inputHeaders[index].external_header;
+                            if (prev.length > 0) {
+                              prevKey = keyOptions.findIndex((x) => x.value === prev);
+                              keyOptions[prevKey].disabled = false;
+                              inputHeaders[index].external_header = e.value;
+                              keyOptions[key].disabled = true;
+                            } else {
+                              inputHeaders[index].external_header = e.value;
+                              keyOptions[key].disabled = true;
+                            }
                           }}
                         />
                       </div>

@@ -75,9 +75,9 @@ const renderWorkspaceLogo = (row) => {
 };
 const queueRowCount = (row) => {
   let rowCount = 0;
-  row.leadlist_records.map((data) =>
-  rowCount=rowCount + Number(data.rows)
-  )
+  row.leadlist_records.map((data) => {
+    rowCount = rowCount + Number(data.rows)
+  })
 return rowCount;
 }
 const Title = () => (
