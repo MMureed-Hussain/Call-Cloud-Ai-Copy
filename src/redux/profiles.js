@@ -275,8 +275,6 @@ export const deleteCallFollowUp = createAsyncThunk(
 
 
 // Call Follow-up section END Here 
-
-
 // Profile Contact section
 export const profileContactList = createAsyncThunk(
     "profiles/contacts",
