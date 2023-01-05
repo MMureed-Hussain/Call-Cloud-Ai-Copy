@@ -30,7 +30,6 @@ export default ({ open, toggleSidebar, profile }) => {
   const [pipeline, setPipeline] = useState(null);
   const [leadStatus, setLeadStatus] = useState(null);
   const [clientStatus, setClientStatus] = useState(null);
-  const [note, setNote] = useState("");
 
   const dispatch = useDispatch();
 
@@ -64,7 +63,6 @@ export default ({ open, toggleSidebar, profile }) => {
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
-      setNote(profile.note);
       if (profile.pipeline) {
         setPipeline({
           value: profile.pipeline.id,
@@ -96,7 +94,6 @@ export default ({ open, toggleSidebar, profile }) => {
               phone: phone,
               pipeline: pipeline?.value,
               lead_status: leadStatus?.value,
-              notes: note,
             },
             id: profile.id,
           })
@@ -106,7 +103,6 @@ export default ({ open, toggleSidebar, profile }) => {
             workspace_id: currentWorkspace.id,
             pipeline: pipeline?.value,
             lead_status: leadStatus?.value,
-            notes: note,
           })
     ).then((res) => {
       if (res.payload.data) {
@@ -212,30 +208,6 @@ export default ({ open, toggleSidebar, profile }) => {
           />
           {errors.has("lead_status") && (
             <FormFeedback>{errors.get("lead_status")}</FormFeedback>
-          )}
-        </FormGroup>
-        <FormGroup>
-          <Label className="form-label" for="phone-number">
-            Notes<span className="text-danger">*</span>
-          </Label>
-          <Input
-            type="textarea"
-            id="note"
-            placeholder="Enter notes here"
-            value={note}
-            className={
-              errors.has("note") ? "is-invalid form-control" : "form-control"
-            }
-            onChange={(e) => {
-              const value = e.target.value.replace(
-                /(^\w{1})|(\s+\w{1})/g,
-                (letter) => letter.toUpperCase()
-              );
-              setNote(value);
-            }}
-          />
-          {errors.has("note") && (
-            <FormFeedback>{errors.get("note")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary" type="submit">

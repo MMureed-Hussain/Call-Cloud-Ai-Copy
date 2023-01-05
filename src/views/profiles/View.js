@@ -8,11 +8,10 @@ import { getProfile } from "../../redux/profiles";
 import Skeleton from "react-loading-skeleton";
 import CallsList from "./CallsList";
 import CallFollowUpList from "./CallFollowUpList";
-import AllNotes from "./components/AllNotes";
 import ContactList from "./ContactList";
+import NoteList from "./NoteList";
 
-export default () =>
-{
+export default () => {
   const params = useParams();
   const dispatch = useDispatch();
   //selectors
@@ -21,8 +20,7 @@ export default () =>
   );
   const profile = useSelector((state) => state.profiles.selectedProfile);
 
-  useEffect(() =>
-  {
+  useEffect(() => {
     if (currentWorkspace) {
       dispatch(
         getProfile({
@@ -48,11 +46,10 @@ export default () =>
         <Row>
           <Col lg={{ size: 3, order: 1 }} sm={{ size: 12 }} xs={{ order: 2 }}>
             <ProfileAbout data={profile} />
-            <AllNotes />
           </Col>
           <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
-            <ContactList />
             <CallFollowUpList />
+            <NoteList profileId={params.id} />
             <CallsList profileId={params.id} />
           </Col>
         </Row>
