@@ -39,8 +39,6 @@ export default () =>
     }, [currentWorkspace]);
 
 
-    console.log(followups);
-
     useEffect(() =>
     {
         loadFollowUps();
@@ -110,6 +108,8 @@ export default () =>
         );
     }
 
+
+    console.log(followups);
     return (
         <>
             <Card>
@@ -158,7 +158,7 @@ export default () =>
                                 <tr key={ind} >
                                     <td>{row.callprofile.name}</td>
                                     <td>
-                                        <Badge color="primary" className="bg-light-primary">{row.callprofile.pipeline.name}</Badge>
+                                        <Badge color="primary" className="bg-light-primary">{(row.callprofile && row.callprofile.pipeline) && row.callprofile.pipeline.name}</Badge>
                                     </td>
                                     <td>{row.meeting_at}</td>
                                     <td>{moment(row.meeting_at).fromNow()}</td>

@@ -5,7 +5,8 @@ import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
 import Skeleton from "react-loading-skeleton";
 // ** Reactstrap Imports
-import {
+import
+{
     Card,
     UncontrolledDropdown,
     DropdownToggle,
@@ -20,7 +21,8 @@ import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
-import {
+import
+{
     getCallsByProfileId,
     setReloadCallTable,
     deleteResource,
@@ -33,7 +35,8 @@ import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import usePrevious from "../../utility/hooks/usePrevious";
 
-const CallList = ({ profileId }) => {
+const CallList = ({ profileId }) =>
+{
     // ** States
     const [sort, setSort] = useState("desc");
     const [searchTerm, setSearchTerm] = useState("");
@@ -53,7 +56,8 @@ const CallList = ({ profileId }) => {
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const statuses = useSelector((state) => state.callStatuses.statuses.map(s => ({ value: s.id, label: s.name })));
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         if (currentWorkspace) {
             loadCalls({
                 page: 1,
@@ -62,7 +66,8 @@ const CallList = ({ profileId }) => {
         }
     }, [currentWorkspace]);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         if (reloadCallTable) {
             dispatch(setReloadCallTable(false));
             loadCalls({
@@ -71,7 +76,8 @@ const CallList = ({ profileId }) => {
         }
     }, [reloadCallTable]);
 
-    usePrevious((prevStatusFilterValue) => {
+    usePrevious((prevStatusFilterValue) =>
+    {
         //change when filter set to None
         if (prevStatusFilterValue?.value && !statusFilterValue.value) {
             loadCalls({
@@ -89,7 +95,8 @@ const CallList = ({ profileId }) => {
     }, [statusFilterValue]);
 
 
-    const loadCalls = (options) => {
+    const loadCalls = (options) =>
+    {
         let queryParams = {
             records_per_page: rowsPerPage,
             page: currentPage,
@@ -105,7 +112,8 @@ const CallList = ({ profileId }) => {
                 id: profileId,
                 params: queryParams,
             })
-        ).then(({ payload }) => {
+        ).then(({ payload }) =>
+        {
             if (payload.data !== null) {
                 setCalls(payload.data.data);
                 setPageCount(payload.data.last_page);
@@ -114,11 +122,13 @@ const CallList = ({ profileId }) => {
         setCurrentPage(options.page);
     };
 
-    const onChangeCallStatus = (call, status) => {
+    const onChangeCallStatus = (call, status) =>
+    {
         dispatch(updateCall({
             formData: {
                 tags: JSON.stringify(call.tags.map((tag) => ({ value: tag.id, label: tag.label }))),
                 call_status: status,
+                note: call.notes,
             },
             id: call.id,
         })
@@ -144,7 +154,8 @@ const CallList = ({ profileId }) => {
             name: "Voice",
             sortable: false,
             minWidth: "350px",
-            cell: (row) => {
+            cell: (row) =>
+            {
                 return <CallPlayer callId={row.id} />;
             },
         },
@@ -152,9 +163,11 @@ const CallList = ({ profileId }) => {
             name: "Status",
             sortable: false,
             minWidth: "172px",
-            cell: (row) => {
+            cell: (row) =>
+            {
+                console.log(row)
                 return <Select
-                    value={{ value: row.call_status.id, label: row.call_status.name }}
+                    value={row.call_status ? { value: row.call_status.id, label: row.call_status.name } : null}
                     theme={selectThemeColors}
                     classNamePrefix="select"
                     className="react-select"
@@ -190,7 +203,8 @@ const CallList = ({ profileId }) => {
             name: "Actions",
             allowOverflow: true,
             right: true,
-            cell: (row) => {
+            cell: (row) =>
+            {
                 return (
                     <div className="d-flex">
                         <UncontrolledDropdown>
@@ -199,7 +213,8 @@ const CallList = ({ profileId }) => {
                             </DropdownToggle>
                             <DropdownMenu container={'body'} end>
                                 <DropdownItem
-                                    onClick={() => {
+                                    onClick={() =>
+                                    {
                                         setSelectedCall(row);
                                         toggleViewSidebar();
                                     }}
@@ -208,7 +223,8 @@ const CallList = ({ profileId }) => {
                                     <span className="align-middle ms-50">View</span>
                                 </DropdownItem>
                                 <DropdownItem
-                                    onClick={() => {
+                                    onClick={() =>
+                                    {
                                         setSelectedCall(row);
                                         toggleSidebar();
                                     }}
@@ -236,7 +252,8 @@ const CallList = ({ profileId }) => {
         },
     ];
 
-    const handleSort = (column, sortDirection) => {
+    const handleSort = (column, sortDirection) =>
+    {
         setSort(sortDirection);
         setSortColumn(column.sortField);
         loadCalls({
@@ -247,7 +264,8 @@ const CallList = ({ profileId }) => {
     };
 
     // ** Function in get data on rows per page
-    const handlePerPage = (e) => {
+    const handlePerPage = (e) =>
+    {
         const value = parseInt(e.currentTarget.value);
         setRowsPerPage(value);
         loadCalls({
@@ -257,21 +275,25 @@ const CallList = ({ profileId }) => {
     };
 
     // ** Function in get data on search query change
-    const handleFilter = (val) => {
+    const handleFilter = (val) =>
+    {
         setSearchTerm(val);
         //todo add
     };
 
-    const toggleSidebar = () => {
+    const toggleSidebar = () =>
+    {
         setSidebarOpen(!sidebarOpen);
     };
 
-    const toggleViewSidebar = () => {
+    const toggleViewSidebar = () =>
+    {
         setViewSidebarOpen(!viewSidebarOpen);
     };
 
     // ** Custom Pagination
-    const CustomPagination = () => {
+    const CustomPagination = () =>
+    {
         return (
             <ReactPaginate
                 previousLabel={""}
@@ -313,7 +335,8 @@ const CallList = ({ profileId }) => {
                     rowsPerPage={rowsPerPage}
                     handleSearch={handleFilter}
                     handlePerPage={handlePerPage}
-                    toggleSidebar={() => {
+                    toggleSidebar={() =>
+                    {
                         setSelectedCall(null);
                         toggleSidebar();
                     }}
