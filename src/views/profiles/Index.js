@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -11,6 +11,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Badge,
 } from "reactstrap";
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
@@ -19,18 +20,36 @@ import {
   getProfiles,
   setReloadTable,
   deleteResource,
+  resetFilters,
 } from "../../redux/profiles";
+import { getPipelines } from "../../redux/pipelines";
+import { getStatuses as getLeadStatuses } from "../../redux/leadStatuses";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { debounce } from "lodash";
+import { getStatuses as getCallStatuses } from "../../redux/callStatuses";
+import { getStatuses as getClientStatuses } from "../../redux/clientStatuses";
+import ProfileSidebar from "./components/ProfileSidebar";
+import PhoneInput from "react-phone-input-2";
+import usePrevious from "../../utility/hooks/usePrevious";
+
+const getProfileType = (path) => {
+  if (path === "/leads") return "lead";
+  return "client";
+};
 
 export default () => {
   // ** States
+  const location = useLocation();
+  const profileType = getProfileType(location.pathname);
+
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(false);
 
   const dispatch = useDispatch();
   //selectors
@@ -38,22 +57,40 @@ export default () => {
     (state) => state.workspaces.currentWorkspace
   );
   const profiles = useSelector((state) => state.profiles.profiles);
+  console.log("--------", profiles);
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);
 
+  const pipelineFilterValue = useSelector(
+    (state) => state.profiles.pipelineFilterValue
+  );
+  const statusFilterValue = useSelector(
+    (state) => state.profiles.statusFilterValue
+  );
+
   // ** Factory method to dispatch the api call
   const loadProfiles = (options) => {
-    dispatch(
-      getProfiles({
-        records_per_page: rowsPerPage,
-        page: currentPage,
-        workspace_id: currentWorkspace?.id,
-        sort_by: sortColumn,
-        sort,
-        ...options,
-      })
-    );
+    let params = {
+      records_per_page: rowsPerPage,
+      page: currentPage,
+      workspace_id: currentWorkspace?.id,
+      sort_by: sortColumn,
+      sort,
+      type: profileType,
+      ...options,
+    };
+    if (pipelineFilterValue?.value) {
+      params = { pipeline_id: pipelineFilterValue.value, ...params };
+    }
+    if (statusFilterValue?.value) {
+      params = {
+        [profileType === "client" ? "client_status_id" : "call_status_id"]:
+          statusFilterValue.value,
+        ...params,
+      };
+    }
+    dispatch(getProfiles(params));
     setCurrentPage(options.page);
   };
   // ** Reload the table when record is deleted
@@ -65,10 +102,63 @@ export default () => {
       });
     }
   }, [reloadTable]);
+  // ** load data when filter value is changed
+
+  usePrevious(
+    (prevPipelineFilterValue, prevStatusFilterValue) => {
+      //change when filter set to None
+      if (
+        (prevPipelineFilterValue?.value || prevStatusFilterValue?.value) &&
+        (!pipelineFilterValue.value || !statusFilterValue.value)
+      ) {
+        loadProfiles({
+          page: 1,
+        });
+      }
+      //when filter value is changed
+      if (pipelineFilterValue?.value || statusFilterValue?.value) {
+        loadProfiles({
+          page: 1,
+        });
+      }
+    },
+    [pipelineFilterValue, statusFilterValue]
+  );
   // ** Load the all call profiles for the selected workspace
   useEffect(() => {
     if (currentWorkspace) {
+      dispatch(resetFilters());
       loadProfiles({ page: 1 });
+      dispatch(
+        getPipelines({
+          workspace_id: currentWorkspace.id,
+          include_count: "true",
+          profile_type: profileType,
+        })
+      );
+      if (profileType === "lead") {
+        dispatch(
+          getLeadStatuses({
+            workspace_id: currentWorkspace.id,
+          })
+        );
+        //load call statuses in case of leads
+        dispatch(
+          getCallStatuses({
+            workspace_id: currentWorkspace.id,
+            include_profile_count: "true",
+          })
+        );
+      }
+      //load client statuses with count
+      if (profileType === "client") {
+        dispatch(
+          getClientStatuses({
+            workspace_id: currentWorkspace.id,
+            include_profile_count: "true",
+          })
+        );
+      }
     }
   }, [currentWorkspace]);
   // ** Columns meta for the data table
@@ -80,11 +170,13 @@ export default () => {
       sortField: "name",
       selector: (row) => row.name,
       cell: (row) => (
-        <div className="d-flex justify-content-left align-items-center">
-          <div className="d-flex flex-column">
-            <span className="fw-bolder">{row.name}</span>
+        <Link to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
+          <div className="d-flex justify-content-left align-items-center">
+            <div className="d-flex flex-column">
+              <span className="fw-bolder">{row.name}</span>
+            </div>
           </div>
-        </div>
+        </Link>
       ),
     },
     {
@@ -93,7 +185,37 @@ export default () => {
       minWidth: "172px",
       sortField: "phone",
       selector: (row) => row.phone,
-      cell: (row) => row.phone,
+      cell: (row) => (
+        <PhoneInput
+          className="phone-placeholder"
+          country={"us"}
+          value={row.phone}
+          disableSearchIcon
+          disabled
+          placeholder="1 234 567 8900"
+        />
+      ),
+    },
+    {
+      name: "Status",
+      sortable: false,
+      minWidth: "172px",
+      cell: (row) => {
+        const status = row[`${profileType}_status`]; //client_status or lead_status
+        return status ? <Badge color="warning">{status.name}</Badge> : "-";
+      },
+    },
+    {
+      name: "Pipeline",
+      sortable: false,
+      minWidth: "172px",
+      cell: (row) => {
+        return row.pipeline ? (
+          <Badge color="primary">{row.pipeline.name}</Badge>
+        ) : (
+          "-"
+        );
+      },
     },
     {
       name: "Actions",
@@ -105,19 +227,26 @@ export default () => {
               <DropdownToggle className="pe-1" tag="span">
                 <MoreVertical size={15} />
               </DropdownToggle>
-              <DropdownMenu end>
-                <Link to={`/profiles/${row.id}`}>
+              <DropdownMenu container={"body"} end>
+                <Link
+                  to={`/${profileType === "lead" ? "leads" : "clients"}/${
+                    row.id
+                  }`}
+                >
                   <DropdownItem>
                     <Eye size={15} />
                     <span className="align-middle ms-50">View</span>
                   </DropdownItem>
                 </Link>
-                <Link to={`/profiles/${row.id}/edit`}>
-                  <DropdownItem>
-                    <Edit size={15} />
-                    <span className="align-middle ms-50">Edit</span>
-                  </DropdownItem>
-                </Link>
+                <DropdownItem
+                  onClick={() => {
+                    setSelectedProfile(row);
+                    toggleSidebar();
+                  }}
+                >
+                  <Edit size={15} />
+                  <span className="align-middle ms-50">Edit</span>
+                </DropdownItem>
                 <DropdownItem
                   onClick={() =>
                     dispatch(
@@ -202,34 +331,51 @@ export default () => {
     );
   }
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const onNewProfileClick = () => {
+    setSelectedProfile(null);
+    toggleSidebar();
+  };
+
   return (
-    <Card className="overflow-hidden workspace-list">
-      <div className="react-dataTable">
-        <DataTable
-          noHeader
-          subHeader
-          sortServer
-          pagination
-          responsive
-          paginationServer
-          defaultSortField={"id"}
-          columns={columns}
-          onSort={handleSort}
-          defaultSortAsc={false}
-          sortIcon={<ChevronDown />}
-          className="react-dataTable"
-          paginationComponent={CustomPagination}
-          data={profiles}
-          subHeaderComponent={
-            <CustomHeader
-              searchTerm={searchTerm}
-              rowsPerPage={rowsPerPage}
-              handleFilter={setSearchTerm}
-              handlePerPage={handlePerPage}
-            />
-          }
+    <>
+      <Card className="overflow-hidden">
+        <CustomHeader
+          searchTerm={searchTerm}
+          rowsPerPage={rowsPerPage}
+          handleSearch={setSearchTerm}
+          handlePerPage={handlePerPage}
+          onNewProfileClick={onNewProfileClick}
+          profileType={profileType}
         />
-      </div>
-    </Card>
+        <div className="react-dataTable">
+          <DataTable
+            noHeader
+            sortServer
+            pagination
+            responsive
+            paginationServer
+            defaultSortField={"id"}
+            columns={columns}
+            onSort={handleSort}
+            defaultSortAsc={false}
+            sortIcon={<ChevronDown />}
+            className="react-dataTable"
+            paginationComponent={CustomPagination}
+            data={profiles}
+          />
+        </div>
+      </Card>
+      {sidebarOpen && (
+        <ProfileSidebar
+          open={sidebarOpen}
+          toggleSidebar={toggleSidebar}
+          profile={selectedProfile}
+        />
+      )}
+    </>
   );
 };

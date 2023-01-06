@@ -28,7 +28,6 @@ const SidebarUser = ({
   const [email, setEmail] = useState(() => {
     return user ? user.email : "";
   });
-  
 
   const [nickname, setNickname] = useState(() => {
     return user ? user.nickname : "";

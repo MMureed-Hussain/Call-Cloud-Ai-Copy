@@ -105,7 +105,7 @@ const AccountTabs = ({ data }) => {
   // ** States
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
   //prettier-ignore
-  const [avatar, setAvatar] = useState(data.avatar ? data.avatar : require("@src/assets/images/avatars/avatar-blank.png").default);
+  const [avatar, setAvatar] = useState(data.avatar ? data.avatar : require("@src/assets/images/avatars/avatar-blank.png"));
 
   const [firstName, setFirstName] = useState(() => {
     return data.firstName ? data.firstName : "";
@@ -470,7 +470,7 @@ const AccountTabs = ({ data }) => {
 
   const handleImgReset = () => {
     //prettier-ignore
-    setAvatar(data.avatar ? data.avatar : require("@src/assets/images/avatars/avatar-blank.png").default);
+    setAvatar(data.avatar ? data.avatar : require("@src/assets/images/avatars/avatar-blank.png"));
     setAvatarFile(null);
   };
 

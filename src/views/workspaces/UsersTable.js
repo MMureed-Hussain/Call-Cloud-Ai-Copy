@@ -84,7 +84,7 @@ const CustomHeader = ({
             {/* <label className="mb-0" htmlFor="search-invoice"></label> */}
             <Input
               id="search-invoice"
-              className="ms-50 w-100"
+              className="ms-50 w-80 d-flex flex-column mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1"
               type="text"
               placeholder="Type to find"
               value={searchTerm}
@@ -115,7 +115,7 @@ const CustomHeader = ({
           </div>
 
           {userData.user.role === "company" && (
-            <div className="d-flex align-items-center table-header-actions">
+            <div className="d-flex mt-xl-0  mt-l-0 mt-sm-0 mt-m-0 mt-1">
               <Button
                 className="add-new-user"
                 color="primary"
@@ -151,6 +151,20 @@ const UsersList = ({ workspaceId }) => {
 
   const [editUser, setEditUser] = useState(null);
 
+  //   const [currentRole, setCurrentRole] = useState({
+  //     value: "",
+  //     label: "Select Role",
+  //   });
+  //   const [currentPlan, setCurrentPlan] = useState({
+  //     value: "",
+  //     label: "Select Plan",
+  //   });
+  //   const [currentStatus, setCurrentStatus] = useState({
+  //     value: "",
+  //     label: "Select Status",
+  //     number: 0,
+  //   });
+
   // ** Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -166,7 +180,7 @@ const UsersList = ({ workspaceId }) => {
         perPage: rowsPerPage,
         id: workspaceId,
       })
-      );
+    );
   };
 
   // ** Get data on mount
@@ -197,6 +211,37 @@ const UsersList = ({ workspaceId }) => {
       })
     );
   }
+  //   useEffect(() => {
+  //     dispatch(
+
+  //     );
+  //   }, [dispatch, store.workspaces.length, sort, sortColumn, currentPage]);
+
+  // ** User filter options
+  //   const roleOptions = [
+  //     { value: "", label: "Select Role" },
+  //     { value: "admin", label: "Admin" },
+  //     { value: "author", label: "Author" },
+  //     { value: "editor", label: "Editor" },
+  //     { value: "maintainer", label: "Maintainer" },
+  //     { value: "subscriber", label: "Subscriber" },
+  //   ];
+
+  //   const planOptions = [
+  //     { value: "", label: "Select Plan" },
+  //     { value: "basic", label: "Basic" },
+  //     { value: "company", label: "Company" },
+  //     { value: "enterprise", label: "Enterprise" },
+  //     { value: "team", label: "Team" },
+  //   ];
+
+  //   const statusOptions = [
+  //     { value: "", label: "Select Status", number: 0 },
+  //     { value: "pending", label: "Pending", number: 1 },
+  //     { value: "active", label: "Active", number: 2 },
+  //     { value: "inactive", label: "Inactive", number: 3 },
+  //   ];
+
   // ** Function in get data on page change
   const handlePagination = (page) => {
     dispatch(
@@ -298,7 +343,6 @@ const UsersList = ({ workspaceId }) => {
     if (store.users.length > 0) {
       const users = store.users.map((user) => {
         const tempUser = { ...user };
-        // console.log("userstemp", tempUser)
         tempUser.handleEdit = (id) => {
           const editUser = store.users.filter((user) => user.id === id);
           if (editUser.length) {
@@ -307,7 +351,7 @@ const UsersList = ({ workspaceId }) => {
           }
         };
         tempUser.handleDelete = async (id, joinedAt) => {
-          console.log("joinedAt", id);
+          console.log("joinedAt", joinedAt);
           // prettier-ignore
           const text = joinedAt ? "Are you sure you would like to remove this user?" : "Are you sure you would like to cancel this invitation?";
           // prettier-ignore

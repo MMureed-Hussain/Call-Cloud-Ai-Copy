@@ -25,6 +25,7 @@ const initialSkin = () => {
 export const layoutSlice = createSlice({
   name: "layout",
   initialState: {
+    pagination: {per_page:15},
     skin: initialSkin(),
     isRTL: initialDirection(),
     layout: themeConfig.layout.type,
