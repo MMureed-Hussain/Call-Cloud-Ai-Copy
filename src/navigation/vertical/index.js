@@ -1,4 +1,4 @@
-import { Layers, Home, Users, AlignJustify, UserCheck, Calendar, Circle } from "react-feather";
+import { Layers, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid } from "react-feather";
 
 export default [
   {
@@ -19,12 +19,6 @@ export default [
     icon: <Users size={20} />,
     navLink: "/workspace/id/users",
   },
-  // {
-  //   id: "bookingPages",
-  //   title: "Booking Pages",
-  //   icon: <Bookmark size={20} />,
-  //   navLink: "/booking-pages",
-  // },
   {
     id: "leadProfiles",
     title: "Lead Profiles",
@@ -36,6 +30,24 @@ export default [
     title: "Pipelines",
     icon: <Layers size={20} />,
     navLink: "/pipelines",
+  },
+  {
+    id: "leadlist",
+    title: "Lead List",
+    icon: <List size={20} />,
+    navLink: "/workspace/leadlist",
+  },
+  {
+    id: "queue",
+    title: "Queue",
+    icon: <Grid size={20} />,
+    navLink: "/workspace/queue",
+  },
+  {
+    id: "team",
+    title: "Team",
+    icon: <Grid size={20} />,
+    navLink: "/workspace/Team",
   },
   {
     id: "statuses",
@@ -76,4 +88,10 @@ export default [
     icon: <Calendar size={20} />,
     navLink: "/followups",
   },
+  {
+    id: "callProfiles",
+    title: "Call Profiles",
+    icon: <Phone size={20} />,
+    navLink: "/profiles",
+  }
 ];

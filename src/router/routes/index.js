@@ -33,6 +33,9 @@ const Workspaces = lazy(() => import("../../views/workspaces/Workspaces"));
 const WorkspaceDetails = lazy(() => import("../../views/workspaces/WorkspaceDetails"));
 // prettier-ignore
 const WorkspaceManageUsers = lazy(() => import("../../views/workspaces/WorkspaceManageUsers"));
+const WorkspaceManageLeadlist = lazy(() => import("../../views/workspaces/WorkspaceManageLeadlist"));
+const WorkspaceManageQueue = lazy(() => import("../../views/queue/WorkspaceManageQueue"));
+const WorkspaceManageTeam = lazy(() => import("../../views/team/WorkspaceManageTeam"));
 const Login = lazy(() => import("../../views/Login"));
 const Register = lazy(() => import("../../views/Register"));
 const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
@@ -44,11 +47,16 @@ const SetupWorkspaces = lazy(() => import("../../views/account-settings/SetupWor
 // prettier-ignore
 const InviteUsers = lazy(() => import("../../views/account-settings/InviteUsers"));
 const VerifyEmail = lazy(() => import("../../views/VerifyEmail"));
+// prettier-ignore
+const BookingPages = lazy(() => import("../../views/booking-pages/BookingPages"));
+// prettier-ignore
+const CreateBookingPage = lazy(() => import("../../views/booking-pages/CreateBookingPage"));
 const Plans = lazy(() => import("../../views/plans"));
 // const Clients = lazy(() => import("../../views/clients"));
 const Followups = lazy(() => import("../../views/followups"));
 const CallProfiles = lazy(() => import("../../views/profiles/Index"));
 
+const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
 const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
@@ -133,6 +141,27 @@ const Routes = [
     },
   },
   {
+    path: "/workspace/leadlist",
+    element: <WorkspaceManageLeadlist />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/workspace/queue",
+    element: <WorkspaceManageQueue />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/workspace/team",
+    element: <WorkspaceManageTeam />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
     path: "/leads",
     element: <CallProfiles />,
     meta: {
@@ -184,6 +213,34 @@ const Routes = [
   {
     path: "/client-statuses",
     element: <ClientStatuses />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/profiles",
+    element: <CallProfiles />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/profiles/create",
+    element: <UpdateOrCreateCallProfile />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/profiles/:id",
+    element: <CallProfileView />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/profiles/:id/edit",
+    element: <UpdateOrCreateCallProfile/>,
     meta: {
       isPrivate: true,
     },
@@ -306,7 +363,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
           );
         }
 
-        // Push route to LayoutRouRouteTagtes
+        // Push route to LayoutRoutes
         LayoutRoutes.push(route);
       }
       return LayoutRoutes;
