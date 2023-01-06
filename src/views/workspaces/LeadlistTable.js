@@ -232,11 +232,6 @@ const LeadList = ({ workspaceId }) => {
       })
     );
   };
-
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
-  
   const handleRowClicked = (row) => {
     console.log('handleRowClicked called');
     toggleModal();
@@ -475,6 +470,10 @@ const LeadList = ({ workspaceId }) => {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "People");
     XLSX.writeFile(wb, "leadlistData.xlsx");
+  };
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
   };
 
   return (
