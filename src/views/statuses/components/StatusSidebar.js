@@ -10,6 +10,7 @@ import {
   Spinner,
   FormGroup,
 } from "reactstrap";
+import { SketchPicker } from "react-color";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +22,7 @@ import {
 
 export default ({ open, toggleSidebar, clientStatus }) => {
   const [name, setName] = useState("");
+  const [colorPiker, setColorPiker] = useState("#000000");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   //store
@@ -39,6 +41,7 @@ export default ({ open, toggleSidebar, clientStatus }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSubmissionLoader(true);
+    console.log("onSubmit", name, colorPiker);
     dispatch(setErrors({}));
     dispatch(
       clientStatus
@@ -61,6 +64,10 @@ export default ({ open, toggleSidebar, clientStatus }) => {
     });
   };
 
+  const handleChangeComplete = (color) => {
+    setColorPiker(color.hex);
+  };
+
   return (
     <Sidebar
       size="lg"
@@ -81,6 +88,10 @@ export default ({ open, toggleSidebar, clientStatus }) => {
             className={
               errors.has("name") ? "is-invalid form-control" : "form-control"
             }
+            style={{
+              color: colorPiker,
+              fontSize: colorPiker.value,
+            }}
             onChange={(e) => {
               const value = e.target.value.replace(
                 /(^\w{1})|(\s+\w{1})/g,
@@ -89,6 +100,7 @@ export default ({ open, toggleSidebar, clientStatus }) => {
               setName(value);
             }}
           />
+          <SketchPicker color={colorPiker} onChange={handleChangeComplete} />
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
           )}
