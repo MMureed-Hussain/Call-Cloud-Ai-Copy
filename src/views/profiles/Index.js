@@ -219,7 +219,7 @@ export default () => {
           sortIcon={<ChevronDown />}
           className="react-dataTable"
           paginationComponent={CustomPagination}
-          data={profiles?.length ? profiles : []}
+          data={profiles}
           subHeaderComponent={
             <CustomHeader
               searchTerm={searchTerm}
