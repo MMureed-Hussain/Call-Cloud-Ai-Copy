@@ -365,7 +365,7 @@ export default () => {
             sortIcon={<ChevronDown />}
             className="react-dataTable"
             paginationComponent={CustomPagination}
-            data={profiles}
+            data={profiles?.length ? profiles : []}
           />
         </div>
       </Card>
