@@ -5,13 +5,13 @@ const calendars = [
   {
     email: "emal_2@yopmail.com",
     text: "text about calendar",
-    logo: require("@src/assets/images/logo/Google-logo.png").default,
+    logo: require("@src/assets/images/logo/Google-logo.png"),
   },
 
   {
     email: "emal_2@yopmail.com",
     text: "text about calendar 2",
-    logo: require("@src/assets/images/logo/Google-logo.png").default,
+    logo: require("@src/assets/images/logo/Google-logo.png"),
   },
 ];
 const CalendarSettings = () => {

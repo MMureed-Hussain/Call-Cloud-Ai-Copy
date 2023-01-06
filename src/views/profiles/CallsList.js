@@ -17,13 +17,23 @@ import {
 import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
-import { Link, useParams } from "react-router-dom";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
-import { getCallsByProfileId, setReloadTable, deleteResource } from "../../redux/profiles";
+import {
+    getCallsByProfileId,
+    setReloadCallTable,
+    deleteResource,
+    updateCall,
+} from "../../redux/profiles";
+import CallViewSidebar from "./components/CallViewSidebar";
+import UserInfo from "./components/UserInfo";
+import { getStatuses } from "../../redux/callStatuses";
+import Select from "react-select";
+import { selectThemeColors } from "@utils";
+import usePrevious from "../../utility/hooks/usePrevious";
 
-export default () => {
+const CallList = ({ profileId }) => {
     // ** States
     const [sort, setSort] = useState("desc");
     const [searchTerm, setSearchTerm] = useState("");
@@ -35,36 +45,65 @@ export default () => {
     const [pageCount, setPageCount] = useState(1);
     const [selectedCall, setSelectedCall] = useState(null);
 
+    const [viewSidebarOpen, setViewSidebarOpen] = useState(false);
+
     const dispatch = useDispatch();
-    const params = useParams();
-    const reloadTable = useSelector((state) => state.profiles.reloadTable);
+    const reloadCallTable = useSelector((state) => state.profiles.reloadCallTable);
+    const statusFilterValue = useSelector((state) => state.profiles.statusFilterValue);
+    const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+    const statuses = useSelector((state) => state.callStatuses.statuses.map(s => ({ value: s.id, label: s.name })));
 
     useEffect(() => {
-        loadCalls({
-            page: 1,
-        });
-    }, []);
-
-    useEffect(() => {
-        if (reloadTable) {
-            dispatch(setReloadTable(false));
+        if (currentWorkspace) {
             loadCalls({
-                page: currentPage
+                page: 1,
+            });
+            dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true", profile_id: profileId }))
+        }
+    }, [currentWorkspace]);
+
+    useEffect(() => {
+        if (reloadCallTable) {
+            dispatch(setReloadCallTable(false));
+            loadCalls({
+                page: currentPage,
             });
         }
-    }, [reloadTable]);
+    }, [reloadCallTable]);
+
+    usePrevious((prevStatusFilterValue) => {
+        //change when filter set to None
+        if (prevStatusFilterValue?.value && !statusFilterValue.value) {
+            loadCalls({
+                page: 1,
+            });
+        }
+        //when filter value is changed
+        if (statusFilterValue?.value) {
+            loadCalls({
+                filter: "status",
+                filter_value: statusFilterValue.value,
+                page: 1,
+            });
+        }
+    }, [statusFilterValue]);
+
 
     const loadCalls = (options) => {
+        let queryParams = {
+            records_per_page: rowsPerPage,
+            page: currentPage,
+            sort_by: sortColumn,
+            sort,
+            ...options
+        };
+        if (statusFilterValue) {
+            queryParams = { ...queryParams, filter: "status", filter_value: statusFilterValue.value }
+        }
         dispatch(
             getCallsByProfileId({
-                id: params.id,
-                params: {
-                    records_per_page: rowsPerPage,
-                    page: currentPage,
-                    sort_by: sortColumn,
-                    sort,
-                    ...options,
-                },
+                id: profileId,
+                params: queryParams,
             })
         ).then(({ payload }) => {
             if (payload.data !== null) {
@@ -75,11 +114,22 @@ export default () => {
         setCurrentPage(options.page);
     };
 
+    const onChangeCallStatus = (call, status) => {
+        dispatch(updateCall({
+            formData: {
+                tags: JSON.stringify(call.tags.map((tag) => ({ value: tag.id, label: tag.label }))),
+                call_status: status,
+            },
+            id: call.id,
+        })
+        );
+    }
+
     const columns = [
         {
             name: "Id",
             sortable: true,
-            minWidth: "172px",
+            minWidth: "50px",
             sortField: "id",
             selector: (row) => row.id,
             cell: (row) => (
@@ -99,12 +149,34 @@ export default () => {
             },
         },
         {
+            name: "Status",
+            sortable: false,
+            minWidth: "172px",
+            cell: (row) => {
+                return <Select
+                    value={{ value: row.call_status.id, label: row.call_status.name }}
+                    theme={selectThemeColors}
+                    classNamePrefix="select"
+                    className="react-select"
+                    placeholder="Select call status"
+                    options={statuses}
+                    menuPortalTarget={document.body}
+                    onChange={e => onChangeCallStatus(row, e.value)}
+                />
+            }
+        },
+        {
             name: "Created By",
             sortable: true,
             sortField: "created_by",
-            minWidth: "172px",
+            minWidth: "250px",
             selector: (row) => row.created_by,
-            cell: (row) => row.created_by.first_name,
+            cell: (row) => (
+                <UserInfo
+                    name={`${row.created_by.first_name} ${row.created_by.last_name}`}
+                    email={row.created_by.email}
+                />
+            ),
         },
         {
             name: "Created At",
@@ -117,6 +189,7 @@ export default () => {
         {
             name: "Actions",
             allowOverflow: true,
+            right: true,
             cell: (row) => {
                 return (
                     <div className="d-flex">
@@ -124,15 +197,34 @@ export default () => {
                             <DropdownToggle className="pe-1" tag="span">
                                 <MoreVertical size={15} />
                             </DropdownToggle>
-                            <DropdownMenu end>
-                                <DropdownItem onClick={() => {
-                                    setSelectedCall(row);
-                                    toggleSidebar();
-                                }}>
+                            <DropdownMenu container={'body'} end>
+                                <DropdownItem
+                                    onClick={() => {
+                                        setSelectedCall(row);
+                                        toggleViewSidebar();
+                                    }}
+                                >
+                                    <Eye size={15} />
+                                    <span className="align-middle ms-50">View</span>
+                                </DropdownItem>
+                                <DropdownItem
+                                    onClick={() => {
+                                        setSelectedCall(row);
+                                        toggleSidebar();
+                                    }}
+                                >
                                     <Edit size={15} />
                                     <span className="align-middle ms-50">Edit</span>
                                 </DropdownItem>
-                                <DropdownItem onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`))}>
+                                <DropdownItem
+                                    onClick={() =>
+                                        dispatch(
+                                            deleteResource(
+                                                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`
+                                            )
+                                        )
+                                    }
+                                >
                                     <Trash size={15} />
                                     <span className="align-middle ms-50">Delete</span>
                                 </DropdownItem>
@@ -174,6 +266,10 @@ export default () => {
         setSidebarOpen(!sidebarOpen);
     };
 
+    const toggleViewSidebar = () => {
+        setViewSidebarOpen(!viewSidebarOpen);
+    };
+
     // ** Custom Pagination
     const CustomPagination = () => {
         return (
@@ -208,14 +304,23 @@ export default () => {
 
     return (
         <>
-            <Card className="workspace-list">
+            <Card>
                 <CardHeader className="py-1">
                     <CardTitle tag="h4">Calls</CardTitle>
                 </CardHeader>
+                <CallListHeader
+                    searchTerm={searchTerm}
+                    rowsPerPage={rowsPerPage}
+                    handleSearch={handleFilter}
+                    handlePerPage={handlePerPage}
+                    toggleSidebar={() => {
+                        setSelectedCall(null);
+                        toggleSidebar();
+                    }}
+                />
                 <div className="react-dataTable">
                     <DataTable
                         noHeader
-                        subHeader
                         sortServer
                         pagination
                         responsive
@@ -224,28 +329,30 @@ export default () => {
                         columns={columns}
                         onSort={handleSort}
                         defaultSortAsc={false}
+                        style={{ width: "80vw" }}
                         sortIcon={<ChevronDown />}
                         className="react-dataTable"
                         paginationComponent={CustomPagination}
                         data={calls}
-                        subHeaderComponent={
-                            <CallListHeader
-                                searchTerm={searchTerm}
-                                rowsPerPage={rowsPerPage}
-                                handleFilter={handleFilter}
-                                handlePerPage={handlePerPage}
-                                toggleSidebar={() => {
-                                    setSelectedCall(null);
-                                    toggleSidebar();
-                                }}
-                            />
-                        }
                     />
                 </div>
             </Card>
             {sidebarOpen && (
-                <CallSidebar open={sidebarOpen} call={selectedCall} toggleSidebar={toggleSidebar} />
+                <CallSidebar
+                    open={sidebarOpen}
+                    call={selectedCall}
+                    toggleSidebar={toggleSidebar}
+                />
+            )}
+            {viewSidebarOpen && (
+                <CallViewSidebar
+                    open={viewSidebarOpen}
+                    call={selectedCall}
+                    toggleSidebar={toggleViewSidebar}
+                />
             )}
         </>
     );
 };
+
+export default CallList
