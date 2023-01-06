@@ -82,6 +82,12 @@ export default [
     icon: <Users size={20} />,
     navLink: "/clients",
   },
+  // {
+  //   id: "bookingPages",
+  //   title: "Booking Pages",
+  //   icon: <Bookmark size={20} />,
+  //   navLink: "/booking-pages",
+  // },
   {
     id: "followups",
     title: "Follow-ups",
