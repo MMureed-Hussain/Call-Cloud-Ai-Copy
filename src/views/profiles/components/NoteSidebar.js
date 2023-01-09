@@ -10,99 +10,89 @@ import {
   Spinner,
   FormGroup,
 } from "reactstrap";
-// import { SketchPicker } from "react-color";
-
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createStatus,
-  updateStatus,
-  setErrors,
-} from "../../../redux/clientStatuses";
+import { useParams } from "react-router-dom";
+import { createNote, updateNote } from "../../../redux/profiles";
 
-export default ({ open, toggleSidebar, clientStatus }) => {
-  const [name, setName] = useState("");
-  // const [colorPiker, setColorPiker] = useState("#000000");
+export default ({ open, toggleSidebar, call }) => {
+  // ** States
+  const params = useParams();
+  const [notes, setNote] = useState("");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
-
   //store
   const dispatch = useDispatch();
-  const errors = useSelector((state) => state.clientStatuses.errors);
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
-
-  useEffect(() => {
-    if (clientStatus) {
-      setName(clientStatus.name);
-    }
-  }, [clientStatus]);
+  const errors = useSelector((state) => state.profiles.errors);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const formData = new FormData();
+    if (!call) {
+      formData.append("notes", notes);
+    }
     setFormSubmissionLoader(true);
-    // console.log("onSubmit", name, colorPiker);
-    dispatch(setErrors({}));
     dispatch(
-      clientStatus
-        ? updateStatus({
+      call
+        ? updateNote({
             formData: {
-              name,
+              notes,
             },
-            id: clientStatus.id,
+            id: call.id,
           })
-        : createStatus({
-            name,
-            workspace_id: currentWorkspace.id,
+        : createNote({
+            formData,
+            id: params.id,
           })
     ).then((res) => {
       setFormSubmissionLoader(false);
       if (res.payload.data) {
         toggleSidebar();
-        dispatch(setErrors({}));
       }
     });
   };
+  // ** Set call fields in case of edit mode
+  useEffect(() => {
+    if (call) {
+      setNote(call.notes);
+    }
+  }, [call]);
 
-  // const handleChangeComplete = (color) => {
-  //   setColorPiker(color.hex);
-  // };
+  const handleSidebarClosed = () => {
+    setNote("");
+  };
 
   return (
     <Sidebar
       size="lg"
       open={open}
-      title={clientStatus ? "Update Client Status" : "New Client Status"}
+      title={call ? "Update Note" : "New Note"}
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
+      onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label className="form-label" for="title">
-            Name<span className="text-danger">*</span>
+            Notes
           </Label>
           <Input
-            placeholder="Enter name here"
-            value={name}
+            type="textarea"
+            placeholder="Enter Note here"
+            value={notes}
             className={
-              errors.has("name") ? "is-invalid form-control" : "form-control"
+              errors.has("note") ? "is-invalid form-control" : "form-control"
             }
-            // style={{
-            //   color: colorPiker,
-            //   fontSize: colorPiker.value,
-            // }}
             onChange={(e) => {
               const value = e.target.value.replace(
                 /(^\w{1})|(\s+\w{1})/g,
                 (letter) => letter.toUpperCase()
               );
-              setName(value);
+              setNote(value);
             }}
           />
-          {/* <SketchPicker color={colorPiker} onChange={handleChangeComplete} /> */}
-          {errors.has("name") && (
-            <FormFeedback>{errors.get("name")}</FormFeedback>
+          {errors.has("note") && (
+            <FormFeedback>{errors.get("note")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary">

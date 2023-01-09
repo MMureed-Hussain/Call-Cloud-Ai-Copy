@@ -74,7 +74,7 @@ export default ({ open, toggleSidebar, profile }) => {
               name: profileName,
               phone: phone,
               pipeline: pipeline?.value,
-            lead_status: leadStatus?.value
+              lead_status: leadStatus?.value,
             },
             id: profile.id,
           })
@@ -83,7 +83,7 @@ export default ({ open, toggleSidebar, profile }) => {
             phone: phone,
             workspace_id: currentWorkspace.id,
             pipeline: pipeline?.value,
-          lead_status: leadStatus?.value
+            lead_status: leadStatus?.value,
           })
     ).then((res) => {
       if (res.payload.data) {
