@@ -735,7 +735,7 @@ export const getRecord = createAsyncThunk(
   async (id) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/record/${id}/`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/record/${id}`,
         
       );
       return {
