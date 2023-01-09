@@ -204,7 +204,7 @@ const QueueSidebar = ({
             placeholder="Enter Queue Name"
             invalid={queueError}
             value={queueName}
-            disabled={queue}
+            
             onChange={(e) => setQueueName(e.target.value)}
           />
 
