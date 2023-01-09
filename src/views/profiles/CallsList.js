@@ -165,7 +165,6 @@ const CallList = ({ profileId }) =>
             minWidth: "172px",
             cell: (row) =>
             {
-                console.log(row)
                 return <Select
                     value={row.call_status ? { value: row.call_status.id, label: row.call_status.name } : null}
                     theme={selectThemeColors}

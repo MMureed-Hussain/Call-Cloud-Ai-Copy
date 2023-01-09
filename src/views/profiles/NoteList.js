@@ -79,9 +79,9 @@ const NoteList = ({ profileId }) => {
       })
     ).then(({ payload }) => {
       if (payload.data !== null) {
-        console.log("===Note===1", payload.data.notes);
+        // console.log("===Note===1", payload.data.notes);
         setCalls(payload.data.notes);
-        console.log("===Note===2", calls);
+        // console.log("===Note===2", calls);
       }
     });
     setCurrentPage(options.page);

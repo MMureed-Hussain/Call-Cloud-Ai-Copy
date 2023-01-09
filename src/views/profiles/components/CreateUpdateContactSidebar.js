@@ -74,7 +74,7 @@ const CreateUpdateContactSidebar = forwardRef((props, ref) =>
 				setData(arg);
 				setOpen(true);
 
-				console.log(obj, arg);
+				// console.log(obj, arg);
 
 			} else {
 
