@@ -43,7 +43,6 @@ const TeamSidebar = ({
             console.log('users', item);
             let final = 'dummy user name';
             if (item.name) {
-              
               final = item.name;
             } else if (item.first_name && item.last_name) {
               final = `${item.first_name} ${item.last_name}`;
@@ -150,7 +149,6 @@ const TeamSidebar = ({
             placeholder="Enter Team Name"
             invalid={teamError}
             value={teamName}
-            disabled={team}
             onChange={(e) => setTeamName(e.target.value)}
           />
 

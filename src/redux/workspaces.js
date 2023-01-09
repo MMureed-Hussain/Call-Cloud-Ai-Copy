@@ -287,7 +287,7 @@ export const saveQueue = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/create/?workspace_id=${payload.id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/create/${payload.id}`,
         {
           data: {
             queue_name: payload.queue_name,
@@ -318,7 +318,7 @@ export const saveTeam = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/create/?workspace_id=${payload.id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/create/${payload.id}`,
         {
           data: {
             team_name: payload.team_name,
@@ -503,7 +503,7 @@ export const updateQueueInWorkspace = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/update/?workspace_id=${payload.workspace_id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/update/${payload.workspace_id}`,
         {
           data: {
             queue_name : payload.queue_name,
@@ -538,7 +538,7 @@ export const updateTeamInWorkspace = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/update/?workspace_id=${payload.workspace_id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/update/${payload.workspace_id}`,
         {
           team_name : payload.team_name,
           users: payload.teamUsers,
