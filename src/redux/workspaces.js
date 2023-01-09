@@ -260,7 +260,7 @@ export const inviteLeadlist = createAsyncThunk(
       _formData.append('leadlist_name', payload.lead);
       _formData.append('file_name', payload.csvFile);
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/import/?workspace_id=${payload.id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/import/${payload.id}`,
         _formData, {
           headers: {
             "Content-Type": "multipart/form-data"
