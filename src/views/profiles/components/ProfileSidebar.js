@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Input,
@@ -11,16 +11,12 @@ import {
 } from "reactstrap";
 import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createProfile,
-  setSelectedProfile,
-  updateProfile,
-} from "../../../redux/profiles";
+import { createProfile, setSelectedProfile, updateProfile } from "../../../redux/profiles";
 import { getPipelines, setErrors } from "../../../redux/pipelines";
-import "react-phone-input-2/lib/style.css";
+import 'react-phone-input-2/lib/style.css'
 import PhoneInput from "react-phone-input-2";
-import Select from "react-select";
-import { selectThemeColors } from "@utils";
+import Select from "react-select"
+import { selectThemeColors } from '@utils';
 import Sidebar from "@components/sidebar";
 import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
 
@@ -35,22 +31,16 @@ export default ({ open, toggleSidebar, profile }) => {
 
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
-  const pipelines = useSelector((state) =>
-    state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name }))
-  );
-  const leadStatuses = useSelector((state) =>
-    state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name }))
-  );
-  const clientStatuses = useSelector((state) =>
-    state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name }))
-  );
+  const pipelines = useSelector((state) => state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name })));
+  const leadStatuses = useSelector((state) => state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
+  const clientStatuses = useSelector((state) => state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
 
   useEffect(() => {
-    dispatch(setErrors({}));
+    dispatch(setErrors({}))
     dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
     dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
   }, [currentWorkspace]);
@@ -64,25 +54,16 @@ export default ({ open, toggleSidebar, profile }) => {
       setPhone(profile.phone);
       setProfileName(profile.name);
       if (profile.pipeline) {
-        setPipeline({
-          value: profile.pipeline.id,
-          label: profile.pipeline.name,
-        });
+        setPipeline({ value: profile.pipeline.id, label: profile.pipeline.name });
       }
       if (profile.lead_status) {
-        setLeadStatus({
-          value: profile.lead_status.id,
-          label: profile.lead_status.name,
-        });
+        setLeadStatus({ value: profile.lead_status.id, label: profile.lead_status.name });
       }
       if (profile.client_status) {
-        setClientStatus({
-          value: profile.client_status.id,
-          label: profile.client_status.name,
-        });
+        setClientStatus({ value: profile.client_status.id, label: profile.client_status.name });
       }
     }
-  }, [profile]);
+  }, [profile])
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -130,7 +111,9 @@ export default ({ open, toggleSidebar, profile }) => {
             placeholder="Enter profile name"
             value={profileName}
             className={
-              errors.has("name") ? "is-invalid form-control" : "form-control"
+              errors.has("name")
+                ? "is-invalid form-control"
+                : "form-control"
             }
             onChange={(e) => {
               const value = e.target.value.replace(
