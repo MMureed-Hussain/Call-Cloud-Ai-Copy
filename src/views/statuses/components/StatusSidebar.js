@@ -22,7 +22,7 @@ import {
 
 export default ({ open, toggleSidebar, clientStatus }) => {
   const [name, setName] = useState("");
-  const [colorPiker, setColorPiker] = useState("#000000");
+  const [colorPiker, setColorPiker] = useState("#9B9B9B");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   //store
@@ -41,13 +41,13 @@ export default ({ open, toggleSidebar, clientStatus }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSubmissionLoader(true);
-    console.log("onSubmit", name, colorPiker);
     dispatch(setErrors({}));
     dispatch(
       clientStatus
         ? updateStatus({
             formData: {
               name,
+              colorPiker,
             },
             id: clientStatus.id,
           })
@@ -65,7 +65,7 @@ export default ({ open, toggleSidebar, clientStatus }) => {
     });
   };
 
-  const handleChangeComplete = (color) => {
+  const handleChange = (color) => {
     setColorPiker(color.hex);
   };
 
@@ -91,7 +91,8 @@ export default ({ open, toggleSidebar, clientStatus }) => {
             }
             style={{
               color: colorPiker,
-              fontSize: colorPiker.value,
+              // fontSize: colorPiker.value,
+              marginBottom: "5%",
             }}
             onChange={(e) => {
               const value = e.target.value.replace(
@@ -101,7 +102,7 @@ export default ({ open, toggleSidebar, clientStatus }) => {
               setName(value);
             }}
           />
-          <SketchPicker color={colorPiker} onChange={handleChangeComplete} />
+          <SketchPicker color={colorPiker} onChange={handleChange} />
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
           )}
