@@ -148,12 +148,12 @@ export default ({
                 <ListGroupItem className="draggable" key={item.id}>
                   {/* {console.log("itmes", item, item.colorPiker)} */}
                   {item.is_default === 1 ? (
-                    <h5 className="mt-0" style={{ color: item.colorPiker }}>
+                    <h5 className="mt-0" style={{ color: item.colors }}>
                       {item.name}
                     </h5>
                   ) : (
                     <div className="d-flex justify-content-between">
-                      <h5 className="mt-0" style={{ color: item.colorPiker }}>
+                      <h5 className="mt-0" style={{ color: item.colors }}>
                         {item.name}
                       </h5>
                       {!item?.is_default && (

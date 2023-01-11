@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createNote, updateNote } from "../../../redux/profiles";
 
-export default ({ open, toggleSidebar, call }) => {
+export default ({ open, toggleSidebar, note }) => {
   // ** States
   const params = useParams();
   const [notes, setNote] = useState("");
@@ -27,17 +27,17 @@ export default ({ open, toggleSidebar, call }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData();
-    if (!call) {
+    if (!note) {
       formData.append("notes", notes);
     }
     setFormSubmissionLoader(true);
     dispatch(
-      call
+      note
         ? updateNote({
             formData: {
               notes,
             },
-            id: call.id,
+            id: note.id,
           })
         : createNote({
             formData,
@@ -50,12 +50,12 @@ export default ({ open, toggleSidebar, call }) => {
       }
     });
   };
-  // ** Set call fields in case of edit mode
+  // ** Set note fields in case of edit mode
   useEffect(() => {
-    if (call) {
-      setNote(call.notes);
+    if (note) {
+      setNote(note.notes);
     }
-  }, [call]);
+  }, [note]);
 
   const handleSidebarClosed = () => {
     setNote("");
@@ -65,7 +65,7 @@ export default ({ open, toggleSidebar, call }) => {
     <Sidebar
       size="lg"
       open={open}
-      title={call ? "Update Note" : "New Note"}
+      title={note ? "Update Note" : "New Note"}
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
