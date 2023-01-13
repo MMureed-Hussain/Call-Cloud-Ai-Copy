@@ -277,13 +277,7 @@ export const createNote = createAsyncThunk(
       dispatch(setErrors({}));
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/notes`,
-        formData,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "multipart/form-data", // multipart/form-data - as we need to upload with voice recording
-          },
-        }
+        formData
       );
       toast.success(response.data.message);
       dispatch(setReloadNoteTable(true));

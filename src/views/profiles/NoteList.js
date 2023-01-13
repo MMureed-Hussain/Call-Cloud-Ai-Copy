@@ -33,10 +33,9 @@ const NoteList = ({ profileId }) => {
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [calls, setCalls] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [pageCount, setPageCount] = useState(1);
-  const [selectedCall, setSelectedCall] = useState(null);
-
+  const [selectedNote, setSelectedNote] = useState(null);
   const [viewSidebarOpen, setViewSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -49,7 +48,7 @@ const NoteList = ({ profileId }) => {
 
   useEffect(() => {
     if (currentWorkspace) {
-      loadCalls({
+      loadNotes({
         page: 1,
       });
     }
@@ -58,13 +57,13 @@ const NoteList = ({ profileId }) => {
   useEffect(() => {
     if (reloadNoteTable) {
       dispatch(setReloadNoteTable(false));
-      loadCalls({
+      loadNotes({
         page: currentPage,
       });
     }
   }, [reloadNoteTable]);
 
-  const loadCalls = (options) => {
+  const loadNotes = (options) => {
     let queryParams = {
       records_per_page: rowsPerPage,
       page: currentPage,
@@ -79,9 +78,7 @@ const NoteList = ({ profileId }) => {
       })
     ).then(({ payload }) => {
       if (payload.data !== null) {
-        console.log("===Note===1", payload.data.notes);
-        setCalls(payload.data.notes);
-        console.log("===Note===2", calls);
+        setNotes(payload.data.notes);
       }
     });
     setCurrentPage(options.page);
@@ -128,7 +125,7 @@ const NoteList = ({ profileId }) => {
               <DropdownMenu container={"body"} end>
                 <DropdownItem
                   onClick={() => {
-                    setSelectedCall(row);
+                    setSelectedNote(row);
                     toggleSidebar();
                   }}
                 >
@@ -150,7 +147,7 @@ const NoteList = ({ profileId }) => {
   const handleSort = (column, sortDirection) => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
-    loadCalls({
+    loadNotes({
       page: 1,
       sort_by: column.sortField,
       sort: sortDirection,
@@ -161,7 +158,7 @@ const NoteList = ({ profileId }) => {
   const handlePerPage = (e) => {
     const value = parseInt(e.currentTarget.value);
     setRowsPerPage(value);
-    loadCalls({
+    loadNotes({
       page: 1,
       records_per_page: value,
     });
@@ -190,7 +187,7 @@ const NoteList = ({ profileId }) => {
         pageCount={pageCount}
         activeClassName="active"
         forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={({ selected }) => loadCalls({ page: selected })}
+        onPageChange={({ selected }) => loadNotes({ page: selected })}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -204,7 +201,7 @@ const NoteList = ({ profileId }) => {
     );
   };
 
-  if (!calls) {
+  if (!notes) {
     return (
       <div className="vh-100">
         <Skeleton height={"15%"} />
@@ -225,7 +222,7 @@ const NoteList = ({ profileId }) => {
           handleSearch={handleFilter}
           handlePerPage={handlePerPage}
           toggleSidebar={() => {
-            setSelectedCall(null);
+            setSelectedNote(null);
             toggleSidebar();
           }}
         />
@@ -244,14 +241,14 @@ const NoteList = ({ profileId }) => {
             sortIcon={<ChevronDown />}
             className="react-dataTable"
             paginationComponent={CustomPagination}
-            data={calls}
+            data={notes}
           />
         </div>
       </Card>
       {sidebarOpen && (
         <NoteSidebar
           open={sidebarOpen}
-          call={selectedCall}
+          note={selectedNote}
           toggleSidebar={toggleSidebar}
         />
       )}

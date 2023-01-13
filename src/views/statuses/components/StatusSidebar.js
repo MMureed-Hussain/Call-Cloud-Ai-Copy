@@ -10,7 +10,8 @@ import {
   Spinner,
   FormGroup,
 } from "reactstrap";
-// import { SketchPicker } from "react-color";
+import { SketchPicker } from "react-color";
+import { MoreVertical } from "react-feather";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +23,8 @@ import {
 
 export default ({ open, toggleSidebar, clientStatus }) => {
   const [name, setName] = useState("");
-  // const [colorPiker, setColorPiker] = useState("#000000");
+  const [colors, setColors] = useState("#9B9B9B");
+  const [showColor, setShowColor] = useState(false);
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   //store
@@ -41,18 +43,19 @@ export default ({ open, toggleSidebar, clientStatus }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSubmissionLoader(true);
-    // console.log("onSubmit", name, colorPiker);
     dispatch(setErrors({}));
     dispatch(
       clientStatus
         ? updateStatus({
             formData: {
               name,
+              colors,
             },
             id: clientStatus.id,
           })
         : createStatus({
             name,
+            colors,
             workspace_id: currentWorkspace.id,
           })
     ).then((res) => {
@@ -64,9 +67,9 @@ export default ({ open, toggleSidebar, clientStatus }) => {
     });
   };
 
-  // const handleChangeComplete = (color) => {
-  //   setColorPiker(color.hex);
-  // };
+  const handleChange = (color) => {
+    setColors(color.hex);
+  };
 
   return (
     <Sidebar
@@ -82,25 +85,44 @@ export default ({ open, toggleSidebar, clientStatus }) => {
           <Label className="form-label" for="title">
             Name<span className="text-danger">*</span>
           </Label>
-          <Input
-            placeholder="Enter name here"
-            value={name}
-            className={
-              errors.has("name") ? "is-invalid form-control" : "form-control"
-            }
-            // style={{
-            //   color: colorPiker,
-            //   fontSize: colorPiker.value,
-            // }}
-            onChange={(e) => {
-              const value = e.target.value.replace(
-                /(^\w{1})|(\s+\w{1})/g,
-                (letter) => letter.toUpperCase()
-              );
-              setName(value);
-            }}
-          />
-          {/* <SketchPicker color={colorPiker} onChange={handleChangeComplete} /> */}
+          <div style={{ display: "ruby-base" }}>
+            <div style={{ width: "90%" }}>
+              <Input
+                placeholder="Enter name here"
+                value={name}
+                className={
+                  errors.has("name")
+                    ? "is-invalid form-control"
+                    : "form-control"
+                }
+                style={{
+                  color: colors,
+                  // fontSize: colors.value,
+                  marginBottom: "5%",
+                }}
+                onChange={(e) => {
+                  const value = e.target.value.replace(
+                    /(^\w{1})|(\s+\w{1})/g,
+                    (letter) => letter.toUpperCase()
+                  );
+                  setName(value);
+                }}
+              />
+            </div>
+            <div style={{ width: "10%" }}>
+              <MoreVertical
+                size={25}
+                onClick={() => setShowColor(!showColor)}
+              />
+            </div>
+          </div>
+
+          {/* {name ? <SketchPicker color={colors} onChange={handleChange} /> : ""} */}
+          {showColor ? (
+            <SketchPicker color={colors} onChange={handleChange} />
+          ) : (
+            ""
+          )}
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
           )}
