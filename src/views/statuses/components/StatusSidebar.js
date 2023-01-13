@@ -15,47 +15,50 @@ import { MoreVertical } from "react-feather";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import {
+
+export default ({ 
+  open, 
+  toggleSidebar, 
+  status, 
+  moduleName,
   createStatus,
   updateStatus,
-  setErrors,
-} from "../../../redux/clientStatuses";
-
-export default ({ open, toggleSidebar, clientStatus }) => {
+  setErrors
+}) => {
   const [name, setName] = useState("");
-  const [colors, setColors] = useState("#9B9B9B");
+  const [color, setColor] = useState("#9B9B9B");
   const [showColor, setShowColor] = useState(false);
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   //store
   const dispatch = useDispatch();
-  const errors = useSelector((state) => state.clientStatuses.errors);
+  const errors = useSelector((state) => state[moduleName].errors);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
 
   useEffect(() => {
-    if (clientStatus) {
-      setName(clientStatus.name);
+    if (status) {
+      setName(status.name);
     }
-  }, [clientStatus]);
+  }, [status]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSubmissionLoader(true);
     dispatch(setErrors({}));
     dispatch(
-      clientStatus
+      status
         ? updateStatus({
             formData: {
               name,
-              colors,
+              color,
             },
-            id: clientStatus.id,
+            id: status.id,
           })
         : createStatus({
             name,
-            colors,
+            color,
             workspace_id: currentWorkspace.id,
           })
     ).then((res) => {
@@ -67,15 +70,11 @@ export default ({ open, toggleSidebar, clientStatus }) => {
     });
   };
 
-  const handleChange = (color) => {
-    setColors(color.hex);
-  };
-
   return (
     <Sidebar
       size="lg"
       open={open}
-      title={clientStatus ? "Update Client Status" : "New Client Status"}
+      title={status ? "Update Status" : "New Status"}
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
@@ -96,8 +95,8 @@ export default ({ open, toggleSidebar, clientStatus }) => {
                     : "form-control"
                 }
                 style={{
-                  color: colors,
-                  // fontSize: colors.value,
+                  color: color,
+                  // fontSize: color.value,
                   marginBottom: "5%",
                 }}
                 onChange={(e) => {
@@ -116,15 +115,9 @@ export default ({ open, toggleSidebar, clientStatus }) => {
               />
             </div>
           </div>
-
-          {/* {name ? <SketchPicker color={colors} onChange={handleChange} /> : ""} */}
-          {showColor ? (
-            <SketchPicker color={colors} onChange={handleChange} />
-          ) : (
-            ""
-          )}
-          {errors.has("name") && (
-            <FormFeedback>{errors.get("name")}</FormFeedback>
+          {showColor && <SketchPicker color={color} onChange={(color) => setColor(color.hex)} />}
+          {errors.has("color") && (
+            <FormFeedback>{errors.get("color")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary">

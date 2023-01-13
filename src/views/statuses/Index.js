@@ -32,6 +32,9 @@ export default ({
   deleteStatus,
   updateStatusesOrder,
   cloneStatuses,
+  createStatus,
+  updateStatus,
+  setErrors
 }) => {
   // ** State
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,6 +45,13 @@ export default ({
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
+
+  const actions = {
+    moduleName,
+    createStatus,
+    updateStatus,
+    setErrors
+  }
 
   const dispatch = useDispatch();
 
@@ -146,7 +156,6 @@ export default ({
             {statuses.map((item) => {
               return (
                 <ListGroupItem className="draggable" key={item.id}>
-                  {/* {console.log("itmes", item, item.colorPiker)} */}
                   {item.is_default === 1 ? (
                     <h5 className="mt-0" style={{ color: item.colors }}>
                       {item.name}
@@ -196,7 +205,8 @@ export default ({
         <StatusSidebar
           open={sidebarOpen}
           toggleSidebar={toggleSidebar}
-          clientStatus={selectedStatus}
+          status={selectedStatus}
+          {...actions}
         />
       )}
       {cloneSidebarOpen && (
