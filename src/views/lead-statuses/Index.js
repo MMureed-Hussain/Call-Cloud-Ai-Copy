@@ -4,6 +4,9 @@ import {
   deleteStatus,
   updateStatusesOrder,
   cloneStatuses,
+  createStatus,
+  updateStatus,
+  setErrors
 } from "../../redux/leadStatuses";
 import Statuses from "../statuses/Index"
 
@@ -13,7 +16,10 @@ const props = {
   setStatuses,
   deleteStatus,
   updateStatusesOrder,
-  cloneStatuses
+  cloneStatuses,
+  createStatus,
+  updateStatus,
+  setErrors
 }
 export default () => {
   return (

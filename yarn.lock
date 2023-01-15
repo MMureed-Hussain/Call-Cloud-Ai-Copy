@@ -1489,11 +1489,6 @@
   "resolved" "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   "version" "1.2.1"
 
-"@icons/material@^0.2.4":
-  "integrity" "sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw=="
-  "resolved" "https://registry.npmjs.org/@icons/material/-/material-0.2.4.tgz"
-  "version" "0.2.4"
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   "integrity" "sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ=="
   "resolved" "https://registry.npmjs.org/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz"
@@ -3105,7 +3100,19 @@
     "@babel/runtime" "^7.20.6"
     "tslib" "^2.4.1"
 
-"autoprefixer@10.4.5":
+"autoprefixer@^10.4.12":
+  "integrity" "sha512-Fvd8yCoA7lNX/OUllvS+aS1I7WRBclGXsepbvT8ZaPgrH24rgXpZzF0/6Hh3ZEkwg+0AES/Osd196VZmYoEFtw=="
+  "resolved" "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.5.tgz"
+  "version" "10.4.5"
+  dependencies:
+    "browserslist" "^4.20.2"
+    "caniuse-lite" "^1.0.30001332"
+    "fraction.js" "^4.2.0"
+    "normalize-range" "^0.1.2"
+    "picocolors" "^1.0.0"
+    "postcss-value-parser" "^4.2.0"
+
+"autoprefixer@^10.4.13":
   "integrity" "sha512-Fvd8yCoA7lNX/OUllvS+aS1I7WRBclGXsepbvT8ZaPgrH24rgXpZzF0/6Hh3ZEkwg+0AES/Osd196VZmYoEFtw=="
   "resolved" "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.5.tgz"
   "version" "10.4.5"
@@ -7128,7 +7135,7 @@
   dependencies:
     "p-locate" "^5.0.0"
 
-"lodash-es@^4.17.15", "lodash-es@^4.17.21":
+"lodash-es@^4.17.21":
   "integrity" "sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw=="
   "resolved" "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.21.tgz"
   "version" "4.17.21"
@@ -7203,7 +7210,7 @@
   "resolved" "https://registry.npmjs.org/lodash.uniq/-/lodash.uniq-4.5.0.tgz"
   "version" "4.5.0"
 
-"lodash@^4.0.1", "lodash@^4.16.4", "lodash@^4.17.11", "lodash@^4.17.15", "lodash@^4.17.20", "lodash@^4.17.21", "lodash@^4.7.0", "lodash@~4.17.4":
+"lodash@^4.16.4", "lodash@^4.17.11", "lodash@^4.17.20", "lodash@^4.17.21", "lodash@^4.7.0", "lodash@~4.17.4":
   "integrity" "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
   "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   "version" "4.17.21"
@@ -7254,11 +7261,6 @@
   "version" "1.0.12"
   dependencies:
     "tmpl" "1.0.5"
-
-"material-colors@^1.2.1":
-  "integrity" "sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg=="
-  "resolved" "https://registry.npmjs.org/material-colors/-/material-colors-1.2.6.tgz"
-  "version" "1.2.6"
 
 "math-expression-evaluator@^1.2.14":
   "integrity" "sha512-4vRUvPyxdO8cWULGTh9dZWL2tZK6LDBvj+OGHBER7poH9Qdt7kXEoj20wiz4lQUbUXQZFjPbe5mVDo9nutizCw=="
@@ -7982,7 +7984,7 @@
   dependencies:
     "postcss-value-parser" "^4.2.0"
 
-"postcss-custom-properties@10.0.0":
+"postcss-custom-properties@^12.1.10":
   "integrity" "sha512-55BPj5FudpCiPZzBaO+MOeqmwMDa+nV9/0QBJBfhZjYg6D9hE+rW9lpMBLTJoF4OTXnS5Po4yM1nMlgkPbCxFg=="
   "resolved" "https://registry.npmjs.org/postcss-custom-properties/-/postcss-custom-properties-10.0.0.tgz"
   "version" "10.0.0"
@@ -8734,19 +8736,6 @@
   "resolved" "https://registry.npmjs.org/react-chartjs-2/-/react-chartjs-2-4.3.1.tgz"
   "version" "4.3.1"
 
-"react-color@^2.19.3":
-  "integrity" "sha512-LEeGE/ZzNLIsFWa1TMe8y5VYqr7bibneWmvJwm1pCn/eNmrabWDh659JSPn9BuaMpEfU83WTOJfnCcjDZwNQTA=="
-  "resolved" "https://registry.npmjs.org/react-color/-/react-color-2.19.3.tgz"
-  "version" "2.19.3"
-  dependencies:
-    "@icons/material" "^0.2.4"
-    "lodash" "^4.17.15"
-    "lodash-es" "^4.17.15"
-    "material-colors" "^1.2.1"
-    "prop-types" "^15.5.10"
-    "reactcss" "^1.2.0"
-    "tinycolor2" "^1.4.1"
-
 "react-contexify@5.0.0":
   "integrity" "sha512-2FIp7lxJ6dtfGr8EZ4uVV5p5TQjd0n2h/JU7PrejNIMiCeZWvSVPFh4lj1ZvjXosglBvP7q5JQQ8yUCdSaMSaw=="
   "resolved" "https://registry.npmjs.org/react-contexify/-/react-contexify-5.0.0.tgz"
@@ -8854,7 +8843,7 @@
     "file-selector" "^0.6.0"
     "prop-types" "^15.8.1"
 
-"react-error-overlay@6.0.9":
+"react-error-overlay@^6.0.11":
   "integrity" "sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew=="
   "resolved" "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.0.9.tgz"
   "version" "6.0.9"
@@ -9226,13 +9215,6 @@
     "loose-envify" "^1.1.0"
     "object-assign" "^4.1.1"
     "prop-types" "^15.6.2"
-
-"reactcss@^1.2.0":
-  "integrity" "sha512-KiwVUcFu1RErkI97ywr8nvx8dNOpT03rbnma0SSalTYjkrPYaEajR4a/MRt6DZ46K6arDRbWMNHF+xH7G7n/8A=="
-  "resolved" "https://registry.npmjs.org/reactcss/-/reactcss-1.2.3.tgz"
-  "version" "1.2.3"
-  dependencies:
-    "lodash" "^4.0.1"
 
 "reactstrap@9.0.1":
   "integrity" "sha512-89VOv7SRlAlpS7RwXhzOQkSWkuhBR8LBsPGfNHifNL3WhtNP9y1sBdTcTYyH1ee2QtI8zRdwD0T5I/blHiwemg=="
@@ -10523,11 +10505,6 @@
   "integrity" "sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA=="
   "resolved" "https://registry.npmjs.org/tiny-warning/-/tiny-warning-1.0.3.tgz"
   "version" "1.0.3"
-
-"tinycolor2@^1.4.1":
-  "integrity" "sha512-h80m9GPFGbcLzZByXlNSEhp1gf8Dy+VX/2JCGUZsWLo7lV1mnE/XlxGYgRBoMLJh1lIDXP0EMC4RPTjlRaV+Bg=="
-  "resolved" "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.5.2.tgz"
-  "version" "1.5.2"
 
 "tmpl@1.0.5":
   "integrity" "sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw=="

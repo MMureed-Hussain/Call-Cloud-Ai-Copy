@@ -157,12 +157,12 @@ export default ({
               return (
                 <ListGroupItem className="draggable" key={item.id}>
                   {item.is_default === 1 ? (
-                    <h5 className="mt-0" style={{ color: item.colors }}>
+                    <h5 className="mt-0" style={{ color: item.color }}>
                       {item.name}
                     </h5>
                   ) : (
                     <div className="d-flex justify-content-between">
-                      <h5 className="mt-0" style={{ color: item.colors }}>
+                      <h5 className="mt-0" style={{ color: item.color }}>
                         {item.name}
                       </h5>
                       {!item?.is_default && (

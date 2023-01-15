@@ -272,7 +272,7 @@ export const deleteCallFollowUp = createAsyncThunk(
 
 export const createNote = createAsyncThunk(
   "profiles/createNote",
-  async ({ formData, id }, { dispatch }) => {
+  async (formData, { dispatch }) => {
     try {
       dispatch(setErrors({}));
       const response = await axios.post(
@@ -347,7 +347,7 @@ export const deleteNote = createAsyncThunk(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profile-notes/${id}`
       );
       toast.success(response.data.message);
-      dispatch(setReloadTable(true));
+      dispatch(setReloadNoteTable(true));
       return {
         data: true,
       };

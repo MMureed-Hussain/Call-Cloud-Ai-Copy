@@ -54,7 +54,7 @@ const CreateBookingPage = lazy(() => import("../../views/booking-pages/CreateBoo
 const Plans = lazy(() => import("../../views/plans"));
 // const Clients = lazy(() => import("../../views/clients"));
 const Followups = lazy(() => import("../../views/followups"));
-const CallProfiles = lazy(() => import("../../views/profiles/Index"));
+const Profiles = lazy(() => import("../../views/profiles/Index"));
 
 const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
@@ -163,7 +163,7 @@ const Routes = [
   },
   {
     path: "/leads",
-    element: <CallProfiles />,
+    element: <Profiles />,
     meta: {
       isPrivate: true,
     },
@@ -177,7 +177,7 @@ const Routes = [
   },
   {
     path: "/clients",
-    element: <CallProfiles />,
+    element: <Profiles />,
     meta: {
       isPrivate: true,
     },
@@ -218,13 +218,6 @@ const Routes = [
     },
   },
   {
-    path: "/profiles",
-    element: <CallProfiles />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
     path: "/profiles/create",
     element: <UpdateOrCreateCallProfile />,
     meta: {
@@ -240,7 +233,7 @@ const Routes = [
   },
   {
     path: "/profiles/:id/edit",
-    element: <UpdateOrCreateCallProfile/>,
+    element: <UpdateOrCreateCallProfile />,
     meta: {
       isPrivate: true,
     },
@@ -317,8 +310,7 @@ const Routes = [
   },
 ];
 
-const getRouteMeta = (route) =>
-{
+const getRouteMeta = (route) => {
   if (isObjEmpty(route.element.props)) {
     if (route.meta) {
       return { routeMeta: route.meta };
@@ -329,13 +321,11 @@ const getRouteMeta = (route) =>
 };
 
 // ** Return Filtered Array of Routes & Paths
-const MergeLayoutRoutes = (layout, defaultLayout) =>
-{
+const MergeLayoutRoutes = (layout, defaultLayout) => {
   const LayoutRoutes = [];
 
   if (Routes) {
-    Routes.filter((route) =>
-    {
+    Routes.filter((route) => {
       let isBlank = false;
       // ** Checks if Route layout or Default layout matches current layout
       if (
@@ -372,15 +362,13 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
   return LayoutRoutes;
 };
 
-const getRoutes = (layout) =>
-{
+const getRoutes = (layout) => {
   const defaultLayout = layout || "vertical";
   const layouts = ["vertical", "horizontal", "blank"];
 
   const AllRoutes = [];
 
-  layouts.forEach((layoutItem) =>
-  {
+  layouts.forEach((layoutItem) => {
     const LayoutRoutes = MergeLayoutRoutes(layoutItem, defaultLayout);
 
     AllRoutes.push({

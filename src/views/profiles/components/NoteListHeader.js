@@ -1,9 +1,4 @@
-import { useMemo } from "react";
-import { Input, Row, Col, Button, Badge } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { setStatusFilterValue } from "../../../redux/profiles";
-import Select from "react-select";
-import { selectThemeColors } from "@utils";
+import { Input, Row, Col, Button } from "reactstrap";
 
 export default ({
   handlePerPage,
@@ -12,27 +7,6 @@ export default ({
   searchTerm,
   toggleSidebar,
 }) => {
-  const statuses = useSelector((state) => state.callStatuses.statuses);
-  const statusFilterValue = useSelector(
-    (state) => state.profiles.statusFilterValue
-  );
-
-  const statusOptions = useMemo(() => {
-    return statuses.map((p) => ({
-      value: p.id,
-      label: p.name,
-      count: p.calls_count,
-    }));
-  }, [statuses]);
-
-  const formatOptionLabel = ({ label, count }) => (
-    <div className="d-flex justify-content-between">
-      <div>{label}</div>
-      <Badge color="light-primary">{count}</Badge>
-    </div>
-  );
-
-  const dispatch = useDispatch();
 
   return (
     <div className="w-100 me-1 ms-50 mb-75">
@@ -43,26 +17,11 @@ export default ({
         >
           <div className="me-1 w-100 mt-xl-1 mt-l-1 mt-sm-0 mt-md-1 mt-1">
             <Input
-              className="dataTable-filter w-90"
+              className="dataTable-filter w-50"
               type="text"
               placeholder="Type to find"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
-            />
-          </div>
-          <div className="d-flex align-items-center w-100 me-1 mt-xl-1 mt-l-1 mt-sm-1 mt-md-1 mt-1">
-            <label className="me-1">Statuses: </label>
-            <Select
-              className="react-select w-100"
-              type="select"
-              value={statusFilterValue}
-              theme={selectThemeColors}
-              classNamePrefix="select"
-              formatOptionLabel={formatOptionLabel}
-              placeholder="Select"
-              options={[{ label: "None", value: null }, ...statusOptions]}
-              onChange={(value) => dispatch(setStatusFilterValue(value))}
-              menuPortalTarget={document.body}
             />
           </div>
         </Col>

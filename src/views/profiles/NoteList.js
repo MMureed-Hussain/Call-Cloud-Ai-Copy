@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -24,6 +24,9 @@ import {
   setReloadNoteTable,
   deleteNote,
 } from "../../redux/profiles";
+import UserInfo from "./components/UserInfo";
+import { debounce } from "lodash";
+import usePrevious from "../../utility/hooks/usePrevious";
 
 const NoteList = ({ profileId }) => {
   // ** States
@@ -71,14 +74,18 @@ const NoteList = ({ profileId }) => {
       sort,
       ...options,
     };
+    if(searchTerm){
+      queryParams.search = searchTerm
+    }
     dispatch(
       getNotesByProfileId({
         id: profileId,
         params: queryParams,
       })
     ).then(({ payload }) => {
-      if (payload.data !== null) {
-        setNotes(payload.data.notes);
+      if (payload.data?.data) {
+        setNotes(payload.data.data);
+        setPageCount(payload.data.last_page)
       }
     });
     setCurrentPage(options.page);
@@ -100,15 +107,28 @@ const NoteList = ({ profileId }) => {
       ),
     },
     {
-      name: "Notes",
+      name: "Note",
       sortable: false,
       minWidth: "350px",
       cell: (row) => (
         <div className="d-flex justify-content-left align-items-center">
           <div className="d-flex flex-column">
-            <span className="fw-bolder">{row.notes}</span>
+            <span className="fw-bolder">{row.note}</span>
           </div>
         </div>
+      ),
+    },
+    {
+      name: "Created By",
+      sortable: true,
+      sortField: "created_by",
+      minWidth: "250px",
+      selector: (row) => row.created_by,
+      cell: (row) => (
+        <UserInfo
+          name={`${row.created_by.first_name} ${row.created_by.last_name}`}
+          email={row.created_by.email}
+        />
       ),
     },
     {
@@ -163,12 +183,32 @@ const NoteList = ({ profileId }) => {
       records_per_page: value,
     });
   };
-
   // ** Function in get data on search query change
   const handleFilter = (val) => {
     setSearchTerm(val);
-    //todo add
   };
+
+  const debounceLoadData = useCallback(debounce(loadNotes, 1000), []);
+  useEffect(() => {
+    if (searchTerm) {
+      debounceLoadData({
+        page: 1,
+        search: searchTerm
+      });
+    }
+  }, [searchTerm]);
+
+  usePrevious(
+    (prevSearchTerm) => {
+      //change when search term is remove
+      if (!searchTerm && prevSearchTerm) {
+        loadNotes({
+          page: 1,
+        });
+      }
+    },
+    [searchTerm]
+  );
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -248,7 +288,7 @@ const NoteList = ({ profileId }) => {
       {sidebarOpen && (
         <NoteSidebar
           open={sidebarOpen}
-          note={selectedNote}
+          callNote={selectedNote}
           toggleSidebar={toggleSidebar}
         />
       )}

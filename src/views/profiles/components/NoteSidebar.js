@@ -15,10 +15,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createNote, updateNote } from "../../../redux/profiles";
 
-export default ({ open, toggleSidebar, note }) => {
+export default ({ open, toggleSidebar, callNote }) => {
   // ** States
   const params = useParams();
-  const [notes, setNote] = useState("");
+  const [note, setNote] = useState("");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
   //store
   const dispatch = useDispatch();
@@ -26,23 +26,19 @@ export default ({ open, toggleSidebar, note }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    if (!note) {
-      formData.append("notes", notes);
-    }
     setFormSubmissionLoader(true);
     dispatch(
-      note
+      callNote
         ? updateNote({
-            formData: {
-              notes,
-            },
-            id: note.id,
-          })
+          formData: {
+            note,
+          },
+          id: callNote.id,
+        })
         : createNote({
-            formData,
-            id: params.id,
-          })
+          note,
+          profile_id: params.id
+        })
     ).then((res) => {
       setFormSubmissionLoader(false);
       if (res.payload.data) {
@@ -52,10 +48,10 @@ export default ({ open, toggleSidebar, note }) => {
   };
   // ** Set note fields in case of edit mode
   useEffect(() => {
-    if (note) {
-      setNote(note.notes);
+    if (callNote) {
+      setNote(callNote.note);
     }
-  }, [note]);
+  }, [callNote]);
 
   const handleSidebarClosed = () => {
     setNote("");
@@ -74,12 +70,12 @@ export default ({ open, toggleSidebar, note }) => {
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label className="form-label" for="title">
-            Notes
+            Note
           </Label>
           <Input
             type="textarea"
             placeholder="Enter Note here"
-            value={notes}
+            value={note}
             className={
               errors.has("note") ? "is-invalid form-control" : "form-control"
             }
