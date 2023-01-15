@@ -29,7 +29,8 @@ export default function (moduleName, pathName) {
       setUpdatedStatus: (state, { payload }) => {
         let statuses = [...state.statuses];
         let index = statuses.findIndex((p) => p.id == payload.id);
-        statuses[index].name = payload.name;
+        console.log("updated",payload)
+        statuses[index] = { ...statuses[index], name: payload.name, color: payload.color }
         state.statuses = statuses;
       },
       deleteResource: (state, { payload }) => {
@@ -87,7 +88,7 @@ export default function (moduleName, pathName) {
       try {
         const response = await axios.put(`${baseURL}/${id}`, formData);
         toast.success(response.data.message);
-        dispatch(setUpdatedStatus({ id, name: formData.name }));
+        dispatch(setUpdatedStatus({ id, name: formData.name, color: formData.color }));
         return {
           data: true,
         };

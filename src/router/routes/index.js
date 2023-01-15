@@ -56,7 +56,6 @@ const Plans = lazy(() => import("../../views/plans"));
 const Followups = lazy(() => import("../../views/followups"));
 const Profiles = lazy(() => import("../../views/profiles/Index"));
 
-const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
 const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
@@ -213,27 +212,6 @@ const Routes = [
   {
     path: "/client-statuses",
     element: <ClientStatuses />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles/create",
-    element: <UpdateOrCreateCallProfile />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles/:id",
-    element: <CallProfileView />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles/:id/edit",
-    element: <UpdateOrCreateCallProfile />,
     meta: {
       isPrivate: true,
     },
