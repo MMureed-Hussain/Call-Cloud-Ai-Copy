@@ -93,11 +93,5 @@ export default [
     title: "Follow-ups",
     icon: <Calendar size={20} />,
     navLink: "/followups",
-  },
-  {
-    id: "callProfiles",
-    title: "Call Profiles",
-    icon: <Phone size={20} />,
-    navLink: "/profiles",
   }
 ];
