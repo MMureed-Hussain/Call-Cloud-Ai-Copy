@@ -13,6 +13,7 @@ import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
 import { createProfile, setSelectedProfile, updateProfile } from "../../../redux/profiles";
 import { getPipelines, setErrors } from "../../../redux/pipelines";
+import { getUsers } from "../../../redux/workspaces";
 import 'react-phone-input-2/lib/style.css'
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select"
@@ -26,6 +27,7 @@ export default ({ open, toggleSidebar, profile }) => {
   const [pipeline, setPipeline] = useState(null);
   const [leadStatus, setLeadStatus] = useState(null);
   const [clientStatus, setClientStatus] = useState(null);
+  const [leadUsers, setLeadUsers] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -34,6 +36,7 @@ export default ({ open, toggleSidebar, profile }) => {
   const pipelines = useSelector((state) => state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name })));
   const leadStatuses = useSelector((state) => state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
   const clientStatuses = useSelector((state) => state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
+  const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
@@ -43,6 +46,7 @@ export default ({ open, toggleSidebar, profile }) => {
     dispatch(setErrors({}))
     dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
     dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
+    dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
   }, [currentWorkspace]);
 
   useEffect(() => {
@@ -50,6 +54,7 @@ export default ({ open, toggleSidebar, profile }) => {
       setPipeline(pipelines[0]);
       setLeadStatus(leadStatuses[0]);
       setClientStatus(clientStatuses[0]);
+      setLeadUsers(null);
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
@@ -61,6 +66,9 @@ export default ({ open, toggleSidebar, profile }) => {
       }
       if (profile.client_status) {
         setClientStatus({ value: profile.client_status.id, label: profile.client_status.name });
+      }
+      if (profile.users) {
+        setLeadUsers(profile.users.map((item) => ({ value: item.enc_id,  label:item.name})))
       }
     }
   }, [profile])
@@ -75,6 +83,7 @@ export default ({ open, toggleSidebar, profile }) => {
               phone: phone,
               pipeline: pipeline?.value,
               lead_status: leadStatus?.value,
+              users: leadUsers ? leadUsers.map(u => u.value): null 
             },
             id: profile.id,
           })
@@ -84,6 +93,7 @@ export default ({ open, toggleSidebar, profile }) => {
             workspace_id: currentWorkspace.id,
             pipeline: pipeline?.value,
             lead_status: leadStatus?.value,
+            users: leadUsers ? leadUsers.map(u => u.value): null
           })
     ).then((res) => {
       if (res.payload.data) {
@@ -188,6 +198,30 @@ export default ({ open, toggleSidebar, profile }) => {
             onChange={
               profile?.type === "client" ? setClientStatus : setLeadStatus
             }
+          />
+          {errors.has("lead_status") && (
+            <FormFeedback>{errors.get("lead_status")}</FormFeedback>
+          )}
+        </FormGroup>
+        <FormGroup>
+          <Label className="form-label">
+            Users<span className="text-danger">*</span>
+          </Label>
+          <Select
+            theme={selectThemeColors}
+            isMulti
+            value={leadUsers}
+            classNamePrefix="select"
+            className={
+              errors.has("lead_status")
+                ? "is-invalid react-select"
+                : "react-select"
+            }
+            placeholder="Select User"
+            options={workspaceUsers}
+            onChange={(e) => {
+              setLeadUsers(e.length > 0 ? e : null);
+            }}
           />
           {errors.has("lead_status") && (
             <FormFeedback>{errors.get("lead_status")}</FormFeedback>
