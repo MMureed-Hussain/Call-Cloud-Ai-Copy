@@ -10,51 +10,56 @@ import {
   Spinner,
   FormGroup,
 } from "reactstrap";
-// import { SketchPicker } from "react-color";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import {
+import ColorPicker from "./ColorPicker";
+
+export default ({
+  open,
+  toggleSidebar,
+  status,
+  moduleName,
   createStatus,
   updateStatus,
-  setErrors,
-} from "../../../redux/clientStatuses";
-
-export default ({ open, toggleSidebar, clientStatus }) => {
+  setErrors
+}) => {
   const [name, setName] = useState("");
-  // const [colorPiker, setColorPiker] = useState("#000000");
+  const [color, setColor] = useState("#9B9B9B");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
   //store
   const dispatch = useDispatch();
-  const errors = useSelector((state) => state.clientStatuses.errors);
+  const errors = useSelector((state) => state[moduleName].errors);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
 
   useEffect(() => {
-    if (clientStatus) {
-      setName(clientStatus.name);
+    if (status) {
+      setName(status.name);
+      setColor(status.color);
     }
-  }, [clientStatus]);
+  }, [status]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSubmissionLoader(true);
-    // console.log("onSubmit", name, colorPiker);
     dispatch(setErrors({}));
     dispatch(
-      clientStatus
+      status
         ? updateStatus({
-            formData: {
-              name,
-            },
-            id: clientStatus.id,
-          })
-        : createStatus({
+          formData: {
             name,
-            workspace_id: currentWorkspace.id,
-          })
+            color,
+          },
+          id: status.id,
+        })
+        : createStatus({
+          name,
+          color,
+          workspace_id: currentWorkspace.id,
+        })
     ).then((res) => {
       setFormSubmissionLoader(false);
       if (res.payload.data) {
@@ -64,15 +69,11 @@ export default ({ open, toggleSidebar, clientStatus }) => {
     });
   };
 
-  // const handleChangeComplete = (color) => {
-  //   setColorPiker(color.hex);
-  // };
-
   return (
     <Sidebar
       size="lg"
       open={open}
-      title={clientStatus ? "Update Client Status" : "New Client Status"}
+      title={status ? "Update Status" : "New Status"}
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
@@ -86,12 +87,10 @@ export default ({ open, toggleSidebar, clientStatus }) => {
             placeholder="Enter name here"
             value={name}
             className={
-              errors.has("name") ? "is-invalid form-control" : "form-control"
+              errors.has("name")
+                ? "is-invalid form-control"
+                : "form-control"
             }
-            // style={{
-            //   color: colorPiker,
-            //   fontSize: colorPiker.value,
-            // }}
             onChange={(e) => {
               const value = e.target.value.replace(
                 /(^\w{1})|(\s+\w{1})/g,
@@ -100,11 +99,14 @@ export default ({ open, toggleSidebar, clientStatus }) => {
               setName(value);
             }}
           />
-          {/* <SketchPicker color={colorPiker} onChange={handleChangeComplete} /> */}
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
           )}
         </FormGroup>
+        <ColorPicker label="Color" value={color} onChange={setColor} />
+        {errors.has("color") && (
+          <FormFeedback>{errors.get("color")}</FormFeedback>
+        )}
         <Button className="me-1" color="primary">
           Submit
           {formSubmissionLoader && (

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
@@ -24,6 +24,9 @@ import {
   setReloadNoteTable,
   deleteNote,
 } from "../../redux/profiles";
+import UserInfo from "./components/UserInfo";
+import { debounce } from "lodash";
+import usePrevious from "../../utility/hooks/usePrevious";
 
 const NoteList = ({ profileId }) => {
   // ** States
@@ -33,10 +36,9 @@ const NoteList = ({ profileId }) => {
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [calls, setCalls] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [pageCount, setPageCount] = useState(1);
-  const [selectedCall, setSelectedCall] = useState(null);
-
+  const [selectedNote, setSelectedNote] = useState(null);
   const [viewSidebarOpen, setViewSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -49,7 +51,7 @@ const NoteList = ({ profileId }) => {
 
   useEffect(() => {
     if (currentWorkspace) {
-      loadCalls({
+      loadNotes({
         page: 1,
       });
     }
@@ -58,13 +60,13 @@ const NoteList = ({ profileId }) => {
   useEffect(() => {
     if (reloadNoteTable) {
       dispatch(setReloadNoteTable(false));
-      loadCalls({
+      loadNotes({
         page: currentPage,
       });
     }
   }, [reloadNoteTable]);
 
-  const loadCalls = (options) => {
+  const loadNotes = (options) => {
     let queryParams = {
       records_per_page: rowsPerPage,
       page: currentPage,
@@ -72,16 +74,18 @@ const NoteList = ({ profileId }) => {
       sort,
       ...options,
     };
+    if(searchTerm){
+      queryParams.search = searchTerm
+    }
     dispatch(
       getNotesByProfileId({
         id: profileId,
         params: queryParams,
       })
     ).then(({ payload }) => {
-      if (payload.data !== null) {
-        console.log("===Note===1", payload.data.notes);
-        setCalls(payload.data.notes);
-        console.log("===Note===2", calls);
+      if (payload.data?.data) {
+        setNotes(payload.data.data);
+        setPageCount(payload.data.last_page)
       }
     });
     setCurrentPage(options.page);
@@ -103,15 +107,28 @@ const NoteList = ({ profileId }) => {
       ),
     },
     {
-      name: "Notes",
+      name: "Note",
       sortable: false,
       minWidth: "350px",
       cell: (row) => (
         <div className="d-flex justify-content-left align-items-center">
           <div className="d-flex flex-column">
-            <span className="fw-bolder">{row.notes}</span>
+            <span className="fw-bolder">{row.note}</span>
           </div>
         </div>
+      ),
+    },
+    {
+      name: "Created By",
+      sortable: true,
+      sortField: "created_by",
+      minWidth: "250px",
+      selector: (row) => row.created_by,
+      cell: (row) => (
+        <UserInfo
+          name={`${row.created_by.first_name} ${row.created_by.last_name}`}
+          email={row.created_by.email}
+        />
       ),
     },
     {
@@ -128,7 +145,7 @@ const NoteList = ({ profileId }) => {
               <DropdownMenu container={"body"} end>
                 <DropdownItem
                   onClick={() => {
-                    setSelectedCall(row);
+                    setSelectedNote(row);
                     toggleSidebar();
                   }}
                 >
@@ -150,7 +167,7 @@ const NoteList = ({ profileId }) => {
   const handleSort = (column, sortDirection) => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
-    loadCalls({
+    loadNotes({
       page: 1,
       sort_by: column.sortField,
       sort: sortDirection,
@@ -161,17 +178,37 @@ const NoteList = ({ profileId }) => {
   const handlePerPage = (e) => {
     const value = parseInt(e.currentTarget.value);
     setRowsPerPage(value);
-    loadCalls({
+    loadNotes({
       page: 1,
       records_per_page: value,
     });
   };
-
   // ** Function in get data on search query change
   const handleFilter = (val) => {
     setSearchTerm(val);
-    //todo add
   };
+
+  const debounceLoadData = useCallback(debounce(loadNotes, 1000), []);
+  useEffect(() => {
+    if (searchTerm) {
+      debounceLoadData({
+        page: 1,
+        search: searchTerm
+      });
+    }
+  }, [searchTerm]);
+
+  usePrevious(
+    (prevSearchTerm) => {
+      //change when search term is remove
+      if (!searchTerm && prevSearchTerm) {
+        loadNotes({
+          page: 1,
+        });
+      }
+    },
+    [searchTerm]
+  );
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -190,7 +227,7 @@ const NoteList = ({ profileId }) => {
         pageCount={pageCount}
         activeClassName="active"
         forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={({ selected }) => loadCalls({ page: selected })}
+        onPageChange={({ selected }) => loadNotes({ page: selected })}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -204,7 +241,7 @@ const NoteList = ({ profileId }) => {
     );
   };
 
-  if (!calls) {
+  if (!notes) {
     return (
       <div className="vh-100">
         <Skeleton height={"15%"} />
@@ -225,7 +262,7 @@ const NoteList = ({ profileId }) => {
           handleSearch={handleFilter}
           handlePerPage={handlePerPage}
           toggleSidebar={() => {
-            setSelectedCall(null);
+            setSelectedNote(null);
             toggleSidebar();
           }}
         />
@@ -244,14 +281,14 @@ const NoteList = ({ profileId }) => {
             sortIcon={<ChevronDown />}
             className="react-dataTable"
             paginationComponent={CustomPagination}
-            data={calls}
+            data={notes}
           />
         </div>
       </Card>
       {sidebarOpen && (
         <NoteSidebar
           open={sidebarOpen}
-          call={selectedCall}
+          callNote={selectedNote}
           toggleSidebar={toggleSidebar}
         />
       )}

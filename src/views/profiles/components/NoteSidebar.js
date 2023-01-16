@@ -15,10 +15,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createNote, updateNote } from "../../../redux/profiles";
 
-export default ({ open, toggleSidebar, call }) => {
+export default ({ open, toggleSidebar, callNote }) => {
   // ** States
   const params = useParams();
-  const [notes, setNote] = useState("");
+  const [note, setNote] = useState("");
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
   //store
   const dispatch = useDispatch();
@@ -26,23 +26,19 @@ export default ({ open, toggleSidebar, call }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    if (!call) {
-      formData.append("notes", notes);
-    }
     setFormSubmissionLoader(true);
     dispatch(
-      call
+      callNote
         ? updateNote({
-            formData: {
-              notes,
-            },
-            id: call.id,
-          })
+          formData: {
+            note,
+          },
+          id: callNote.id,
+        })
         : createNote({
-            formData,
-            id: params.id,
-          })
+          note,
+          profile_id: params.id
+        })
     ).then((res) => {
       setFormSubmissionLoader(false);
       if (res.payload.data) {
@@ -50,12 +46,12 @@ export default ({ open, toggleSidebar, call }) => {
       }
     });
   };
-  // ** Set call fields in case of edit mode
+  // ** Set note fields in case of edit mode
   useEffect(() => {
-    if (call) {
-      setNote(call.notes);
+    if (callNote) {
+      setNote(callNote.note);
     }
-  }, [call]);
+  }, [callNote]);
 
   const handleSidebarClosed = () => {
     setNote("");
@@ -65,7 +61,7 @@ export default ({ open, toggleSidebar, call }) => {
     <Sidebar
       size="lg"
       open={open}
-      title={call ? "Update Note" : "New Note"}
+      title={note ? "Update Note" : "New Note"}
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
@@ -74,12 +70,12 @@ export default ({ open, toggleSidebar, call }) => {
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label className="form-label" for="title">
-            Notes
+            Note
           </Label>
           <Input
             type="textarea"
             placeholder="Enter Note here"
-            value={notes}
+            value={note}
             className={
               errors.has("note") ? "is-invalid form-control" : "form-control"
             }

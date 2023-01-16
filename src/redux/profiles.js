@@ -272,19 +272,12 @@ export const deleteCallFollowUp = createAsyncThunk(
 
 export const createNote = createAsyncThunk(
   "profiles/createNote",
-  async ({ formData, id }, { dispatch }) => {
+  async (formData, { dispatch }) => {
     try {
       dispatch(setErrors({}));
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/notes`,
-        formData,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "multipart/form-data", // multipart/form-data - as we need to upload with voice recording
-          },
-        }
-      );
+        `${process.env.REACT_APP_API_ENDPOINT}/api/profile-notes`
+        , formData);
       toast.success(response.data.message);
       dispatch(setReloadNoteTable(true));
       return {
@@ -299,12 +292,13 @@ export const createNote = createAsyncThunk(
     }
   }
 );
+
 export const getNotesByProfileId = createAsyncThunk(
   "profiles/notes",
-  async ({ params, id }, { dispatch }) => {
+  async ({ params, id }) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/notes`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/profile-notes?profile_id=${id}`,
         {
           params,
         }
@@ -327,7 +321,7 @@ export const updateNote = createAsyncThunk(
     try {
       dispatch(setErrors({}));
       const response = await axios.put(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/update-note/${id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/profile-notes/${id}`,
         formData
       );
       toast.success(response.data.message);
@@ -350,10 +344,10 @@ export const deleteNote = createAsyncThunk(
   async (id, { dispatch }) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-note/${id}`
+        `${process.env.REACT_APP_API_ENDPOINT}/api/profile-notes/${id}`
       );
       toast.success(response.data.message);
-      dispatch(setReloadTable(true));
+      dispatch(setReloadNoteTable(true));
       return {
         data: true,
       };
