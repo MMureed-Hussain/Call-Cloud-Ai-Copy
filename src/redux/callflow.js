@@ -57,14 +57,10 @@ export const postCallFlowRecord = createAsyncThunk(
 export const getCallFlowRecord = createAsyncThunk(
     "workspaces/getCallFlowRecord",
     async (payload) => {
-      console.log("redux",payload)
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/lead/record/${payload.rowId}`
         );
-        console.log("getRecord",response)
-       // console.log("getRecord",response.data.data[0])
-       
         return {
           data: {
             callFlowRecord: response.data.data[0],
