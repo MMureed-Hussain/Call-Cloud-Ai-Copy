@@ -1,5 +1,4 @@
-import { Layers,Loader,  Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid } from "react-feather";
-
+import { Layers, Loader,  Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid } from "react-feather";
 export default [
   {
     id: "dashboard",
@@ -7,12 +6,6 @@ export default [
     icon: <Home size={20} />,
     navLink: "/dashboard",
   },
-  // {
-  //   id: "workspaces",
-  //   title: "Workspaces",
-  //   icon: <Layers size={20} />,
-  //   navLink: "/workspaces",
-  // },
   {
     id: "manageUsers",
     title: "Users",
