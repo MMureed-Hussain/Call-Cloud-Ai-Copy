@@ -1,4 +1,4 @@
-import { Layers, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid } from "react-feather";
+import { Layers,Loader,  Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid } from "react-feather";
 
 export default [
   {
@@ -48,6 +48,12 @@ export default [
     title: "Team",
     icon: <Grid size={20} />,
     navLink: "/workspace/Team",
+  },
+  {
+    id: "callflow",
+    title: "CallFlow",
+    icon: <Loader size={20} />,
+    navLink: "/workspace/callflow",
   },
   {
     id: "statuses",
