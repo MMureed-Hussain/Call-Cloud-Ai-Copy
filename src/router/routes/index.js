@@ -36,6 +36,8 @@ const WorkspaceManageUsers = lazy(() => import("../../views/workspaces/Workspace
 const WorkspaceManageLeadlist = lazy(() => import("../../views/workspaces/WorkspaceManageLeadlist"));
 const WorkspaceManageQueue = lazy(() => import("../../views/queue/WorkspaceManageQueue"));
 const WorkspaceManageTeam = lazy(() => import("../../views/team/WorkspaceManageTeam"));
+const WorkspaceManageCallFlow = lazy(() => import("../../views/callflow/WorkspaceManageCallFlow"));
+
 const Login = lazy(() => import("../../views/Login"));
 const Register = lazy(() => import("../../views/Register"));
 const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
@@ -156,6 +158,13 @@ const Routes = [
   {
     path: "/workspace/team",
     element: <WorkspaceManageTeam />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/workspace/callflow",
+    element: <WorkspaceManageCallFlow />,
     meta: {
       isPrivate: true,
     },
