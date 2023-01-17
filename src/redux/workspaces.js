@@ -1,4 +1,5 @@
 // ** Redux Imports
+/* eslint-disable */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // ** Axios Imports
@@ -10,7 +11,8 @@ axios.defaults.withCredentials = true;
 // Perform get workspaces list API and set workspaces data in store
 export const getData = createAsyncThunk(
   "workspaces/getData",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspaces`,
@@ -37,7 +39,8 @@ export const getData = createAsyncThunk(
 // Perform get workspace API and set workspace data in store
 export const storeCurrentWorkspaceById = createAsyncThunk(
   "workspaces/storeCurrentWorkspaceById",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`
@@ -62,7 +65,8 @@ export const storeCurrentWorkspaceById = createAsyncThunk(
 // Perform mark workspace as accessed now API
 export const markWorkspaceAsAccessedNow = createAsyncThunk(
   "workspaces/markWorkspaceAsAccessedNow",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/mark-workspace-as-accessed-now/${payload.id}`
@@ -83,7 +87,8 @@ export const markWorkspaceAsAccessedNow = createAsyncThunk(
 // Perform get recently accessed workspaces
 export const recentlyAccessedWorkspaces = createAsyncThunk(
   "workspaces/recentlyAccessedWorkspaces",
-  async () => {
+  async () =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/recently-accessed-workspaces`
@@ -104,7 +109,8 @@ export const recentlyAccessedWorkspaces = createAsyncThunk(
 // Perform add workspace API
 export const addWorkspace = createAsyncThunk(
   "workspaces/addWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace`,
@@ -137,7 +143,8 @@ export const addWorkspace = createAsyncThunk(
 // Perform add multiple workspace API
 export const addMultipleWorkspaces = createAsyncThunk(
   "workspaces/addMultipleWorkspaces",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/bulk-workspaces`,
@@ -165,7 +172,8 @@ export const addMultipleWorkspaces = createAsyncThunk(
 // Perform update workspace API
 export const updateWorkspace = createAsyncThunk(
   "workspaces/updateWorkspace",
-  async (payload, { getState }) => {
+  async (payload, { getState }) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`,
@@ -200,7 +208,8 @@ export const updateWorkspace = createAsyncThunk(
 // Perform delete workspace API
 export const deleteWorkspace = createAsyncThunk(
   "workspaces/deleteWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}`
@@ -223,13 +232,16 @@ export const deleteWorkspace = createAsyncThunk(
 // Perform inviteMember API
 export const inviteMember = createAsyncThunk(
   "workspaces/inviteMember",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}/invite`,
         {
           email: payload.email,
           nickname: payload.nickname,
+          role: payload.role,
+
         }
       );
 
@@ -252,8 +264,9 @@ export const inviteMember = createAsyncThunk(
 // Perform add Leadlist csv API
 export const inviteLeadlist = createAsyncThunk(
   "workspaces/inviteLeadlist",
-  async (payload) => {
-    
+  async (payload) =>
+  {
+
     try {
       console.log("inisde payload", payload)
       const _formData = new FormData();
@@ -262,14 +275,14 @@ export const inviteLeadlist = createAsyncThunk(
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/import/?workspace_id=${payload.id}`,
         _formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+        headers: {
+          "Content-Type": "multipart/form-data"
         }
+      }
       );
       toast.success(response.data.mesage)
       return {
-        data:response.data
+        data: response.data
       };
     } catch (e) {
       console.log(e);
@@ -284,7 +297,8 @@ export const inviteLeadlist = createAsyncThunk(
 // Perform add queue API
 export const saveQueue = createAsyncThunk(
   "workspaces/saveQueue",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/queues/create/?workspace_id=${payload.id}`,
@@ -300,7 +314,7 @@ export const saveQueue = createAsyncThunk(
 
       toast.success(response.data.message);
       return {
-        data:response.data
+        data: response.data
       };
     } catch (e) {
       console.log(e);
@@ -315,7 +329,8 @@ export const saveQueue = createAsyncThunk(
 // Perform add Team API
 export const saveTeam = createAsyncThunk(
   "workspaces/saveTeam",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/teams/create/?workspace_id=${payload.id}`,
@@ -330,7 +345,7 @@ export const saveTeam = createAsyncThunk(
 
       toast.success(response.data.message);
       return {
-        data:response.data
+        data: response.data
       };
     } catch (e) {
       console.log(e);
@@ -345,7 +360,8 @@ export const saveTeam = createAsyncThunk(
 // Perform inviteMultipleMembers API
 export const inviteMultipleMembers = createAsyncThunk(
   "workspaces/inviteMultipleMembers",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace-bulk-invite`,
@@ -378,7 +394,8 @@ export const inviteMultipleMembers = createAsyncThunk(
 // Perform delete user from workspace API
 export const deleteMemberFromWorkspace = createAsyncThunk(
   "workspaces/deleteMemberFromWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/delete-member/${payload.id}`
@@ -401,11 +418,12 @@ export const deleteMemberFromWorkspace = createAsyncThunk(
 // Perform delete queue in action API
 export const deleteQueueFromWorkspace = createAsyncThunk(
   "workspaces/deleteQueueFromWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     console.log("payload", payload);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/delete/${payload.id}`, {workspace_id:payload.workspaceId}
+        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/delete/${payload.id}`, { workspace_id: payload.workspaceId }
       );
 
       toast.success(response.data.message);
@@ -425,11 +443,12 @@ export const deleteQueueFromWorkspace = createAsyncThunk(
 // Perform delete team in action API
 export const deleteTeamFromWorkspace = createAsyncThunk(
   "workspaces/deleteTeamFromWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     console.log("payload", payload);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/delete/${payload.id}`, {workspace_id:payload.workspaceId}
+        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/delete/${payload.id}`, { workspace_id: payload.workspaceId }
       );
 
       toast.success(response.data.message);
@@ -449,7 +468,8 @@ export const deleteTeamFromWorkspace = createAsyncThunk(
 // Perform delete leadlist from workspace API
 export const deleteLeadlistWorkspace = createAsyncThunk(
   "workspaces/deleteLeadlistWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlist/${payload.id}`
@@ -472,12 +492,14 @@ export const deleteLeadlistWorkspace = createAsyncThunk(
 // Perform delete user from workspace API
 export const updateMemberInWorkspace = createAsyncThunk(
   "workspaces/updateMemberInWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/update-member/${payload.id}`,
         {
           nickname: payload.nickname,
+          role: payload.role,
         }
       );
 
@@ -500,19 +522,20 @@ export const updateMemberInWorkspace = createAsyncThunk(
 // Perform update queue API
 export const updateQueueInWorkspace = createAsyncThunk(
   "workspaces/updateQueueInWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/queues/update/?workspace_id=${payload.workspace_id}`,
         {
           data: {
-            queue_name : payload.queue_name,
+            queue_name: payload.queue_name,
             id: payload.queue_id,
             workspace_id: payload.workspace_id,
-            
+
             leadlist_records: payload.leadlist,
             users: payload.queueUser,
-          } 
+          }
         }
       );
 
@@ -535,12 +558,13 @@ export const updateQueueInWorkspace = createAsyncThunk(
 // Perform update team API
 export const updateTeamInWorkspace = createAsyncThunk(
   "workspaces/updateTeamInWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/teams/update/?workspace_id=${payload.workspace_id}`,
         {
-          team_name : payload.team_name,
+          team_name: payload.team_name,
           users: payload.teamUsers,
           id: payload.team_id,
           workspace_id: payload.workspace_id,
@@ -566,7 +590,8 @@ export const updateTeamInWorkspace = createAsyncThunk(
 // Perform delete updateLeadlistInWorkspace from workspace API
 export const updateLeadlistInWorkspace = createAsyncThunk(
   "workspaces/updateLeadlistInWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlist/${payload.id}`,
@@ -593,7 +618,8 @@ export const updateLeadlistInWorkspace = createAsyncThunk(
 
 export const csvWorkspaceImport = createAsyncThunk(
   "workspaces/csvWorkspaceImport",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlist/import`,
@@ -621,7 +647,8 @@ export const csvWorkspaceImport = createAsyncThunk(
 // Perform get users in workspace API
 export const getUsers = createAsyncThunk(
   "workspaces/getUsers",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}/users`,
@@ -649,7 +676,8 @@ export const getUsers = createAsyncThunk(
 // Perform get leadlist file in workspace API
 export const getLeadlist = createAsyncThunk(
   "workspaces/getLeadlist",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/${payload.id}/all`,
@@ -676,7 +704,8 @@ export const getLeadlist = createAsyncThunk(
 // Perform get Team file in workspace API
 export const getTeam = createAsyncThunk(
   "workspaces/getTeam",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/teams/${payload.id}/all`,
@@ -704,12 +733,13 @@ export const getTeam = createAsyncThunk(
 //get queue in data table
 export const getQueue = createAsyncThunk(
   "workspaces/getQueue",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/queues/${payload.id}/all`,
         payload
-        
+
       );
       return {
         data: {
@@ -732,11 +762,12 @@ export const getQueue = createAsyncThunk(
 // Perform get getRecord in workspace API
 export const getRecord = createAsyncThunk(
   "workspaces/getRecord",
-  async (id) => {
+  async (id) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/record/${id}/`,
-        
+
       );
       return {
         data: {
@@ -763,36 +794,38 @@ export const getRecord = createAsyncThunk(
 // Perform get getheaders in workspace API
 export const postHeader = createAsyncThunk(
   "header/bulkupdate",
-  async (payload) => {
+  async (payload) =>
+  {
     console.log("post heaear educx", payload)
-      try {
-          
-          const response = await axios.post(
-              `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/update/headers`,
-              payload,
-          );
-          toast.success(response.data.message);
-          
-          return {
-              data: response.data.data
-          };
-      } catch (e) {
-          toast.error(e.response.data.message);
-          
-          return {
-              data: null
-          };
-      } finally {
-          
-      }
+    try {
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/update/headers`,
+        payload,
+      );
+      toast.success(response.data.message);
+
+      return {
+        data: response.data.data
+      };
+    } catch (e) {
+      toast.error(e.response.data.message);
+
+      return {
+        data: null
+      };
+    } finally {
+
+    }
   }
 );
 
 // Perform get CSV in workspace API
 export const getCsv = createAsyncThunk(
   "workspaces/getCsv",
-  async () => {
-    
+  async () =>
+  {
+
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/dummycsv/`
@@ -809,7 +842,7 @@ export const getCsv = createAsyncThunk(
       return {
         data: {
           csv: null,
-          
+
         },
       };
     }
@@ -825,116 +858,134 @@ export const workspacesSlice = createSlice({
     workspaces: [],
     loading: true,
     total: 0,
-    currentPage:1,
-    rowsPerPage:50,
+    currentPage: 1,
+    rowsPerPage: 50,
 
     //Workspace users table related attributes
-    users:[],
-    usersLoading:true,
+    users: [],
+    usersLoading: true,
     totalUsers: 0,
-    rowsPerPageUser:50,
-    currentPageUser:1,
+    rowsPerPageUser: 50,
+    currentPageUser: 1,
 
     //Workspace leadlist table related attributes
-    leadlist:[],
-    leadlistLoading:true,
+    leadlist: [],
+    leadlistLoading: true,
     totalLeadlist: 0,
-    rowsPerPageLeadlist:50,
-    currentPageLeadlist:1,
+    rowsPerPageLeadlist: 50,
+    currentPageLeadlist: 1,
 
     //Workspace record table related attributes
-    record:[],
-    recordLoading:true,
+    record: [],
+    recordLoading: true,
     totalRecord: 0,
-    rowsPerPageRecord:50,
-    currentPageRecord:1,
+    rowsPerPageRecord: 50,
+    currentPageRecord: 1,
 
     //header
-    header:[],
-    headerLoading:true,
+    header: [],
+    headerLoading: true,
     totalHeader: 0,
-    rowsPerPageHeader:50,
-    currentPageHeader:1,
+    rowsPerPageHeader: 50,
+    currentPageHeader: 1,
 
     //Queue
-    queue:[],
-    queueLoading:true,
+    queue: [],
+    queueLoading: true,
     totalQueue: 0,
-    rowsPerPageQueue:50,
-    currentPageQueue:1,
+    rowsPerPageQueue: 50,
+    currentPageQueue: 1,
 
 
     //Team
-    team:[],
-    teamLoading:true,
+    team: [],
+    teamLoading: true,
     totalTeam: 0,
-    rowsPerPageTeam:50,
-    currentPageTeam:1,
+    rowsPerPageTeam: 50,
+    currentPageTeam: 1,
 
     //Workspace CSV
-    csv:null,
+    csv: null,
 
     currentWorkspace: null,
     recentlyAccessedWorkspaces: false
   },
   reducers: {
-    storeCurrentPage: (state, action) => {
+    storeCurrentPage: (state, action) =>
+    {
       state.currentPage = action.payload.currentPage
     },
-    storeRowsPerPage: (state, action) => {
+    storeRowsPerPage: (state, action) =>
+    {
       state.rowsPerPage = action.payload.rowsPerPage
     },
-    storeCurrentPageUser: (state, action) => {
+    storeCurrentPageUser: (state, action) =>
+    {
       state.currentPageUser = action.payload.currentPage
     },
-    storeRowsPerPageUser: (state, action) => {
+    storeRowsPerPageUser: (state, action) =>
+    {
       state.rowsPerPageUser = action.payload.rowsPerPage
     },
-    storeCurrentPageLeadlist: (state, action) => {
+    storeCurrentPageLeadlist: (state, action) =>
+    {
       state.currentPageLeadlist = action.payload.currentPage
     },
     //record
-    storeCurrentPageRecord: (state, action) => {
+    storeCurrentPageRecord: (state, action) =>
+    {
       state.currentPageRecord = action.payload.currentPage
     },
-    storeRowsPerPageLeadlist: (state, action) => {
+    storeRowsPerPageLeadlist: (state, action) =>
+    {
       state.rowsPerPageLeadlist = action.payload.rowsPerPage
     },
     //record
-    storeRowsPerPageRecord: (state, action) => {
+    storeRowsPerPageRecord: (state, action) =>
+    {
       state.rowsPerPageRecord = action.payload.rowsPerPage
     },
     //header
-    storeRowsPerPageHeader: (state, action) => {
+    storeRowsPerPageHeader: (state, action) =>
+    {
       state.rowsPerPageRecord = action.payload.rowsPerPage
     },
-    storeCurrentPageHeader: (state, action) => {
+    storeCurrentPageHeader: (state, action) =>
+    {
       state.currentPageHeader = action.payload.currentPage
     },
     //Queue
-    storeRowsPerPageQueue: (state, action) => {
+    storeRowsPerPageQueue: (state, action) =>
+    {
       state.rowsPerPageQueue = action.payload.rowsPerPage
     },
-    storeCurrentPageQueue: (state, action) => {
+    storeCurrentPageQueue: (state, action) =>
+    {
       state.currentPageQueue = action.payload.currentPage
     },
     //Team
-    storeRowsPerPageTeam: (state, action) => {
+    storeRowsPerPageTeam: (state, action) =>
+    {
       state.rowsPerPageTeam = action.payload.rowsPerPage
     },
-    storeCurrentPageTeam: (state, action) => {
+    storeCurrentPageTeam: (state, action) =>
+    {
       state.currentPageTeam = action.payload.currentPage
     },
-    storeCurrentWorkspace: (state, action) => {
+    storeCurrentWorkspace: (state, action) =>
+    {
       state.currentWorkspace = action.payload.workspace
     },
-    getWorkspace: (state, action) => {
+    getWorkspace: (state, action) =>
+    {
       state.query = action.payload
     }
   },
-  extraReducers: (builder) => {
+  extraReducers: (builder) =>
+  {
     builder
-      .addCase(getData.fulfilled, (state, action) => {
+      .addCase(getData.fulfilled, (state, action) =>
+      {
         state.workspaces = action.payload.data.workspaces;
         state.total = action.payload.data.total;
         state.loading = false;
@@ -943,17 +994,20 @@ export const workspacesSlice = createSlice({
         //   state.currentWorkspace = action.payload.data.workspaces[0]
         // }
       })
-      .addCase(storeCurrentWorkspaceById.fulfilled, (state, action) => {
+      .addCase(storeCurrentWorkspaceById.fulfilled, (state, action) =>
+      {
         if (action.payload.data.workspace) {
           state.currentWorkspace = action.payload.data.workspace
         }
       })
-      .addCase(markWorkspaceAsAccessedNow.fulfilled, (state, action) => {
+      .addCase(markWorkspaceAsAccessedNow.fulfilled, (state, action) =>
+      {
         if (action.payload.data) {
           console.log("no action required")
         }
       })
-      .addCase(recentlyAccessedWorkspaces.fulfilled, (state, action) => {
+      .addCase(recentlyAccessedWorkspaces.fulfilled, (state, action) =>
+      {
         if (action.payload.data) {
           state.recentlyAccessedWorkspaces = action.payload.data
 
@@ -962,100 +1016,122 @@ export const workspacesSlice = createSlice({
           }
         }
       })
-      .addCase(addWorkspace.fulfilled, (state, action) => {
+      .addCase(addWorkspace.fulfilled, (state, action) =>
+      {
         if (action.payload.data.workspace) {
           console.log("No need to update store", state, action)
         }
       })
-      .addCase(addMultipleWorkspaces.fulfilled, (state, action) => {
+      .addCase(addMultipleWorkspaces.fulfilled, (state, action) =>
+      {
         if (action.payload.data.workspaces) {
           console.log("No need to update store", state, action)
         }
       })
-      .addCase(updateWorkspace.fulfilled, (state, action) => {
+      .addCase(updateWorkspace.fulfilled, (state, action) =>
+      {
         if (action.payload.data.workspace && action.payload.data.isCurrentWorkspace) {
           state.currentWorkspace = action.payload.data.workspace;
         }
       })
-      .addCase(deleteWorkspace.fulfilled, (state, action) => {
+      .addCase(deleteWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
-      .addCase(inviteMember.fulfilled, (state, action) => {
+      .addCase(inviteMember.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
       //new data 
-      .addCase(inviteLeadlist.fulfilled, (state, action) => {
+      .addCase(inviteLeadlist.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
       //invite Queue
-      .addCase(saveQueue.fulfilled, (state, action) => {
+      .addCase(saveQueue.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
-      .addCase(inviteMultipleMembers.fulfilled, (state, action) => {
+      .addCase(inviteMultipleMembers.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
-      .addCase(updateMemberInWorkspace.fulfilled, (state, action) => {
+      .addCase(updateMemberInWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
-      .addCase(deleteLeadlistWorkspace.fulfilled, (state, action) => {
+      .addCase(deleteLeadlistWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
       //new data 
-      .addCase(updateLeadlistInWorkspace.fulfilled, (state, action) => {
+      .addCase(updateLeadlistInWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
       //update team 
-      .addCase(updateTeamInWorkspace.fulfilled, (state, action) => {
+      .addCase(updateTeamInWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
       //delete team
-      .addCase(deleteTeamFromWorkspace.fulfilled, (state, action) => {
+      .addCase(deleteTeamFromWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
-      .addCase(deleteMemberFromWorkspace.fulfilled, (state, action) => {
+      .addCase(deleteMemberFromWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
       //delete queue
-      .addCase(deleteQueueFromWorkspace.fulfilled, (state, action) => {
+      .addCase(deleteQueueFromWorkspace.fulfilled, (state, action) =>
+      {
         console.log("No need to update store", state, action)
       })
-      .addCase(getUsers.fulfilled, (state, action) => {
+      .addCase(getUsers.fulfilled, (state, action) =>
+      {
         state.users = action.payload.data.users;
         state.totalUsers = action.payload.data.total;
         state.usersLoading = false;
       })
-      .addCase(getLeadlist.fulfilled, (state, action) => {
+      .addCase(getLeadlist.fulfilled, (state, action) =>
+      {
         state.leadlist = action.payload.data.leadlist;
         state.totalLeadlist = action.payload.data.total;
         state.leadlistLoading = false;
       })
-      .addCase(getRecord.fulfilled, (state, action) => {
+      .addCase(getRecord.fulfilled, (state, action) =>
+      {
         state.record = action.payload.data.record;
         state.totalRecord = action.payload.data.total;
         state.recordLoading = false;
       })
       //getQueue
-      .addCase(getQueue.fulfilled, (state, action) => {
+      .addCase(getQueue.fulfilled, (state, action) =>
+      {
         state.queue = action.payload.data.queue;
         state.totalQueue = action.payload.data.total;
         state.queueLoading = false;
       })
       //getTeam
-      .addCase(getTeam.fulfilled, (state, action) => {
+      .addCase(getTeam.fulfilled, (state, action) =>
+      {
         state.team = action.payload.data.team;
         state.totalTeam = action.payload.data.total;
         state.teamLoading = false;
       })
 
       //headrs
-      .addCase(postHeader.fulfilled, (state, action) => {
+      .addCase(postHeader.fulfilled, (state, action) =>
+      {
         state.header = action.payload.data.header;
         state.totalHeader = action.payload.data.total;
         state.headerLoading = false;
       })
-      .addCase(getCsv.fulfilled, (state, action) => {
+      .addCase(getCsv.fulfilled, (state, action) =>
+      {
         state.csv = action.payload.data.csv;
-      
+
       });
   },
 });

@@ -1,33 +1,46 @@
+/* eslint-disable */
 import React, { useState, useEffect } from "react"
-import {
-    Button,
-    Row
-} from "reactstrap";
+import { useParams } from "react-router-dom";
+import { Button, Row } from "reactstrap";
 import { millisecondsToTime } from "../../../utility/Utils";
 import { Mic, Pause, StopCircle, Play } from 'react-feather';
 import { padStart } from "lodash"
+import { sendCallRecordingStatus } from "@store/notifications";
+import { useDispatch, useSelector } from "react-redux";
 
-export default ({ audioDetails, setAudioDetails }) => {
+
+export default ({ audioDetails, setAudioDetails }) =>
+{
+
+    const parms = useParams();
+    const dispatch = useDispatch();
     const [timer, setTimer] = useState(0);
     const [recording, setRecording] = useState(false); //if recording is in progress
     const [recordPaused, setRecordPaused] = useState(false); //if recording is in pause state
     const [timestamp, setTimestamp] = useState(0); //duration of recording in milliseconds
     const [recorder, setRecorder] = useState(null); //media recorder instance
+    const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
 
-    useEffect(() => {
-        setAudioDetails(details => {
+    useEffect(() =>
+    {
+        setAudioDetails(details =>
+        {
             const duration = millisecondsToTime(timestamp);
             details.duration = duration;
             return details;
         })
     }, [timestamp])
 
-    const accessMediaRecorder = () => {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+    const accessMediaRecorder = () =>
+    {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) =>
+        {
             const mediaRecorder = new MediaRecorder(stream);
             setRecorder(mediaRecorder);
-            mediaRecorder.addEventListener("dataavailable", (event) => {
-                setAudioDetails(details => {
+            mediaRecorder.addEventListener("dataavailable", (event) =>
+            {
+                setAudioDetails(details =>
+                {
                     details.chunks.push(event.data);
                     return details;
                 })
@@ -35,17 +48,21 @@ export default ({ audioDetails, setAudioDetails }) => {
         });
     };
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         accessMediaRecorder(); //access
     }, [])
 
-    const startTimer = () => {
-        setTimer(setInterval(() => {
+    const startTimer = () =>
+    {
+        setTimer(setInterval(() =>
+        {
             setTimestamp(timestamp => timestamp + 100)
         }, 100))
     }
 
-    const resetRecorder = () => {
+    const resetRecorder = () =>
+    {
         setTimestamp(0);
         setAudioDetails(() => ({
             url: null,
@@ -59,27 +76,37 @@ export default ({ audioDetails, setAudioDetails }) => {
         }))
     }
 
-    const onStart = async () => {
+    const onStart = async () =>
+    {
         resetRecorder();
         startTimer();
         setRecording(true);
         setRecordPaused(false);
         recorder.start(10); // start recorder with 10ms buffer
+        //Update Call recording status
+        dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'STARTED', call_profile_id: parms.id }));
     }
 
-    const onResume = () => {
+    const onResume = () =>
+    {
         startTimer();
         recorder.resume();
         setRecordPaused(false);
+        //Update Call recording status
+        dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'RESUMED', call_profile_id: parms.id }));
     }
 
-    const onPause = () => {
+    const onPause = () =>
+    {
         clearInterval(timer);
         recorder.pause();
         setRecordPaused(true);
+        //Update Call recording status
+        dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'PAUSED', call_profile_id: parms.id }));
     }
 
-    const onStop = () => {
+    const onStop = () =>
+    {
         clearInterval(timer);
         setRecording(false);
         setRecordPaused(false);
@@ -88,10 +115,14 @@ export default ({ audioDetails, setAudioDetails }) => {
             type: 'audio/mp3'
         });
         const audioUrl = URL.createObjectURL(audioBlob);
-        setAudioDetails(details => {
+        setAudioDetails(details =>
+        {
             const clonedDetails = { ...details, url: audioUrl, blob: audioBlob };
             return clonedDetails;
         })
+
+        //Update Call recording status
+        dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'STOPED', call_profile_id: parms.id }));
     }
     /*eslint multiline-ternary: ["error", "always"]*/
     return (
@@ -104,11 +135,11 @@ export default ({ audioDetails, setAudioDetails }) => {
                         </Button.Ripple>
                     </div>
                     : <div className='rounded-circle overflow-hidden me-1'>
-                        <Button.Ripple className='btn-icon rounded-circle' color='danger' onClick={onStart}>
+                        <Button.Ripple className='btn-icon rounded-circle sid' color='danger' onClick={onStart}>
                             <Mic size={16} />
                         </Button.Ripple>
                     </div>}
-                {recording ?
+                {/* {recording ?
                     recordPaused ?
                         <div className='rounded-circle overflow-hidden'>
                             <Button.Ripple className='btn-icon rounded-circle' color='warning' onClick={onResume}>
@@ -121,7 +152,7 @@ export default ({ audioDetails, setAudioDetails }) => {
                                 <Pause size={16} />
                             </Button.Ripple>
                         </div>
-                    : null}
+                    : null} */}
             </div>
             <br />
             <Row className="text-center mb-2">

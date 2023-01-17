@@ -49,6 +49,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 				[key]: value,
 			}));
 		} else {
+
 			setData(data => ({
 				...data,
 				[key]: value,

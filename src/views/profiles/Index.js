@@ -57,7 +57,6 @@ export default () => {
     (state) => state.workspaces.currentWorkspace
   );
   const profiles = useSelector((state) => state.profiles.profiles);
-  console.log("--------", profiles);
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);

@@ -240,7 +240,6 @@ export const storeOrUpdateCallFollowUp = createAsyncThunk(
     {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`, data);
-            console.log((response.data))
             toast.success(response.data.message);
             dispatch(setReloadTable(true));
             return { data: true };

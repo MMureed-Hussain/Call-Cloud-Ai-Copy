@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { profileContactList, deleteProfileContact } from "../../redux/profiles";
 import CreateUpdateContactSidebar from './components/CreateUpdateContactSidebar';
 
-
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";

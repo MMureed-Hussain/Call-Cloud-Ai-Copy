@@ -45,7 +45,7 @@ export default [
   },
   {
     id: "team",
-    title: "Team",
+    title: "Teams",
     icon: <Grid size={20} />,
     navLink: "/workspace/Team",
   },
@@ -99,5 +99,11 @@ export default [
     title: "Call Profiles",
     icon: <Phone size={20} />,
     navLink: "/profiles",
+  },
+  {
+    id: "call-overview",
+    title: "Calls Overview",
+    icon: <Phone size={20} />,
+    navLink: "/call-overview",
   }
 ];

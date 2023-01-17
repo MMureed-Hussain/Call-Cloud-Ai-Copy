@@ -34,6 +34,7 @@ import { getStatuses } from "../../redux/callStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import usePrevious from "../../utility/hooks/usePrevious";
+import { sendCallRecordingStatus } from "@store/notifications";
 
 const CallList = ({ profileId }) =>
 {
@@ -75,6 +76,15 @@ const CallList = ({ profileId }) =>
             });
         }
     }, [reloadCallTable]);
+
+    //Upate the status when call sidebar menu closed unexpected
+    useEffect(() =>
+    {
+        if (!sidebarOpen && currentWorkspace) {
+            dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'DISCONNECTED', call_profile_id: profileId }));
+        }
+    }, [sidebarOpen]);
+
 
     usePrevious((prevStatusFilterValue) =>
     {
@@ -165,7 +175,6 @@ const CallList = ({ profileId }) =>
             minWidth: "172px",
             cell: (row) =>
             {
-                console.log(row)
                 return <Select
                     value={row.call_status ? { value: row.call_status.id, label: row.call_status.name } : null}
                     theme={selectThemeColors}
@@ -361,6 +370,7 @@ const CallList = ({ profileId }) =>
                 </div>
             </Card>
             {sidebarOpen && (
+
                 <CallSidebar
                     open={sidebarOpen}
                     call={selectedCall}

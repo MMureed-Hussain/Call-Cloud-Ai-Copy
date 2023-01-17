@@ -1,4 +1,5 @@
 // ** React Imports
+/* eslint-disable */
 import { Fragment, useEffect, useState } from "react";
 
 // ** Invoice List Sidebar
@@ -17,7 +18,8 @@ import Skeleton from "react-loading-skeleton";
 
 // ** Store & Actions
 // import { getAllData, getData } from "../store";
-import {
+import
+{
   getUsers,
   storeCurrentPageUser,
   storeRowsPerPageUser,
@@ -30,7 +32,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
-import {
+import
+{
   ChevronDown,
   Share,
   Printer,
@@ -45,7 +48,8 @@ import {
 import { selectThemeColors } from "@utils";
 
 // ** Reactstrap Imports
-import {
+import
+{
   Row,
   Col,
   Card,
@@ -75,7 +79,8 @@ const CustomHeader = ({
   searchTerm,
   userData,
   setEditUser,
-}) => {
+}) =>
+{
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -119,7 +124,8 @@ const CustomHeader = ({
               <Button
                 className="add-new-user"
                 color="primary"
-                onClick={() => {
+                onClick={() =>
+                {
                   setEditUser(null);
                   toggleSidebar();
                 }}
@@ -134,7 +140,8 @@ const CustomHeader = ({
   );
 };
 
-const UsersList = ({ workspaceId }) => {
+const UsersList = ({ workspaceId }) =>
+{
   console.log("workspaceId", workspaceId);
   // ** Store Vars
   const dispatch = useDispatch();
@@ -166,11 +173,13 @@ const UsersList = ({ workspaceId }) => {
   //   });
 
   // ** Function to toggle sidebar
-  const toggleSidebar = () => {
+  const toggleSidebar = () =>
+  {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const refreshTable = () => {
+  const refreshTable = () =>
+  {
     dispatch(
       getUsers({
         sort,
@@ -185,7 +194,8 @@ const UsersList = ({ workspaceId }) => {
 
   // ** Get data on mount
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (!store.usersLoading) {
       dispatch(
         getUsers({
@@ -243,7 +253,8 @@ const UsersList = ({ workspaceId }) => {
   //   ];
 
   // ** Function in get data on page change
-  const handlePagination = (page) => {
+  const handlePagination = (page) =>
+  {
     dispatch(
       getUsers({
         sort,
@@ -263,7 +274,8 @@ const UsersList = ({ workspaceId }) => {
   };
 
   // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
+  const handlePerPage = (e) =>
+  {
     const value = parseInt(e.currentTarget.value);
     dispatch(
       getUsers({
@@ -285,7 +297,8 @@ const UsersList = ({ workspaceId }) => {
   };
 
   // ** Function in get data on search query change
-  const handleFilter = (val) => {
+  const handleFilter = (val) =>
+  {
     setSearchTerm(val);
     dispatch(
       getUsers({
@@ -303,7 +316,8 @@ const UsersList = ({ workspaceId }) => {
   };
 
   // ** Custom Pagination
-  const CustomPagination = () => {
+  const CustomPagination = () =>
+  {
     const count = Number(Math.ceil(store.totalUsers / rowsPerPage));
 
     return (
@@ -328,7 +342,8 @@ const UsersList = ({ workspaceId }) => {
   };
 
   // ** Table data to render
-  const dataToRender = () => {
+  const dataToRender = () =>
+  {
     const filters = {
       //   role: currentRole.value,
       //   currentPlan: currentPlan.value,
@@ -336,21 +351,25 @@ const UsersList = ({ workspaceId }) => {
       q: searchTerm,
     };
 
-    const isFiltered = Object.keys(filters).some(function (k) {
+    const isFiltered = Object.keys(filters).some(function (k)
+    {
       return filters[k].length > 0;
     });
 
     if (store.users.length > 0) {
-      const users = store.users.map((user) => {
+      const users = store.users.map((user) =>
+      {
         const tempUser = { ...user };
-        tempUser.handleEdit = (id) => {
+        tempUser.handleEdit = (id) =>
+        {
           const editUser = store.users.filter((user) => user.id === id);
           if (editUser.length) {
             setEditUser(editUser[0]);
             toggleSidebar();
           }
         };
-        tempUser.handleDelete = async (id, joinedAt) => {
+        tempUser.handleDelete = async (id, joinedAt) =>
+        {
           console.log("joinedAt", joinedAt);
           // prettier-ignore
           const text = joinedAt ? "Are you sure you would like to remove this user?" : "Are you sure you would like to cancel this invitation?";
@@ -395,7 +414,8 @@ const UsersList = ({ workspaceId }) => {
     }
   };
 
-  const handleSort = (column, sortDirection) => {
+  const handleSort = (column, sortDirection) =>
+  {
     console.log(column, sortDirection);
     setSort(sortDirection);
     setSortColumn(column.sortField);
@@ -468,6 +488,7 @@ const UsersList = ({ workspaceId }) => {
           toggleSidebar={toggleSidebar}
           workspaceId={workspaceId}
           user={editUser}
+          auth={userData}
         />
       )}
     </Fragment>
