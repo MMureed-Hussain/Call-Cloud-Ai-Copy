@@ -34,8 +34,6 @@ export default () =>
     {
         if (currentWorkspace) {
 
-            loadData();
-
             dispatch(leadProfileStatusList({ id: currentWorkspace.id })).then(({ payload }) =>
             {
 
@@ -56,6 +54,9 @@ export default () =>
             privateChannel.bind('WorkspaceCallRecordingStatus', (res) =>
             {
                 dispatch(getRecordingByWorkspace({ id: currentWorkspace.id }));
+                if (res.status == 'SUBMITTED') {
+                    loadData();
+                }
             });
 
             // Echo.private(`workspaces.${currentWorkspace.id}`)
@@ -155,7 +156,7 @@ export default () =>
                                             {row.status == 'STARTED' && <Badge color="success" className="bg-light-success">{row.status}</Badge>}
                                             {row.status == 'PAUSED' && <Badge color="info" className="bg-light-info">{row.status}</Badge>}
                                             {row.status == 'RESUMED' && <Badge color="primary" className="bg-light-primary">{row.status}</Badge>}
-                                            {(row.status == 'NOT_SUBMITTED' || row.status == 'SUBMITTED' || row.status == 'STOPED') && <Badge color="danger" className="bg-light-danger">{row.status}</Badge>}
+                                            {(row.status == 'NOT_SUBMITTED' || row.status == 'SUBMITTED' || row.status == 'STOPPED') && <Badge color="danger" className="bg-light-danger">{row.status}</Badge>}
                                         </td>
                                         <td>{row.callprofile && row.callprofile.name}</td>
                                         <td>

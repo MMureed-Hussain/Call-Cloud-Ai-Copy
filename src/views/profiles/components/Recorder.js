@@ -122,7 +122,7 @@ export default ({ audioDetails, setAudioDetails }) =>
         })
 
         //Update Call recording status
-        dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'STOPED', call_profile_id: parms.id }));
+        dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'STOPPED', call_profile_id: parms.id }));
     }
     /*eslint multiline-ternary: ["error", "always"]*/
     return (
