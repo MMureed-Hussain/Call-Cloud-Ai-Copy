@@ -5,7 +5,8 @@ import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
 import Skeleton from "react-loading-skeleton";
 // ** Reactstrap Imports
-import {
+import
+{
   Card,
   UncontrolledDropdown,
   DropdownToggle,
@@ -16,7 +17,8 @@ import {
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
+import
+{
   getProfiles,
   setReloadTable,
   deleteResource,
@@ -33,12 +35,14 @@ import ProfileSidebar from "./components/ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
 import usePrevious from "../../utility/hooks/usePrevious";
 
-const getProfileType = (path) => {
+const getProfileType = (path) =>
+{
   if (path === "/leads") return "lead";
   return "client";
 };
 
-export default () => {
+export default () =>
+{
   // ** States
   const location = useLocation();
   const profileType = getProfileType(location.pathname);
@@ -57,6 +61,7 @@ export default () => {
     (state) => state.workspaces.currentWorkspace
   );
   const profiles = useSelector((state) => state.profiles.profiles);
+  // console.log("--------", profiles);
   const loading = useSelector((state) => state.profiles.loadingProfiles);
   const pageCount = useSelector((state) => state.profiles.pageCount);
   const reloadTable = useSelector((state) => state.profiles.reloadTable);
@@ -69,7 +74,8 @@ export default () => {
   );
 
   // ** Factory method to dispatch the api call
-  const loadProfiles = (options) => {
+  const loadProfiles = (options) =>
+  {
     let params = {
       records_per_page: rowsPerPage,
       page: currentPage,
@@ -93,7 +99,8 @@ export default () => {
     setCurrentPage(options.page);
   };
   // ** Reload the table when record is deleted
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (reloadTable) {
       dispatch(setReloadTable(false));
       loadProfiles({
@@ -104,7 +111,8 @@ export default () => {
   // ** load data when filter value is changed
 
   usePrevious(
-    (prevPipelineFilterValue, prevStatusFilterValue) => {
+    (prevPipelineFilterValue, prevStatusFilterValue) =>
+    {
       //change when filter set to None
       if (
         (prevPipelineFilterValue?.value || prevStatusFilterValue?.value) &&
@@ -124,7 +132,8 @@ export default () => {
     [pipelineFilterValue, statusFilterValue]
   );
   // ** Load the all call profiles for the selected workspace
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (currentWorkspace) {
       dispatch(resetFilters());
       loadProfiles({ page: 1 });
@@ -199,7 +208,8 @@ export default () => {
       name: "Status",
       sortable: false,
       minWidth: "172px",
-      cell: (row) => {
+      cell: (row) =>
+      {
         const status = row[`${profileType}_status`]; //client_status or lead_status
         return status ? <Badge color="warning">{status.name}</Badge> : "-";
       },
@@ -208,7 +218,8 @@ export default () => {
       name: "Pipeline",
       sortable: false,
       minWidth: "172px",
-      cell: (row) => {
+      cell: (row) =>
+      {
         return row.pipeline ? (
           <Badge color="primary">{row.pipeline.name}</Badge>
         ) : (
@@ -219,7 +230,8 @@ export default () => {
     {
       name: "Actions",
       allowOverflow: true,
-      cell: (row) => {
+      cell: (row) =>
+      {
         return (
           <div className="d-flex">
             <UncontrolledDropdown>
@@ -228,9 +240,8 @@ export default () => {
               </DropdownToggle>
               <DropdownMenu container={"body"} end>
                 <Link
-                  to={`/${profileType === "lead" ? "leads" : "clients"}/${
-                    row.id
-                  }`}
+                  to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id
+                    }`}
                 >
                   <DropdownItem>
                     <Eye size={15} />
@@ -238,7 +249,8 @@ export default () => {
                   </DropdownItem>
                 </Link>
                 <DropdownItem
-                  onClick={() => {
+                  onClick={() =>
+                  {
                     setSelectedProfile(row);
                     toggleSidebar();
                   }}
@@ -266,7 +278,8 @@ export default () => {
     },
   ];
   //Handle sorting
-  const handleSort = (column, sortDirection) => {
+  const handleSort = (column, sortDirection) =>
+  {
     setSort(sortDirection);
     setSortColumn(column.sortField);
     loadProfiles({
@@ -277,7 +290,8 @@ export default () => {
   };
 
   // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
+  const handlePerPage = (e) =>
+  {
     const value = parseInt(e.currentTarget.value);
     setRowsPerPage(value);
     loadProfiles({
@@ -288,7 +302,8 @@ export default () => {
 
   // ** Function in get data on search query change
   const debounceLoadData = useCallback(debounce(loadProfiles, 1000), []);
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (searchTerm) {
       debounceLoadData({
         page: 1,
@@ -299,7 +314,8 @@ export default () => {
   }, [searchTerm]);
 
   // ** Custom Pagination
-  const CustomPagination = () => {
+  const CustomPagination = () =>
+  {
     return (
       <ReactPaginate
         previousLabel={""}
@@ -330,11 +346,13 @@ export default () => {
     );
   }
 
-  const toggleSidebar = () => {
+  const toggleSidebar = () =>
+  {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const onNewProfileClick = () => {
+  const onNewProfileClick = () =>
+  {
     setSelectedProfile(null);
     toggleSidebar();
   };

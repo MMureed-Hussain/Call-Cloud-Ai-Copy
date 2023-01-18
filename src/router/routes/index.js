@@ -36,6 +36,8 @@ const WorkspaceManageUsers = lazy(() => import("../../views/workspaces/Workspace
 const WorkspaceManageLeadlist = lazy(() => import("../../views/workspaces/WorkspaceManageLeadlist"));
 const WorkspaceManageQueue = lazy(() => import("../../views/queue/WorkspaceManageQueue"));
 const WorkspaceManageTeam = lazy(() => import("../../views/team/WorkspaceManageTeam"));
+const WorkspaceManageCallFlow = lazy(() => import("../../views/callflow/WorkspaceManageCallFlow"));
+
 const Login = lazy(() => import("../../views/Login"));
 const Register = lazy(() => import("../../views/Register"));
 const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
@@ -54,9 +56,8 @@ const CreateBookingPage = lazy(() => import("../../views/booking-pages/CreateBoo
 const Plans = lazy(() => import("../../views/plans"));
 // const Clients = lazy(() => import("../../views/clients"));
 const Followups = lazy(() => import("../../views/followups"));
-const CallProfiles = lazy(() => import("../../views/profiles/Index"));
+const Profiles = lazy(() => import("../../views/profiles/Index"));
 
-const UpdateOrCreateCallProfile = lazy(() => import("../../views/profiles/UpdateOrCreate"));
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
 const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
@@ -162,8 +163,15 @@ const Routes = [
     },
   },
   {
+    path: "/workspace/callflow",
+    element: <WorkspaceManageCallFlow />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
     path: "/leads",
-    element: <CallProfiles />,
+    element: <Profiles />,
     meta: {
       isPrivate: true,
     },
@@ -177,7 +185,7 @@ const Routes = [
   },
   {
     path: "/clients",
-    element: <CallProfiles />,
+    element: <Profiles />,
     meta: {
       isPrivate: true,
     },
@@ -213,34 +221,6 @@ const Routes = [
   {
     path: "/client-statuses",
     element: <ClientStatuses />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles",
-    element: <CallProfiles />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles/create",
-    element: <UpdateOrCreateCallProfile />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles/:id",
-    element: <CallProfileView />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/profiles/:id/edit",
-    element: <UpdateOrCreateCallProfile />,
     meta: {
       isPrivate: true,
     },

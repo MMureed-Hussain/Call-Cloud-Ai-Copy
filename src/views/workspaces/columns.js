@@ -567,8 +567,8 @@ export const NewTable = [
     sortable: false,
     minWidth: "172px",
     // sortField: "createdAt",
-    selector: (row) => row.updated_at,
-    cell: (row) => row.updated_at,
+    selector: (row) => row.createdAt,
+    cell: (row) => row.createdAt,
   },
   {
     name: "Upload By",

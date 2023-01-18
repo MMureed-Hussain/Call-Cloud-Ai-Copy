@@ -273,7 +273,7 @@ export const inviteLeadlist = createAsyncThunk(
       _formData.append('leadlist_name', payload.lead);
       _formData.append('file_name', payload.csvFile);
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/import/?workspace_id=${payload.id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/import/${payload.id}`,
         _formData, {
         headers: {
           "Content-Type": "multipart/form-data"
@@ -301,7 +301,7 @@ export const saveQueue = createAsyncThunk(
   {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/create/?workspace_id=${payload.id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/create/${payload.id}`,
         {
           data: {
             queue_name: payload.queue_name,
@@ -333,7 +333,7 @@ export const saveTeam = createAsyncThunk(
   {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/create/?workspace_id=${payload.id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/create/${payload.id}`,
         {
           data: {
             team_name: payload.team_name,
@@ -526,7 +526,7 @@ export const updateQueueInWorkspace = createAsyncThunk(
   {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/update/?workspace_id=${payload.workspace_id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/queues/update/${payload.workspace_id}`,
         {
           data: {
             queue_name: payload.queue_name,
@@ -562,7 +562,7 @@ export const updateTeamInWorkspace = createAsyncThunk(
   {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/update/?workspace_id=${payload.workspace_id}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/teams/update/${payload.workspace_id}`,
         {
           team_name: payload.team_name,
           users: payload.teamUsers,
@@ -766,7 +766,7 @@ export const getRecord = createAsyncThunk(
   {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/record/${id}/`,
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/record/${id}`,
 
       );
       return {

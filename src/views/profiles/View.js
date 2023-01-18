@@ -9,9 +9,9 @@ import Skeleton from "react-loading-skeleton";
 import CallsList from "./CallsList";
 import CallFollowUpList from "./CallFollowUpList";
 import ContactList from "./ContactList";
+import NoteList from "./NoteList";
 
-export default () =>
-{
+export default () => {
   const params = useParams();
   const dispatch = useDispatch();
   //selectors
@@ -20,8 +20,7 @@ export default () =>
   );
   const profile = useSelector((state) => state.profiles.selectedProfile);
 
-  useEffect(() =>
-  {
+  useEffect(() => {
     if (currentWorkspace) {
       dispatch(
         getProfile({
@@ -49,8 +48,8 @@ export default () =>
             <ProfileAbout data={profile} />
           </Col>
           <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
-            <ContactList />
             <CallFollowUpList />
+            <NoteList profileId={params.id} />
             <CallsList profileId={params.id} />
           </Col>
         </Row>
