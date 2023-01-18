@@ -37,6 +37,7 @@ export default ({ open, toggleSidebar, profile }) => {
   const leadStatuses = useSelector((state) => state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
   const clientStatuses = useSelector((state) => state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
   const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
+  const selfUser = useSelector((state) => state.workspaces.users.find(item => item.name === "me"));
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
@@ -54,7 +55,14 @@ export default ({ open, toggleSidebar, profile }) => {
       setPipeline(pipelines[0]);
       setLeadStatus(leadStatuses[0]);
       setClientStatus(clientStatuses[0]);
-      setLeadUsers(null);
+      if (selfUser){
+        setLeadUsers([
+          {
+            label: selfUser.name,
+            value: selfUser.enc_id
+          }
+        ]);
+      }
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
@@ -69,9 +77,16 @@ export default ({ open, toggleSidebar, profile }) => {
       }
       if (profile.users) {
         setLeadUsers(profile.users.map((item) => ({ value: item.enc_id,  label:item.name})))
+      } else if (selfUser) {
+        setLeadUsers([
+          {
+            label: selfUser.name,
+            value: selfUser.enc_id
+          }
+        ]);
       }
     }
-  }, [profile])
+  }, [profile, selfUser]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
