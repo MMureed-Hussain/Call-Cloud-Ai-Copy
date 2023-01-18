@@ -31,9 +31,16 @@ const ProfileAbout = ({ data }) => {
       ? { value: data.client_status.id, label: data.client_status.name }
       : null
   );
+  
+  const [leadUsers, setLeadUsers] = useState(data.users ? data.users.map(item => ({
+    value: item.enc_id,
+    label: item.name
+  })) : []);
+
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
   const clientStatuses = useSelector((state) => state.clientStatuses.statuses);
+  const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
 
   const pipelinesOptions = useMemo(() => {
     return pipelines.map((p) => ({ value: p.id, label: p.name }));
@@ -64,6 +71,9 @@ const ProfileAbout = ({ data }) => {
       });
     } else {
       setClientStatus(clientStatusesOptions[0]);
+    }
+    if (data?.users) {
+      setLeadUsers(data.users.map(u => ({ value: u.enc_id, label: u.name })));
     }
   }, [data]);
 
@@ -174,6 +184,22 @@ const ProfileAbout = ({ data }) => {
                 onChange={(val) => {
                   data.type === "lead" ? setLeadStatus(val): setClientStatus(val);
                   handleProfileUpdate({ [`${data.type}_status`]: val.value });
+                }}
+              />
+            </div>
+            <div className="mt-2">
+              <h5 className="mb-75">Users:</h5>
+              <Select
+                theme={selectThemeColors}
+                isMulti
+                value={leadUsers}
+                classNamePrefix="select"
+                className="react-select"
+                placeholder="Select User"
+                options={workspaceUsers}
+                onChange={(e) => {
+                  setLeadUsers(e.length > 0 ? e : []);
+                  handleProfileUpdate({ users: e.map(u => u.value) });
                 }}
               />
             </div>

@@ -213,7 +213,7 @@ export default ({ open, toggleSidebar, profile }) => {
             value={leadUsers}
             classNamePrefix="select"
             className={
-              errors.has("lead_status")
+              errors.has("users")
                 ? "is-invalid react-select"
                 : "react-select"
             }
@@ -223,8 +223,8 @@ export default ({ open, toggleSidebar, profile }) => {
               setLeadUsers(e.length > 0 ? e : null);
             }}
           />
-          {errors.has("lead_status") && (
-            <FormFeedback>{errors.get("lead_status")}</FormFeedback>
+          {errors.has("users") && (
+            <FormFeedback>{errors.get("users")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary" type="submit">
