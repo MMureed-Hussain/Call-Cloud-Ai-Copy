@@ -55,14 +55,6 @@ export default ({ open, toggleSidebar, profile }) => {
       setPipeline(pipelines[0]);
       setLeadStatus(leadStatuses[0]);
       setClientStatus(clientStatuses[0]);
-      if (selfUser){
-        setLeadUsers([
-          {
-            label: selfUser.name,
-            value: selfUser.enc_id
-          }
-        ]);
-      }
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
@@ -77,16 +69,20 @@ export default ({ open, toggleSidebar, profile }) => {
       }
       if (profile.users) {
         setLeadUsers(profile.users.map((item) => ({ value: item.enc_id,  label:item.name})))
-      } else if (selfUser) {
-        setLeadUsers([
-          {
-            label: selfUser.name,
-            value: selfUser.enc_id
-          }
-        ]);
       }
     }
-  }, [profile, selfUser]);
+  }, [profile]);
+
+  useEffect(() => {
+    if (selfUser && !profile) {
+      setLeadUsers([
+        {
+          label: selfUser.name,
+          value: selfUser.id
+        }
+      ]);
+    }
+  }, [selfUser, profile]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
