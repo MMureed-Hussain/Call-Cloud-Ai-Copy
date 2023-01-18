@@ -8,7 +8,8 @@ axios.defaults.withCredentials = true;
 
 export const createProfile = createAsyncThunk(
   "profiles/create",
-  async (payload, { dispatch }) => {
+  async (payload, { dispatch }) =>
+  {
     try {
       dispatch(setLoading(true));
       dispatch(setErrors({}));
@@ -35,7 +36,8 @@ export const createProfile = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
   "profiles/update",
-  async ({ payload, id }, { dispatch }) => {
+  async ({ payload, id }, { dispatch }) =>
+  {
     try {
       dispatch(setLoading(true));
       dispatch(setErrors({}));
@@ -63,7 +65,8 @@ export const updateProfile = createAsyncThunk(
 
 export const getProfiles = createAsyncThunk(
   "profiles/index",
-  async (payload, { dispatch }) => {
+  async (payload, { dispatch }) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles`,
@@ -84,7 +87,8 @@ export const getProfiles = createAsyncThunk(
 
 export const getProfile = createAsyncThunk(
   "profiles/find",
-  async ({ params, id }, { dispatch }) => {
+  async ({ params, id }, { dispatch }) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
@@ -107,7 +111,8 @@ export const getProfile = createAsyncThunk(
 
 export const getCallsByProfileId = createAsyncThunk(
   "profiles/calls",
-  async ({ params, id }, { dispatch }) => {
+  async ({ params, id }, { dispatch }) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/calls`,
@@ -129,7 +134,8 @@ export const getCallsByProfileId = createAsyncThunk(
 
 export const createCall = createAsyncThunk(
   "profiles/createCall",
-  async ({ formData, id }, { dispatch }) => {
+  async ({ formData, id }, { dispatch }) =>
+  {
     try {
       dispatch(setErrors({}));
       const response = await axios.post(
@@ -159,7 +165,8 @@ export const createCall = createAsyncThunk(
 // delete
 export const deleteResource = createAsyncThunk(
   "profiles/delete",
-  async (url, { dispatch }) => {
+  async (url, { dispatch }) =>
+  {
     try {
       const response = await axios.delete(url);
       toast.success(response.data.message);
@@ -178,7 +185,8 @@ export const deleteResource = createAsyncThunk(
 
 export const updateCall = createAsyncThunk(
   "profiles/updateCall",
-  async ({ formData, id }, { dispatch }) => {
+  async ({ formData, id }, { dispatch }) =>
+  {
     try {
       dispatch(setErrors({}));
       const response = await axios.put(
@@ -204,7 +212,8 @@ export const updateCall = createAsyncThunk(
 
 export const getCallFollowUpsByProfileId = createAsyncThunk(
   "profiles/followups",
-  async ({ params, id }, { dispatch }) => {
+  async ({ params, id }, { dispatch }) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`,
@@ -226,13 +235,10 @@ export const getCallFollowUpsByProfileId = createAsyncThunk(
 
 export const storeOrUpdateCallFollowUp = createAsyncThunk(
   "profiles/storeOrUpdateCallFollowUp",
-  async ({ data, id }, { dispatch }) => {
+  async ({ data, id }, { dispatch }) =>
+  {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`,
-        data
-      );
-      console.log(response.data);
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/followups`, data);
       toast.success(response.data.message);
       dispatch(setReloadTable(true));
       return { data: true };
@@ -247,7 +253,8 @@ export const storeOrUpdateCallFollowUp = createAsyncThunk(
 // delete
 export const deleteCallFollowUp = createAsyncThunk(
   "profiles/deleteCallFollowUp",
-  async (id, { dispatch }) => {
+  async (id, { dispatch }) =>
+  {
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-followup/${id}`
@@ -272,7 +279,8 @@ export const deleteCallFollowUp = createAsyncThunk(
 
 export const createNote = createAsyncThunk(
   "profiles/createNote",
-  async (formData, { dispatch }) => {
+  async (formData, { dispatch }) =>
+  {
     try {
       dispatch(setErrors({}));
       const response = await axios.post(
@@ -295,7 +303,8 @@ export const createNote = createAsyncThunk(
 
 export const getNotesByProfileId = createAsyncThunk(
   "profiles/notes",
-  async ({ params, id }) => {
+  async ({ params, id }) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profile-notes?profile_id=${id}`,
@@ -317,7 +326,8 @@ export const getNotesByProfileId = createAsyncThunk(
 
 export const updateNote = createAsyncThunk(
   "profiles/updateNote",
-  async ({ formData, id }, { dispatch }) => {
+  async ({ formData, id }, { dispatch }) =>
+  {
     try {
       dispatch(setErrors({}));
       const response = await axios.put(
@@ -341,7 +351,8 @@ export const updateNote = createAsyncThunk(
 
 export const deleteNote = createAsyncThunk(
   "profiles/deleteNote",
-  async (id, { dispatch }) => {
+  async (id, { dispatch }) =>
+  {
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profile-notes/${id}`
@@ -363,7 +374,8 @@ export const deleteNote = createAsyncThunk(
 // Profile Contact section
 export const profileContactList = createAsyncThunk(
   "profiles/contacts",
-  async ({ params, id }, { dispatch }) => {
+  async ({ params, id }, { dispatch }) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/contacts`,
@@ -379,7 +391,8 @@ export const profileContactList = createAsyncThunk(
 
 export const storeOrUpdateProfileContact = createAsyncThunk(
   "profiles/storeOrUpdateProfileContact",
-  async ({ data, id }, { dispatch }) => {
+  async ({ data, id }, { dispatch }) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${parseInt(
@@ -401,7 +414,8 @@ export const storeOrUpdateProfileContact = createAsyncThunk(
 // delete
 export const deleteProfileContact = createAsyncThunk(
   "profiles/deleteProfileContact",
-  async (id, { dispatch }) => {
+  async (id, { dispatch }) =>
+  {
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-contact/${id}`
@@ -424,81 +438,81 @@ export const deleteProfileContact = createAsyncThunk(
 
 // prettier-ignore
 export const callProfileSlice = createSlice({
-    name: "profiles",
-    initialState: {
-        profiles: [],
-        loading: false,
-        totalRecords: 0,
-        pageCount: 0,
-        selectedProfile: null,
-        errors: new ErrorHandler(),
-        loadingProfiles: true,
-        nowPlaying: null,
-        reloadTable: false,
-        reloadCallTable: false,
-        reloadNoteTable:false,
-        pipelineFilterValue: { label: "None", value: null },
-        statusFilterValue: { label: "None", value: null },
+  name: "profiles",
+  initialState: {
+    profiles: [],
+    loading: false,
+    totalRecords: 0,
+    pageCount: 0,
+    selectedProfile: null,
+    errors: new ErrorHandler(),
+    loadingProfiles: true,
+    nowPlaying: null,
+    reloadTable: false,
+    reloadCallTable: false,
+    reloadNoteTable: false,
+    pipelineFilterValue: { label: "None", value: null },
+    statusFilterValue: { label: "None", value: null },
+  },
+  reducers: {
+    setLoading: (state, { payload }) =>
+    {
+      state.loading = payload
     },
-    reducers: {
-        setLoading: (state, { payload }) =>
-        {
-            state.loading = payload
-        },
-        setErrors: (state, { payload }) =>
-        {
-            state.errors.setErrors(payload);
-        },
-        setProfiles: (state, { payload }) =>
-        {
-            state.profiles = payload;
-        },
-        setTotalRecords: (state, { payload }) =>
-        {
-            state.totalRecords = payload;
-        },
-        setPageCount: (state, { payload }) =>
-        {
-            state.pageCount = payload;
-        },
-        setLoadingProfiles: (state, { payload }) =>
-        {
-            state.loadingProfiles = payload;
-        },
-        setSelectedProfile: (state, { payload }) =>
-        {
-            state.selectedProfile = payload;
-        },
-        setNowPlaying: (state, { payload }) =>
-        {
-            state.nowPlaying = payload;
-        },
-        setReloadTable: (state, { payload }) =>
-        {
-            state.reloadTable = payload;
-        },
-        setReloadCallTable: (state, { payload }) =>
-        {
-            state.reloadCallTable = payload;
-        },
-        setReloadNoteTable: (state, { payload }) =>
-        {
-            state.reloadNoteTable = payload;
-        },
-        setPipelineFilterValue: (state, { payload }) =>
-        {
-            state.pipelineFilterValue = payload
-        },
-        setStatusFilterValue: (state, { payload }) =>
-        {
-            state.statusFilterValue = payload
-        },
-        resetFilters: (state, { payload }) =>
-        {
-            state.statusFilterValue = { label: "None", value: null };
-            state.pipelineFilterValue = { label: "None", value: null };
-        }
+    setErrors: (state, { payload }) =>
+    {
+      state.errors.setErrors(payload);
+    },
+    setProfiles: (state, { payload }) =>
+    {
+      state.profiles = payload;
+    },
+    setTotalRecords: (state, { payload }) =>
+    {
+      state.totalRecords = payload;
+    },
+    setPageCount: (state, { payload }) =>
+    {
+      state.pageCount = payload;
+    },
+    setLoadingProfiles: (state, { payload }) =>
+    {
+      state.loadingProfiles = payload;
+    },
+    setSelectedProfile: (state, { payload }) =>
+    {
+      state.selectedProfile = payload;
+    },
+    setNowPlaying: (state, { payload }) =>
+    {
+      state.nowPlaying = payload;
+    },
+    setReloadTable: (state, { payload }) =>
+    {
+      state.reloadTable = payload;
+    },
+    setReloadCallTable: (state, { payload }) =>
+    {
+      state.reloadCallTable = payload;
+    },
+    setReloadNoteTable: (state, { payload }) =>
+    {
+      state.reloadNoteTable = payload;
+    },
+    setPipelineFilterValue: (state, { payload }) =>
+    {
+      state.pipelineFilterValue = payload
+    },
+    setStatusFilterValue: (state, { payload }) =>
+    {
+      state.statusFilterValue = payload
+    },
+    resetFilters: (state, { payload }) =>
+    {
+      state.statusFilterValue = { label: "None", value: null };
+      state.pipelineFilterValue = { label: "None", value: null };
     }
+  }
 });
 
 export const {

@@ -5,7 +5,8 @@ import ReactPaginate from "react-paginate";
 import Skeleton from "react-loading-skeleton";
 import moment from "moment";
 import Select from "react-select";
-import {
+import
+{
   Row,
   Col,
   Button,
@@ -34,7 +35,8 @@ import withReactContent from "sweetalert2-react-content";
 import "@styles/base/plugins/extensions/ext-component-sweet-alerts.scss";
 const MySwal = withReactContent(Swal);
 
-export default () => {
+export default () =>
+{
   const dispatch = useDispatch();
   const params = useParams();
   const CreateUpdateContactSidebarRef = useRef(null);
@@ -52,11 +54,13 @@ export default () => {
     (state) => state.workspaces.currentWorkspace
   );
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     loadList();
   }, [data, reloadTable]);
 
-  const loadList = (options) => {
+  const loadList = (options) =>
+  {
     if (currentWorkspace) {
       let queryParams = {
         workspace_id: currentWorkspace.id,
@@ -69,7 +73,8 @@ export default () => {
           id: params.id,
           params: queryParams,
         })
-      ).then(({ payload }) => {
+      ).then(({ payload }) =>
+      {
         setContacts(payload.data);
       });
     }
@@ -82,7 +87,8 @@ export default () => {
     { value: 100, label: 100 },
   ];
 
-  const handleSelectChange = (e, name) => {
+  const handleSelectChange = (e, name) =>
+  {
     let target = {
       name,
       type: "input",
@@ -92,7 +98,8 @@ export default () => {
     handleChange({ target });
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const key = e.target.name;
     const value =
       e.target.type == "checkbox" ? e.target.checked : e.target.value;
@@ -111,7 +118,8 @@ export default () => {
     );
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = (id) =>
+  {
     MySwal.fire({
       text: "Are you sure you?",
       showCancelButton: true,
@@ -121,7 +129,8 @@ export default () => {
         cancelButton: "btn btn-danger ms-1",
       },
       buttonsStyling: false,
-    }).then((result) => {
+    }).then((result) =>
+    {
       if (result.isConfirmed) {
         dispatch(deleteProfileContact(id));
       }
