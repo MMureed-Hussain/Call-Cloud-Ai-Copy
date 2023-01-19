@@ -45,9 +45,11 @@ export default ({ open, toggleSidebar, profile }) => {
 
   useEffect(() => {
     dispatch(setErrors({}))
-    dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
-    dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
-    dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
+    if (!profile) { //load from this component when sidebar open for profile creation otherwise load from the profileAbout component
+      dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
+      dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
+      dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
+    }
   }, [currentWorkspace]);
 
   useEffect(() => {

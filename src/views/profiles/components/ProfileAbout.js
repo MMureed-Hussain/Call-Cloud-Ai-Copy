@@ -12,6 +12,7 @@ import { updateProfile } from "../../../redux/profiles";
 import { Edit } from "react-feather";
 import ProfileSidebar from "./ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
+import { getUsers } from "../../../redux/workspaces";
 
 const ProfileAbout = ({ data }) => {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const ProfileAbout = ({ data }) => {
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
   const clientStatuses = useSelector((state) => state.clientStatuses.statuses);
+  const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
   const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
 
   const pipelinesOptions = useMemo(() => {
@@ -86,6 +88,9 @@ const ProfileAbout = ({ data }) => {
     }
     if (!clientStatuses.length) {
       dispatch(getClientStatuses({ workspace_id: data.workspace_id }));
+    }
+    if (!workspaceUsers.length) {
+      dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
     }
   }, []);
 
