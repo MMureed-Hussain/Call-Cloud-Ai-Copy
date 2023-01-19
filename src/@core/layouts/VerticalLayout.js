@@ -1,10 +1,12 @@
 // ** React Imports
+/* eslint-disable */
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 
 // ** Store & Actions
 import { useSelector, useDispatch } from "react-redux"
-import {
+import
+{
   handleMenuCollapsed,
   handleContentWidth,
   handleMenuHidden
@@ -40,13 +42,13 @@ import { useNavbarType } from "@hooks/useNavbarType"
 import { useFooterType } from "@hooks/useFooterType"
 import { useNavbarColor } from "@hooks/useNavbarColor"
 
-import { getSingleNotification, readNotification } from "@store/notifications";
-
 // ** Styles
 import "@styles/base/core/menu/menu-types/vertical-menu.scss"
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss"
+import WebNotification from "../components/notification/WebNotification"
 
-const VerticalLayout = (props) => {
+const VerticalLayout = (props) =>
+{
   // ** Props
   const { menu, navbar, footer, children, menuData } = props
 
@@ -63,34 +65,16 @@ const VerticalLayout = (props) => {
   const [menuVisibility, setMenuVisibility] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
-  const [notification, setNotification] = useState("");
-
   // ** Vars
   const dispatch = useDispatch()
   const layoutStore = useSelector((state) => state.layout)
-  const store = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (store.user) {
-      dispatch(getSingleNotification(store.user.id)).then(resp => setNotification(resp.payload.data));
-    }
-    // if (store.user) {
-    //   const getNotification = async () => {
-    //     await  axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/user_notification/${store.user.id}`).then(response => setNotification(response.data))
-    //   }
-    //   getNotification();
-    // }
-  }, [store]);
 
-  const notificationMarkRead = (id) => {
-    // console.log('coming', id); return;
-    setNotification("");
-    
-    dispatch(readNotification({ id }));
-  }
+
 
   // ** Update Window Width
-  const handleWindowWidth = () => {
+  const handleWindowWidth = () =>
+  {
     setWindowWidth(window.innerWidth)
   }
 
@@ -110,21 +94,24 @@ const VerticalLayout = (props) => {
   const setIsHidden = (val) => dispatch(handleMenuHidden(val))
 
   //** This function will detect the Route Change and will hide the menu on menu item click
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (menuVisibility && windowWidth < 1200) {
       setMenuVisibility(false)
     }
   }, [location])
 
   //** Sets Window Size & Layout Props
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (window !== undefined) {
       window.addEventListener("resize", handleWindowWidth)
     }
   }, [windowWidth])
 
   //** ComponentDidMount
-  useEffect(() => {
+  useEffect(() =>
+  {
     setIsMounted(true)
     return () => setIsMounted(false)
   }, [])
@@ -160,8 +147,7 @@ const VerticalLayout = (props) => {
   return (
     <div
       className={classnames(
-        `wrapper vertical-layout ${
-          navbarWrapperClasses[navbarType] || "navbar-floating"
+        `wrapper vertical-layout ${navbarWrapperClasses[navbarType] || "navbar-floating"
         } ${footerClasses[footerType] || "footer-static"}`,
         {
           // Modern Menu
@@ -190,15 +176,8 @@ const VerticalLayout = (props) => {
       ) : null}
 
       {/*{ notification ? (<div className="top-alert overflow-hidden cursor-pointer" onClick={ notificationMarkRead(notification.id) }>*/}
-      { notification.length !== 0 ? (<div className="top-alert overflow-hidden cursor-pointer">
-        <div className='demo-spacing-0'>
-          <UncontrolledAlert  color='primary' toggle={() => notificationMarkRead(notification.id)}>
-            <div className='alert-body text-center' onClick={() => notificationMarkRead(notification.id)}>
-              <span>{notification.message}</span>
-            </div>
-          </UncontrolledAlert >
-        </div>
-      </div>) : '' }
+      {/* Web Notification */}
+      <WebNotification />
 
       <Navbar
         expand="lg"
@@ -207,8 +186,7 @@ const VerticalLayout = (props) => {
         dark={skin === "dark" || bgColorCondition}
         color={bgColorCondition ? navbarColor : undefined}
         className={classnames(
-          `header-navbar navbar align-items-center ${
-            navbarClasses[navbarType] || "floating-nav"
+          `header-navbar navbar align-items-center ${navbarClasses[navbarType] || "floating-nav"
           } navbar-shadow`
         )}
       >

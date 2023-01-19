@@ -16,6 +16,7 @@ import followups from "./followups";
 import callStatuses from "./callStatuses";
 import leadStatuses from "./leadStatuses";
 import clientStatuses from "./clientStatuses";
+import calls from "./calls";
 
 const rootReducer = {
     navbar,
@@ -33,6 +34,7 @@ const rootReducer = {
     callStatuses,
     leadStatuses,
     clientStatuses,
+    calls,
 };
 
 

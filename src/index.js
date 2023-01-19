@@ -8,7 +8,7 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 
 // ** ThemeColors Context
-
+import './bootstrap';
 import { ThemeContext } from "./utility/context/ThemeColors";
 
 // ** ThemeConfig
@@ -55,7 +55,6 @@ root.render(
       <Suspense fallback={<Spinner />}>
         <ThemeContext>
           <LazyApp />
-
           <Toaster
             position={themeConfig.layout.toastPosition}
             toastOptions={{ className: "react-hot-toast", duration: 5000 }}

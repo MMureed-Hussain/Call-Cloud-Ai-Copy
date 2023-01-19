@@ -1,4 +1,5 @@
 // ** React Imports
+/* eslint-disable */
 import { Link } from "react-router-dom";
 
 // ** Custom Components
@@ -9,7 +10,8 @@ import Avatar from "@components/avatar";
 // import { deleteWorkspace } from "@store/workspaces";
 
 // ** Icons Imports
-import {
+import
+{
   Slack,
   User,
   Settings,
@@ -25,7 +27,8 @@ import {
 } from "react-feather";
 
 // ** Reactstrap Imports
-import {
+import
+{
   Badge,
   UncontrolledDropdown,
   DropdownToggle,
@@ -39,15 +42,18 @@ import {
 // const renderName = (row) => {
 //   return row.nickname ? row.nickname : row.name;
 // };
-const renderCreatedAt = (row) => {
+const renderCreatedAt = (row) =>
+{
   return row.createdAt ? row.createdAt : "-";
 };
 
-const renderJoinedAt = (row) => {
+const renderJoinedAt = (row) =>
+{
   return row.joinedAt ? row.joinedAt : "-";
 };
 
-const renderClient = (row) => {
+const renderClient = (row) =>
+{
   if (row.avatar && row.avatar.length) {
     return <Avatar className="me-1" img={row.avatar} width="32" height="32" />;
   } else {
@@ -62,7 +68,8 @@ const renderClient = (row) => {
   }
 };
 
-const renderWorkspaceLogo = (row) => {
+const renderWorkspaceLogo = (row) =>
+{
   if (row.logo && row.logo.length) {
     return <Avatar className="me-1" img={row.logo} width="32" height="32" />;
   } else {
@@ -77,12 +84,14 @@ const renderWorkspaceLogo = (row) => {
   }
 };
 
-const queueRowCount = (row) => {
+const queueRowCount = (row) =>
+{
   let rowCount = 0;
-  row.leadlist_records.map((data) => {
+  row.leadlist_records.map((data) =>
+  {
     rowCount = rowCount + Number(data.rows)
   })
-return rowCount;
+  return rowCount;
 }
 
 const Title = () => (
@@ -162,7 +171,7 @@ export const adminWorkspaceColumns = [
               tag={Link}
               className="w-100"
               to={`/workspace/${row.id}`}
-              // onClick={() => store.dispatch(getUser(row.id))}
+            // onClick={() => store.dispatch(getUser(row.id))}
             >
               <FileText size={14} className="me-50" />
               <span className="align-middle">Details</span>
@@ -171,7 +180,8 @@ export const adminWorkspaceColumns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleEdit(row.id);
                 e.preventDefault();
               }}
@@ -183,7 +193,8 @@ export const adminWorkspaceColumns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleDelete(row.id);
                 e.preventDefault();
               }}
@@ -292,7 +303,8 @@ export const userColumns = [
     sortable: true,
     minWidth: "300px",
     sortField: "name",
-    selector: (row) => {
+    selector: (row) =>
+    {
       return row.nickname ? row.nickname : row.name;
     },
     cell: (row) => (
@@ -345,7 +357,7 @@ export const userColumns = [
     minWidth: "172px",
     // sortField: "createdAt",
     // selector: (row) => row.joinedAt,
-    cell: () => "Member",
+    cell: (row) => (row.userRole),
   },
   {
     name: "Actions",
@@ -370,7 +382,8 @@ export const userColumns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleEdit(row.id);
                 e.preventDefault();
               }}
@@ -383,7 +396,8 @@ export const userColumns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleDelete(row.invitationId, row.joinedAt);
                 e.preventDefault();
               }}
@@ -452,7 +466,7 @@ export const LeadlistColumns = [
     cell: (row) => row.business_city,
 
   },
-  
+
 
   {
     name: "File Name",
@@ -475,7 +489,7 @@ export const LeadlistColumns = [
   //   name: "Actions",
   //   minWidth: "100px",
   //   cell: (row) => (
-      
+
   //     <div className="column-action">
   //       <UncontrolledDropdown>
   //         <DropdownToggle tag="div" className="btn btn-sm">
@@ -533,10 +547,10 @@ export const NewTable = [
     sortable: true,
     minWidth: "172px",
     sortField: "leadlist_name",
-    
+
     selector: (row) => row.leadlist_name,
     cell: (row) => row.leadlist_name,
-    
+
     // row.business_name
   },
   {
@@ -580,7 +594,7 @@ export const NewTable = [
   //   cell: (row) => row.business_city,
 
   // },
-  
+
 
   {
     name: "Rows",
@@ -609,7 +623,7 @@ export const QueueTable = [
     sortField: "leadlist_name",
     selector: (row) => row.queue_name,
     cell: (row) => row.queue_name,
-    
+
     // row.business_name
   },
   {
@@ -650,7 +664,8 @@ export const QueueTable = [
     name: "Time Ago",
     sortable: false,
     minWidth: "172px",
-    cell: (row) => {
+    cell: (row) =>
+    {
       // console.log('-------------------');
       // console.log(new Date(row.created_at));
       // console.log(new Date());
@@ -675,7 +690,7 @@ export const QueueTable = [
     cell: (row) => row.users.length,
 
   },
-  
+
 
   {
     name: "Total Rows",
@@ -708,7 +723,8 @@ export const QueueTable = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleEdit(row.id);
                 e.preventDefault();
               }}
@@ -721,17 +737,18 @@ export const QueueTable = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleDelete(row.id, row.joinedAt);
                 e.preventDefault();
               }}
-              // onClick={() => {
-              //   deleteQueueFromWorkspace(`${process.env.REACT_APP_API_ENDPOINT}/api/queues/delete/${row.id}`
-              //   )
-              // }}
-         
+            // onClick={() => {
+            //   deleteQueueFromWorkspace(`${process.env.REACT_APP_API_ENDPOINT}/api/queues/delete/${row.id}`
+            //   )
+            // }}
+
             >
-              <Trash size={15} className="me-50"/>
+              <Trash size={15} className="me-50" />
               <span className="align-middle ms-50">
                 {row.joinedAt ? "Remove user" : "Delete Queue"}
               </span>
@@ -751,7 +768,7 @@ export const teamTable = [
   //   sortField: "leadlist_name",
   //   selector: (row) => row.queue_name,
   //   cell: (row) => row.queue_name,
-    
+
   //   // row.business_name
   // },
   {
@@ -819,7 +836,7 @@ export const teamTable = [
   //   cell: (row) => row.users.length,
 
   // },
-  
+
 
   // {
   //   name: "Total Rows",
@@ -852,7 +869,8 @@ export const teamTable = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleEdit(row.id);
                 e.preventDefault();
               }}
@@ -865,17 +883,18 @@ export const teamTable = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) => {
+              onClick={(e) =>
+              {
                 row.handleDelete(row.id);
                 e.preventDefault();
               }}
-              // onClick={() => {
-              //   deleteQueueFromWorkspace(`${process.env.REACT_APP_API_ENDPOINT}/api/queues/delete/${row.id}`
-              //   )
-              // }}
-         
+            // onClick={() => {
+            //   deleteQueueFromWorkspace(`${process.env.REACT_APP_API_ENDPOINT}/api/queues/delete/${row.id}`
+            //   )
+            // }}
+
             >
-              <Trash size={15} className="me-50"/>
+              <Trash size={15} className="me-50" />
               <span className="align-middle ms-50">
                 {row.joinedAt ? "Remove user" : "Delete Team"}
               </span>
