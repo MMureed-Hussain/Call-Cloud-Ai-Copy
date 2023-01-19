@@ -11,8 +11,6 @@ const ViewCalendarModal = forwardRef((props, ref) =>
 {
 
     const user = useSelector((state) => state.auth.user);
-
-    console.log(user);
     const [open, setOpen] = useState(false);
     const [followUp, setFollowUp] = useState(null);
     const toggle = () => setOpen(!open);

@@ -37,6 +37,7 @@ export default ({ open, toggleSidebar, profile }) => {
   const leadStatuses = useSelector((state) => state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
   const clientStatuses = useSelector((state) => state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
   const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
+  const selfUser = useSelector((state) => state.workspaces.users.find(item => item.name === "me"));
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
@@ -44,9 +45,11 @@ export default ({ open, toggleSidebar, profile }) => {
 
   useEffect(() => {
     dispatch(setErrors({}))
-    dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
-    dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
-    dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
+    if (!profile) { //load from this component when sidebar open for profile creation otherwise load from the profileAbout component
+      dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
+      dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
+      dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
+    }
   }, [currentWorkspace]);
 
   useEffect(() => {
@@ -54,7 +57,6 @@ export default ({ open, toggleSidebar, profile }) => {
       setPipeline(pipelines[0]);
       setLeadStatus(leadStatuses[0]);
       setClientStatus(clientStatuses[0]);
-      setLeadUsers(null);
     } else {
       setPhone(profile.phone);
       setProfileName(profile.name);
@@ -71,7 +73,18 @@ export default ({ open, toggleSidebar, profile }) => {
         setLeadUsers(profile.users.map((item) => ({ value: item.enc_id,  label:item.name})))
       }
     }
-  }, [profile])
+  }, [profile]);
+
+  useEffect(() => {
+    if (selfUser && !profile) {
+      setLeadUsers([
+        {
+          label: selfUser.name,
+          value: selfUser.id
+        }
+      ]);
+    }
+  }, [selfUser, profile]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -213,7 +226,7 @@ export default ({ open, toggleSidebar, profile }) => {
             value={leadUsers}
             classNamePrefix="select"
             className={
-              errors.has("lead_status")
+              errors.has("users")
                 ? "is-invalid react-select"
                 : "react-select"
             }
@@ -223,8 +236,8 @@ export default ({ open, toggleSidebar, profile }) => {
               setLeadUsers(e.length > 0 ? e : null);
             }}
           />
-          {errors.has("lead_status") && (
-            <FormFeedback>{errors.get("lead_status")}</FormFeedback>
+          {errors.has("users") && (
+            <FormFeedback>{errors.get("users")}</FormFeedback>
           )}
         </FormGroup>
         <Button className="me-1" color="primary" type="submit">
