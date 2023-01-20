@@ -12,6 +12,8 @@ import { updateProfile } from "../../../redux/profiles";
 import { Edit } from "react-feather";
 import ProfileSidebar from "./ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
+import { Link } from "react-router-dom";
+import { Link as LinkIcon } from "react-feather";
 
 const ProfileAbout = ({ data }) => {
   const dispatch = useDispatch();
@@ -231,6 +233,12 @@ const ProfileAbout = ({ data }) => {
             <CardText>
               {moment(data.updated_at).format("YYYY-MM-DD HH:mm:ss")}
             </CardText>
+          </div>
+          <div className="mt-2">
+            <Link className="d-flex align-items-center" to={`/activity-logs?model_type=CallProfile&model_id=${data.id}`}>
+              <LinkIcon size={14} className="me-50"/>
+              <h5 className="mb-0">Activity Logs</h5>
+            </Link>
           </div>
         </CardBody>
       </Card>

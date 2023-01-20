@@ -63,6 +63,7 @@ const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
 const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
 const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
+const ActivityLogs = lazy(() => import("../../views/activity-logs/Index"));
 
 // ** Merge Routes
 const Routes = [
@@ -295,6 +296,13 @@ const Routes = [
       isPrivate: true,
     },
   },
+  {
+    path: "/activity-logs",
+    element: <ActivityLogs />,
+    meta: {
+      isPrivate: true,
+    },
+  }
 ];
 
 const getRouteMeta = (route) => {
