@@ -1,19 +1,11 @@
 export const ActivityLogTableColumns = [
   {
-    name: "Subject",
+    name: "User",
     sortable: true,
     width: "160px",
-    sortField: "subject_type",
-    selector: (row) => row.subject_type,
-    cell: (row) => row.subject_type,
-  },
-  {
-    name: "Batch",
-    sortable: true,
-    width: "160px",
-    sortField: "batch_uuid",
-    selector: (row) => row.batch_uuid,
-    cell: (row) => row.batch_uuid
+    sortField: "causer_type",
+    selector: (row) => row.causer.name,
+    cell: (row) => row.causer.name,
   },
   {
     name: "Description",
