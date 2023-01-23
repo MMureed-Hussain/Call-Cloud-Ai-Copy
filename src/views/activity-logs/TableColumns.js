@@ -1,29 +1,38 @@
+import moment from 'moment';
+import UserCardCell from '../common/UserCardCell';
+
 export const ActivityLogTableColumns = [
   {
     name: "User",
     sortable: true,
-    width: "160px",
+    width: "200px",
     sortField: "causer_type",
     selector: (row) => row.causer.name,
-    cell: (row) => row.causer.name,
+    cell: (row) => <UserCardCell user={row.causer}/>,
   },
   {
     name: "Description",
     sortable: false,
-    width: "160px",
+    minWidth: "500px",
+    grow: 1,
     selector: (row) => row.description,
-    cell: (row) => row.description
+    cell: (row) => {
+      return (
+        <>
+          <div className='d-flex flex-column'>
+            <span>{ row.subject.name }</span>
+            <ul>
+              { row.description.map(item => <li>{ item }</li>) }
+            </ul>
+          </div>
+        </>
+      );
+    }
   },
   {
-    name: "Changes",
+    name: "Created At",
     sortable: false,
-    minWidth: "196px",
-    cell: (row) => {
-      return (<ul className="d-flex flex-column">
-        {row.changes.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>);
-    },
+    width: "190px",
+    cell: (row) => moment(row.created_at).format('YYYY-MM-DD HH:MM'),
   }
 ];
