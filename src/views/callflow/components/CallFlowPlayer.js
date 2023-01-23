@@ -12,7 +12,7 @@ export default ({ callId, container = "body" }) => {
     const nowPlaying = useSelector((state) => state.profiles.nowPlaying);
     const audioElement = useRef();
     const playBackRateOptions = [1, 1.2, 1.6, 2];
-
+  console.log("callplayer id",callId)
     useEffect(() => {
         if (nowPlaying && nowPlaying != callId) {
             audioElement.current.pause(); //stop previous audio if new one is played

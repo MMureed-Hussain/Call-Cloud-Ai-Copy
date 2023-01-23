@@ -23,6 +23,7 @@ export default ({ audioDetails, setAudioDetails }) => {
     }, [timestamp])
 
     const accessMediaRecorder = () => {
+        
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
             const mediaRecorder = new MediaRecorder(stream);
             setRecorder(mediaRecorder);
@@ -87,7 +88,9 @@ export default ({ audioDetails, setAudioDetails }) => {
         const audioBlob = new Blob(audioDetails.chunks, {
             type: 'audio/mp3'
         });
+
         const audioUrl = URL.createObjectURL(audioBlob);
+        console.log("audioUrl",audioUrl)
         setAudioDetails(details => {
             const clonedDetails = { ...details, url: audioUrl, blob: audioBlob };
             return clonedDetails;
@@ -108,7 +111,7 @@ export default ({ audioDetails, setAudioDetails }) => {
                             <Mic size={16} />
                         </Button.Ripple>
                     </div>}
-                {recording ?
+                {/* {recording ?
                     recordPaused ?
                         <div className='rounded-circle overflow-hidden'>
                             <Button.Ripple className='btn-icon rounded-circle' color='warning' onClick={onResume}>
@@ -121,11 +124,12 @@ export default ({ audioDetails, setAudioDetails }) => {
                                 <Pause size={16} />
                             </Button.Ripple>
                         </div>
-                    : null}
+                    : null} */}
             </div>
             <br />
+          {  console.log("audiodetails",audioDetails)}
             <Row className="text-center mb-2">
-                {
+                { 
                     audioDetails?.url ?
                         <audio style={{ height: "30px" }} controls>
                             <source src={audioDetails?.url} type='audio/ogg' />
