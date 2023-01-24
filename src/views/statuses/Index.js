@@ -146,7 +146,7 @@ export default ({
             tag="ul"
             animation={300}
             className="list-group"
-            list={statuses}
+            list={statuses.map(x => ({ ...x, chosen: true }))} 
             setList={(data) => {
               dispatch(setStatuses(data));
             }}

@@ -136,7 +136,7 @@ export default () => {
             tag="ul"
             animation={300}
             className="list-group"
-            list={pipelines}
+            list={pipelines.map(x => ({ ...x, chosen: true }))} 
             setList={(data) => {
               dispatch(setPipelines(data));
             }}

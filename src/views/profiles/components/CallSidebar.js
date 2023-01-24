@@ -211,7 +211,7 @@ export default ({ open, toggleSidebar, call }) =>
               setNote(value);
             }}
           />
-          {errors.has("note") && (
+          {!note && (
             <FormFeedback>{errors.get("note")}</FormFeedback>
           )}
         </FormGroup>
