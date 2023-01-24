@@ -10,7 +10,7 @@ import { padStart } from "lodash"
 export default ({ audioDetails, setAudioDetails }) => {
     const [timer, setTimer] = useState(0);
     const [recording, setRecording] = useState(false); //if recording is in progress
-    const [recordPaused, setRecordPaused] = useState(false); //if recording is in pause state
+   // const [recordPaused, setRecordPaused] = useState(false); //if recording is in pause state
     const [timestamp, setTimestamp] = useState(0); //duration of recording in milliseconds
     const [recorder, setRecorder] = useState(null); //media recorder instance
 
@@ -64,33 +64,33 @@ export default ({ audioDetails, setAudioDetails }) => {
         resetRecorder();
         startTimer();
         setRecording(true);
-        setRecordPaused(false);
+       // setRecordPaused(false);
         recorder.start(10); // start recorder with 10ms buffer
+        
     }
 
-    const onResume = () => {
-        startTimer();
-        recorder.resume();
-        setRecordPaused(false);
-    }
+    // const onResume = () => {
+    //     startTimer();
+    //     recorder.resume();
+    //     setRecordPaused(false);
+    // }
 
-    const onPause = () => {
-        clearInterval(timer);
-        recorder.pause();
-        setRecordPaused(true);
-    }
+    // const onPause = () => {
+    //     clearInterval(timer);
+    //     recorder.pause();
+    //  //   setRecordPaused(true);
+    // }
 
     const onStop = () => {
         clearInterval(timer);
         setRecording(false);
-        setRecordPaused(false);
+       // setRecordPaused(false);
         recorder.stop();
         const audioBlob = new Blob(audioDetails.chunks, {
             type: 'audio/mp3'
         });
 
         const audioUrl = URL.createObjectURL(audioBlob);
-        console.log("audioUrl",audioUrl)
         setAudioDetails(details => {
             const clonedDetails = { ...details, url: audioUrl, blob: audioBlob };
             return clonedDetails;
@@ -127,7 +127,6 @@ export default ({ audioDetails, setAudioDetails }) => {
                     : null} */}
             </div>
             <br />
-          {  console.log("audiodetails",audioDetails)}
             <Row className="text-center mb-2">
                 { 
                     audioDetails?.url ?
