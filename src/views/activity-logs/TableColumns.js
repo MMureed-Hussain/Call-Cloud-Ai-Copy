@@ -22,7 +22,7 @@ export const ActivityLogTableColumns = [
           <div className='d-flex flex-column'>
             <span>{ row.subject.name }</span>
             <ul>
-              { row.description.map(item => <li>{ item }</li>) }
+              { row.description.map((item, index) => <li key={index}>{ item }</li>) }
             </ul>
           </div>
         </>
