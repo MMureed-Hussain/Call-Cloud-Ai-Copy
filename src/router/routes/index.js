@@ -65,6 +65,7 @@ const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
 const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
 const ActivityLogs = lazy(() => import("../../views/activity-logs/Index"));
 
+const Calls = lazy(() => import("../../views/calls"));
 // ** Merge Routes
 const Routes = [
   {
@@ -274,6 +275,21 @@ const Routes = [
       isPrivate: true,
     },
   },
+
+  {
+    path: "/followups",
+    element: <Followups />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/call-overview",
+    element: <Calls />,
+    meta: {
+      isPrivate: true,
+    },
+  },
   {
     path: "*",
     element: <Error />,
@@ -305,7 +321,8 @@ const Routes = [
   }
 ];
 
-const getRouteMeta = (route) => {
+const getRouteMeta = (route) =>
+{
   if (isObjEmpty(route.element.props)) {
     if (route.meta) {
       return { routeMeta: route.meta };
@@ -316,11 +333,13 @@ const getRouteMeta = (route) => {
 };
 
 // ** Return Filtered Array of Routes & Paths
-const MergeLayoutRoutes = (layout, defaultLayout) => {
+const MergeLayoutRoutes = (layout, defaultLayout) =>
+{
   const LayoutRoutes = [];
 
   if (Routes) {
-    Routes.filter((route) => {
+    Routes.filter((route) =>
+    {
       let isBlank = false;
       // ** Checks if Route layout or Default layout matches current layout
       if (
@@ -357,13 +376,15 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
   return LayoutRoutes;
 };
 
-const getRoutes = (layout) => {
+const getRoutes = (layout) =>
+{
   const defaultLayout = layout || "vertical";
   const layouts = ["vertical", "horizontal", "blank"];
 
   const AllRoutes = [];
 
-  layouts.forEach((layoutItem) => {
+  layouts.forEach((layoutItem) =>
+  {
     const LayoutRoutes = MergeLayoutRoutes(layoutItem, defaultLayout);
 
     AllRoutes.push({

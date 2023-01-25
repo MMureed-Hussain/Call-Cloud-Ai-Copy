@@ -1,16 +1,17 @@
 // ** React Import
+/* eslint-disable */
 import { useState } from "react";
 
 // ** Custom Components
 import Sidebar from "@components/sidebar";
-
+import Select from "react-select";
 // ** Utils
 // import { selectThemeColors } from "@utils";
 
 // ** Third Party Components
 
 // ** Reactstrap Imports
-import { Button, Label, Form, Input, FormFeedback, Spinner } from "reactstrap";
+import { FormGroup, Button, Label, Form, Input, FormFeedback, Spinner } from "reactstrap";
 
 // ** Store & Actions
 import { inviteMember, updateMemberInWorkspace } from "@store/workspaces";
@@ -22,27 +23,31 @@ const SidebarUser = ({
   refreshTable,
   user = null,
   workspaceId,
-}) => {
+  auth
+}) =>
+{
   // ** States
-
-  const [email, setEmail] = useState(() => {
+  const [email, setEmail] = useState(() =>
+  {
     return user ? user.email : "";
   });
 
-  const [nickname, setNickname] = useState(() => {
+  const [nickname, setNickname] = useState(() =>
+  {
     return user ? user.nickname : "";
   });
   const [emailError, setEmailError] = useState(false);
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
-  // const [plan, setPlan] = useState("basic");
-  // const [role, setRole] = useState("subscriber");
-
+  // const [plan, setPlan] = useState("basic");  
+  const [role, setRole] = useState(user ? user.userRole : 'member');
+  const roleList = [{ value: 'admin', label: 'Admin' }, { value: 'manager', label: 'Manager' }, { value: 'member', label: 'Member' }];
   // ** Store Vars
   const dispatch = useDispatch();
 
   // ** Function to handle form submit
-  const onSubmit = (e) => {
+  const onSubmit = (e) =>
+  {
     e.preventDefault();
 
     let valid = true;
@@ -59,8 +64,9 @@ const SidebarUser = ({
 
       if (user) {
         dispatch(
-          updateMemberInWorkspace({ nickname, id: user.invitationId })
-        ).then((result) => {
+          updateMemberInWorkspace({ nickname, id: user.invitationId, role })
+        ).then((result) =>
+        {
           setFormSubmissionLoader(false);
           if (result.payload.data.user) {
             setEmail("");
@@ -70,8 +76,9 @@ const SidebarUser = ({
           }
         });
       } else {
-        dispatch(inviteMember({ email, nickname, id: workspaceId })).then(
-          (result) => {
+        dispatch(inviteMember({ email, nickname, id: workspaceId, role })).then(
+          (result) =>
+          {
             setFormSubmissionLoader(false);
             if (result.payload.data.user) {
               setEmail("");
@@ -85,7 +92,8 @@ const SidebarUser = ({
     }
   };
 
-  const handleSidebarClosed = () => {
+  const handleSidebarClosed = () =>
+  {
     setEmail("");
     setNickname("");
     setEmailError(false);
@@ -131,6 +139,22 @@ const SidebarUser = ({
             onChange={(e) => setNickname(e.target.value)}
           />
         </div>
+
+        {
+          (role == 'admin' || auth.user.role == 'company') &&
+
+          <FormGroup>
+            <Label className="form-label" for="timezoneInput"> User Role </Label>
+            <Select
+              defaultValue={{ value: role, label: role.toUpperCase() }}
+              className="react-select"
+              classNamePrefix="select"
+              onChange={e => setRole(e.value)}
+              options={roleList}
+            />
+
+          </FormGroup>
+        }
 
         <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">
           Submit

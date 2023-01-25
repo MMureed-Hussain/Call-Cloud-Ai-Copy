@@ -1,4 +1,5 @@
 // ** Redux Imports
+/* eslint-disable */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // ** Axios Imports
@@ -9,7 +10,8 @@ axios.defaults.withCredentials = true;
 // Perform get single notification for user
 export const getSingleNotification = createAsyncThunk(
   "notifications/getSingleNotification",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/user_notification/${payload}`
@@ -29,7 +31,8 @@ export const getSingleNotification = createAsyncThunk(
 // Perform add workspace API
 export const readNotification = createAsyncThunk(
   "notifications/readNotification",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/notification/${payload.id}`,
@@ -54,6 +57,21 @@ export const readNotification = createAsyncThunk(
   }
 );
 
+// Perform sendCallRecordingStatus API
+export const sendCallRecordingStatus = createAsyncThunk(
+  "notifications/sendCallRecordingStatus",
+  async (payload) =>
+  {
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/workspace/call/recording/status`, payload);
+      console.log(res.data, 'sendCallRecordingStatus');
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
+
+
 // prettier-ignore
 export const notificationsSlice = createSlice({
   name: "notifications",
@@ -62,9 +80,11 @@ export const notificationsSlice = createSlice({
     notification: [],
     loading: true,
   },
-  extraReducers: (builder) => {
+  extraReducers: (builder) =>
+  {
     builder
-      .addCase(getSingleNotification.fulfilled, (state, action) => {
+      .addCase(getSingleNotification.fulfilled, (state, action) =>
+      {
         state.notification = action.payload.data;
         state.loading = false;
       })
