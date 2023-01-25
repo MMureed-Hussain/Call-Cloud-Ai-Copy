@@ -159,7 +159,7 @@ const QueueSidebar = ({
       tag="ul"
       animation={300}
       className="list-group"
-      list={selectedLeadLists}
+      list={selectedLeadLists.map(x => ({ ...x, chosen: true }))} 
       setList={(data) => {
         const ordered_data = data.map((item, index) => ({
           ...item,

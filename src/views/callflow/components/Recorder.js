@@ -10,7 +10,7 @@ import { padStart } from "lodash"
 export default ({ audioDetails, setAudioDetails }) => {
     const [timer, setTimer] = useState(0);
     const [recording, setRecording] = useState(false); //if recording is in progress
-    const [recordPaused, setRecordPaused] = useState(false); //if recording is in pause state
+   // const [recordPaused, setRecordPaused] = useState(false); //if recording is in pause state
     const [timestamp, setTimestamp] = useState(0); //duration of recording in milliseconds
     const [recorder, setRecorder] = useState(null); //media recorder instance
 
@@ -23,6 +23,7 @@ export default ({ audioDetails, setAudioDetails }) => {
     }, [timestamp])
 
     const accessMediaRecorder = () => {
+        
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
             const mediaRecorder = new MediaRecorder(stream);
             setRecorder(mediaRecorder);
@@ -63,30 +64,32 @@ export default ({ audioDetails, setAudioDetails }) => {
         resetRecorder();
         startTimer();
         setRecording(true);
-        setRecordPaused(false);
+       // setRecordPaused(false);
         recorder.start(10); // start recorder with 10ms buffer
+        
     }
 
-    const onResume = () => {
-        startTimer();
-        recorder.resume();
-        setRecordPaused(false);
-    }
+    // const onResume = () => {
+    //     startTimer();
+    //     recorder.resume();
+    //     setRecordPaused(false);
+    // }
 
-    const onPause = () => {
-        clearInterval(timer);
-        recorder.pause();
-        setRecordPaused(true);
-    }
+    // const onPause = () => {
+    //     clearInterval(timer);
+    //     recorder.pause();
+    //  //   setRecordPaused(true);
+    // }
 
     const onStop = () => {
         clearInterval(timer);
         setRecording(false);
-        setRecordPaused(false);
+       // setRecordPaused(false);
         recorder.stop();
         const audioBlob = new Blob(audioDetails.chunks, {
             type: 'audio/mp3'
         });
+
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioDetails(details => {
             const clonedDetails = { ...details, url: audioUrl, blob: audioBlob };
@@ -108,7 +111,7 @@ export default ({ audioDetails, setAudioDetails }) => {
                             <Mic size={16} />
                         </Button.Ripple>
                     </div>}
-                {recording ?
+                {/* {recording ?
                     recordPaused ?
                         <div className='rounded-circle overflow-hidden'>
                             <Button.Ripple className='btn-icon rounded-circle' color='warning' onClick={onResume}>
@@ -121,11 +124,11 @@ export default ({ audioDetails, setAudioDetails }) => {
                                 <Pause size={16} />
                             </Button.Ripple>
                         </div>
-                    : null}
+                    : null} */}
             </div>
             <br />
             <Row className="text-center mb-2">
-                {
+                { 
                     audioDetails?.url ?
                         <audio style={{ height: "30px" }} controls>
                             <source src={audioDetails?.url} type='audio/ogg' />

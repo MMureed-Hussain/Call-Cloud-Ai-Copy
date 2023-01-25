@@ -2,28 +2,19 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
-import { ChevronDown } from "react-feather";
-import Skeleton from "react-loading-skeleton";
 import CallFlowPlayer from './CallFlowPlayer'
 // ** Reactstrap Imports
 import {
   Card,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   CardHeader,
   CardTitle,
 } from "reactstrap";
 import RecordListHeader from "./RecordListHeader";
 import { useDispatch, useSelector } from "react-redux";
-import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import moment from "moment";
-import Select from "react-select";
-import { selectThemeColors } from "@utils";
 import CallflowSidebar from "./CallflowSidebar";
-import { getCallFlowRecord } from "../../../redux/callflow";
-const RecordList = ({rowId}) => {
+import { getCallFlowRecord } from "../../../redux/workspaces";
+const RecordList = ({rowId,profileId}) => {
   // ** States
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,7 +26,6 @@ const RecordList = ({rowId}) => {
   const [calls,setCalls]=useState([]);
   let local=[]
   const [onCallSubmit,setOnCallSubmit]=useState(false)
-
   const dispatch = useDispatch();
  
   const reloadCallTable = useSelector(
@@ -47,16 +37,16 @@ const RecordList = ({rowId}) => {
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
- //const rowId=useSelector((state)=>state.workspaces)
+ 
   useEffect(()=>{
-    if(rowId){
+    if(profileId){
+      
 
-      dispatch(getCallFlowRecord({rowId:rowId})).then((data)=>
-      {
- // console.log("call records",data?.payload?.data.callFlowRecord.callflow_recording[0])
-  if(data.payload)
+      dispatch(getCallFlowRecord({profileId:profileId})).then((data)=>
+      { 
+  if( data?.payload?.data)
   {
-    data?.payload.data.callFlowRecord.callflow_recording.map((data)=>{
+    data?.payload.data.callFlowRecord.map((data)=>{
       local.push(data)
      
       
@@ -75,38 +65,7 @@ const RecordList = ({rowId}) => {
     
 
 
-  },[rowId])
-
-
-  useEffect(()=>{
-    if(rowId){
-
-      dispatch(getCallFlowRecord({rowId:rowId})).then((data)=>
-      {
- // console.log("call records",data?.payload?.data.callFlowRecord.callflow_recording[0])
-  const rowsData=data?.payload.data.callFlowRecord.callflow_recording
-  if(data.payload)
-  {
-    data?.payload.data.callFlowRecord.callflow_recording.map((data)=>{
-      local.push(data)
-     
-      
-
-    })
-    setCalls(local)
-    
-    
-
-  }
- 
-  }
-      
-      )
-    }
-    
-
-
-  },[onCallSubmit])
+  },[onCallSubmit,profileId])
 
   const loadCalls = (options) => {
     let queryParams = {
@@ -231,6 +190,7 @@ setOnCallSubmit(!onCallSubmit)
   return (
     <>
       <Card>
+        {console.log("calls",calls)}
         <CardHeader className="py-1">
           <CardTitle tag="h4">Calls</CardTitle>
         </CardHeader>
@@ -258,7 +218,8 @@ setOnCallSubmit(!onCallSubmit)
 
           callRecordList={callRecordList}
           rowId={rowId}
-          //profile={selectedProfile}
+          profileId={profileId}
+        
         />
       )}
     </>
