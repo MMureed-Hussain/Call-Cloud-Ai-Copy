@@ -74,7 +74,7 @@ const TeamSidebar = ({
         ).then(res => setTeamUsers(res.payload.data.users));
         console.log("get Users Data", getUsers)
       }
-  }, [teamUsers, workspaceId]);
+  }, [workspaceId]);
 
   // ** Function to handle form submit
   const onSubmit = (e) => {

@@ -23,7 +23,7 @@ import {
   updateQueueInWorkspace,
   saveQueue,
   getLeadlist,
-  getUsers,
+  getTeam,
 } from "@store/workspaces";
 import { useDispatch } from "react-redux";
 
@@ -38,22 +38,24 @@ const QueueSidebar = ({
 
   const [leadlist, setLeadlist] = useState([]);
 
-  const [queueUsers, setQueueUsers] = useState([]);
+  const [queueTeams, setQueueTeams] = useState([]);
 
   const [selectedLeadLists, setSelectedLeadLists] = useState(() => {
     return queue ? queue.leadlist_records.map((item) => ({
       value: item.id,
       label: item.leadlist_name,
+      
       order_by: item.order_by,
     })) : [];
   });
-  const [selectedQueueUsers, setSelectedQueueUsers] = useState(() => {
-    return queue ? queue.users.map((item) => ({
-          value: item.enc_id,
+  
+  const [selectedQueueTeams, setSelectedQueueTeams] = useState(() => {
+    return queue ? queue.teams.map((item) => ({
+          value: item.id,
           label: ((item) => {
             let final = 'dummy user name';
-            if (item.name) {
-              final = item.name;
+            if (item.team_name) {
+              final = item.team_name;
             } else if (item.first_name && item.last_name) {
               final = `${item.first_name} ${item.last_name}`;
             }
@@ -85,16 +87,15 @@ const QueueSidebar = ({
   }, [leadlist, workspaceId]);
 
   useEffect(() => {
-    if (workspaceId && queueUsers.length === 0) {
+    if (workspaceId && queueTeams.length === 0) {
       dispatch(
-        getUsers({
+        getTeam({
           id: workspaceId,
-          perPage: 50,
-          page: 1
+        
         })
-      ).then((res) => setQueueUsers(res.payload.data.users));
+      ).then((res) => setQueueTeams(res.payload.data.team));
     }
-  }, [queueUsers, workspaceId]);
+  }, [workspaceId]);
 
   // ** Function to handle form submit
   const onSubmit = (e) => {
@@ -102,6 +103,7 @@ const QueueSidebar = ({
       setFormSubmissionLoader(true);
 
       if (queue) {
+
         dispatch(
           updateQueueInWorkspace({
             queue_name: queueName,
@@ -109,7 +111,7 @@ const QueueSidebar = ({
               leadlist_id: item.value,
               order_by: item.order_by
             })),
-            queueUser: selectedQueueUsers.map(user => user.value),
+            queueTeam: selectedQueueTeams.map(user => user.value),
             queue_id: queue.id,
             workspace_id: queue.workspace_id,
           })
@@ -118,7 +120,7 @@ const QueueSidebar = ({
           if (result.payload.data.queue) {
             setQueueName("");
             setLeadlist([]);
-            setQueueUsers([]);
+            setQueueTeams([]);
             refreshTable();
             toggleSidebar();
           }
@@ -132,14 +134,14 @@ const QueueSidebar = ({
               leadlist_id: item.value,
               order_by: item.order_by,
             })),
-            users: selectedQueueUsers.map((item) => item.value),
+            teams: selectedQueueTeams.map((item) => item.value),
           })
         ).then((result) => {
           setFormSubmissionLoader(false);
           if (result.payload.data.data) {
             setQueueName("");
             setLeadlist([]);
-            setQueueUsers([]);
+            setQueueTeams([]);
             refreshTable();
             toggleSidebar();
           }
@@ -150,7 +152,7 @@ const QueueSidebar = ({
   const handleSidebarClosed = () => {
     setQueueName("");
     setLeadlist([]);
-    setQueueUsers([]);
+    setQueueTeams([]);
     setQueueError(false);
   };
 
@@ -255,20 +257,20 @@ const QueueSidebar = ({
         <div className="mb-1">
           <FormGroup>
             <Label className="form-label" for="select-user">
-              Select user to assigned Queue
+              Select Team to assigned Queue
             </Label>
 
             <Select
-              value={selectedQueueUsers}
+              value={selectedQueueTeams}
               isMulti
               classNamePrefix="select"
-              placeholder="Select User"
-              options={queueUsers.map((item) => ({
+              placeholder="Select Team"
+              options={queueTeams.map((item) => ({
                 value: item.id,
-                label: item.name,
+                label: item.team_name,
               }))}
               onChange={(data) => {
-                setSelectedQueueUsers(data);
+                setSelectedQueueTeams(data);
               }}
               styles={selectStyles}
             />
