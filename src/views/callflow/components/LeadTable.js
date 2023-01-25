@@ -27,7 +27,6 @@ import RecordList from '../components/RecordList'
   //Redux
   import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
   import { faCalendar, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
-import { LocalConvenienceStoreOutlined } from "@material-ui/icons";
 
   const CallFlowTable= ({callFlowRecord,nextCallRecord}) => {
     const [callFlowData,setCallFlowData]=useState();
@@ -82,6 +81,7 @@ if(callFlowRecord){
   },[callFlowRecord])
 
 const handleButton=()=>{
+  console.log("runnung handlebtn")
   //setNextLead(!nextLead)
   nextCallRecord();
 

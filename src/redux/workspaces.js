@@ -848,6 +848,87 @@ export const getCsv = createAsyncThunk(
     }
   }
 );
+//CallFlow thunk
+export const getCallFlowData = createAsyncThunk(
+  "workspaces/getCallFlowData",
+  async (payload) => {
+   
+    
+      try {
+        console.log("thunk",payload)
+          const response = await axios.get(
+              `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/index/${payload}`
+          );
+          return {
+              data: {
+                  callflow: response.data.data,
+              },
+          };
+      } catch (e) {
+          toast.error(e.response.data.message);
+          return {
+              data: {
+                  callflow: [],
+                  total: 0,
+              },
+          };
+      }
+  }
+);
+export const postCallFlowRecord = createAsyncThunk(
+  "workspaces/postCallFlowRecord",
+  async (payload) => {
+      console.log("redux", payload)
+      try {
+          const response = await axios.post(
+              `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/store/recording`,
+              payload
+          );
+          toast.success("New Call Created");
+          return {
+              data: {
+                  callFlowRecord: response.data.data,
+                  total: response.data.total,
+              },
+          };
+      } catch (e) {
+          toast.error(e.response.data.message);
+          return {
+              data: {
+                  callFlowRecord: [],
+                  total: 0,
+              },
+          };
+      }
+  }
+);
+export const getCallFlowRecord = createAsyncThunk(
+  "workspaces/getCallFlowRecord",
+  async (payload) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/lead/record/${payload.profileId}`
+      );
+      console.log("thunk getRecord",response)
+      return {
+        data: {
+          callFlowRecord: response.data.data,
+          total: response.data.total,
+        },
+      };
+    } catch (e) {
+      toast.error(e.response.data.message);
+      return {
+        data: {
+          callFlowRecord: [],
+          total: 0,
+        },
+      };
+    }
+  }
+);
+
+
 
 // prettier-ignore
 //const user = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")) : null;
@@ -895,6 +976,20 @@ export const workspacesSlice = createSlice({
     totalQueue: 0,
     rowsPerPageQueue: 50,
     currentPageQueue: 1,
+    //Workspace CallFLow table related attributes
+    callflow:[],
+    callflowLoading:true,
+    totalCallflow: 0,
+    rowsPerPageCallflow:50,
+    currentPageCallflow:1,
+    
+    //Workspace CallFLow Recorded table related attributes
+    callFlowRecord:[],
+    callFlowRecordLoading:true,
+    totalCallFlowRecord: 0,
+    rowsPerPageCallFlowRecord:50,
+    currentPageCallFlowRecord:1, 
+
 
 
     //Team
@@ -903,7 +998,7 @@ export const workspacesSlice = createSlice({
     totalTeam: 0,
     rowsPerPageTeam: 50,
     currentPageTeam: 1,
-
+ 
     //Workspace CSV
     csv: null,
 
@@ -963,6 +1058,20 @@ export const workspacesSlice = createSlice({
     {
       state.currentPageQueue = action.payload.currentPage
     },
+    //callflow
+    storeRowsPerPageCallflow: (state, action) => {
+      state.rowsPerPageCallflow = action.payload.rowsPerPage
+    },    
+    storeCurrentPageCallflow: (state, action) => {
+      state.currentPageCallflow = action.payload.currentPage
+    },
+    //callflow Record in table
+    storeRowsPerPageCallFlowRecord: (state, action) => {
+      state.rowsPerPageCallFlowRecord = action.payload.rowsPerPage
+    },    
+    storeCurrentPageCallFlowRecord: (state, action) => {
+      state.currentPageCallFlowRecord = action.payload.currentPage
+    },  
     //Team
     storeRowsPerPageTeam: (state, action) =>
     {
@@ -1113,6 +1222,24 @@ export const workspacesSlice = createSlice({
         state.totalQueue = action.payload.data.total;
         state.queueLoading = false;
       })
+       //callflow
+       .addCase(getCallFlowData.fulfilled, (state, action) => {
+        state.callflow = action.payload.data.callflow;
+        state.totalCallflow = action.payload.data.total;
+        state.callflowLoading = false;
+      })
+      //callflow
+      .addCase(postCallFlowRecord.fulfilled, (state, action) => {
+        state.callFlowRecord = action.payload.data.callFlowRecord;
+        state.totalCallFlowRecord = action.payload.data.total;
+        state.callFlowRecordLoading = false;
+      })    
+       //callflow table
+       .addCase(getCallFlowRecord.fulfilled, (state, action) => {
+        state.callFlowRecord = action.payload.data.callFlowRecord;
+        state.totalCallFlowRecord = action.payload.data.total;
+        state.callFlowRecordLoading = false;
+      }) 
       //getTeam
       .addCase(getTeam.fulfilled, (state, action) =>
       {
@@ -1150,6 +1277,10 @@ export const {
   storeCurrentPageHeader,
   storeRowsPerPageQueue,
   storeCurrentPageQueue,
+  storeCurrentPageCallflow,
+   storeRowsPerPageCallflow,
+    storeCurrentPageCallFlowRecord,
+    storeRowsPerPageCallFlowRecord,
   storeRowsPerPageTeam,
   storeCurrentPageTeam,
   storeCurrentWorkspace,
