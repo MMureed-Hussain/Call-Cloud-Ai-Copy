@@ -16,6 +16,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Badge,
 } from "reactstrap";
 import { MoreVertical, Edit, Trash } from "react-feather";
 import StatusSidebar from "./components/StatusSidebar";
@@ -34,7 +35,7 @@ export default ({
   cloneStatuses,
   createStatus,
   updateStatus,
-  setErrors
+  setErrors,
 }) => {
   // ** State
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -50,8 +51,8 @@ export default ({
     moduleName,
     createStatus,
     updateStatus,
-    setErrors
-  }
+    setErrors,
+  };
 
   const dispatch = useDispatch();
 
@@ -146,7 +147,7 @@ export default ({
             tag="ul"
             animation={300}
             className="list-group"
-            list={statuses.map(x => ({ ...x, chosen: true }))} 
+            list={statuses.map((x) => ({ ...x, chosen: true }))}
             setList={(data) => {
               dispatch(setStatuses(data));
             }}
@@ -156,14 +157,21 @@ export default ({
             {statuses.map((item) => {
               return (
                 <ListGroupItem className="draggable" key={item.id}>
-                  {item.is_default === 1 ? (
+                  {item.is_default ? (
                     <h5 className="mt-0" style={{ color: item.color }}>
-                      {item.name}
+                      {item.name}{" "}
+                      <Badge
+                        color=""
+                        style={{ background: "gray", color: "white" }}
+                      >
+                        {" "}
+                        Default
+                      </Badge>
                     </h5>
                   ) : (
                     <div className="d-flex justify-content-between">
                       <h5 className="mt-0" style={{ color: item.color }}>
-                        {item.name}
+                        {item.name} <Badge color="success">Customized</Badge>
                       </h5>
                       {!item?.is_default && (
                         <div className="d-flex">

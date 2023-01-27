@@ -16,6 +16,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Badge,
 } from "reactstrap";
 import { MoreVertical, Edit, Trash } from "react-feather";
 import PipelineSidebar from "./components/PipelineSidebar";
@@ -39,6 +40,7 @@ export default () => {
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
+  console.log("state pipelines", pipelines);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
@@ -108,6 +110,7 @@ export default () => {
     <>
       <Card>
         <CardHeader>
+          {console.log("pipelines", pipelines)}
           <CardTitle tag="h4">Pipelines</CardTitle>
           <div className="d-flex align-items-center table-header-actions">
             <Button
@@ -136,7 +139,7 @@ export default () => {
             tag="ul"
             animation={300}
             className="list-group"
-            list={pipelines.map(x => ({ ...x, chosen: true }))} 
+            list={pipelines.map((x) => ({ ...x, chosen: true }))}
             setList={(data) => {
               dispatch(setPipelines(data));
             }}
@@ -145,34 +148,54 @@ export default () => {
           >
             {pipelines.map((item) => {
               return (
-                <ListGroupItem className="draggable" key={item.name}>
-                  <div className="d-flex justify-content-between">
-                    <h5 className="mt-0">{item.name}</h5>
-                    <div className="d-flex">
-                      <UncontrolledDropdown>
-                        <DropdownToggle className="pe-1" tag="span">
-                          <MoreVertical size={15} />
-                        </DropdownToggle>
-                        <DropdownMenu end>
-                          <DropdownItem
-                            onClick={() => {
-                              setSelectedPipeline(item);
-                              toggleSidebar();
-                            }}
-                          >
-                            <Edit size={15} />
-                            <span className="align-middle ms-50">Edit</span>
-                          </DropdownItem>
-                          <DropdownItem
-                            onClick={() => dispatch(deletePipeline(item.id))}
-                          >
-                            <Trash size={15} className="me-50" />
-                            <span className="align-middle ms-50">Delete</span>
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
+                <ListGroupItem className="draggable" key={item.id}>
+                  {item.is_default === 1 ? (
+                    <h5 className="mt-0" style={{ color: item.color }}>
+                      {item.name}{" "}
+                      <Badge
+                        color=""
+                        style={{ background: "gray", color: "white" }}
+                      >
+                        {" "}
+                        Default
+                      </Badge>
+                    </h5>
+                  ) : (
+                    <div className="d-flex justify-content-between">
+                      <h5 className="mt-0" style={{ color: item.color }}>
+                        {item.name} <Badge color="success">Customized</Badge>
+                      </h5>
+                      {!item?.is_default && (
+                        <div className="d-flex">
+                          <UncontrolledDropdown>
+                            <DropdownToggle className="pe-1" tag="span">
+                              <MoreVertical size={15} />
+                            </DropdownToggle>
+                            <DropdownMenu end>
+                              <DropdownItem
+                                onClick={() => {
+                                  setSelectedPipeline(item);
+                                  toggleSidebar();
+                                }}
+                              >
+                                <Edit size={15} />
+                                <span className="align-middle ms-50">Edit</span>
+                              </DropdownItem>
+                              <DropdownItem
+                                onClick={() =>  dispatch(deletePipeline(item.id))
+                                }
+                              >
+                                <Trash size={15} className="me-50" />
+                                <span className="align-middle ms-50">
+                                  Delete
+                                </span>
+                              </DropdownItem>
+                            </DropdownMenu>
+                          </UncontrolledDropdown>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </ListGroupItem>
               );
             })}
