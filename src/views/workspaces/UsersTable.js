@@ -142,7 +142,7 @@ const CustomHeader = ({
 
 const UsersList = ({ workspaceId }) =>
 {
-  console.log("workspaceId", workspaceId);
+
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
