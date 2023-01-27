@@ -15,6 +15,7 @@ export const callsSlice = createSlice({
     errors: new ErrorHandler(),
     calls: [],
     recordings: [],
+    reports: null,
   },
   reducers: {
     setErrors: (state, { payload }) =>
@@ -29,10 +30,13 @@ export const callsSlice = createSlice({
     {
       state.recordings = payload;
     },
+    setReports: (state, { payload }) =>
+    {
+      state.reports = payload;
+    },
 
   },
 });
-
 
 
 export const getCallsList = createAsyncThunk(
@@ -47,6 +51,21 @@ export const getCallsList = createAsyncThunk(
     }
   }
 );
+
+
+export const getCallsListWithCount = createAsyncThunk(
+  "calls/getCallsListWithCount",
+  async (params, { dispatch }) =>
+  {
+    try {
+      const response = await axios.get(`${baseURL}/report`, { params });
+      dispatch(setReports(response.data));
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
+
 
 export const leadProfileStatusList = createAsyncThunk(
   "calls/leadProfileStatusList",
@@ -81,6 +100,7 @@ export const {
   setErrors,
   setCalls,
   setRecordings,
+  setReports,
 } = callsSlice.actions;
 
 export default callsSlice.reducer;
