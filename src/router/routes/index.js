@@ -33,7 +33,8 @@ const Workspaces = lazy(() => import("../../views/workspaces/Workspaces"));
 const WorkspaceDetails = lazy(() => import("../../views/workspaces/WorkspaceDetails"));
 // prettier-ignore
 const WorkspaceManageUsers = lazy(() => import("../../views/workspaces/WorkspaceManageUsers"));
-const WorkspaceManageLeadlist = lazy(() => import("../../views/workspaces/WorkspaceManageLeadlist"));
+const WorkspaceManageLeadlist = lazy(() => import("../../views/leadlist/WorkspaceManageLeadlist"));
+
 const WorkspaceManageQueue = lazy(() => import("../../views/queue/WorkspaceManageQueue"));
 const WorkspaceManageTeam = lazy(() => import("../../views/team/WorkspaceManageTeam"));
 const WorkspaceManageCallFlow = lazy(() => import("../../views/callflow/WorkspaceManageCallFlow"));

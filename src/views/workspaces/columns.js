@@ -150,12 +150,12 @@ export const adminWorkspaceColumns = [
     cell: () => "0",
   },
   {
-    name: "Users",
+    name: "Teams",
     sortable: true,
     minWidth: "172px",
     sortField: "users",
-    selector: (row) => row.users,
-    cell: (row) => row.users,
+    selector: (row) => row.teams,
+    cell: (row) => row.teams,
   },
   {
     name: "Actions",
@@ -683,11 +683,11 @@ export const QueueTable = [
     // cell: (row) => row.workspace.name
   },
   {
-    name: "Assigned Users",
+    name: "Assigned Teams",
     sortable: false,
     minWidth: "172px",
-    selector: (row) => row.users.length,
-    cell: (row) => row.users.length,
+    selector: (row) => row.teams.length,
+    cell: (row) => row.teams.length,
 
   },
 
