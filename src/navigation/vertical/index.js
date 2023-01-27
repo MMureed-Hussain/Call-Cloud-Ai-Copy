@@ -19,12 +19,6 @@ export default [
     navLink: "/leads",
   },
   {
-    id: "pipelines",
-    title: "Pipelines",
-    icon: <Layers size={20} />,
-    navLink: "/pipelines",
-  },
-  {
     id: "leadlist",
     title: "Lead List",
     icon: <List size={20} />,
@@ -54,6 +48,12 @@ export default [
     icon: <Home size={20} />,
     badge: "light-warning",
     children: [
+      {
+        id: "pipelines",
+        title: "Pipelines",
+        icon: <Circle size={20} />,
+        navLink: "/pipelines",
+      },
       {
         id: "leadStatuses",
         title: "Lead",

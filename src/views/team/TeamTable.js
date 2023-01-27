@@ -3,9 +3,8 @@ import { Fragment, useEffect, useState } from "react";
 
 // ** Invoice List Sidebar
 import TeamSidebar from "./TeamSidebar";
-
+import { TeamTableColumn } from "./TeamTableColumn";
 // ** Table Columns
-import { teamTable } from "../../views/workspaces/columns";
 // ** Confirm box
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -116,7 +115,7 @@ const CustomHeader = ({
   );
 };
 
-const Team = ({ workspaceId }) => {
+const TeamTable = ({ workspaceId }) => {
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
@@ -332,7 +331,7 @@ const Team = ({ workspaceId }) => {
             pagination
             responsive
             paginationServer
-            columns={teamTable}
+            columns={TeamTableColumn}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
@@ -366,4 +365,4 @@ const Team = ({ workspaceId }) => {
     </Fragment>
   );
 };
-export default Team;
+export default TeamTable;

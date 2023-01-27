@@ -5,7 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import QueueSidebar from "./QueueSidebar";
 
 // ** Table Columns
-import { QueueTable } from "../../views/workspaces/columns";
+import { QueueTableColumn} from './QueueTableColumn'
 
 // ** Confirm box
 import Swal from "sweetalert2";
@@ -339,7 +339,7 @@ const Queue = ({ workspaceId }) => {
             pagination
             responsive
             paginationServer
-            columns={QueueTable}
+            columns={QueueTableColumn}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
