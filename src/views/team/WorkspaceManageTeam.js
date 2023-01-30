@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import TeamTable from "./TeamTable";
+import TeamTable from "./TeamTabel";
 
 function WorkspaceManageLeadlist() {
   const workspaceState = useSelector(
