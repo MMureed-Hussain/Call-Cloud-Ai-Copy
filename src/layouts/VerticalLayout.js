@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { Outlet } from "react-router-dom";
 
+
 import { useSelector } from "react-redux";
 // ** Core Layout Import
 // !Do not remove the Layout import
@@ -18,8 +19,7 @@ import Footer from "./components/Footer";
 //   return <p className="mb-0">Custom Navbar</p>;
 // };
 
-const CustomMenu = (props) =>
-{
+const CustomMenu = (props) => {
   // console.log(props);
   const layoutStore = useSelector((state) => state.layout);
   const workspaceStore = useSelector((state) => state.workspaces);
@@ -31,8 +31,7 @@ const CustomMenu = (props) =>
     menuData = menuData.filter((menu) => menu.id !== "manageUsers");
   } else {
     if (workspaceStore.currentWorkspace) {
-      menuData = menuData.map((menu) =>
-      {
+      menuData = menuData.map((menu) => {
         if (menu.id === "manageUsers") {
           menu.navLink = `/workspace/${workspaceStore.currentWorkspace.id}/users`;
         }
@@ -55,9 +54,8 @@ const CustomMenu = (props) =>
   ) : null;
 };
 
-const VerticalLayout = (props) =>
-{
-  const menuData = navigation();
+const VerticalLayout = (props) => {
+  //const menuData = navigation;
 
   // ** For ServerSide navigation
   // useEffect(() => {
@@ -66,7 +64,7 @@ const VerticalLayout = (props) =>
 
   return (
     <Layout
-      menuData={menuData}
+      menuData={navigation}
       navbar={(props) => <NavbarComponent {...props} />}
       {...props}
       menu={(props) => <CustomMenu {...props} />}

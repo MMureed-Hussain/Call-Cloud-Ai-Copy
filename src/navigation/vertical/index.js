@@ -1,4 +1,19 @@
-import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid } from "react-feather";
+import {
+  Layers,
+  Loader,
+  Home,
+  Users,
+  AlignJustify,
+  UserCheck,
+  Calendar,
+  Circle,
+  Bookmark,
+  Phone,
+  List,
+  Slack,
+  Grid,
+} from "react-feather";
+
 export default [
   {
     id: "dashboard",
@@ -60,59 +75,49 @@ export default [
         icon: <Circle size={20} />,
         navLink: "/lead-statuses",
       },
-
       {
-        id: "clients",
-        title: "Clients",
-        icon: <Users size={20} />,
-        navLink: "/clients",
+        id: "callStatuses",
+        title: "Call",
+        icon: <Circle size={20} />,
+        navLink: "/statuses",
       },
-      // {
-      //   id: "bookingPages",
-      //   title: "Booking Pages",
-      //   icon: <Bookmark size={20} />,
-      //   navLink: "/booking-pages",
-      // },
       {
-        id: "followups",
-        title: "Follow-ups",
-        icon: <Calendar size={20} />,
-        navLink: "/followups",
+        id: "clientStatuses",
+        title: "Client",
+        icon: <Circle size={20} />,
+        navLink: "/client-statuses",
       },
-      // {
-      //   id: "callProfiles",
-      //   title: "Call Profiles",
-      //   icon: <Phone size={20} />,
-      //   navLink: "/profiles",
-      // },
-    ];
+    ],
+  },
 
-
-
-
-  //Add the tab if user role == company only
-  if (user && user.role == 'company') {
-
-    tabs.push({
-      id: "call-overview",
-      title: "Calls Overview",
-      icon: <Phone size={20} />,
-      navLink: "/call-overview",
-    });
-
-    tabs.push({
-      id: "reports",
-      title: "Reports",
-      icon: <PieChart size={20} />,
-      navLink: "/reports",
-    });
-
-
-  }
-
-  return tabs;
-
-}
-
-
-export default navigation;
+  {
+    id: "clients",
+    title: "Clients",
+    icon: <Users size={20} />,
+    navLink: "/clients",
+  },
+  // {
+  //   id: "bookingPages",
+  //   title: "Booking Pages",
+  //   icon: <Bookmark size={20} />,
+  //   navLink: "/booking-pages",
+  // },
+  {
+    id: "followups",
+    title: "Follow-ups",
+    icon: <Calendar size={20} />,
+    navLink: "/followups",
+  },
+  // {
+  //   id: "callProfiles",
+  //   title: "Call Profiles",
+  //   icon: <Phone size={20} />,
+  //   navLink: "/profiles",
+  // },
+  {
+    id: "call-overview",
+    title: "Calls Overview",
+    icon: <Phone size={20} />,
+    navLink: "/call-overview",
+  },
+];
