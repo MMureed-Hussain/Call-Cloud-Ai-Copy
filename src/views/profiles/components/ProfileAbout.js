@@ -97,16 +97,18 @@ const ProfileAbout = ({ data }) => {
   }, []);
 
   const handleProfileUpdate = (params) => {
+    const payload = {
+      pipeline: pipeline.value,
+      lead_status: leadStatus?.value,
+      client_status: clientStatus?.value,
+      name: data.name,
+      phone: data.phone,
+      ...params,
+    }
+    delete payload[data.type === "lead" ? "client_status" : "lead_status"];
     dispatch(
       updateProfile({
-        payload: {
-          pipeline: pipeline.value,
-          lead_status: leadStatus?.value,
-          client_status: clientStatus?.value,
-          name: data.name,
-          phone: data.phone,
-          ...params,
-        },
+        payload,
         id: data.id,
       })
     );

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import moment from 'moment';
 import UserCardCell from '../common/UserCardCell';
 
@@ -5,7 +6,7 @@ export const ActivityLogTableColumns = [
   {
     name: "User",
     sortable: true,
-    width: "200px",
+    width: "250px",
     sortField: "causer_type",
     selector: (row) => row.causer.name,
     cell: (row) => <UserCardCell user={row.causer}/>,
@@ -13,20 +14,22 @@ export const ActivityLogTableColumns = [
   {
     name: "Description",
     sortable: false,
-    minWidth: "500px",
+    minWidth: "400px",
     grow: 1,
-    selector: (row) => row.description,
     cell: (row) => {
-      return (
-        <>
-          <div className='d-flex flex-column'>
-            <span>{ row.subject.name }</span>
-            <ul>
-              { row.description.map((item, index) => <li key={index}>{ item }</li>) }
-            </ul>
-          </div>
-        </>
+      let template = children => (
+        <div className='d-flex flex-column'>
+          {children}
+        </div>
       );
+
+      switch (row.event) {
+        case "created":
+        case "deleted":
+          return template(row.description);
+        case "updated":
+          return template("Coming");
+      }
     }
   },
   {
