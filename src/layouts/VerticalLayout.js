@@ -1,5 +1,7 @@
 // ** React Imports
+/* eslint-disable */
 import { Outlet } from "react-router-dom";
+
 
 import { useSelector } from "react-redux";
 // ** Core Layout Import
@@ -53,7 +55,7 @@ const CustomMenu = (props) => {
 };
 
 const VerticalLayout = (props) => {
-  // const [menuData, setMenuData] = useState([])
+  //const menuData = navigation;
 
   // ** For ServerSide navigation
   // useEffect(() => {

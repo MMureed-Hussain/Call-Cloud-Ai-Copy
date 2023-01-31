@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "@components/sidebar";
 // ** Utils
 import Creatable from "react-select/creatable";
-import { postHeader, inviteLeadlist } from "@store/workspaces";
+import { postHeader, inviteLeadlist, updateLeadlistInWorkspace } from "@store/workspaces";
 
 // ** Third Party Components
 
@@ -22,28 +22,17 @@ import {
   Progress,
 } from "reactstrap";
 // ** Store & Actions
-// import {
-//   inviteLeadlist,
-//   // updateLeadlistInWorkspace
-// } from "@store/workspaces";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const SidebarLeadlist = ({
   open,
   toggleSidebar,
-  // refreshTable,
-  leadlist = null,
+  refreshTable,
+  leadlist,
   workspaceId,
 }) => {
   // ** States
-  const workspaceName = useSelector(
-    (state) => state.workspaces.currentWorkspace.name
-  );
-  console.log(workspaceName);
-
-  const [lead, setLead] = useState(() => {
-    return leadlist ? leadlist.lead : "";
-  });
+  const [leadName, setLeadName] = useState(leadlist ? leadlist.leadlist_name : "");
   const [fileHeaders, setFileHeaders] = useState();
   const [csvFile, setCsvFile] = useState("");
   const [progressBar, setProgressBar] = useState();
@@ -86,18 +75,10 @@ const SidebarLeadlist = ({
   const dispatch = useDispatch();
 
   // ** Function to handle form submit
-
   const handleFileSave = (e) => {
-    console.clear();
-    console.log("file handelsave", csvFile);
-
     setProgressBar(50);
-
     e.preventDefault();
-    console.log("leadlistname", lead);
-
     let valid = true;
-
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test()) {
       valid = false;
       // setLeadNameError(true);
@@ -106,31 +87,42 @@ const SidebarLeadlist = ({
     }
 
     if (!valid && csvFile) {
-      console.log("inside disptach", csvFile);
       setFormSubmissionLoader(true);
-      console.log("inside dispatch", lead);
       if (leadlist) {
         dispatch(
-          updateLeadlistInWorkspace({ lead, csvFile, id: workspaceId })
-        ).then((result) => {
-          setFormSubmissionLoader(false);
-          if (result.payload.data.user) {
-            setLead("");
-            setFileHeaders("");
-            refreshTable();
-            toggleSidebar();
+          updateLeadlistInWorkspace({ 
+            lead_name: leadName, 
+            csvFile,
+            leadlist_id: leadlist.id,
+            workspace_id: workspaceId,
           }
+          )
+          ).then((result) => {
+            setFormSubmissionLoader(false);
+            if (!result.payload) {
+              setCsvFile("");
+              setProgressBar();
+            } else {
+              setLeadName("");
+              setFileHeaders("");
+              refreshTable();
+              toggleSidebar();
+            }
         });
       } else {
-        dispatch(inviteLeadlist({ lead, csvFile, id: workspaceId })).then(
+        dispatch(
+          inviteLeadlist({ 
+            leadName, csvFile, id: workspaceId })).then(
           (result) => {
             setProgressBar(100);
             setButtonLoader(false);
-            console.log("file response ===", result.payload.data.data);
             setFileHeaders(result.payload.data.data);
-            console.log("file saved", result.payload.data.data);
             setFormSubmissionLoader(false);
-            if (result.payload.data) {
+            if (result.payload.data.data.lead_name) {
+            setLeadName("");
+            setFileHeaders("");
+            refreshTable();
+            toggleSidebar();
             }
           }
         );
@@ -149,36 +141,29 @@ const SidebarLeadlist = ({
 
     keyOptions.push(newOption);
   };
-  //populate inputHeaders
-  useEffect(() => {
-    if (fileHeaders) {
-
-      fileHeaders.map((data) => {
-        inputHeaders.push({
-          internal_header: data.header,
-          id: data.id,
-          external_header: "",
-        });
-      });
-    }
-  }, [fileHeaders]);
   //close sidebar
   const handleSidebarClosed = () => {
-    setLead("");
+    setLeadName("");
     setFileHeaders("");
     setLeadNameError(false);
   };
   //submit mapped headers
   const handleHeadersSubmit = () => {
     toggleSidebar();
-
-    console.log("header form submit", { data: inputHeaders });
-
-    dispatch(postHeader({ data: inputHeaders })).then((result) => {
-      console.log("post headr result", result);
-    });
+    dispatch(postHeader({ data: inputHeaders }));
   };
-  console.log("new Data", inputHeaders)
+  //populate inputHeaders
+  useEffect(() => {
+    if (fileHeaders) {
+      fileHeaders.map((data) => {
+        inputHeaders.push({
+          internal_header: data.header,
+          id: data.id,
+          external_header: data.header,
+        });
+      });
+    }
+  }, [fileHeaders]);
 
   return (
     <Sidebar
@@ -200,9 +185,10 @@ const SidebarLeadlist = ({
           id="leadlistName"
           placeholder=" Please enter Leadlist Name"
           invalid={leadNameError}
-          value={lead}
-          disabled={leadlist}
-          onChange={(e) => setLead(e.target.value)}
+          value={leadName}
+          required
+          // disabled={leadlist}
+          onChange={(e) => setLeadName(e.target.value)}
         />
 
         <FormFeedback>Please enter Leadlist Name</FormFeedback>
@@ -258,7 +244,6 @@ const SidebarLeadlist = ({
               </Label>
             </div>
           )}
-
           <div className="mb-1">
             <Form onSubmit={handleHeadersSubmit}>
               <div>
@@ -287,13 +272,15 @@ const SidebarLeadlist = ({
                               (x) => x.id === fields.id
                             );
                             const key = keyOptions.findIndex(
-                              (x) => (x.value === e.value)
+                              (x) => x.value === e.value
                             );
                             let prevKey;
                             const prev = inputHeaders[index].external_header;
                             if (prev.length > 0) {
                               prevKey = keyOptions.findIndex((x) => x.value === prev);
-                              keyOptions[prevKey].disabled = false;
+                              if (prevKey >= 0) {
+                                keyOptions[prevKey].disabled = false;
+                              }
                               inputHeaders[index].external_header = e.value;
                               keyOptions[key].disabled = true;
                             } else {

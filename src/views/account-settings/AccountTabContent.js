@@ -4,17 +4,9 @@ import { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 // ** Third Party Components
-// import Select from "react-select";
-// import Cleave from "cleave.js/react";
-// import { useForm, Controller } from "react-hook-form";
-// import "cleave.js/dist/addons/cleave-phone.us";
 import AsyncSelect from "react-select/async";
 import Select from "react-select";
-import AsyncCreatableSelect from "react-select/async-creatable";
 import { CountryRegionData } from "react-country-region-selector";
-// console.log("CountryRegionData", CountryRegionData);
-
-// console.log(JSON.stringify(selectedTimezone, null, 2));
 
 const countryOptions = CountryRegionData.map((country) => {
   return {
@@ -89,18 +81,6 @@ import { updateProfile } from "@store/auth";
 
 const AccountTabs = ({ data }) => {
   const dispatch = useDispatch();
-
-  // ** Hooks
-  // const defaultValues = {
-  //   name: data.name,
-  //   email: data.email,
-  // };
-  // const {
-  //   control,
-  //   // setError,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm({ defaultValues });
 
   // ** States
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
@@ -190,36 +170,10 @@ const AccountTabs = ({ data }) => {
     return industries;
   };
 
-  // label: `${new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier })} - ${timezone.name}`,
-  // const loadTimezonesOptions = async () => {
-  //   const res = await axios.get(
-  //     `${process.env.REACT_APP_API_ENDPOINT}/api/timezones`
-  //   );
-  //   const timezones = res.data.map((timezone) => {
-  //     return {
-  //       id: timezone.id,
-  //       value: timezone.id,
-  //       label: timezone.name,
-  //     };
-  //   });
-  //   setTimezoneList(timezones);
-  //   return timezones;
-  // };
-
-  // const [time, setTime] = useState();
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/timezones`)
     .then((res) => {
-      // const timezone_list = res.data;
-      // const arr = [];
-      // timezone_list.map((timezone, index) => {
-      //   arr[index] = new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier });
-      // });
-      // setTime(arr);
-
-      // console.log('time is', time);
-
       const timezoneOptions = res.data.map((timezone) => {
         return {
           id: timezone.id,
@@ -227,56 +181,17 @@ const AccountTabs = ({ data }) => {
           label: timezone.name,
         };
       });
-      
       setTimezoneList(timezoneOptions);
-      // console.log(res.data);
+     
     });
-    // console.log(res.data);
   }, []);
 
-  // console.log(time);
-  // if (timezoneList) {
-  //   const timezoneOpions = timezoneList.map((timezone) => {
-  //     return {
-  //       id: timezone.id,
-  //       value: timezone.id,
-  //       label: timezone.label,
-  //     };
-  //   })
-  //   setTimezoneList(timezoneOpions);
-  //   console.log(timezoneList);
-  // }
-
-  // useEffect(() => {
-  //   if (timezoneList) {
-  //     const arr2 = [];
-  //     const timer = setInterval(() => {
-  //       timezoneList.map((timezone, index) => {
-  //         arr2[index] = new Date().toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: timezone.identifier });
-  //       })
-  //       setTime(arr2);
-  //     }, 1000);
-
-  //     return () => {
-  //       clearInterval(timer);
-  //     };
-  //   }
-  // }, []);
 
   const handleIndustryInputChange = (newValue) => {
     setIndustryQuery(newValue);
   };
 
-  // const handleTimezoneInputChange = (newValue) => {
-  //   setTimezoneQuery(newValue);
-  // };
-
-  // const handleTimezoneOpen = () => {
-  //   // console.log(timezone_list);
-  //   setTimezoneQuery("a");
-  // };
-
-
+ 
   const [regionOptions, setRegionOptions] = useState(() => {
     if (data.country && data.region) {
       const selectedCountry = CountryRegionData.filter((country) => {
@@ -542,8 +457,6 @@ const AccountTabs = ({ data }) => {
                       placeholder="Some Company"
                       invalid={companyNameError}
                       value={companyName}
-                      // onChange={(e) => setCompanyName(e.target.value)}
-
                       onChange={(e) => {
                         const company = e.target.value.replace(
                           /(^\w{1})|(\s+\w{1})/g,
@@ -731,7 +644,6 @@ const AccountTabs = ({ data }) => {
                   className="react-select"
                   id="region"
                   classNamePrefix="select"
-                  // defaultValue={colourOptions[0]}
                   options={regionOptions}
                   value={region}
                   isClearable={false}
@@ -785,18 +697,13 @@ const AccountTabs = ({ data }) => {
                     className="react-select"
                     id="timezoneInput"
                     classNamePrefix="select"
-                    // onMenuOpen={() => {
-                    //   handleTimezoneOpen();
-                    //   // console.log('on menu open setTimezone');
-                    // }}
+                    
                     onChange={(timezone) => {
                       setTimezone(timezone);
                     }}
                     theme={selectThemeColors}
                     options={timezoneList}
-                    // loadOptions={loadTimezonesOptions}
-                    // loadOptions={timezoneList}
-                    // onInputChange={handleTimezoneInputChange}
+                 
                     noOptionsMessage={(input) => {
                       return `No match found for ${input.inputValue}!`;
                     }}
@@ -827,9 +734,7 @@ const AccountTabs = ({ data }) => {
                     />
                   )}
                 </Button>
-                {/* <Button color="secondary" outline>
-                  Discard
-                </Button> */}
+                
               </Col>
             </Row>
           </Form>

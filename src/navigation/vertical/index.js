@@ -1,4 +1,19 @@
-import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid } from "react-feather";
+import {
+  Layers,
+  Loader,
+  Home,
+  Users,
+  AlignJustify,
+  UserCheck,
+  Calendar,
+  Circle,
+  Bookmark,
+  Phone,
+  List,
+  Slack,
+  Grid,
+} from "react-feather";
+
 export default [
   {
     id: "dashboard",
@@ -17,12 +32,6 @@ export default [
     title: "Lead Profiles",
     icon: <UserCheck size={20} />,
     navLink: "/leads",
-  },
-  {
-    id: "pipelines",
-    title: "Pipelines",
-    icon: <Layers size={20} />,
-    navLink: "/pipelines",
   },
   {
     id: "leadlist",
@@ -54,6 +63,12 @@ export default [
     icon: <Home size={20} />,
     badge: "light-warning",
     children: [
+      {
+        id: "pipelines",
+        title: "Pipelines",
+        icon: <Circle size={20} />,
+        navLink: "/pipelines",
+      },
       {
         id: "leadStatuses",
         title: "Lead",
@@ -104,5 +119,5 @@ export default [
     title: "Calls Overview",
     icon: <Phone size={20} />,
     navLink: "/call-overview",
-  }
+  },
 ];

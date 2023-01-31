@@ -33,10 +33,19 @@ const Workspaces = lazy(() => import("../../views/workspaces/Workspaces"));
 const WorkspaceDetails = lazy(() => import("../../views/workspaces/WorkspaceDetails"));
 // prettier-ignore
 const WorkspaceManageUsers = lazy(() => import("../../views/workspaces/WorkspaceManageUsers"));
-const WorkspaceManageLeadlist = lazy(() => import("../../views/workspaces/WorkspaceManageLeadlist"));
-const WorkspaceManageQueue = lazy(() => import("../../views/queue/WorkspaceManageQueue"));
-const WorkspaceManageTeam = lazy(() => import("../../views/team/WorkspaceManageTeam"));
-const WorkspaceManageCallFlow = lazy(() => import("../../views/callflow/WorkspaceManageCallFlow"));
+const WorkspaceManageLeadlist = lazy(() =>
+  import("../../views/leadlist/WorkspaceManageLeadlist")
+);
+
+const WorkspaceManageQueue = lazy(() =>
+  import("../../views/queue/WorkspaceManageQueue")
+);
+const WorkspaceManageTeam = lazy(() =>
+  import("../../views/team/WorkspaceManageTeam")
+);
+const WorkspaceManageCallFlow = lazy(() =>
+  import("../../views/callflow/WorkspaceManageCallFlow")
+);
 
 const Login = lazy(() => import("../../views/Login"));
 const Register = lazy(() => import("../../views/Register"));
@@ -64,8 +73,9 @@ const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
 const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
 const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
 const ActivityLogs = lazy(() => import("../../views/activity-logs/Index"));
+const Calls = lazy(() => import("../../views/calls/index"));
+const Reports = lazy(() => import("../../views/reports/index"));
 
-const Calls = lazy(() => import("../../views/calls"));
 // ** Merge Routes
 const Routes = [
   {
@@ -291,6 +301,14 @@ const Routes = [
     },
   },
   {
+    path: "/reports",
+    element: <Reports />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+
+  {
     path: "*",
     element: <Error />,
     meta: {
@@ -321,8 +339,7 @@ const Routes = [
   }
 ];
 
-const getRouteMeta = (route) =>
-{
+const getRouteMeta = (route) => {
   if (isObjEmpty(route.element.props)) {
     if (route.meta) {
       return { routeMeta: route.meta };
@@ -333,13 +350,11 @@ const getRouteMeta = (route) =>
 };
 
 // ** Return Filtered Array of Routes & Paths
-const MergeLayoutRoutes = (layout, defaultLayout) =>
-{
+const MergeLayoutRoutes = (layout, defaultLayout) => {
   const LayoutRoutes = [];
 
   if (Routes) {
-    Routes.filter((route) =>
-    {
+    Routes.filter((route) => {
       let isBlank = false;
       // ** Checks if Route layout or Default layout matches current layout
       if (
@@ -358,7 +373,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-              LayoutWrapper
+                LayoutWrapper
               : Fragment;
           route.element = (
             <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
@@ -376,15 +391,13 @@ const MergeLayoutRoutes = (layout, defaultLayout) =>
   return LayoutRoutes;
 };
 
-const getRoutes = (layout) =>
-{
+const getRoutes = (layout) => {
   const defaultLayout = layout || "vertical";
   const layouts = ["vertical", "horizontal", "blank"];
 
   const AllRoutes = [];
 
-  layouts.forEach((layoutItem) =>
-  {
+  layouts.forEach((layoutItem) => {
     const LayoutRoutes = MergeLayoutRoutes(layoutItem, defaultLayout);
 
     AllRoutes.push({

@@ -270,7 +270,7 @@ export const inviteLeadlist = createAsyncThunk(
     try {
       console.log("inisde payload", payload)
       const _formData = new FormData();
-      _formData.append('leadlist_name', payload.lead);
+      _formData.append('leadlist_name', payload.leadName);
       _formData.append('file_name', payload.csvFile);
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/import/${payload.id}`,
@@ -306,7 +306,7 @@ export const saveQueue = createAsyncThunk(
           data: {
             queue_name: payload.queue_name,
             leadlist_records: payload.leadlists,
-            users: payload.users,
+            teams: payload.teams,
           }
 
         }
@@ -465,15 +465,15 @@ export const deleteTeamFromWorkspace = createAsyncThunk(
   }
 );
 
+
 // Perform delete leadlist from workspace API
-export const deleteLeadlistWorkspace = createAsyncThunk(
-  "workspaces/deleteLeadlistWorkspace",
-  async (payload) =>
-  {
+export const deleteLeadListWorkspace = createAsyncThunk(
+  "workspaces/deleteLeadListWorkspace",
+  async (payload) => {
     try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlist/${payload.id}`
-      );
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/delete/${payload.id}`, 
+        {workspace_id:payload.workspaceId});
 
       toast.success(response.data.message);
       return {
@@ -534,7 +534,7 @@ export const updateQueueInWorkspace = createAsyncThunk(
             workspace_id: payload.workspace_id,
 
             leadlist_records: payload.leadlist,
-            users: payload.queueUser,
+            teams: payload.queueTeam,
           }
         }
       );
@@ -588,26 +588,35 @@ export const updateTeamInWorkspace = createAsyncThunk(
 );
 
 // Perform delete updateLeadlistInWorkspace from workspace API
+// Perform updateLeadlistInWorkspace from workspace API
 export const updateLeadlistInWorkspace = createAsyncThunk(
   "workspaces/updateLeadlistInWorkspace",
-  async (payload) =>
-  {
+  async (payload) => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlist/${payload.id}`,
-        {
-          nickname: payload.nickname,
+      const _formData = new FormData();
+      _formData.append('leadlist_name', payload.lead_name);
+      _formData.append('file_name', payload.csvFile);
+      _formData.append('workspace_id', payload.workspace_id);
+      await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/update/${payload.leadlist_id}`,
+        _formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
         }
-      );
-
-      toast.success(response.data.message);
-      return {
-        data: {
-          user: true,
-        },
-      };
+      ).then(res => {
+        console.log('api res:', res.data);
+        toast.success(res.data.mesage)
+        return {
+          data: res.data
+        };
+      }).catch(err => {
+        toast.error(err.response.data.message);
+        return {
+          data: null,
+        };
+      });
     } catch (e) {
-      console.log(e);
       toast.error(e.response.data.message);
       return {
         data: null,
@@ -1169,7 +1178,7 @@ export const workspacesSlice = createSlice({
       {
         console.log("No need to update store", state, action)
       })
-      .addCase(deleteLeadlistWorkspace.fulfilled, (state, action) =>
+      .addCase(deleteLeadListWorkspace.fulfilled, (state, action) =>
       {
         console.log("No need to update store", state, action)
       })

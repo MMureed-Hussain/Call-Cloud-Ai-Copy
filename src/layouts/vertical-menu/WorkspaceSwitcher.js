@@ -1,6 +1,8 @@
+/* eslint-disable */
 import React, { useState } from "react";
 
-import {
+import
+{
   Button,
   Popover,
   UncontrolledPopover,
@@ -15,7 +17,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 import { useSelector, useDispatch } from "react-redux";
-import {
+import
+{
   storeCurrentWorkspace,
   markWorkspaceAsAccessedNow,
   recentlyAccessedWorkspaces,
@@ -29,7 +32,8 @@ import { selectThemeColors } from "@utils";
 
 import { useNavigate, Link } from "react-router-dom";
 
-const WorkspaceSwitcher = () => {
+const WorkspaceSwitcher = () =>
+{
   //   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const workspaceStore = useSelector((state) => state.workspaces);
@@ -41,7 +45,8 @@ const WorkspaceSwitcher = () => {
 
   const navigate = useNavigate();
 
-  const loadWorkspacesOptions = async () => {
+  const loadWorkspacesOptions = async () =>
+  {
     const res = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/api/workspaces`,
       {
@@ -50,7 +55,8 @@ const WorkspaceSwitcher = () => {
         page: 1,
       }
     );
-    const workspaces = res.data.workspaces.map((workspace) => {
+    const workspaces = res.data.workspaces.map((workspace) =>
+    {
       return {
         id: workspace.id,
         value: workspace.name,
@@ -61,11 +67,13 @@ const WorkspaceSwitcher = () => {
     return workspaces;
   };
 
-  const handleWorkspaceInputChange = (newValue) => {
+  const handleWorkspaceInputChange = (newValue) =>
+  {
     setWorkspaceQuery(newValue);
   };
 
-  const formatOptionLabel = (workspace) => {
+  const formatOptionLabel = (workspace) =>
+  {
     return (
       <div className="d-flex align-items-center">
         {workspace.logo && workspace.logo.length ? (
@@ -90,28 +98,29 @@ const WorkspaceSwitcher = () => {
     <React.Fragment>
       <div>
         <Button
-          style={{ width: "100%" }}
+          style={{ width: "100%", display: 'flex', justifyContent: 'left', alignItems: 'center' }}
           color="primary"
           outline
           id="controlledPopover"
-          // onClick={() => setPopoverOpen(!popoverOpen)}
+        // onClick={() => setPopoverOpen(!popoverOpen)}
         >
           {workspaceStore.currentWorkspace &&
-          workspaceStore.currentWorkspace.logo &&
-          workspaceStore.currentWorkspace.logo.length ? (
+            workspaceStore.currentWorkspace.logo &&
+            workspaceStore.currentWorkspace.logo.length ? (
             <Avatar
               className="me-1"
               img={workspaceStore.currentWorkspace.logo}
               // width="32"
               // height="32"
-              size="sm"
+              size="md"
+
             />
           ) : (
             <Avatar
               initials
               className="me-1"
               color={"light-primary"}
-              size="sm"
+              size="md"
               content={
                 // prettier-ignore
                 workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No Workspace"
@@ -140,7 +149,8 @@ const WorkspaceSwitcher = () => {
               <Link
                 className="btn btn-light text-primary btn-sm"
                 to="/workspaces"
-                onClick={() => {
+                onClick={() =>
+                {
                   setPopoverOpen(false);
                   setTimeout(() => setPopoverOpen(true), 1000);
                 }}
@@ -163,7 +173,8 @@ const WorkspaceSwitcher = () => {
                         className="add-new-user w-100"
                         color="primary"
                         outline
-                        onClick={() => {
+                        onClick={() =>
+                        {
                           setPopoverOpen(false);
                           setTimeout(() => setPopoverOpen(true), 1000);
                         }}
@@ -185,7 +196,8 @@ const WorkspaceSwitcher = () => {
                   id="workspaceInput"
                   placeholder="Type to find"
                   classNamePrefix="select"
-                  onChange={(workspace) => {
+                  onChange={(workspace) =>
+                  {
                     console.log(workspace);
                     dispatch(
                       storeCurrentWorkspace({
@@ -198,7 +210,8 @@ const WorkspaceSwitcher = () => {
                     );
                     dispatch(
                       markWorkspaceAsAccessedNow({ id: workspace.id })
-                    ).then(() => {
+                    ).then(() =>
+                    {
                       dispatch(recentlyAccessedWorkspaces());
                     });
                     navigate(`/workspace/${workspace.id}/users`);
@@ -208,7 +221,8 @@ const WorkspaceSwitcher = () => {
                   theme={selectThemeColors}
                   loadOptions={loadWorkspacesOptions}
                   onInputChange={handleWorkspaceInputChange}
-                  noOptionsMessage={(input) => {
+                  noOptionsMessage={(input) =>
+                  {
                     // prettier-ignore
                     return input.inputValue.length ? `No match found for ${input.inputValue}!` : ``;
                   }}
@@ -217,13 +231,15 @@ const WorkspaceSwitcher = () => {
                   <div className="pt-2">
                     <p>Recent Workspaces</p>
                     {workspaceStore.recentlyAccessedWorkspaces.map(
-                      (workspace, index) => {
+                      (workspace, index) =>
+                      {
                         return (
                           <Link
                             key={index}
                             className="text-primary"
                             to={`/workspace/${workspace.id}/users`}
-                            onClick={() => {
+                            onClick={() =>
+                            {
                               dispatch(
                                 storeCurrentWorkspace({
                                   workspace: {
@@ -235,7 +251,8 @@ const WorkspaceSwitcher = () => {
                               );
                               dispatch(
                                 markWorkspaceAsAccessedNow({ id: workspace.id })
-                              ).then(() => {
+                              ).then(() =>
+                              {
                                 dispatch(recentlyAccessedWorkspaces());
                               });
                               setPopoverOpen(false);

@@ -174,3 +174,16 @@ span.divider{
 	border: none !important;
 	background: none !important;
 }
+
+.card {
+	box-shadow: rgb(51 48 60 / 3%) 0px 3px 9px 1px, rgb(51 48 60 / 2%) 0px 8px 9px 0px, rgb(51 48 60 / 1%) 0px 1px 6px 4px;
+}
+
+.bx-shadow {
+	box-shadow: rgb(51 48 60 / 3%) 0px 3px 9px 1px, rgb(51 48 60 / 2%) 0px 8px 9px 0px, rgb(51 48 60 / 1%) 0px 1px 6px 4px;
+}
+
+#controlledPopover {
+	padding: 3px !important;
+	padding-left: 10px !important ;
+}
