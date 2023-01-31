@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { useSelector } from "react-redux";
-import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid, PieChart } from "react-feather";
+import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid, PieChart, Volume2 } from "react-feather";
 
 
 const navigation = () => 
@@ -30,77 +30,26 @@ const navigation = () =>
       {
         id: "pipelines",
         title: "Pipelines",
-        icon: <Layers size={20} />,
+        icon: <Circle size={20} />,
         navLink: "/pipelines",
       },
       {
-        id: "leadlist",
-        title: "Lead List",
-        icon: <List size={20} />,
-        navLink: "/workspace/leadlist",
+        id: "leadStatuses",
+        title: "Lead",
+        icon: <Circle size={20} />,
+        navLink: "/lead-statuses",
       },
       {
-        id: "queue",
-        title: "Queue",
-        icon: <Grid size={20} />,
-        navLink: "/workspace/queue",
+        id: "callStatuses",
+        title: "Call",
+        icon: <Circle size={20} />,
+        navLink: "/statuses",
       },
       {
-        id: "team",
-        title: "Teams",
-        icon: <Grid size={20} />,
-        navLink: "/workspace/Team",
-      },
-      {
-        id: "callflow",
-        title: "CallFlow",
-        icon: <Loader size={20} />,
-        navLink: "/workspace/callflow",
-      },
-      {
-        id: "statuses",
-        title: "Statuses",
-        icon: <Home size={20} />,
-        badge: "light-warning",
-        children: [
-          {
-            id: "leadStatuses",
-            title: "Lead",
-            icon: <Circle size={20} />,
-            navLink: "/lead-statuses",
-          },
-          {
-            id: "callStatuses",
-            title: "Call",
-            icon: <Circle size={20} />,
-            navLink: "/statuses",
-          },
-          {
-            id: "clientStatuses",
-            title: "Client",
-            icon: <Circle size={20} />,
-            navLink: "/client-statuses",
-          },
-        ],
-      },
-
-      {
-        id: "clients",
-        title: "Clients",
-        icon: <Users size={20} />,
-        navLink: "/clients",
-      },
-      // {
-      //   id: "bookingPages",
-      //   title: "Booking Pages",
-      //   icon: <Bookmark size={20} />,
-      //   navLink: "/booking-pages",
-      // },
-      {
-        id: "followups",
-        title: "Follow-ups",
-        icon: <Calendar size={20} />,
-        navLink: "/followups",
+        id: "clientStatuses",
+        title: "Client",
+        icon: <Circle size={20} />,
+        navLink: "/client-statuses",
       },
       // {
       //   id: "callProfiles",
@@ -109,8 +58,6 @@ const navigation = () =>
       //   navLink: "/profiles",
       // },
     ];
-
-
 
 
   //Add the tab if user role == company only
@@ -130,6 +77,12 @@ const navigation = () =>
       navLink: "/reports",
     });
 
+    tabs.push({
+      id: "campaigns",
+      title: "Campaigns",
+      icon: <Volume2 size={20} />,
+      navLink: "/campaigns",
+    });
 
   }
 

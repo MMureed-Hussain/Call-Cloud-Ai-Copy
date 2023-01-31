@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 
 // ** Invoice List Sidebar
 import LeadlistSidebar from "./LeadlistSidebar";
-import { NewTable } from "./leadColumns";
+import { LeadListTableColumn } from "./LeadListTableColumn";
 import CustomHeader from "./CustomHeader";
 
 // ** Table Columns
@@ -22,7 +22,7 @@ import {
   storeCurrentPageLeadlist,
   storeRowsPerPageLeadlist,
   getCsv,
- deleteLeadListWorkspace,
+  deleteLeadListWorkspace,
 } from "@store/workspaces";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -34,15 +34,9 @@ import { ChevronDown } from "react-feather";
 
 // ** Utils
 // eslint-disable-next-line no-unused-vars
-import { selectThemeColors } from "@utils";
 
 // ** Reactstrap Imports
-import {
-  Card,
-  Modal,
-  ModalHeader,
-  ModalBody,
-} from "reactstrap";
+import { Card, Modal, ModalHeader, ModalBody } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
@@ -85,15 +79,15 @@ const LeadList = ({ workspaceId }) => {
         q: searchTerm,
         page: currentPage,
         perPage: rowsPerPage,
-        id: workspaceId
+        id: workspaceId,
       })
     );
-  }
+  };
 
   const refreshTable = () => {
     fetchLeadLists();
   };
-  
+
   const handleRowClicked = (row) => {
     toggleModal();
     dispatch(getRecord(row.id)).then((result) => {
@@ -125,7 +119,7 @@ const LeadList = ({ workspaceId }) => {
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
-    setCurrentPage(page.selected + 1)
+    setCurrentPage(page.selected + 1);
     dispatch(storeCurrentPageLeadlist({ currentPage }));
   };
 
@@ -181,7 +175,9 @@ const LeadList = ({ workspaceId }) => {
       const leadlist = store.leadlist.map((leadlist) => {
         const tempUser = { ...leadlist };
         tempUser.handleEdit = (id) => {
-          const editLeadlist = store.leadlist.filter((leadlist) => leadlist.id === id);
+          const editLeadlist = store.leadlist.filter(
+            (leadlist) => leadlist.id === id
+          );
           if (editLeadlist.length) {
             setEditLeadList(editLeadlist[0]);
             toggleSidebar();
@@ -232,7 +228,7 @@ const LeadList = ({ workspaceId }) => {
 
   const handleSort = (column, sortDirection) => {
     setSort(sortDirection);
-    setSortColumn(column.sortField); 
+    setSortColumn(column.sortField);
   };
 
   const downloadXLS = () => {
@@ -247,21 +243,36 @@ const LeadList = ({ workspaceId }) => {
       const localCols = [];
       let localData = [];
       Object.values(record.headers).map((entry) => {
-        localCols.push({
-          name: entry.external_header,
-          sortable: true,
-          minWidth: '172px',
-          selector: (row) =>  {
-            return row[entry.header]
-          },
-          cell: (row) =>  {
-            return row[entry.header]
-          }
-        });
+        if (entry.header.includes("website")) {
+          localCols.push({
+            name: entry.external_header,
+            sortable: true,
+            minWidth: "172px",
+            selector: (row) => {
+              return row[entry.header];
+            },
+            cell: (row) => {
+              return (
+                <a href={`https://${row[entry.header]}`} target="_blank">
+                  {row[entry.header]}
+                </a>
+              );
+            },
+          });
+        } else localCols.push({
+            name: entry.external_header,
+            sortable: true,
+            minWidth: "172px",
+            selector: (row) => {
+              return row[entry.header];
+            },
+            cell: (row) => {
+              return row[entry.header];
+            },
+          });
       });
 
       localData = [...record.rows];
-
       setRecordColmns(localCols);
       setRecordData(localData);
     }
@@ -286,16 +297,19 @@ const LeadList = ({ workspaceId }) => {
 
   return (
     <Fragment>
-      <Modal  size="xl" id="my_modal" style={{width : "1000px !imporatant ", height : "100vh !important"}} isOpen={showModal} toggle={toggleModal}>
+      <Modal
+        size="xl"
+        id="my_modal"
+        style={{ width: "1000px !imporatant ", height: "100vh !important" }}
+        isOpen={showModal}
+        toggle={toggleModal}
+      >
         <ModalHeader toggle={() => setShowModal(!showModal)}>
           Lead List
         </ModalHeader>
 
         <ModalBody>
-          <DataTable
-            columns={recordColums}
-            data={recordData}
-          ></DataTable>
+          <DataTable columns={recordColums} data={recordData}></DataTable>
         </ModalBody>
       </Modal>
       <Card className="overflow-hidden workspace-list">
@@ -308,7 +322,7 @@ const LeadList = ({ workspaceId }) => {
             responsive
             paginationServer
             onRowClicked={handleRowClicked}
-            columns={NewTable}
+            columns={LeadListTableColumn}
             onSort={handleSort}
             sortIcon={<ChevronDown />}
             className="react-dataTable"

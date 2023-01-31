@@ -49,7 +49,7 @@ export const getCallsList = createAsyncThunk(
     } catch (e) {
       toast.error(e.response.data.message);
     }
-  }
+  } 
 );
 
 

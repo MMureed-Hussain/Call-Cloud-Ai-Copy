@@ -110,9 +110,9 @@ const WorkspaceSwitcher = () =>
             <Avatar
               className="me-1"
               img={workspaceStore.currentWorkspace.logo}
-              // width="32"
-              // height="32"
-              size="md"
+              width="32"
+              height="32"
+
 
             />
           ) : (
@@ -120,7 +120,8 @@ const WorkspaceSwitcher = () =>
               initials
               className="me-1"
               color={"light-primary"}
-              size="md"
+              width="32"
+              height="32"
               content={
                 // prettier-ignore
                 workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No Workspace"

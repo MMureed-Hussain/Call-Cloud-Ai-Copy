@@ -73,7 +73,7 @@ export default () =>
     useEffect(() =>
     {
         loadData();
-    }, [data]);
+    }, [data, currentWorkspace]);
 
 
 

@@ -242,7 +242,7 @@ export default () =>
                 <Link
                   to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id
                     }`}
-                >
+                > 
                   <DropdownItem>
                     <Eye size={15} />
                     <span className="align-middle ms-50">View</span>
