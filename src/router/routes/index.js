@@ -74,7 +74,7 @@ const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
 const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
 const Calls = lazy(() => import("../../views/calls/index"));
 const Reports = lazy(() => import("../../views/reports/index"));
-
+const Campaigns = lazy(() => import("../../views/campaigns/index"));
 // ** Merge Routes
 const Routes = [
   {
@@ -306,6 +306,15 @@ const Routes = [
       isPrivate: true,
     },
   },
+  {
+    path: "/campaigns",
+    element: <Campaigns />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+
+
 
   {
     path: "*",
