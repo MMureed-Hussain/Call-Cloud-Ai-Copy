@@ -22,7 +22,7 @@ const Home = () => {
   if (!store.user) {
     return <Navigate to="/login" />;
   }
-
+  
   // if (workspaceState.currentWorkspace) {
   //   return <Navigate to={`/workspace/${workspaceState.currentWorkspace.id}`} />;
   // }

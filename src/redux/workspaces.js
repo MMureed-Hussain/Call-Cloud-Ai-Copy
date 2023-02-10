@@ -71,6 +71,7 @@ export const markWorkspaceAsAccessedNow = createAsyncThunk(
       await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/mark-workspace-as-accessed-now/${payload.id}`
       );
+      console.log('markWorkspaceAsAccessedNow');
       return {
         data: true,
       };
@@ -469,11 +470,12 @@ export const deleteTeamFromWorkspace = createAsyncThunk(
 // Perform delete leadlist from workspace API
 export const deleteLeadListWorkspace = createAsyncThunk(
   "workspaces/deleteLeadListWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/delete/${payload.id}`, 
-        {workspace_id:payload.workspaceId});
+        `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/delete/${payload.id}`,
+        { workspace_id: payload.workspaceId });
 
       toast.success(response.data.message);
       return {
@@ -591,7 +593,8 @@ export const updateTeamInWorkspace = createAsyncThunk(
 // Perform updateLeadlistInWorkspace from workspace API
 export const updateLeadlistInWorkspace = createAsyncThunk(
   "workspaces/updateLeadlistInWorkspace",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const _formData = new FormData();
       _formData.append('leadlist_name', payload.lead_name);
@@ -600,17 +603,19 @@ export const updateLeadlistInWorkspace = createAsyncThunk(
       await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/update/${payload.leadlist_id}`,
         _formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+        headers: {
+          "Content-Type": "multipart/form-data"
         }
-      ).then(res => {
+      }
+      ).then(res =>
+      {
         console.log('api res:', res.data);
         toast.success(res.data.mesage)
         return {
           data: res.data
         };
-      }).catch(err => {
+      }).catch(err =>
+      {
         toast.error(err.response.data.message);
         return {
           data: null,
@@ -860,65 +865,68 @@ export const getCsv = createAsyncThunk(
 //CallFlow thunk
 export const getCallFlowData = createAsyncThunk(
   "workspaces/getCallFlowData",
-  async (payload) => {
-   
-    
-      try {
-        console.log("thunk",payload)
-          const response = await axios.get(
-              `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/index/${payload}`
-          );
-          return {
-              data: {
-                  callflow: response.data.data,
-              },
-          };
-      } catch (e) {
-          toast.error(e.response.data.message);
-          return {
-              data: {
-                  callflow: [],
-                  total: 0,
-              },
-          };
-      }
+  async (payload) =>
+  {
+
+
+    try {
+      console.log("thunk", payload)
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/index/${payload}`
+      );
+      return {
+        data: {
+          callflow: response.data.data,
+        },
+      };
+    } catch (e) {
+      toast.error(e.response.data.message);
+      return {
+        data: {
+          callflow: [],
+          total: 0,
+        },
+      };
+    }
   }
 );
 export const postCallFlowRecord = createAsyncThunk(
   "workspaces/postCallFlowRecord",
-  async (payload) => {
-      console.log("redux", payload)
-      try {
-          const response = await axios.post(
-              `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/store/recording`,
-              payload
-          );
-          toast.success("New Call Created");
-          return {
-              data: {
-                  callFlowRecord: response.data.data,
-                  total: response.data.total,
-              },
-          };
-      } catch (e) {
-          toast.error(e.response.data.message);
-          return {
-              data: {
-                  callFlowRecord: [],
-                  total: 0,
-              },
-          };
-      }
+  async (payload) =>
+  {
+    console.log("redux", payload)
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/store/recording`,
+        payload
+      );
+      toast.success("New Call Created");
+      return {
+        data: {
+          callFlowRecord: response.data.data,
+          total: response.data.total,
+        },
+      };
+    } catch (e) {
+      toast.error(e.response.data.message);
+      return {
+        data: {
+          callFlowRecord: [],
+          total: 0,
+        },
+      };
+    }
   }
 );
 export const getCallFlowRecord = createAsyncThunk(
   "workspaces/getCallFlowRecord",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/lead/record/${payload.profileId}`
       );
-      console.log("thunk getRecord",response)
+      console.log("thunk getRecord", response)
       return {
         data: {
           callFlowRecord: response.data.data,
@@ -938,6 +946,32 @@ export const getCallFlowRecord = createAsyncThunk(
 );
 
 
+
+export const getWorkspacesOfUsers = createAsyncThunk(
+  "user/workspaces/getWorkspacesOfUsers",
+  async (params, { dispatch }) =>
+  {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/user/workspaces`, { params });
+      dispatch(setUserWorkspaces(response.data));
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
+
+export const getUsersOfWorkspace = createAsyncThunk(
+  "workspace/users/getUsersOfWorkspace",
+  async ({ id }, { dispatch }) =>
+  {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${id}/users`);
+      dispatch(setWorkspaceUsers(response.data));
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
 
 // prettier-ignore
 //const user = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")) : null;
@@ -986,19 +1020,18 @@ export const workspacesSlice = createSlice({
     rowsPerPageQueue: 50,
     currentPageQueue: 1,
     //Workspace CallFLow table related attributes
-    callflow:[],
-    callflowLoading:true,
+    callflow: [],
+    callflowLoading: true,
     totalCallflow: 0,
-    rowsPerPageCallflow:50,
-    currentPageCallflow:1,
-    
-    //Workspace CallFLow Recorded table related attributes
-    callFlowRecord:[],
-    callFlowRecordLoading:true,
-    totalCallFlowRecord: 0,
-    rowsPerPageCallFlowRecord:50,
-    currentPageCallFlowRecord:1, 
+    rowsPerPageCallflow: 50,
+    currentPageCallflow: 1,
 
+    //Workspace CallFLow Recorded table related attributes
+    callFlowRecord: [],
+    callFlowRecordLoading: true,
+    totalCallFlowRecord: 0,
+    rowsPerPageCallFlowRecord: 50,
+    currentPageCallFlowRecord: 1,
 
 
     //Team
@@ -1007,12 +1040,14 @@ export const workspacesSlice = createSlice({
     totalTeam: 0,
     rowsPerPageTeam: 50,
     currentPageTeam: 1,
- 
+
     //Workspace CSV
     csv: null,
 
     currentWorkspace: null,
-    recentlyAccessedWorkspaces: false
+    recentlyAccessedWorkspaces: false,
+    userworkspaces: [],
+    workspaceusers: [],
   },
   reducers: {
     storeCurrentPage: (state, action) =>
@@ -1068,19 +1103,23 @@ export const workspacesSlice = createSlice({
       state.currentPageQueue = action.payload.currentPage
     },
     //callflow
-    storeRowsPerPageCallflow: (state, action) => {
+    storeRowsPerPageCallflow: (state, action) =>
+    {
       state.rowsPerPageCallflow = action.payload.rowsPerPage
-    },    
-    storeCurrentPageCallflow: (state, action) => {
+    },
+    storeCurrentPageCallflow: (state, action) =>
+    {
       state.currentPageCallflow = action.payload.currentPage
     },
     //callflow Record in table
-    storeRowsPerPageCallFlowRecord: (state, action) => {
+    storeRowsPerPageCallFlowRecord: (state, action) =>
+    {
       state.rowsPerPageCallFlowRecord = action.payload.rowsPerPage
-    },    
-    storeCurrentPageCallFlowRecord: (state, action) => {
+    },
+    storeCurrentPageCallFlowRecord: (state, action) =>
+    {
       state.currentPageCallFlowRecord = action.payload.currentPage
-    },  
+    },
     //Team
     storeRowsPerPageTeam: (state, action) =>
     {
@@ -1097,6 +1136,14 @@ export const workspacesSlice = createSlice({
     getWorkspace: (state, action) =>
     {
       state.query = action.payload
+    },
+    setUserWorkspaces: (state, action) =>
+    {
+      state.userworkspaces = action.payload;
+    },
+    setWorkspaceUsers: (state, action) =>
+    {
+      state.workspaceusers = action.payload;
     }
   },
   extraReducers: (builder) =>
@@ -1121,7 +1168,7 @@ export const workspacesSlice = createSlice({
       .addCase(markWorkspaceAsAccessedNow.fulfilled, (state, action) =>
       {
         if (action.payload.data) {
-          console.log("no action required")
+          console.log("no action required");
         }
       })
       .addCase(recentlyAccessedWorkspaces.fulfilled, (state, action) =>
@@ -1231,24 +1278,27 @@ export const workspacesSlice = createSlice({
         state.totalQueue = action.payload.data.total;
         state.queueLoading = false;
       })
-       //callflow
-       .addCase(getCallFlowData.fulfilled, (state, action) => {
+      //callflow
+      .addCase(getCallFlowData.fulfilled, (state, action) =>
+      {
         state.callflow = action.payload.data.callflow;
         state.totalCallflow = action.payload.data.total;
         state.callflowLoading = false;
       })
       //callflow
-      .addCase(postCallFlowRecord.fulfilled, (state, action) => {
+      .addCase(postCallFlowRecord.fulfilled, (state, action) =>
+      {
         state.callFlowRecord = action.payload.data.callFlowRecord;
         state.totalCallFlowRecord = action.payload.data.total;
         state.callFlowRecordLoading = false;
-      })    
-       //callflow table
-       .addCase(getCallFlowRecord.fulfilled, (state, action) => {
+      })
+      //callflow table
+      .addCase(getCallFlowRecord.fulfilled, (state, action) =>
+      {
         state.callFlowRecord = action.payload.data.callFlowRecord;
         state.totalCallFlowRecord = action.payload.data.total;
         state.callFlowRecordLoading = false;
-      }) 
+      })
       //getTeam
       .addCase(getTeam.fulfilled, (state, action) =>
       {
@@ -1287,12 +1337,14 @@ export const {
   storeRowsPerPageQueue,
   storeCurrentPageQueue,
   storeCurrentPageCallflow,
-   storeRowsPerPageCallflow,
-    storeCurrentPageCallFlowRecord,
-    storeRowsPerPageCallFlowRecord,
+  storeRowsPerPageCallflow,
+  storeCurrentPageCallFlowRecord,
+  storeRowsPerPageCallFlowRecord,
   storeRowsPerPageTeam,
   storeCurrentPageTeam,
   storeCurrentWorkspace,
+  setUserWorkspaces,
+  setWorkspaceUsers,
 } = workspacesSlice.actions;
 
 export default workspacesSlice.reducer;
