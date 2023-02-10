@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { useSelector } from "react-redux";
-import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid, PieChart, Volume2 } from "react-feather";
+import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid, PieChart, Volume2, Clock } from "react-feather";
 
 
 const navigation = () => 
@@ -108,6 +108,12 @@ const navigation = () =>
       //   icon: <Phone size={20} />,
       //   navLink: "/profiles",
       // },
+      {
+        id: "workdiary",
+        title: "Work diary",
+        icon: <Clock size={20} />,
+        navLink: "/workdiary",
+      },
     ];
 
 

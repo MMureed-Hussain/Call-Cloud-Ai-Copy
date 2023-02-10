@@ -21,7 +21,7 @@ import Footer from "./components/Footer";
 
 const CustomMenu = (props) =>
 {
-  // console.log(props);
+
   const layoutStore = useSelector((state) => state.layout);
   const workspaceStore = useSelector((state) => state.workspaces);
   const authStore = useSelector((state) => state.auth);
@@ -41,6 +41,8 @@ const CustomMenu = (props) =>
       });
     }
   }
+
+
   const isHidden = layoutStore.menuHidden;
 
   return !isHidden ? (
@@ -59,6 +61,7 @@ const CustomMenu = (props) =>
 const VerticalLayout = (props) =>
 {
   const menuData = navigation();
+
 
   // ** For ServerSide navigation
   // useEffect(() => {
