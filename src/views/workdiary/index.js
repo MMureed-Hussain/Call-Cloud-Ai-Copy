@@ -5,8 +5,11 @@ import ReactPaginate from "react-paginate";
 import Skeleton from "react-loading-skeleton";
 import moment from "moment";
 import Select from "react-select";
-import { Row, Col, Button, Card, CardHeader, CardTitle, Badge, Table, Input, FormGroup, Label } from "reactstrap";
+import { Row, Col, Button, Card, CardHeader, CardTitle, Badge, Table, Input, FormGroup, Label, CardBody } from "reactstrap";
 import PaginationWrapper from "@src/@core/components/custom/PaginationWrapper";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line } from 'react-chartjs-2';
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -15,16 +18,21 @@ import { getUsersOfWorkspace } from "../../redux/workspaces";
 import { getTeamsByWorkspace } from "../../redux/campaigns";
 import UserInfo from "../profiles/components/UserInfo";
 
+
 export default () =>
 {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
     const per_page = useSelector((state) => state.layout.pagination.per_page);
     const timers = useSelector((state) => state.timers.timers);
+    const total_time = useSelector((state) => state.timers.total_time);
+    const total_call = useSelector((state) => state.timers.total_call);
+    const calls = useSelector((state) => state.timers.calls);
     const teams = useSelector((state) => state.campaigns.teams);
     const workspaceusers = useSelector((state) => state.workspaces.workspaceusers);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '' });
+    const [labels, setLabels] = useState([]);
 
     useEffect(() =>
     {
@@ -33,7 +41,6 @@ export default () =>
             dispatch(getUsersOfWorkspace({ id: currentWorkspace.id }));
 
         }
-
 
     }, [currentWorkspace]);
 
@@ -75,7 +82,6 @@ export default () =>
         handleChange({ target });
     }
 
-
     const handleChange = (e) =>
     {
         const key = e.target.name;
@@ -87,6 +93,43 @@ export default () =>
         }));
 
     }
+
+    const averageCallsPerHour = () =>
+    {
+        if (total_call == 0 || total_time == '0:00:00') {
+            return 0;
+        }
+
+        let time = total_time.split(':');
+        let hr = parseInt(time[0]) ? parseInt(time[0]) : parseInt(time[1]) ? 1 : 0;
+        return parseInt(total_call / hr);
+    }
+
+
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            },
+            title: {
+                display: true,
+                text: '',
+            },
+        },
+    };
+
+    const charData = {
+        labels: calls.labels,
+        datasets: [
+            {
+                label: `Calls`,
+                data: calls.value,
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            }
+        ],
+    };
 
     if (!user) {
         return <Navigate to="/login" />;
@@ -103,6 +146,28 @@ export default () =>
 
     return (
         <>
+
+            <Card>
+                <CardHeader className="py-1">
+                    <CardTitle tag="h4"></CardTitle>
+                </CardHeader>
+                <CardBody>
+                    <Row>
+                        <Col lg="1">
+                            <span> Total Time <br /> <Badge color="success" className="bg-light-success">{total_time}</Badge></span>
+                        </Col>
+                        <Col lg="1">
+                            <span> Total Call <br /> <Badge color="success" className="bg-light-success">{total_call}</Badge></span>
+                        </Col>
+                        <Col lg="1">
+                            <span>Avg. Calls/Hr <br /> <Badge color="success" className="bg-light-success">{averageCallsPerHour()}</Badge></span>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Line options={options} data={charData} style={{ maxHeight: '500px' }} />
+                    </Row>
+                </CardBody>
+            </Card>
             <Card>
                 <CardHeader className="py-1">
                     <CardTitle tag="h4"></CardTitle>
@@ -179,7 +244,7 @@ export default () =>
                         </tbody>
                     </Table>
                 </div>
-                {/* <PaginationWrapper paginate={timers} callback={loadData} /> */}
+                <PaginationWrapper paginate={timers} callback={loadData} />
             </Card>
         </>
     );
