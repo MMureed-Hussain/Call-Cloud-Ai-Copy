@@ -9,10 +9,10 @@ import { Row, Col, Card, CardHeader, CardTitle, Badge, Input, CardBody, FormGrou
 //Redux
 import { random } from "lodash"
 import { useDispatch, useSelector } from "react-redux";
+import { getPipelines } from "../../redux/pipelines";
 import { getCallsListWithCount, getRecordingByWorkspace, leadProfileStatusList } from "../../redux/calls";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { format } from "prettier";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export default () =>
@@ -21,20 +21,21 @@ export default () =>
     const user = useSelector((state) => state.auth.user);
     const reports = useSelector((state) => state.calls.reports);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+    const pipelines = useSelector((state) => state.pipelines.pipelines);
     const [labels, setLabels] = useState([]);
     const [profileStatus, setProfileStatus] = useState(null);
     const [clientStatus, setClientStatus] = useState(null);
     const [callStatus, setCallStatus] = useState(null);
-    const [leadProfiles, setLeadProfiles] = useState(null);
-    const [clientProfiles, setClientProfiles] = useState(null);
     const selectDefaultValue = { value: '', label: 'None' };
+    const pipelineOptions = pipelines.map(pipeline => ({ value: pipeline.id, label: pipeline.name }));
+
+
     const [data, setData] = useState({
         profile: 'lead',
         from_date: moment().subtract(30, 'days').format('YYYY-MM-DD'),
         to_date: moment().format('YYYY-MM-DD'),
     });
 
-    console.log(data, 're');
     const options = {
         responsive: true,
         plugins: {
@@ -114,6 +115,9 @@ export default () =>
     {
         if (currentWorkspace) {
 
+
+            dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
+
             dispatch(leadProfileStatusList({ id: currentWorkspace.id })).then(({ payload }) =>
             {
 
@@ -125,13 +129,6 @@ export default () =>
                     setCallStatus(payload.call_statuses);
                 }
 
-                if (payload && payload.call_profiles) {
-                    setLeadProfiles(payload.call_profiles);
-                }
-
-                if (payload && payload.client_profiles) {
-                    setClientProfiles(payload.client_profiles);
-                }
 
                 if (payload && payload.client_statuses) {
                     setClientStatus(payload.client_statuses);
@@ -199,6 +196,44 @@ export default () =>
                                         />
                                     </FormGroup>
                                 </Col>
+                                {(data && data.profile == 'lead' && profileStatus) &&
+                                    <Col lg="2">
+                                        <FormGroup>
+                                            <Label>Profile status</Label>
+                                            <Select
+                                                onChange={e => handleSelectChange(e, 'lead_status')}
+                                                options={[{ value: '', label: 'None' }, ...profileStatus]}
+                                                value={handleSelected(profileStatus, data.lead_status)}
+                                                className="mb-2"
+                                            />
+                                        </FormGroup>
+                                    </Col>
+                                }
+
+                                {(data && data.profile == 'client' && clientStatus) &&
+                                    <Col lg="2">
+                                        <FormGroup>
+                                            <Label>Client Status</Label>
+                                            <Select
+                                                onChange={e => handleSelectChange(e, 'client_status')}
+                                                options={[{ value: '', label: 'None' }, ...clientStatus,]}
+                                                value={handleSelected(clientStatus, data.client_status)}
+                                                className="mb-2"
+                                            />
+                                        </FormGroup>
+                                    </Col>
+                                }
+
+                                <Col lg="2">
+                                    <FormGroup>
+                                        <Label>Pipeline</Label>
+                                        <Select
+                                            options={[{ value: '', label: 'None' }, ...pipelineOptions,]}
+                                            onChange={e => handleSelectChange(e, 'pipeline_id')}
+                                            placeholder="Select a pipeline" className="mb-2" />
+                                    </FormGroup>
+                                </Col>
+
                                 {
                                     callStatus &&
                                     <Col lg="2">
@@ -211,71 +246,6 @@ export default () =>
                                             />
                                         </FormGroup>
                                     </Col>
-                                }
-
-                                {(data && data.profile == 'lead') &&
-                                    <>
-                                        {leadProfiles &&
-                                            <Col lg="2">
-                                                <FormGroup>
-                                                    <Label>Lead Profile</Label>
-                                                    <Select
-                                                        onChange={e => handleSelectChange(e, 'lead_profile')}
-                                                        options={[{ value: '', label: 'None' }, ...leadProfiles]}
-                                                        value={handleSelected(leadProfiles, data.lead_profile)}
-                                                        className="mb-2"
-                                                    />
-                                                </FormGroup>
-                                            </Col>
-                                        }
-
-                                        {profileStatus &&
-                                            <Col lg="2">
-                                                <FormGroup>
-                                                    <Label>Profile status</Label>
-                                                    <Select
-                                                        onChange={e => handleSelectChange(e, 'lead_status')}
-                                                        options={[{ value: '', label: 'None' }, ...profileStatus]}
-                                                        value={handleSelected(profileStatus, data.lead_status)}
-                                                        className="mb-2"
-                                                    />
-                                                </FormGroup>
-                                            </Col>
-                                        }
-                                    </>
-                                }
-
-                                {(data && data.profile == 'client') &&
-                                    <>
-                                        {clientProfiles &&
-                                            <Col lg="2">
-                                                <FormGroup>
-                                                    <Label>Client</Label>
-                                                    <Select
-                                                        onChange={e => handleSelectChange(e, 'client_profile')}
-                                                        options={[{ value: '', label: 'None' }, ...clientProfiles,]}
-                                                        value={handleSelected(clientProfiles, data.client_profile)}
-                                                        className="mb-2"
-                                                    />
-                                                </FormGroup>
-                                            </Col>
-                                        }
-
-                                        {clientStatus &&
-                                            <Col lg="2">
-                                                <FormGroup>
-                                                    <Label>Client Status</Label>
-                                                    <Select
-                                                        onChange={e => handleSelectChange(e, 'client_status')}
-                                                        options={[{ value: '', label: 'None' }, ...clientStatus,]}
-                                                        value={handleSelected(clientStatus, data.client_status)}
-                                                        className="mb-2"
-                                                    />
-                                                </FormGroup>
-                                            </Col>
-                                        }
-
-                                    </>
                                 }
 
                                 <Col lg="2">

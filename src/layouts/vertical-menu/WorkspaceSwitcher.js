@@ -94,45 +94,67 @@ const WorkspaceSwitcher = () =>
     );
   };
 
+  const handleWorkSpaceOnChange = (workspace) =>
+  {
+    dispatch(
+      storeCurrentWorkspace({
+        workspace: {
+          id: workspace.id,
+          name: workspace.value,
+          logo: workspace.logo,
+        },
+      })
+    );
+
+    dispatch(
+      markWorkspaceAsAccessedNow({ id: workspace.id })
+    ).then(() =>
+    {
+      dispatch(recentlyAccessedWorkspaces());
+    });
+
+    navigate(`/workspace/${workspace.id}/users`);
+    setPopoverOpen(false);
+    setTimeout(() => setPopoverOpen(true), 1000);
+  }
+
+
+  const handleWorkSpaceOnClick = (workspace) => 
+  {
+    console.log('onclick');
+    dispatch(
+      storeCurrentWorkspace({
+        workspace: {
+          id: workspace.id,
+          name: workspace.name,
+          logo: workspace.logo,
+        },
+      })
+    );
+    dispatch(
+      markWorkspaceAsAccessedNow({ id: workspace.id })
+    ).then(() =>
+    {
+      dispatch(recentlyAccessedWorkspaces());
+    });
+    setPopoverOpen(false);
+    setTimeout(() => setPopoverOpen(true), 1000);
+  }
+
   return (
     <React.Fragment>
       <div>
-        <Button
-          style={{ width: "100%", display: 'flex', justifyContent: 'left', alignItems: 'center' }}
-          color="primary"
-          outline
-          id="controlledPopover"
-        // onClick={() => setPopoverOpen(!popoverOpen)}
-        >
+        <Button style={{ width: "100%", display: 'flex', justifyContent: 'left', alignItems: 'center' }} color="primary" outline id="controlledPopover">
           {workspaceStore.currentWorkspace &&
             workspaceStore.currentWorkspace.logo &&
-            workspaceStore.currentWorkspace.logo.length ? (
-            <Avatar
-              className="me-1"
-              img={workspaceStore.currentWorkspace.logo}
-              // width="32"
-              // height="32"
-              size="md"
-
-            />
-          ) : (
-            <Avatar
-              initials
-              className="me-1"
-              color={"light-primary"}
-              size="md"
-              content={
-                // prettier-ignore
-                workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No Workspace"
-              }
-            />
-          )}
+            workspaceStore.currentWorkspace.logo.length ?
+            <Avatar className="me-1" img={workspaceStore.currentWorkspace.logo} width="32" height="32" /> :
+            <Avatar initials className="me-1" color={"light-primary"} width="32" height="32" content={workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No Workspace"} />
+          }
           <span className="menu-item text-truncate">
-            {
-              // prettier-ignore
-              workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"
-            }
+            {workspaceStore.currentWorkspace ? workspaceStore.currentWorkspace.name : "No workspace"}
           </span>
+
         </Button>
         {popoverOpen && (
           <UncontrolledPopover
@@ -185,6 +207,7 @@ const WorkspaceSwitcher = () =>
                     <span className="divider"></span>
                   </>
                 )}
+
                 <AsyncSelect
                   formatOptionLabel={formatOptionLabel}
                   defaultOptions
@@ -196,95 +219,50 @@ const WorkspaceSwitcher = () =>
                   id="workspaceInput"
                   placeholder="Type to find"
                   classNamePrefix="select"
-                  onChange={(workspace) =>
-                  {
-                    console.log(workspace);
-                    dispatch(
-                      storeCurrentWorkspace({
-                        workspace: {
-                          id: workspace.id,
-                          name: workspace.value,
-                          logo: workspace.logo,
-                        },
-                      })
-                    );
-                    dispatch(
-                      markWorkspaceAsAccessedNow({ id: workspace.id })
-                    ).then(() =>
-                    {
-                      dispatch(recentlyAccessedWorkspaces());
-                    });
-                    navigate(`/workspace/${workspace.id}/users`);
-                    setPopoverOpen(false);
-                    setTimeout(() => setPopoverOpen(true), 1000);
-                  }}
+                  onChange={workspace => handleWorkSpaceOnChange(workspace)}
                   theme={selectThemeColors}
                   loadOptions={loadWorkspacesOptions}
                   onInputChange={handleWorkspaceInputChange}
-                  noOptionsMessage={(input) =>
-                  {
-                    // prettier-ignore
-                    return input.inputValue.length ? `No match found for ${input.inputValue}!` : ``;
-                  }}
+                  noOptionsMessage={(input) => input.inputValue.length ? `No match found for ${input.inputValue}!` : ``}
                 />
-                {workspaceStore.recentlyAccessedWorkspaces && (
+
+                {
+                  workspaceStore.recentlyAccessedWorkspaces &&
                   <div className="pt-2">
                     <p>Recent Workspaces</p>
                     {workspaceStore.recentlyAccessedWorkspaces.map(
                       (workspace, index) =>
-                      {
-                        return (
-                          <Link
-                            key={index}
-                            className="text-primary"
-                            to={`/workspace/${workspace.id}/users`}
-                            onClick={() =>
-                            {
-                              dispatch(
-                                storeCurrentWorkspace({
-                                  workspace: {
-                                    id: workspace.id,
-                                    name: workspace.name,
-                                    logo: workspace.logo,
-                                  },
-                                })
-                              );
-                              dispatch(
-                                markWorkspaceAsAccessedNow({ id: workspace.id })
-                              ).then(() =>
-                              {
-                                dispatch(recentlyAccessedWorkspaces());
-                              });
-                              setPopoverOpen(false);
-                              setTimeout(() => setPopoverOpen(true), 1000);
-                            }}
-                          >
-                            <div className="d-flex my-1 align-items-center">
-                              {workspace.logo && workspace.logo.length ? (
-                                <Avatar
-                                  className="me-1"
-                                  img={workspace.logo}
-                                  size="sm"
-                                />
-                              ) : (
-                                <Avatar
-                                  initials
-                                  className="me-1"
-                                  color={"light-primary"}
-                                  content={workspace.name}
-                                  imgWidth="24"
-                                  imgHeight="24"
-                                  size="sm"
-                                />
-                              )}
-                              {workspace.name}
-                            </div>
-                          </Link>
-                        );
-                      }
+
+                        <Link
+                          key={index}
+                          className="text-primary"
+                          to={`/workspace/${workspace.id}/users`}
+                          onClick={() => handleWorkSpaceOnClick(workspace)}
+                        >
+                          <div className="d-flex my-1 align-items-center">
+                            {workspace.logo && workspace.logo.length ? (
+                              <Avatar
+                                className="me-1"
+                                img={workspace.logo}
+                                size="sm"
+                              />
+                            ) : (
+                              <Avatar
+                                initials
+                                className="me-1"
+                                color={"light-primary"}
+                                content={workspace.name}
+                                imgWidth="24"
+                                imgHeight="24"
+                                size="sm"
+                              />
+                            )}
+                            {workspace.name}
+                          </div>
+                        </Link>
                     )}
                   </div>
-                )}
+                }
               </Col>
               {/* </div> */}
             </PopoverBody>

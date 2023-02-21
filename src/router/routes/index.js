@@ -72,8 +72,11 @@ const Pipelines = lazy(() => import("../../views/pipelines/Index"));
 const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
 const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
 const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
+const ActivityLogs = lazy(() => import("../../views/activity-logs/Index"));
 const Calls = lazy(() => import("../../views/calls/index"));
 const Reports = lazy(() => import("../../views/reports/index"));
+const Campaigns = lazy(() => import("../../views/campaigns/index"));
+const WorkDiary = lazy(() => import("../../views/workdiary/index"));
 
 // ** Merge Routes
 const Routes = [
@@ -306,13 +309,18 @@ const Routes = [
       isPrivate: true,
     },
   },
-
   {
-    path: "*",
-    element: <Error />,
+    path: "/campaigns",
+    element: <Campaigns />,
     meta: {
-      layout: "blank",
-      isPrivate: false,
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/workdiary",
+    element: <WorkDiary />,
+    meta: {
+      isPrivate: true,
     },
   },
   // {
@@ -322,9 +330,34 @@ const Routes = [
   //     isPrivate: true,
   //   },
   // },
+  {
+    path: "/followups",
+    element: <Followups />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "/activity-logs",
+    element: <ActivityLogs />,
+    meta: {
+      isPrivate: true,
+    },
+  },
+  {
+    path: "*",
+    element: <Error />,
+    meta: {
+      layout: "blank",
+      isPrivate: false,
+    },
+  }
 ];
 
-const getRouteMeta = (route) => {
+
+
+const getRouteMeta = (route) =>
+{
   if (isObjEmpty(route.element.props)) {
     if (route.meta) {
       return { routeMeta: route.meta };
@@ -335,11 +368,13 @@ const getRouteMeta = (route) => {
 };
 
 // ** Return Filtered Array of Routes & Paths
-const MergeLayoutRoutes = (layout, defaultLayout) => {
+const MergeLayoutRoutes = (layout, defaultLayout) =>
+{
   const LayoutRoutes = [];
 
   if (Routes) {
-    Routes.filter((route) => {
+    Routes.filter((route) =>
+    {
       let isBlank = false;
       // ** Checks if Route layout or Default layout matches current layout
       if (
@@ -358,7 +393,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-                LayoutWrapper
+              LayoutWrapper
               : Fragment;
           route.element = (
             <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
@@ -376,13 +411,15 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
   return LayoutRoutes;
 };
 
-const getRoutes = (layout) => {
+const getRoutes = (layout) =>
+{
   const defaultLayout = layout || "vertical";
   const layouts = ["vertical", "horizontal", "blank"];
 
   const AllRoutes = [];
 
-  layouts.forEach((layoutItem) => {
+  layouts.forEach((layoutItem) =>
+  {
     const LayoutRoutes = MergeLayoutRoutes(layoutItem, defaultLayout);
 
     AllRoutes.push({
