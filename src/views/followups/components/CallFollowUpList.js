@@ -54,8 +54,7 @@ export default () =>
                 ...data,
                 ...options,
             };
-            dispatch(getFollowups(queryParams));
-            console.log(queryParams);
+            dispatch(getFollowups(queryParams));       
         }
     };
 
@@ -107,9 +106,6 @@ export default () =>
             </div>
         );
     }
-
-
-    console.log(followups);
     return (
         <>
             <Card>

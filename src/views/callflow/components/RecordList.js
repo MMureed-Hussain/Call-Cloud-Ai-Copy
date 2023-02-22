@@ -190,7 +190,7 @@ setOnCallSubmit(!onCallSubmit)
   return (
     <>
       <Card>
-        {console.log("calls",calls)}
+
         <CardHeader className="py-1">
           <CardTitle tag="h4">Calls</CardTitle>
         </CardHeader>

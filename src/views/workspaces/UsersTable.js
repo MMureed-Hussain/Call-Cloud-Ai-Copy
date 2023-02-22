@@ -370,7 +370,7 @@ const UsersList = ({ workspaceId }) =>
         };
         tempUser.handleDelete = async (id, joinedAt) =>
         {
-          console.log("joinedAt", joinedAt);
+        
           // prettier-ignore
           const text = joinedAt ? "Are you sure you would like to remove this user?" : "Are you sure you would like to cancel this invitation?";
           // prettier-ignore
@@ -390,7 +390,7 @@ const UsersList = ({ workspaceId }) =>
           });
           if (result.value) {
             dispatch(deleteMemberFromWorkspace({ id }));
-            console.log("delete workspace", id);
+  
             refreshTable();
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({

@@ -256,12 +256,12 @@ const Queue = ({ workspaceId }) => {
           }
         };
         tempUser.handleDelete = async (id, joinedAt) => {
-          console.log("joinedAt", id);
+         
           // prettier-ignore
           const text = joinedAt ? "Are you sure you would like to delete this queue?" : "Are you sure you would like to delete this queue?";
           // prettier-ignore
           const confirmButtonText = joinedAt ? "Yes, delete it!" : "Yes, delete it!";
-          console.log("jinnedatt", joinedAt)
+          
 
           const result = await MySwal.fire({
             title: "Are you sure?",
@@ -277,7 +277,6 @@ const Queue = ({ workspaceId }) => {
           });
           if (result.value) {
             dispatch(deleteQueueFromWorkspace({ id, workspaceId }));
-            console.log("delete queue", id);
             refreshTable();
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({

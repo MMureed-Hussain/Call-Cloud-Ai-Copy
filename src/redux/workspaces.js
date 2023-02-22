@@ -421,7 +421,6 @@ export const deleteQueueFromWorkspace = createAsyncThunk(
   "workspaces/deleteQueueFromWorkspace",
   async (payload) =>
   {
-    console.log("payload", payload);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/queues/delete/${payload.id}`, { workspace_id: payload.workspaceId }
@@ -446,7 +445,6 @@ export const deleteTeamFromWorkspace = createAsyncThunk(
   "workspaces/deleteTeamFromWorkspace",
   async (payload) =>
   {
-    console.log("payload", payload);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/teams/delete/${payload.id}`, { workspace_id: payload.workspaceId }
@@ -725,7 +723,6 @@ export const getTeam = createAsyncThunk(
         `${process.env.REACT_APP_API_ENDPOINT}/api/teams/${payload.id}/all`,
         payload
       )
-      console.log('getTeams thunks:', response.data.data);
       return {
         data: {
           team: response.data.data,
@@ -870,7 +867,7 @@ export const getCallFlowData = createAsyncThunk(
 
 
     try {
-      console.log("thunk", payload)
+
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/index/${payload}`
       );
@@ -926,7 +923,7 @@ export const getCallFlowRecord = createAsyncThunk(
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/lead/record/${payload.profileId}`
       );
-      console.log("thunk getRecord", response)
+
       return {
         data: {
           callFlowRecord: response.data.data,

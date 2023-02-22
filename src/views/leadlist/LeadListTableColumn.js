@@ -1,4 +1,18 @@
+// ** Icons Imports
+import {
+  Trash,
+  Edit,
+  MoreVertical,
+} from "react-feather";
 
+// ** Reactstrap Imports
+import {
+  Badge,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
 export const LeadListTableColumn = [
     {
       name: "Lead List Name",
@@ -49,6 +63,48 @@ export const LeadListTableColumn = [
       minWidth: "172px",
       selector: (row) => row.columns,
       cell: (row) => row.columns
+    },
+    {
+      name: "Actions",
+      minWidth: "100px",
+      cell: (row) => (
+        <div className="column-action">
+          <UncontrolledDropdown>
+            <DropdownToggle tag="div" className="btn btn-sm">
+              <MoreVertical size={14} className="cursor-pointer" />
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem
+                tag="a"
+                href="/"
+                className="w-100"
+                onClick={(e) => {
+                  row.handleEdit(row.id);
+                  e.preventDefault();
+                }}
+              >
+                <Edit size={15} />
+                <span className="align-middle ms-50">Edit</span>
+              </DropdownItem>
+  
+              <DropdownItem
+                tag="a"
+                href="/"
+                className="w-100"
+                onClick={(e) => {
+                  row.handleDelete(row.id);
+                  e.preventDefault();
+                }}
+              >
+                <Trash size={15} className="me-50" />
+                <span className="align-middle ms-50">
+                  {row.joinedAt ? "Remove Lead List" : "Delete Lead List"}
+                </span>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        </div>
+      ),
     },
   ];
   
