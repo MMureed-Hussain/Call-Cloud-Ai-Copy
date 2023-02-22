@@ -8,7 +8,7 @@ function WorkspaceManageLeadlist() {
   );
 
   return (
-    <div className="app-leadlist-list">
+    <div className="app-user-list">
       <QueueTable workspaceId={workspaceState} />
     </div>
   );

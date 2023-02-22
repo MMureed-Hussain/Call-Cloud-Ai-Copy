@@ -40,7 +40,6 @@ const TeamSidebar = ({
     return team ? team.users.map((item) => ({
           value: item.enc_id,
           label: ((item) => {
-            console.log('users', item);
             let final = 'dummy user name';
             if (item.name) {
               final = item.name;
@@ -72,7 +71,6 @@ const TeamSidebar = ({
           page: 1
         })
         ).then(res => setTeamUsers(res.payload.data.users));
-        console.log("get Users Data", getUsers)
       }
   }, [workspaceId]);
 

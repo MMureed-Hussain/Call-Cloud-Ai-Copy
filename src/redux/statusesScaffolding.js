@@ -29,7 +29,7 @@ export default function (moduleName, pathName) {
       setUpdatedStatus: (state, { payload }) => {
         let statuses = [...state.statuses];
         let index = statuses.findIndex((p) => p.id == payload.id);
-        console.log("updated",payload)
+  
         statuses[index] = { ...statuses[index], name: payload.name, color: payload.color }
         state.statuses = statuses;
       },

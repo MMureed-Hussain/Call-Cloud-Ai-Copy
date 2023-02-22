@@ -166,7 +166,6 @@ export default () =>
     {
         let newOptions = [{ value: '', label: 'None' }, ...op];
         let selected = sel ? sel : '';
-        console.log(sel, newOptions.filter(option => option.value === selected), 'selected');
         return newOptions.filter(option => option.value === selected);
     }
 

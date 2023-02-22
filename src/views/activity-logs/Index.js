@@ -8,7 +8,7 @@ function Index() {
 
   return (
     
-    <div className="app-leadlist-list">
+    <div className="app-user-list">
         <ActivityLogTable  workspaceId={workspaceState}/>
     </div>
     

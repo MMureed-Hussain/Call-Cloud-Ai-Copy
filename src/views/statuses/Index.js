@@ -25,6 +25,8 @@ import Skeleton from "react-loading-skeleton";
 import { debounce, map } from "lodash";
 import CloneResourceSidebar from "../../@core/components/custom/CloneResourceSidebar";
 import usePrevious from "../../utility/hooks/usePrevious";
+import { useLocation } from "react-router-dom";
+
 
 export default ({
   moduleName,
@@ -46,7 +48,7 @@ export default ({
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
-
+  const location = useLocation();
   const actions = {
     moduleName,
     createStatus,
@@ -108,7 +110,7 @@ export default ({
 
   if (isLoading) {
     return (
-      <div className="vh-100">
+      <div className="vh-100">b
         <Skeleton height={"15%"} />
         <Skeleton height={"7%"} count={9} />
       </div>
@@ -126,7 +128,7 @@ export default ({
               className="me-1"
               onClick={toggleCloneSidebar}
             >
-              Clone Statuses
+           {location.pathname === "/client-statuses" ? `Clone Clients` : location.pathname === "/statuses" ? "Clone Calls" : location.pathname === "/lead-statuses" ? "Clone Leads" : "" }
             </Button>
             <Button
               color="primary"

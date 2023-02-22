@@ -50,9 +50,7 @@ export const getActivityLogs = createAsyncThunk(
   "activityLogs/index",
   async (params, { dispatch }) => {
     try {
-      const response = await axios.get(`${baseURL}/`, {
-        params
-      });
+      const response = await axios.post(`${baseURL}/${params.model_id}`, params);
       dispatch(setLogs(response.data.data));
       dispatch(setCurrentPage(response.data.current_page));
       dispatch(setTotalCount(response.data.total));

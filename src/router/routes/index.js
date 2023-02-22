@@ -220,7 +220,7 @@ const Routes = [
   },
   {
     path: "/lead-statuses",
-    element: <LeadStatuses />,
+    element: <LeadStatuses/>,
     meta: {
       isPrivate: true,
     },

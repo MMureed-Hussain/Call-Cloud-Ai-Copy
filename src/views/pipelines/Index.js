@@ -40,7 +40,7 @@ export default () => {
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const pipelines = useSelector((state) => state.pipelines.pipelines);
-  console.log("state pipelines", pipelines);
+
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
@@ -110,7 +110,7 @@ export default () => {
     <>
       <Card>
         <CardHeader>
-          {console.log("pipelines", pipelines)}
+
           <CardTitle tag="h4">Pipelines</CardTitle>
           <div className="d-flex align-items-center table-header-actions">
             <Button
