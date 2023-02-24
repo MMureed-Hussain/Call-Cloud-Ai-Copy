@@ -21,6 +21,8 @@ const CampaignSidebar = forwardRef((props, ref) =>
 	const [open, setOpen] = useState(false);
 	const [loader, setLoader] = useState(false);
 	const [data, setData] = useState({});
+
+	
 	const handleChange = (e) =>
 	{
 		const key = e.target.name;
@@ -55,6 +57,21 @@ const CampaignSidebar = forwardRef((props, ref) =>
 	{
 		return op.filter(option => option.value === sel);
 	}
+//current
+	var date = new Date()
+	var tdate = date.getDate()
+	var month = date.getMonth() +1;
+	 if(tdate < 10){
+		tdate = '0' + tdate
+	 };
+
+	 if(month < 0){
+		month = '0' + month;
+	 }
+	 var year = date.getUTCFullYear();
+	 var minDate =  month + "-" + tdate + "-" + year  ;
+	 console.log(minDate)
+
 
 
 
@@ -125,6 +142,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
 					<Input
 						name="start_date"
 						type="date"
+						id="demo"
 						value={data.start_date}
 						onChange={e => handleChange(e)}
 						className={`${errors.has("start_date") && 'is-invalid'}`}
@@ -161,7 +179,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
 					</FormGroup>
 
 				</FormGroup>
-				<Button className="me-1" color="primary">
+				<Button className="me-1" color="primary" type="submit" onClick={() => setOpen(false)}>
 					{loader && <Spinner style={{ marginRight: "5px" }} size={"sm"} color="white" />}
 					Submit
 				</Button>

@@ -163,8 +163,9 @@ export default () =>
                                         {row.meeting_type == 'google_meet' && <FontAwesomeIcon className="text-info" fontSize={20} icon={faVideo} />}
                                         {row.meeting_type == 'other' && <Badge color="warning" className="bg-light-warning">Other</Badge>}
                                     </td>
-                                    <td>
-                                        {row.location && <span className="fw-bold text-primary cursor-pointer">{row.location}</span>}
+                                    <td  >
+                                        <a target="_blank" href= {row.location}> {row.location && <span className="fw-bold text-primary cursor-pointer">{row.location}</span>}</a>
+                                    
                                     </td>
                                     <td style={{ maxWidth: '300px' }}>{row.notes}</td>
                                     <td>{row.created_at}</td>
