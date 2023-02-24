@@ -35,6 +35,7 @@ const TeamSidebar = ({
   const [teamName, setTeamName] = useState(team ? team.team_name : "");
 
   const [teamUsers, setTeamUsers] = useState([]);
+  
 
   const [selectedTeamUsers, setSelectedTeamUsers] = useState(() => {
     return team ? team.users.map((item) => ({
@@ -107,6 +108,7 @@ const TeamSidebar = ({
           team_name: teamName,
           users: selectedTeamUsers.map(item => item.value)
         })).then((result) => {
+          console.log(result);
             setFormSubmissionLoader(false);
             if (result.payload.data.data.team_name) {
               setTeamName("");

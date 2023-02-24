@@ -165,7 +165,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 				{meetingHeldOn()}
 			</div>
 
-			<Form onSubmit={handleSubmit}>
+			<Form  onSubmit={handleSubmit}>
 				<Row className={`pt-2 pb-2 ${data.type == 'number' ? 'bg-light' : ''}`}>
 					<Col sm="2" className="d-flex align-items-center">
 						<Input
@@ -335,7 +335,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 						onChange={e => handleChange(e)}
 					/>
 				</FormGroup>
-				<Button className="me-1" color="primary">
+				<Button className="me-1" color="primary" type="submit" >
 					{loader && <Spinner style={{ marginRight: "5px" }} size={"sm"} color="white" />}
 					Submit
 				</Button>
