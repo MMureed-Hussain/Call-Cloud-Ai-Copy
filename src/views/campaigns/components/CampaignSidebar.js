@@ -21,8 +21,6 @@ const CampaignSidebar = forwardRef((props, ref) =>
 	const [open, setOpen] = useState(false);
 	const [loader, setLoader] = useState(false);
 	const [data, setData] = useState({});
-
-	
 	const handleChange = (e) =>
 	{
 		const key = e.target.name;
@@ -57,21 +55,15 @@ const CampaignSidebar = forwardRef((props, ref) =>
 	{
 		return op.filter(option => option.value === sel);
 	}
-//current
-	var date = new Date()
-	var tdate = date.getDate()
-	var month = date.getMonth() +1;
-	 if(tdate < 10){
-		tdate = '0' + tdate
-	 };
 
-	 if(month < 0){
-		month = '0' + month;
-	 }
-	 var year = date.getUTCFullYear();
-	 var minDate =  month + "-" + tdate + "-" + year  ;
-	 console.log(minDate)
-
+	//current dates
+    const disableDates = () => {
+        const today = new Date();
+        const dd = today.getDate() < 10 ? `0${today.getDate()}` : today.getDate();
+        const mm = today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
+        const yyyy = today.getFullYear();
+        return `${yyyy}-${mm}-${dd}`;
+    };
 
 
 
@@ -142,8 +134,8 @@ const CampaignSidebar = forwardRef((props, ref) =>
 					<Input
 						name="start_date"
 						type="date"
-						id="demo"
-						value={data.start_date}
+						min={disableDates()}
+						value={data.start_date }
 						onChange={e => handleChange(e)}
 						className={`${errors.has("start_date") && 'is-invalid'}`}
 					/>

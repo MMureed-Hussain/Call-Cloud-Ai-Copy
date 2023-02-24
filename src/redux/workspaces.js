@@ -343,7 +343,6 @@ export const saveTeam = createAsyncThunk(
 
         }
       );
-
       toast.success(response.data.message);
       return {
         data: response.data
