@@ -20,6 +20,7 @@ export default () =>
     const teams = useSelector((state) => state.campaigns.teams);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '', from_date: '', to_date: '' });
+    
 
     useEffect(() =>
     {
@@ -163,10 +164,14 @@ export default () =>
                         <tbody>
                             {campaigns.data && campaigns.data.map((row, ind) =>
                                 <tr key={ind} >
-                                    <td>{row.title}</td>
-                                    <td style={{ maxWidth: '300px' }}>{row.description}</td>
+                                    <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: '20ch'   }}>{row.title}  </td>
+                                    <td style={{  whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",maxWidth: '10ch' }}>{row.description} </td>
                                     <td>
-                                        <Badge color={`${row.status ? 'success' : 'danger'}`} className={`bg-light-${row.status ? 'success' : 'danger'}`}>{row.status ? 'ACTIVE' : 'INACTIVE'}</Badge>
+                                        <Badge 
+                                        color={`${row.status ? 'success' : 'danger'}`}
+                                        className={`badge-glow`}>
+                                            {row.status ? 'ACTIVE' : 'INACTIVE'}
+                                        </Badge>
                                     </td>
                                     <td>{row.start_date}</td>
                                     <td>{row.team.team_name}</td>

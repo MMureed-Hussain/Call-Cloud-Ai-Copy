@@ -47,6 +47,7 @@ export const getPipelines = createAsyncThunk(
       dispatch(setPipelines(response.data.data));
     } catch (e) {
       toast.error(e.response.data.message);
+      
     }
   }
 );
