@@ -9,29 +9,21 @@ import RecordList from "./components/RecordList";
 
 export default ({workspaceId}) => {
   const [callFlowData,setCallFlowData]=useState();
-const [nextCall,setNextCall]=useState(false);
+  const [nextCall,setNextCall]=useState(false);
 
-const dispatch=useDispatch();
-
+  const dispatch=useDispatch();
 
   useEffect(() => {
+    dispatch(
+      getCallFlowData(workspaceId)
+    ).then((data)=> setCallFlowData(data.payload.data.callflow));
+  }, [nextCall]);
 
-  dispatch(
-    getCallFlowData(workspaceId)
-   ).then((data)=> setCallFlowData(data.payload.data.callflow));
+  const nextCallRecord=()=>{
+    setNextCall(!nextCall);
+  }
 
-}, [nextCall]);
-
-
-const nextCallRecord=()=>{
-
-  setNextCall(!nextCall);
-
-}
-
-  
   return (
-
     <div id="user-profile">
       <section id="profile-info">
         <Row>
@@ -41,8 +33,12 @@ const nextCallRecord=()=>{
           <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
              <CallFlowTable callFlowRecord={callFlowData} nextCallRecord={nextCallRecord}/>
             
-            <RecordList rowId={callFlowData?.leadlist[0].leadlist_rows[0]?.id} profileId={callFlowData?.call_profile_id} /> 
-
+            {callFlowData?.leadlist && (
+              <RecordList 
+                rowId={callFlowData.leadlist[0].leadlist_rows[0]?.id} 
+                profileId={callFlowData.call_profile_id} 
+              /> 
+            )}
           </Col>
         </Row>
       </section>
