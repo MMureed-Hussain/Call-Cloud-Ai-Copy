@@ -870,6 +870,7 @@ export const getCallFlowData = createAsyncThunk(
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/index/${payload}`
       );
+      console.log("call flow payload ", payload)
       return {
         data: {
           callflow: response.data.data,
