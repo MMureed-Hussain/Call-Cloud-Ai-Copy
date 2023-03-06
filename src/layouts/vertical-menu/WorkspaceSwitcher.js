@@ -121,7 +121,6 @@ const WorkspaceSwitcher = () =>
 
   const handleWorkSpaceOnClick = (workspace) => 
   {
-    console.log('onclick');
     dispatch(
       storeCurrentWorkspace({
         workspace: {

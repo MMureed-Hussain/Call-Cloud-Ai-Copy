@@ -201,7 +201,6 @@ const BillingHistory = ({ paymentMethods }) => {
   };
 
   const handlePayInvoice = (id) => {
-    console.log(id);
     setPayInvoiceModal(true);
     setPayInvoiceId(id);
   };

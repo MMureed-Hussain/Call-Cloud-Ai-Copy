@@ -72,7 +72,6 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
       setErrorMessage(result.error.message);
     } else {
       // The payment has been processed!
-      console.log("result", result);
       if (result.setupIntent.status === "succeeded") {
         toast.success("Subscription created successfully!");
         setSubscriptionCreated(true);

@@ -71,7 +71,6 @@ export const markWorkspaceAsAccessedNow = createAsyncThunk(
       await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/mark-workspace-as-accessed-now/${payload.id}`
       );
-      console.log('markWorkspaceAsAccessedNow');
       return {
         data: true,
       };
@@ -269,7 +268,6 @@ export const inviteLeadlist = createAsyncThunk(
   {
 
     try {
-      console.log("inisde payload", payload)
       const _formData = new FormData();
       _formData.append('leadlist_name', payload.leadName);
       _formData.append('file_name', payload.csvFile);
@@ -806,7 +804,6 @@ export const postHeader = createAsyncThunk(
   "header/bulkupdate",
   async (payload) =>
   {
-    console.log("post heaear educx", payload)
     try {
 
       const response = await axios.post(
@@ -870,7 +867,6 @@ export const getCallFlowData = createAsyncThunk(
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/callflow/index/${payload}`
       );
-      console.log("call flow payload ", payload)
       return {
         data: {
           callflow: response.data.data,

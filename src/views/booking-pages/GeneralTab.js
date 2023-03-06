@@ -37,7 +37,6 @@ axios.defaults.withCredentials = true;
 
 const GeneralTab = ({ workspace = null }) => {
   // ** States
-  console.log("workspace", workspace);
   const [title, setTitle] = useState("");
   const [titleError, setTitleError] = useState(false);
   const [intro, setIntro] = useState("");
@@ -152,7 +151,6 @@ const GeneralTab = ({ workspace = null }) => {
 
   const onChange = (e) => {
     if (!e.target.files.length) {
-      console.log("return");
       return;
     }
     const reader = new FileReader(),

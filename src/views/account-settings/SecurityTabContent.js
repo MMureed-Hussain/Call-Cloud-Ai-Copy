@@ -92,7 +92,6 @@ const SecurityTabContent = () => {
         password_confirmation: newPasswordConfirmation,
         current_password: currentPassword,
       };
-      console.log("onSubmit", payload);
       const r = await dispatch(updatePassword(payload)).unwrap();
       setFormSubmissionLoader(false);
       console.log(r);

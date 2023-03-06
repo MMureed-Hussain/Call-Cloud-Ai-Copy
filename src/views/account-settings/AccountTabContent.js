@@ -375,7 +375,6 @@ const AccountTabs = ({ data }) => {
         payload.industry = industry.id;
       }
 
-      console.log("form data ==>", payload);
       setFormSubmissionLoader(true);
       // prettier-ignore
       dispatch(updateProfile(payload)).then(() => setFormSubmissionLoader(false));
