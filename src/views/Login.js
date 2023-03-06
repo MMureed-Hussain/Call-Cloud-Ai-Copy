@@ -73,20 +73,33 @@ const Login = () => {
     e.preventDefault();
   };
 
+  const [, setGoogleLoginUrl] = useState(null);
+
+  const handleGoogleLogin = () => {
+    fetch("http://localhost:8000/api/auth/google", {
+      headers: new Headers({ accept: "application/json" }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        
+      })
+      .then((data) => { 
+        setGoogleLoginUrl(data.url); window.location.href = data.url;
+      })
+      .catch((error) => console.error(error));
+  };
+
   const illustration = skin === "dark" ? "login-v2-dark.svg" : "login-v2.svg",
     source = require(`@src/assets/images/pages/${illustration}`);
 
-  if (store.user && store.user.emailVerified && store.user.profileCompleted) {
+  if (store.user && store.user.emailVerified && !store.user.profileCompleted) {
+    return <Navigate to="/complete-profile" />;
+  } else if (store.user && store.user.emailVerified && store.user.profileCompleted) {
     return <Navigate to="/dashboard" />;
   }
-
-  if (store.user && !store.user.emailVerified) {
-    return <Navigate to="/verify-email" />;
-  }
-
-  if (store.user && !store.user.profileCompleted) {
-    return <Navigate to="/complete-profile" />;
-  }
+  
   return (
     <div className="auth-wrapper auth-cover">
       {/* {!store.user && toast.success("test")} */}
@@ -194,9 +207,13 @@ const Login = () => {
               <Button color="twitter">
                 <Twitter size={14} />
               </Button>
-              <Button color="google">
-                <Mail size={14} />
+             
+              <Button color="google" onClick={handleGoogleLogin}>
+                {/* <a target="_blank" href={googleLoginUrl} > */}
+                <Mail size={14} />  
+                {/* </a> */}
               </Button>
+
               <Button className="me-0" color="github">
                 <GitHub size={14} />
               </Button>

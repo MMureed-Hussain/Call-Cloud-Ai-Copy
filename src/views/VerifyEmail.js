@@ -26,7 +26,8 @@ const VerifyEmail = () => {
   const store = useSelector((state) => {
     return state.auth;
   });
-
+  // console.log(first)
+  
   //prettier-ignore
   const illustration = skin === "dark" ? "verify-email-illustration-dark.svg" : "verify-email-illustration.svg",
     source = require(`@src/assets/images/pages/${illustration}`);

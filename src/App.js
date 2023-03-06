@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 // ** Router Import
 import Router from "./router/Router";
@@ -38,6 +38,7 @@ const App = () => {
     const href = window.location.href.split("?")[0];
     window.history.pushState({}, document.title, href);
   }
+
 
   return (
     <>

@@ -31,6 +31,54 @@ export const login = createAsyncThunk("auth/login", async (payload) => {
   }
 });
 
+export const googlelogin = createAsyncThunk("auth/googlelogin", async (payload) => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/auth/google/callback?${payload.params}`
+    );
+    if (response.data.message === 'Please verify your email first') {        
+      alert(response.data.message);
+      window.location.href = "/login";
+    } else {
+      window.location.href = "/";
+    }
+    return {
+      data: {
+        user: response.data,
+      },
+    };
+  } catch (e) {
+    console.log(e);
+    toast.error(e.response.data.message);
+    return {
+      data: {
+        user: false,
+      },
+    };
+  }
+});
+
+export const emailverification = createAsyncThunk("auth/emailverification", async (payload) => {
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_ENDPOINT}/api/verify-email?token=${payload.params.slice(0, -1)}`);
+    window.location.href = "/";
+    return {
+      data: {
+        user: response.data,
+      },
+    };
+  } catch (e) {
+    console.log(e);
+    toast.error(e.response.data.message);
+    return {
+      data: {
+        user: false,
+      },
+    };
+  }
+});
+
 // Perform Register API and set user data in store
 export const register = createAsyncThunk("auth/register", async (payload) => {
   try {
@@ -156,10 +204,9 @@ export const updatePassword = createAsyncThunk(
 // Perform CSRF API to set cookie for future API calls
 export const csrf = createAsyncThunk("auth/csrf", async () => {
   try {
-    const response = await axios.get(
+    await axios.get(
       `${process.env.REACT_APP_API_ENDPOINT}/sanctum/csrf-cookie`
     );
-    console.log("csrf set", response);
   } catch (e) {
     console.log(e);
   }
@@ -253,6 +300,10 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
+        state.user = action.payload.data.user;
+        state.loading = false;
+      })
+      .addCase(emailverification.fulfilled, (state, action) => {
         state.user = action.payload.data.user;
         state.loading = false;
       })

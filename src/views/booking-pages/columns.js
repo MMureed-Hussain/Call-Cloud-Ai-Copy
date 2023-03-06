@@ -93,7 +93,6 @@ export const columns = [
               className="w-100"
               onClick={(e) => {
                 // row.handleDelete(row.id);
-                console.log("handle delete");
                 e.preventDefault();
               }}
             >

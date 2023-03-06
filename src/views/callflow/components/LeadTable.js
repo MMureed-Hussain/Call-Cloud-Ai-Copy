@@ -85,7 +85,6 @@ const CallFlowTable = ({ callFlowRecord, nextCallRecord }) => {
   }, [callFlowRecord]);
 
   const handleButton = () => {
-    console.log("running handlebtn");
     setNextLead(!nextLead);
     nextCallRecord();
   };

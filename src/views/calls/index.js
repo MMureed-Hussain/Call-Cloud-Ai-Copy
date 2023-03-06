@@ -59,13 +59,6 @@ export default () =>
                 }
             });
 
-            // Echo.private(`workspaces.${currentWorkspace.id}`)
-            //     .listen('WorkspaceCallRecordingStatus', (res) =>
-            //     {
-            //         console.log('WorkspaceCallRecordingStatus');
-            //         // dispatch(getRecordingByWorkspace({ id: currentWorkspace.id }));
-            //     });
-
         }
     }, [currentWorkspace]);
 

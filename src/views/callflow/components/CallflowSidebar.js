@@ -75,7 +75,6 @@ export default ({ open, toggleSidebar, call,callRecordList ,rowId,profileId}) =>
   let tagsArray=[]
   tags.map((data)=>tagsArray.push( data.label) 
  )
- console.log("tags",tagsArray)
   
     console.log("onsubmit",callStatus,tags)
       formData.append("voice", audioDetails?.blob);
@@ -85,9 +84,7 @@ export default ({ open, toggleSidebar, call,callRecordList ,rowId,profileId}) =>
       formData.append("call_profile_id",profileId)
       formData.append("note",note)
       formData.append("callstatus",callStatus.label)
-      formData.append("tags",tagsArray)
-console.log("onsubmit",formData)
-      
+      formData.append("tags",tagsArray)      
       
     
     setFormSubmissionLoader(true);

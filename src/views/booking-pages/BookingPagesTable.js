@@ -110,7 +110,6 @@ const BookingPageList = ({ workspaceId }) => {
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.bookingPages);
-  console.log("store", store);
   //   const userData = useSelector((state) => state.auth);
 
   // ** States

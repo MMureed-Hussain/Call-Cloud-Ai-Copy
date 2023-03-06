@@ -130,7 +130,7 @@ const Register = () => {
         >
           <Col className="px-xl-2 mx-auto" xs="12" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-              Adventure starts here 🚀
+            Join CallCloud for free 🚀
             </CardTitle>
             <CardText className="mb-2">
               Make your app management easy and fun!
@@ -220,7 +220,7 @@ const Register = () => {
                 <FormFeedback>Please accept terms!</FormFeedback>
               </div>
               <Button onClick={(e) => handleSubmit(e)} color="primary" block>
-                Sign up
+              Create Account
                 {formSubmissionLoader && (
                   <Spinner
                     style={{ marginLeft: "5px" }}

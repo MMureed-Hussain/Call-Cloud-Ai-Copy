@@ -7,6 +7,8 @@ import BlankLayout from "@layouts/BlankLayout";
 import VerticalLayout from "@src/layouts/VerticalLayout";
 import HorizontalLayout from "@src/layouts/HorizontalLayout";
 import LayoutWrapper from "@src/@core/layouts/components/layout-wrapper";
+import LoginGoogle from "../../views/LoginGoogle";
+import EmailVerification from "../../views/EmailVerification";
 
 // ** Route Components
 import PublicRoute from "@src/router/routes/PublicRoute";
@@ -247,6 +249,23 @@ const Routes = [
       isPrivate: false,
     },
   },
+  {
+    path: "/auth/google",
+    element: <LoginGoogle />,
+    meta: {
+      layout: "blank",
+      isPrivate: false,
+    },
+  },
+  {
+    path: "/verify-user-email",
+    element: <EmailVerification />,
+    meta: {
+      layout: "blank",
+      isPrivate: false,
+    },
+  },
+  
   {
     path: "/register",
     element: <Register />,
