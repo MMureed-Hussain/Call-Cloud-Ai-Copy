@@ -8,14 +8,14 @@ export default function EmailVerification() {
 
   const verifyEmail = useCallback(
     debounce((params) => {
-      dispatch(emailverification({ params: params }));
+      dispatch(emailverification({ params: params.toString() }));
     }, 500),
     []
   );
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    verifyEmail(params.toString());
+    verifyEmail(params);
   }, [verifyEmail]);
 
   return null;

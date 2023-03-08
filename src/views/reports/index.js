@@ -183,7 +183,7 @@ export default () =>
                     <Row>
                         <Col lg="10">
                             <Row>
-                                <Col lg="2">
+                                <Col lg="4">
                                     <FormGroup>
                                         <Label>Profile Type</Label>
                                         <Select
@@ -196,7 +196,7 @@ export default () =>
                                     </FormGroup>
                                 </Col>
                                 {(data && data.profile == 'lead' && profileStatus) &&
-                                    <Col lg="2">
+                                    <Col lg="4">
                                         <FormGroup>
                                             <Label>Profile status</Label>
                                             <Select
@@ -210,7 +210,7 @@ export default () =>
                                 }
 
                                 {(data && data.profile == 'client' && clientStatus) &&
-                                    <Col lg="2">
+                                    <Col lg="4">
                                         <FormGroup>
                                             <Label>Client Status</Label>
                                             <Select
@@ -223,7 +223,7 @@ export default () =>
                                     </Col>
                                 }
 
-                                <Col lg="2">
+                                <Col lg="4">
                                     <FormGroup>
                                         <Label>Pipeline</Label>
                                         <Select
@@ -232,10 +232,12 @@ export default () =>
                                             placeholder="Select a pipeline" className="mb-2" />
                                     </FormGroup>
                                 </Col>
+                                
+                                <div  className="w-100"></div>
 
                                 {
                                     callStatus &&
-                                    <Col lg="2">
+                                    <Col lg="4">
                                         <FormGroup>
                                             <Label>Call Status</Label>
                                             <Select
@@ -247,7 +249,7 @@ export default () =>
                                     </Col>
                                 }
 
-                                <Col lg="2">
+                                <Col lg="4">
                                     <FormGroup>
                                         <Label>From</Label>
                                         <Input
@@ -259,7 +261,7 @@ export default () =>
                                     </FormGroup>
                                 </Col>
 
-                                <Col lg="2">
+                                <Col lg="4">
                                     <FormGroup>
                                         <Label>To</Label>
                                         <Input

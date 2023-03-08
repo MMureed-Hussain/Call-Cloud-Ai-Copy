@@ -10,7 +10,7 @@ import { getUser } from "@store/auth";
 import { getData, recentlyAccessedWorkspaces } from "@store/workspaces";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { logout } from "../../redux/auth";
+// import { logout } from "../../redux/auth";
 
 const PrivateRoute = ({ children, route }) => {
   // ** Hooks & Vars
