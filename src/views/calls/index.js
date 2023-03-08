@@ -179,18 +179,18 @@ export default () =>
                     <Row>
                         <Col lg="10">
                             <Row>
-                                <Col lg="2">
+                                <Col lg="3">
                                     <Select options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
                                 </Col>
                                 {
                                     callStatus &&
-                                    <Col lg="2">
+                                    <Col lg="3">
                                         <Select onChange={e => handleSelectChange(e, 'call_status')} options={[{ value: '', label: 'None' }, ...callStatus,]} placeholder="Select call status" className="mb-2" />
                                     </Col>
                                 }
 
                                 {callProfiles &&
-                                    <Col lg="2">
+                                    <Col lg="3">
                                         <Select onChange={e => handleSelectChange(e, 'member')} options={[{ value: '', label: 'None' }, ...callProfiles,]} placeholder="Select Profiles" className="mb-2" />
                                     </Col>
                                 }

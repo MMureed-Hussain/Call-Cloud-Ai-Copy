@@ -153,13 +153,13 @@ export default () =>
                 </CardHeader>
                 <CardBody>
                     <Row>
-                        <Col lg="1">
+                        <Col lg="2">
                             <span> Total Time <br /> <Badge color="success" className="bg-light-success">{total_time}</Badge></span>
                         </Col>
-                        <Col lg="1">
+                        <Col lg="2">
                             <span> Total Call <br /> <Badge color="success" className="bg-light-success">{total_call}</Badge></span>
                         </Col>
-                        <Col lg="1">
+                        <Col lg="2">
                             <span>Avg. Calls/Hr <br /> <Badge color="success" className="bg-light-success">{averageCallsPerHour()}</Badge></span>
                         </Col>
                     </Row>

@@ -116,16 +116,16 @@ export default () =>
                     <Row>
                         <Col lg="10">
                             <Row>
-                                <Col lg="2">
+                                <Col lg="3">
                                     <Select options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
                                 </Col>
                                 <Col lg="3">
                                     <Select onChange={e => handleSelectChange(e, 'pipeline_id')} options={[{ value: '', label: 'None' }, ...pipelineOptions,]} placeholder="Select a pipeline" className="mb-2" />
                                 </Col>
-                                <Col lg="3">
+                                <Col lg="4">
                                     <Select onChange={e => handleSelectChange(e, 'type')} options={typeOptions} className="mb-2" placeholder="Select a meeting type" />
                                 </Col>
-                                <Col lg="4"></Col>
+                                <Col lg="2"></Col>
                             </Row>
                         </Col>
                         <Col lg="2">

@@ -1,25 +1,28 @@
 /* eslint-disable */
 import { Row, Col } from "reactstrap";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getCallFlowData} from "../../redux/workspaces"
+import { useDispatch, useSelector } from "react-redux";
+import { getCallFlowData } from "../../redux/workspaces"
 import CallFlowAbout from "./components/LeadAbout";
 import CallFlowTable from "./components/LeadTable";
 import RecordList from "./components/RecordList";
 
-export default ({workspaceId}) => {
-  const [callFlowData,setCallFlowData]=useState();
-  const [nextCall,setNextCall]=useState(false);
+export default ({ workspaceId }) => {
+  const [callFlowData, setCallFlowData] = useState();
+  const [nextCall, setNextCall] = useState(false);
 
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.workspaces);
 
   useEffect(() => {
-    dispatch(
-      getCallFlowData(workspaceId)
-    ).then((data)=> setCallFlowData(data.payload.data.callflow));
+    if (store.callflowLoading && workspaceId) {
+      dispatch(
+        getCallFlowData(workspaceId)
+      ).then((data) => setCallFlowData(data.payload.data.callflow));
+    };
   }, [nextCall]);
 
-  const nextCallRecord=()=>{
+  const nextCallRecord = () => {
     setNextCall(!nextCall);
   }
 
@@ -31,13 +34,13 @@ export default ({workspaceId}) => {
             <CallFlowAbout callFlowData={callFlowData} />
           </Col>
           <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
-             <CallFlowTable callFlowRecord={callFlowData} nextCallRecord={nextCallRecord}/>
-            
+            <CallFlowTable callFlowRecord={callFlowData} nextCallRecord={nextCallRecord} />
+
             {callFlowData?.leadlist && (
-              <RecordList 
-                rowId={callFlowData.leadlist[0].leadlist_rows[0]?.id} 
-                profileId={callFlowData.call_profile_id} 
-              /> 
+              <RecordList
+                rowId={callFlowData.leadlist[0].leadlist_rows[0]?.id}
+                profileId={callFlowData.call_profile_id}
+              />
             )}
           </Col>
         </Row>

@@ -119,10 +119,10 @@ export default () =>
                     <Row>
                         <Col lg="10">
                             <Row>
-                                <Col lg="2">
+                                <Col lg="3">
                                     <Select options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
                                 </Col>
-                                <Col lg="2">
+                                <Col lg="3">
                                     <Select onChange={e => handleSelectChange(e, 'team_id')} options={[{ value: '', label: 'None' }, ...teams,]} className="mb-2" placeholder="Select Team" />
                                 </Col>
                                 <Col lg="2">
