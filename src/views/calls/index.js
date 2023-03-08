@@ -180,24 +180,24 @@ export default () =>
                         <Col lg="10">
                             <Row>
                                 <Col lg="3">
-                                    <Select options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
+                                    <Select classNamePrefix="select" options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
                                 </Col>
                                 {
                                     callStatus &&
                                     <Col lg="3">
-                                        <Select onChange={e => handleSelectChange(e, 'call_status')} options={[{ value: '', label: 'None' }, ...callStatus,]} placeholder="Select call status" className="mb-2" />
+                                        <Select classNamePrefix="select" onChange={e => handleSelectChange(e, 'call_status')} options={[{ value: '', label: 'None' }, ...callStatus,]} placeholder="Select call status" className="mb-2" />
                                     </Col>
                                 }
 
                                 {callProfiles &&
                                     <Col lg="3">
-                                        <Select onChange={e => handleSelectChange(e, 'member')} options={[{ value: '', label: 'None' }, ...callProfiles,]} placeholder="Select Profiles" className="mb-2" />
+                                        <Select classNamePrefix="select" onChange={e => handleSelectChange(e, 'member')} options={[{ value: '', label: 'None' }, ...callProfiles,]} placeholder="Select Profiles" className="mb-2" />
                                     </Col>
                                 }
 
                                 {profileStatus &&
                                     <Col lg="3">
-                                        <Select onChange={e => handleSelectChange(e, 'lead_status')} options={[{ value: '', label: 'None' }, ...profileStatus,]} className="mb-2" placeholder="Select profile status" />
+                                        <Select classNamePrefix="select" onChange={e => handleSelectChange(e, 'lead_status')} options={[{ value: '', label: 'None' }, ...profileStatus,]} className="mb-2" placeholder="Select profile status" />
                                     </Col>
                                 }
 
