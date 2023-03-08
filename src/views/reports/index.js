@@ -192,6 +192,7 @@ export default () =>
                                             onChange={e => handleSelectChange(e, 'profile')}
                                             placeholder="Profile Type"
                                             className="mb-2"
+                                            classNamePrefix="select"
                                         />
                                     </FormGroup>
                                 </Col>
@@ -204,6 +205,7 @@ export default () =>
                                                 options={[{ value: '', label: 'None' }, ...profileStatus]}
                                                 value={handleSelected(profileStatus, data.lead_status)}
                                                 className="mb-2"
+                                                classNamePrefix="select"
                                             />
                                         </FormGroup>
                                     </Col>
@@ -218,6 +220,7 @@ export default () =>
                                                 options={[{ value: '', label: 'None' }, ...clientStatus,]}
                                                 value={handleSelected(clientStatus, data.client_status)}
                                                 className="mb-2"
+                                                classNamePrefix="select"
                                             />
                                         </FormGroup>
                                     </Col>
@@ -229,7 +232,10 @@ export default () =>
                                         <Select
                                             options={[{ value: '', label: 'None' }, ...pipelineOptions,]}
                                             onChange={e => handleSelectChange(e, 'pipeline_id')}
-                                            placeholder="Select a pipeline" className="mb-2" />
+                                            placeholder="Select a pipeline" 
+                                            className="mb-2" 
+                                            classNamePrefix="select"
+                                            />
                                     </FormGroup>
                                 </Col>
                                 
@@ -244,6 +250,7 @@ export default () =>
                                                 onChange={e => handleSelectChange(e, 'call_status')}
                                                 options={[{ value: '', label: 'None' }, ...callStatus]}
                                                 className="mb-2"
+                                                classNamePrefix="select"
                                             />
                                         </FormGroup>
                                     </Col>

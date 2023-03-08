@@ -20,8 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faCalendarCheck, faVideo, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 
-export default () =>
-{
+export default () => {
     const dispatch = useDispatch();
     const per_page = useSelector((state) => state.layout.pagination.per_page);
     const followups = useSelector((state) => state.followups.followups);
@@ -31,30 +30,27 @@ export default () =>
         (state) => state.workspaces.currentWorkspace
     );
 
-    useEffect(() =>
-    {
+    useEffect(() => {
         if (currentWorkspace) {
             dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
         }
     }, [currentWorkspace]);
 
 
-    useEffect(() =>
-    {
+    useEffect(() => {
         loadFollowUps();
     }, [data, currentWorkspace]);
 
 
 
-    const loadFollowUps = (options) =>
-    {
+    const loadFollowUps = (options) => {
         if (currentWorkspace) {
             let queryParams = {
                 workspace_id: currentWorkspace.id,
                 ...data,
                 ...options,
             };
-            dispatch(getFollowups(queryParams));       
+            dispatch(getFollowups(queryParams));
         }
     };
 
@@ -74,8 +70,7 @@ export default () =>
     ];
 
 
-    const handleSelectChange = (e, name) =>
-    {
+    const handleSelectChange = (e, name) => {
         let target = {
             name,
             type: 'input',
@@ -86,8 +81,7 @@ export default () =>
     }
 
 
-    const handleChange = (e) =>
-    {
+    const handleChange = (e) => {
         const key = e.target.name;
         const value = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
 
@@ -117,13 +111,16 @@ export default () =>
                         <Col lg="10">
                             <Row>
                                 <Col lg="3">
-                                    <Select options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
+                                    <Select options={perPageOptions} classNamePrefix="select"
+                                        onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
                                 </Col>
                                 <Col lg="3">
-                                    <Select onChange={e => handleSelectChange(e, 'pipeline_id')} options={[{ value: '', label: 'None' }, ...pipelineOptions,]} placeholder="Select a pipeline" className="mb-2" />
+                                    <Select onChange={e => handleSelectChange(e, 'pipeline_id')} classNamePrefix="select"
+                                        options={[{ value: '', label: 'None' }, ...pipelineOptions,]} placeholder="Select a pipeline" className="mb-2" />
                                 </Col>
                                 <Col lg="4">
-                                    <Select onChange={e => handleSelectChange(e, 'type')} options={typeOptions} className="mb-2" placeholder="Select a meeting type" />
+                                    <Select onChange={e => handleSelectChange(e, 'type')} classNamePrefix="select"
+                                        options={typeOptions} className="mb-2" placeholder="Select a meeting type" />
                                 </Col>
                                 <Col lg="2"></Col>
                             </Row>
@@ -164,8 +161,8 @@ export default () =>
                                         {row.meeting_type == 'other' && <Badge color="warning" className="bg-light-warning">Other</Badge>}
                                     </td>
                                     <td  >
-                                        <a target="_blank" href= {row.location}> {row.location && <span className="fw-bold text-primary cursor-pointer">{row.location}</span>}</a>
-                                    
+                                        <a target="_blank" href={row.location}> {row.location && <span className="fw-bold text-primary cursor-pointer">{row.location}</span>}</a>
+
                                     </td>
                                     <td style={{ maxWidth: '300px' }}>{row.notes}</td>
                                     <td>{row.created_at}</td>
