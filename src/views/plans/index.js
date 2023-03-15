@@ -17,6 +17,7 @@ import PaymentSetup from "./PaymentSetup";
 import "@styles/base/pages/page-pricing.scss";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { recentlyAccessedWorkspaces } from "../../redux/workspaces";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
@@ -37,6 +38,7 @@ const Plans = () => {
 
   useEffect(() => {
     dispatch(getActivePlans());
+    dispatch(recentlyAccessedWorkspaces());
   }, []);
 
   useEffect(() => {

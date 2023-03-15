@@ -75,9 +75,7 @@ const PrivateRoute = ({ children, route }) => {
       !store.user.isSubscribed &&
       location.pathname !== "/plans"
     ) {
-      window.location.href = '/plans';
-      return;
-      // return <Navigate to="/plans" />;
+      return <Navigate to="/plans" />;
     }
 
     if (store.user && restrictedRoute) {
