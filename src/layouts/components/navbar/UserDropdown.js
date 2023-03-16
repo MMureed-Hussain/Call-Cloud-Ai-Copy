@@ -34,6 +34,8 @@ const defaultAvatar =
 import { useDispatch, useSelector } from "react-redux";
 
 import { logout } from "@store/auth";
+// import { getUsers } from "../../../redux/workspaces";
+// import { useEffect } from "react";
 
 const UserDropdown = () => {
   const dispatch = useDispatch();
@@ -42,6 +44,26 @@ const UserDropdown = () => {
     return state.auth;
   });
 
+  // const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+  const workspaceUsers = useSelector((state) => state.workspaces.users);
+  
+  // Transform the workspaceUsers array into an array of objects with the desired properties
+  const transformedUsers = workspaceUsers.map((user) => ({
+    value: user.id,
+    label: user.name,
+    email: user.email,
+    userRole: user.userRole,
+  }));
+  
+  // useEffect(() => {
+  //   if (transformedUsers.length !== 0) {
+  //     dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
+  //     console.log('userssll', transformedUsers);
+  //   }
+  // }, []);
+  
+  const isAdmin = transformedUsers.find((user) => user.email === store.user.email && user.userRole === 'admin');
+  
   const handleLogout = () => {
     dispatch(logout());
   };
@@ -50,6 +72,7 @@ const UserDropdown = () => {
     return <p>...</p>;
   }
 
+  // const isAdmin = store.user.userRole === "admin";
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle
@@ -73,19 +96,23 @@ const UserDropdown = () => {
         <DropdownItem
           tag={Link}
           to="/profile"
-          // onClick={(e) => e.preventDefault()}
+        // onClick={(e) => e.preventDefault()}
         >
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
         </DropdownItem>
-        <DropdownItem
-          tag={Link}
-          to="/profile?active_tab=billing"
+
+        {isAdmin &&
+          <DropdownItem
+            tag={Link}
+            to="/profile?active_tab=billing"
           // onClick={(e) => e.preventDefault()}
-        >
-          <DollarSign size={14} className="me-75" />
-          <span className="align-middle">Billing & Plans</span>
-        </DropdownItem>
+          >
+            <DollarSign size={14} className="me-75" />
+            <span className="align-middle">Billing & Plans</span>
+          </DropdownItem>
+        }
+
         {/* <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
           <Mail size={14} className="me-75" />
           <span className="align-middle">Inbox</span>

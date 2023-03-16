@@ -663,6 +663,7 @@ export const getUsers = createAsyncThunk(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}/users`,
         payload
       );
+      console.log('1st', response.data);
       return {
         data: {
           users: response.data.users,

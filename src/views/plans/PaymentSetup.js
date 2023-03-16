@@ -128,6 +128,7 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
       toast.success(res.data.message);
     }
     setSubscribeLoader(false);
+    window.location.href = '/dashboard';
   };
 
   return (
