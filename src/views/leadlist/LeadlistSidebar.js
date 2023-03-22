@@ -79,7 +79,7 @@ const SidebarLeadlist = ({
     setProgressBar(50);
     e.preventDefault();
     let valid = true;
-    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test()) {
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(leadName)) {
       valid = false;
       // setLeadNameError(true);
     } else {

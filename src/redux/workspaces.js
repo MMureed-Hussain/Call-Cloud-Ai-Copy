@@ -806,7 +806,6 @@ export const postHeader = createAsyncThunk(
   async (payload) =>
   {
     try {
-
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/leadlists/update/headers`,
         payload,
@@ -814,7 +813,7 @@ export const postHeader = createAsyncThunk(
       toast.success(response.data.message);
 
       return {
-        data: response.data.data
+        data: response.data // return response data directly
       };
     } catch (e) {
       toast.error(e.response.data.message);
@@ -827,6 +826,7 @@ export const postHeader = createAsyncThunk(
     }
   }
 );
+
 
 // Perform get CSV in workspace API
 export const getCsv = createAsyncThunk(
