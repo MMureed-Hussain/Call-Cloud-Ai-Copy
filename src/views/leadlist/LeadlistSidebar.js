@@ -247,8 +247,8 @@ const SidebarLeadlist = ({
           <div className="mb-1">
             <Form onSubmit={handleHeadersSubmit}>
               <div>
-                {fileHeaders?.map((fields) => (
-                  <FormGroup>
+                {fileHeaders?.map((fields, index) => (
+                  <FormGroup key={index}>
                     <div className="d-flex flex-row">
                       <Input
                         disabled={true}
