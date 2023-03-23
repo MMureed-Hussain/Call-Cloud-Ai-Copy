@@ -120,13 +120,13 @@ export default () =>
                         <Col lg="10">
                             <Row>
                                 <Col lg="3">
-                                    <Select options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
+                                    <Select classNamePrefix="select" options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
                                 </Col>
                                 <Col lg="3">
-                                    <Select onChange={e => handleSelectChange(e, 'team_id')} options={[{ value: '', label: 'None' }, ...teams,]} className="mb-2" placeholder="Select Team" />
+                                    <Select classNamePrefix="select" onChange={e => handleSelectChange(e, 'team_id')} options={[{ value: '', label: 'None' }, ...teams,]} className="mb-2" placeholder="Select Team" />
                                 </Col>
                                 <Col lg="2">
-                                    <Select onChange={e => handleSelectChange(e, 'status')} options={statusOptions} className="mb-2" placeholder="Status" />
+                                    <Select classNamePrefix="select" onChange={e => handleSelectChange(e, 'status')} options={statusOptions} className="mb-2" placeholder="Status" />
                                 </Col>
                                 <Col lg="2">
                                     <FormGroup>

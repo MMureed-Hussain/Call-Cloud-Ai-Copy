@@ -125,10 +125,15 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
     );
 
     if (res.data) {
-      toast.success(res.data.message);
+      if (res.data.message == "This Plan Is Already Subscribed!") {
+        toast.error(res.data.message);
+        setSubscribeLoader(false);
+      } else {
+        toast.success(res.data.message);
+        setSubscribeLoader(false);
+        window.location.href = '/dashboard';
+      }
     }
-    setSubscribeLoader(false);
-    window.location.href = '/dashboard';
   };
 
   return (
@@ -140,96 +145,96 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
         <div ref={cardSectionRef} style={{ display: "content" }}>
           {(!selectedPlanObject ||
             (selectedPlanObject && !selectedPlanObject.is_free_plan)) && (
-            <CardBody className="py-2 my-25">
-              {clientSecret && (
-                <Col lg="12" className="mt-2">
-                  {/* <Elements stripe={stripePromise}> */}
-                  <Col lg="6">
-                    <CardElement />
-                  </Col>
-                  <p className="d-flex invalid-feedback">{errorMessage}</p>
-                  {/* </Elements> */}
+              <CardBody className="py-2 my-25">
+                {clientSecret && (
+                  <Col lg="12" className="mt-2">
+                    {/* <Elements stripe={stripePromise}> */}
+                    <Col lg="6">
+                      <CardElement />
+                    </Col>
+                    <p className="d-flex invalid-feedback">{errorMessage}</p>
+                    {/* </Elements> */}
 
-                  <Button
-                    disabled={
-                      !selectedPlanObject ||
-                      !stripe ||
-                      !selectedPriceObject ||
-                      subscribeLoader
-                    }
-                    className="mt-2"
-                    //   prettier-ignore
-                    style={{cursor: (!selectedPlanObject || !stripe || !selectedPriceObject) ? "not-allowed" : "pointer" }}
-                    onClick={handleSubmit}
-                    //   disabled={!stripe}
-                    color="primary"
-                  >
-                    Subscribe
-                    {subscribeLoader && (
-                      <Spinner
-                        style={{ marginLeft: "5px" }}
-                        size={"sm"}
-                        color="white"
-                      />
-                    )}
-                  </Button>
-                  <div className="mt-2">
-                    {selectedPlanObject && selectedPriceObject ? (
-                      <p>
-                        You have selected{" "}
-                        <span className="h6">{selectedPlanObject.title}</span>{" "}
-                        plan with{" "}
-                        <span className="h6">{selectedPriceObject.cycle}</span>{" "}
-                        billing cycle ({" "}
-                        <span className="h6">
-                          ${selectedPriceObject.amount} /{" "}
-                          {
-                            // prettier-ignore
-                            selectedPriceObject.cycle === "yearly" ? "Year" : "Month"
-                          }
-                        </span>{" "}
-                        )
-                      </p>
-                    ) : (
-                      <p>Please select plan!</p>
-                    )}
-                  </div>
-                  {subscriptionCreated && (
-                    <>
-                      <div className="mt-2 p-1 text-primary shadow rounded">
-                        <p>
-                          Your subscription created successfully. We will send
-                          you mail on activation of your subscription soon. No
-                          further action required from your side.
-                        </p>
-                        <p>Thank you!</p>
-                      </div>
-
-                      <Button
-                        className="mt-2"
-                        //   prettier-ignore
-
-                        onClick={() => {
-                          window.location.href = "/dashboard"
-                        }}
-                        //   disabled={!stripe}
-                        color="primary"
-                      >
-                        Go To Dashboard
+                    <Button
+                      disabled={
+                        !selectedPlanObject ||
+                        !stripe ||
+                        !selectedPriceObject ||
+                        subscribeLoader
+                      }
+                      className="mt-2"
+                      //   prettier-ignore
+                      style={{ cursor: (!selectedPlanObject || !stripe || !selectedPriceObject) ? "not-allowed" : "pointer" }}
+                      onClick={handleSubmit}
+                      //   disabled={!stripe}
+                      color="primary"
+                    >
+                      Subscribe
+                      {subscribeLoader && (
                         <Spinner
-                          style={{ marginLeft: "5px", marginRight: "5px" }}
+                          style={{ marginLeft: "5px" }}
                           size={"sm"}
                           color="white"
-                          type="grow"
                         />
-                        {redirectAfter}
-                      </Button>
-                    </>
-                  )}
-                </Col>
-              )}
-            </CardBody>
-          )}
+                      )}
+                    </Button>
+                    <div className="mt-2">
+                      {selectedPlanObject && selectedPriceObject ? (
+                        <p>
+                          You have selected{" "}
+                          <span className="h6">{selectedPlanObject.title}</span>{" "}
+                          plan with{" "}
+                          <span className="h6">{selectedPriceObject.cycle}</span>{" "}
+                          billing cycle ({" "}
+                          <span className="h6">
+                            ${selectedPriceObject.amount} /{" "}
+                            {
+                              // prettier-ignore
+                              selectedPriceObject.cycle === "yearly" ? "Year" : "Month"
+                            }
+                          </span>{" "}
+                          )
+                        </p>
+                      ) : (
+                        <p>Please select plan!</p>
+                      )}
+                    </div>
+                    {subscriptionCreated && (
+                      <>
+                        <div className="mt-2 p-1 text-primary shadow rounded">
+                          <p>
+                            Your subscription created successfully. We will send
+                            you mail on activation of your subscription soon. No
+                            further action required from your side.
+                          </p>
+                          <p>Thank you!</p>
+                        </div>
+
+                        <Button
+                          className="mt-2"
+                          //   prettier-ignore
+
+                          onClick={() => {
+                            window.location.href = "/dashboard"
+                          }}
+                          //   disabled={!stripe}
+                          color="primary"
+                        >
+                          Go To Dashboard
+                          <Spinner
+                            style={{ marginLeft: "5px", marginRight: "5px" }}
+                            size={"sm"}
+                            color="white"
+                            type="grow"
+                          />
+                          {redirectAfter}
+                        </Button>
+                      </>
+                    )}
+                  </Col>
+                )}
+              </CardBody>
+            )}
 
           {selectedPlanObject && selectedPlanObject.is_free_plan && (
             <CardBody className="py-2 my-25">

@@ -40,28 +40,30 @@ const QueueSidebar = ({
 
   const [queueTeams, setQueueTeams] = useState([]);
 
+  const [isSelectValid, setIsSelectValid] = useState(false);
+
   const [selectedLeadLists, setSelectedLeadLists] = useState(() => {
     return queue ? queue.leadlist_records.map((item) => ({
       value: item.id,
       label: item.leadlist_name,
-      
+
       order_by: item.order_by,
     })) : [];
   });
-  
+
   const [selectedQueueTeams, setSelectedQueueTeams] = useState(() => {
     return queue ? queue.teams.map((item) => ({
-          value: item.id,
-          label: ((item) => {
-            let final = 'dummy user name';
-            if (item.team_name) {
-              final = item.team_name;
-            } else if (item.first_name && item.last_name) {
-              final = `${item.first_name} ${item.last_name}`;
-            }
-            return final;
-          })(item),
-        })) : [];
+      value: item.id,
+      label: ((item) => {
+        let final = 'dummy user name';
+        if (item.team_name) {
+          final = item.team_name;
+        } else if (item.first_name && item.last_name) {
+          final = `${item.first_name} ${item.last_name}`;
+        }
+        return final;
+      })(item),
+    })) : [];
   });
   const [queueError, setQueueError] = useState(false);
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
@@ -91,7 +93,7 @@ const QueueSidebar = ({
       dispatch(
         getTeam({
           id: workspaceId,
-        
+
         })
       ).then((res) => setQueueTeams(res.payload.data.team));
     }
@@ -100,53 +102,53 @@ const QueueSidebar = ({
   // ** Function to handle form submit
   const onSubmit = (e) => {
     e.preventDefault();
-      setFormSubmissionLoader(true);
+    setFormSubmissionLoader(true);
 
-      if (queue) {
+    if (queue) {
 
-        dispatch(
-          updateQueueInWorkspace({
-            queue_name: queueName,
-            leadlist: selectedLeadLists.map(item => ({
-              leadlist_id: item.value,
-              order_by: item.order_by
-            })),
-            queueTeam: selectedQueueTeams.map(user => user.value),
-            queue_id: queue.id,
-            workspace_id: queue.workspace_id,
-          })
-        ).then((result) => {
-          setFormSubmissionLoader(false);
-          if (result.payload.data.queue) {
-            setQueueName("");
-            setLeadlist([]);
-            setQueueTeams([]);
-            refreshTable();
-            toggleSidebar();
-          }
-        });
-      } else {
-        dispatch(
-          saveQueue({
-            id: workspaceId,
-            queue_name: queueName,
-            leadlists: selectedLeadLists.map((item) => ({
-              leadlist_id: item.value,
-              order_by: item.order_by,
-            })),
-            teams: selectedQueueTeams.map((item) => item.value),
-          })
-        ).then((result) => {
-          setFormSubmissionLoader(false);
-          if (result.payload.data.data) {
-            setQueueName("");
-            setLeadlist([]);
-            setQueueTeams([]);
-            refreshTable();
-            toggleSidebar();
-          }
-        });
-      }
+      dispatch(
+        updateQueueInWorkspace({
+          queue_name: queueName,
+          leadlist: selectedLeadLists.map(item => ({
+            leadlist_id: item.value,
+            order_by: item.order_by
+          })),
+          queueTeam: selectedQueueTeams.map(user => user.value),
+          queue_id: queue.id,
+          workspace_id: queue.workspace_id,
+        })
+      ).then((result) => {
+        setFormSubmissionLoader(false);
+        if (result.payload.data.queue) {
+          setQueueName("");
+          setLeadlist([]);
+          setQueueTeams([]);
+          refreshTable();
+          toggleSidebar();
+        }
+      });
+    } else {
+      dispatch(
+        saveQueue({
+          id: workspaceId,
+          queue_name: queueName,
+          leadlists: selectedLeadLists.map((item) => ({
+            leadlist_id: item.value,
+            order_by: item.order_by,
+          })),
+          teams: selectedQueueTeams.map((item) => item.value),
+        })
+      ).then((result) => {
+        setFormSubmissionLoader(false);
+        if (result.payload.data.data) {
+          setQueueName("");
+          setLeadlist([]);
+          setQueueTeams([]);
+          refreshTable();
+          toggleSidebar();
+        }
+      });
+    }
   };
 
   const handleSidebarClosed = () => {
@@ -161,7 +163,7 @@ const QueueSidebar = ({
       tag="ul"
       animation={300}
       className="list-group"
-      list={selectedLeadLists.map(x => ({ ...x, chosen: true }))} 
+      list={selectedLeadLists.map(x => ({ ...x, chosen: true }))}
       setList={(data) => {
         const ordered_data = data.map((item, index) => ({
           ...item,
@@ -176,7 +178,7 @@ const QueueSidebar = ({
         <ListGroupItem className="draggable" key={index}>
           <div className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
-              <AlignJustify size={20} style={{ cursor: "grab" }}/>
+              <AlignJustify size={20} style={{ cursor: "grab" }} />
               <h5 className="m-0 ms-1">{item.label}</h5>
             </div>
           </div>
@@ -206,7 +208,7 @@ const QueueSidebar = ({
             placeholder="Enter Queue Name"
             invalid={queueError}
             value={queueName}
-            
+
             onChange={(e) => setQueueName(e.target.value)}
           />
 
@@ -216,9 +218,9 @@ const QueueSidebar = ({
         <div className="mb-1">
           <FormGroup>
             <Label className="form-label" for="lead-list">
-              Select Lead List<span className="text-danger">*</span>
+              Select Lead List <span className="text-danger">*</span>
             </Label>
-            <Select
+            {/* <Select
               value={selectedLeadLists}
               isMulti
               classNamePrefix="select"
@@ -235,7 +237,31 @@ const QueueSidebar = ({
                 })));
               }}
               styles={selectStyles}
+            /> */}
+            <Select
+              value={selectedLeadLists}
+              isMulti
+              classNamePrefix="select"
+              placeholder="Select Lead List"
+              options={leadlist.map((item) => ({
+                value: item.id,
+                label: item.leadlist_name,
+              }))}
+              onChange={(data) => {
+                const selectedOptions = data.map((item, index) => ({
+                  value: item.value,
+                  label: item.label,
+                  order_by: index + 1,
+                }));
+
+                // validate the select component
+                setIsSelectValid(selectedOptions.length > 0);
+
+                setSelectedLeadLists(selectedOptions);
+              }}
+              styles={selectStyles}
             />
+
           </FormGroup>
         </div>
 
@@ -277,7 +303,7 @@ const QueueSidebar = ({
           </FormGroup>
         </div>
 
-        <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">
+        <Button onClick={(e) => onSubmit(e)} disabled={!isSelectValid} className="me-1" color="primary">
           Submit
           {formSubmissionLoader && (
             <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="white" />

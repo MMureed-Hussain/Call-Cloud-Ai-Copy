@@ -15,7 +15,7 @@ export default ({ workspaceId }) => {
   const store = useSelector((state) => state.workspaces);
 
   useEffect(() => {
-    if (store.callflowLoading && workspaceId) {
+    if (workspaceId) {
       dispatch(
         getCallFlowData(workspaceId)
       ).then((data) => setCallFlowData(data.payload.data.callflow));

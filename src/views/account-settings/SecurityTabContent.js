@@ -94,6 +94,7 @@ const SecurityTabContent = () => {
       };
       const r = await dispatch(updatePassword(payload)).unwrap();
       setFormSubmissionLoader(false);
+      window.location.href = '/login';
       console.log(r);
     }
 

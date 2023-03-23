@@ -10,6 +10,8 @@ import {
 import { Navigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
+// import { useEffect } from "react";
+// import { getUsers } from "../../src/redux/workspaces";
 
 const Home = () => {
   const store = useSelector((state) => {
@@ -19,10 +21,17 @@ const Home = () => {
     return state.workspaces;
   });
 
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(getUsers({ id: workspaceState && workspaceState.currentWorkspace && workspaceState.currentWorkspace.id, perPage: 50, page: 1 }));
+  // }, [workspaceState.currentWorkspace]);
+
+
   if (!store.user) {
     return <Navigate to="/login" />;
   }
-  
+
   // if (workspaceState.currentWorkspace) {
   //   return <Navigate to={`/workspace/${workspaceState.currentWorkspace.id}`} />;
   // }

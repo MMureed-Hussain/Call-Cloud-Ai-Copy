@@ -46,9 +46,14 @@ const CampaignSidebar = forwardRef((props, ref) =>
 	const handleSubmit = (event) =>
 	{
 		event.preventDefault();
+		if (!data.team_id) {
+			toast.error('Please select a team.');
+			return;
+		}
 		setLoader(true);
 		console.log(data, 'eata');
 		dispatch(storeOrUpdate(data)).then(res => { console.log(res, 'res'); setLoader(false) });
+		setOpen(false)
 	};
 
 	const handleSelected = (op, sel) =>
@@ -109,6 +114,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
 				<FormGroup>
 					<Label className="form-label">Title <span className="text-danger">*</span></Label>
 					<Input
+						required
 						type="text"
 						name="title"
 						value={data.title ?? ''}
@@ -132,6 +138,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
 				<FormGroup>
 					<Label className="form-label" for="title">Start Date <span className="text-danger">*</span></Label>
 					<Input
+						required
 						name="start_date"
 						type="date"
 						min={disableDates()}
@@ -152,6 +159,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
 						onChange={e => handleSelectChange(e, 'team_id')}
 						options={props.teams}
 						value={handleSelected(props.teams, data.team_id)}
+						required
 					/>
 
 					{errors.has("team_id") && <FormFeedback>{errors.get("team_id")}</FormFeedback>}
@@ -162,6 +170,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
 					<Label className="form-label">Status <span className="text-danger">*</span></Label>
 					<FormGroup switch>
 						<Input
+							required
 							type="switch"
 							id="switch-success"
 							name="status"
@@ -171,7 +180,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
 					</FormGroup>
 
 				</FormGroup>
-				<Button className="me-1" color="primary" type="submit" onClick={() => setOpen(false)}>
+				<Button className="me-1" color="primary" type="submit" >
 					{loader && <Spinner style={{ marginRight: "5px" }} size={"sm"} color="white" />}
 					Submit
 				</Button>

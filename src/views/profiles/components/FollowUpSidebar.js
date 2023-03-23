@@ -81,6 +81,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 			.then(res =>
 			{
 				setLoader(false);
+				setOpen(false)
 			});
 	};
 

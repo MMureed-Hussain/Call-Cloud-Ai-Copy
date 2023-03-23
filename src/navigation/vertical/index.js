@@ -6,6 +6,10 @@ import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle,
 const navigation = () => {
 
   const user = useSelector((state) => state.auth.user);
+  const currentWorkspace = useSelector(
+    (state) => state.workspaces.currentWorkspace
+  );
+  
   const tabs =
     [
       {
@@ -18,7 +22,8 @@ const navigation = () => {
             id: "manageUsers",
             title: "Users",
             icon: <Users size={20} />,
-            navLink: "/workspace/id/users",
+            // navLink: "/workspace/:id/users",
+            navLink: `/workspace/${currentWorkspace && currentWorkspace.id}/users`,
           },
           {
             id: "leadlist",

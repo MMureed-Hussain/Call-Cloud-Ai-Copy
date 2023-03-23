@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import
 {
@@ -31,6 +31,7 @@ import Avatar from "@components/avatar";
 import { selectThemeColors } from "@utils";
 
 import { useNavigate, Link } from "react-router-dom";
+import { getUsers } from "../../redux/workspaces";
 
 const WorkspaceSwitcher = () =>
 {
@@ -44,6 +45,12 @@ const WorkspaceSwitcher = () =>
   const [popoverOpen, setPopoverOpen] = useState(true);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (workspaceStore.currentWorkspace) {
+      dispatch(getUsers({ id: workspaceStore && workspaceStore.currentWorkspace && workspaceStore.currentWorkspace.id, perPage: 50, page: 1 }));
+    }
+  }, [workspaceStore.currentWorkspace]);
 
   const loadWorkspacesOptions = async () =>
   {

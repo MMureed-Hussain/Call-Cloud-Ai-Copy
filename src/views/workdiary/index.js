@@ -176,9 +176,9 @@ export default () =>
                     <Row>
                         <Col lg="10">
                             <Row>
-                                <Col lg="2">
+                                <Col lg="3">
                                     <FormGroup>
-                                        <Select options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
+                                        <Select classNamePrefix='select' options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
                                     </FormGroup>
                                 </Col>
                                 {/* <Col lg="2">
@@ -189,7 +189,7 @@ export default () =>
                                 {user.role == 'company' &&
                                     <Col lg="4">
                                         <FormGroup>
-                                            <Select onChange={e => handleSelectChange(e, 'user_id')} options={[{ value: '', label: 'None' }, ...workspaceusers,]} className="mb-2" placeholder="Select User" />
+                                            <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'user_id')} options={[{ value: '', label: 'None' }, ...workspaceusers,]} className="mb-2" placeholder="Select User" />
                                         </FormGroup>
                                     </Col>
                                 }

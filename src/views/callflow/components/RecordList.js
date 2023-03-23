@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import CallflowSidebar from "./CallflowSidebar";
 import { getCallFlowRecord } from "../../../redux/workspaces";
-const RecordList = ({rowId,profileId}) => {
+const RecordList = ({ rowId, profileId }) => {
   // ** States
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,11 +23,11 @@ const RecordList = ({rowId,profileId}) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pageCount, setPageCount] = useState(1);
-  const [calls,setCalls]=useState([]);
-  let local=[]
-  const [onCallSubmit,setOnCallSubmit]=useState(false)
+  const [calls, setCalls] = useState([]);
+  let local = []
+  const [onCallSubmit, setOnCallSubmit] = useState(false)
   const dispatch = useDispatch();
- 
+
   const reloadCallTable = useSelector(
     (state) => state.profiles.reloadCallTable
   );
@@ -37,35 +37,26 @@ const RecordList = ({rowId,profileId}) => {
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
- 
-  useEffect(()=>{
-    if(profileId){
-      
 
-      dispatch(getCallFlowRecord({profileId:profileId})).then((data)=>
-      { 
-  if( data?.payload?.data)
-  {
-    data?.payload.data.callFlowRecord.map((data)=>{
-      local.push(data)
-     
-      
+  useEffect(() => {
+    if (profileId) {
 
-    })
-    setCalls(local)
-    
-    
+      dispatch(getCallFlowRecord({ profileId: profileId })).then((data) => {
+        if (data?.payload?.data) {
+          data?.payload.data.callFlowRecord.map((data) => {
+            local.push(data)
 
-  }
- 
-  }
-      
+          })
+          setCalls(local)
+
+        }
+
+      }
+
       )
     }
-    
 
-
-  },[onCallSubmit,profileId])
+  }, [onCallSubmit, profileId])
 
   const loadCalls = (options) => {
     let queryParams = {
@@ -86,23 +77,22 @@ const RecordList = ({rowId,profileId}) => {
       sortField: "id",
       selector: (row) => row.id,
       cell: (row) => (
-          <div className="d-flex justify-content-left align-items-center">
-              <div className="d-flex flex-column">
-                  <span className="fw-bolder">{row.id}</span>
-              </div>
+        <div className="d-flex justify-content-left align-items-center">
+          <div className="d-flex flex-column">
+            <span className="fw-bolder">{row.id}</span>
           </div>
+        </div>
       ),
     },
     {
       name: "Voice",
       sortable: false,
       minWidth: "350px",
-      cell: (row) =>
-      {
-          return <CallFlowPlayer callId={row.id} />;
+      cell: (row) => {
+        return <CallFlowPlayer callId={row.id} />;
       },
     },
-    
+
     {
       name: "Created By",
       sortable: true,
@@ -111,7 +101,7 @@ const RecordList = ({rowId,profileId}) => {
       selector: (row) => row.created_by,
       // cell: (row) => (
       //     row
-          
+
       //     // <UserInfo
       //     //     name={`${row.created_by.first_name} ${row.created_by.last_name}`}
       //     //     email={row.created_by.email}
@@ -126,7 +116,7 @@ const RecordList = ({rowId,profileId}) => {
       selector: (row) => row.created_at,
       cell: (row) => moment(row.created_at).format("YYYY-MM-DD HH:mm:ss"),
     },
-   
+
   ];
 
   const handleSort = (column, sortDirection) => {
@@ -182,8 +172,8 @@ const RecordList = ({rowId,profileId}) => {
     );
   };
 
-  const callRecordList=()=>{
-setOnCallSubmit(!onCallSubmit)
+  const callRecordList = () => {
+    setOnCallSubmit(!onCallSubmit)
 
 
   }
@@ -204,10 +194,10 @@ setOnCallSubmit(!onCallSubmit)
         <div className="react-dataTable">
           <DataTable
             columns={columns}
-            
+
             className="react-dataTable"
-           
-           data={calls}
+
+            data={calls}
           ></DataTable>
         </div>
       </Card>
@@ -219,7 +209,7 @@ setOnCallSubmit(!onCallSubmit)
           callRecordList={callRecordList}
           rowId={rowId}
           profileId={profileId}
-        
+
         />
       )}
     </>
