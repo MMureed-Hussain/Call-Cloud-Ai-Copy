@@ -22,7 +22,7 @@ import {
   Progress,
 } from "reactstrap";
 // ** Store & Actions
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const SidebarLeadlist = ({
   open,
@@ -40,10 +40,6 @@ const SidebarLeadlist = ({
 
   const [leadNameError, setLeadNameError] = useState(false);
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
-
-  const store = useSelector((state) => {
-    return state.auth;
-  });
 
   const inputHeaders = [];
   //select options
@@ -116,8 +112,7 @@ const SidebarLeadlist = ({
       } else {
         dispatch(
           inviteLeadlist({ 
-            // leadName, csvFile, id: workspaceId })).then(
-            leadName, csvFile, id: store.user.id })).then(
+            leadName, csvFile, id: workspaceId })).then(
           (result) => {
             setProgressBar(100);
             setButtonLoader(false);
