@@ -125,7 +125,7 @@ const PaymentSetup = ({ selectedPrice, data, cardSectionRef }) => {
     );
 
     if (res.data) {
-      if (res.data.message == "This Plan Is Already Subscribed!") {
+      if (res.data.message === "This Plan Is Already Subscribed!") {
         toast.error(res.data.message);
         setSubscribeLoader(false);
       } else {
