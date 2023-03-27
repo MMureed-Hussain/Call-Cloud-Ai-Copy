@@ -18,10 +18,24 @@ import "@styles/base/pages/page-pricing.scss";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { recentlyAccessedWorkspaces } from "../../redux/workspaces";
+import { Navigate } from "react-router-dom";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const Plans = () => {
+  const store = useSelector((state) => {
+    return state.auth;
+  });
+  const workspaceUsers = useSelector((state) => state.workspaces?.users);
+
+  const transformedUsers = workspaceUsers.map((user) => ({
+    value: user.id,
+    label: user.name,
+    email: user.email,
+    userRole: user.userRole,
+  }));
+  const isAdmin = transformedUsers.find((user) => user.email === store.user.email && user.userRole === 'admin');
+
   // ** States
   const [data, setData] = useState(null),
     [duration, setDuration] = useState("monthly");
@@ -55,13 +69,13 @@ const Plans = () => {
         // prettier-ignore
         monthlyPriceId: plan.active_prices.filter((price) => price.cycle === "monthly").length ? plan.active_prices.filter((price) => price.cycle === "monthly")[0].id : plan.is_free_plan ? `free_plan-${plan.id}` : false,
         // prettier-ignore
-        yearlyPriceId: plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].id :  plan.is_free_plan ? `free_plan-${plan.id}` : false,
+        yearlyPriceId: plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].id : plan.is_free_plan ? `free_plan-${plan.id}` : false,
 
         yearlyPlan: {
           // prettier-ignore
           perMonth: plan.active_prices.filter((price) => price.cycle === "yearly").length ? Math.round(plan.active_prices.filter((price) => price.cycle === "yearly")[0].amount / 12 * 10) / 10 : 0,
           // prettier-ignore
-          totalAnnual : plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].amount : 0,
+          totalAnnual: plan.active_prices.filter((price) => price.cycle === "yearly").length ? plan.active_prices.filter((price) => price.cycle === "yearly")[0].amount : 0,
         },
         // prettier-ignore
         planBenefits: plan.features.map((feature) => feature.title),
@@ -71,6 +85,7 @@ const Plans = () => {
   }, [planStore]);
 
   return (
+    isAdmin ? (
     <div id="pricing-table">
       <PricingHeader duration={duration} setDuration={setDuration} />
       {data !== null ? (
@@ -94,6 +109,7 @@ const Plans = () => {
         </Fragment>
       ) : null}
     </div>
+  ) : "You don't have rights for this route"
   );
 };
 
