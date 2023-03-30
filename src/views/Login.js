@@ -197,7 +197,7 @@ const Login = () => {
                 <span>Create an account</span>
               </Link>
             </p>
-            <div className="divider my-2">
+            {/* <div className="divider my-2">
               <div className="divider-text">or</div>
             </div>
             <div className="auth-footer-btn d-flex justify-content-center">
@@ -209,15 +209,15 @@ const Login = () => {
               </Button>
              
               <Button color="google" onClick={handleGoogleLogin}>
-                {/* <a target="_blank" href={googleLoginUrl} > */}
+                <a target="_blank" href={googleLoginUrl} >
                 <Mail size={14} />  
-                {/* </a> */}
+                </a>
               </Button>
 
               <Button className="me-0" color="github">
                 <GitHub size={14} />
               </Button>
-            </div>
+            </div> */}
           </Col>
         </Col>
       </Row>

@@ -5,24 +5,22 @@ import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
 import Skeleton from "react-loading-skeleton";
 // ** Reactstrap Imports
-import
-{
-  Card,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Badge,
+import {
+Card,
+UncontrolledDropdown,
+DropdownToggle,
+DropdownMenu,
+DropdownItem,
+Badge,
 } from "reactstrap";
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import
-{
-  getProfiles,
-  setReloadTable,
-  deleteResource,
-  resetFilters,
+import {
+getProfiles,
+setReloadTable,
+deleteResource,
+resetFilters,
 } from "../../redux/profiles";
 import { getPipelines } from "../../redux/pipelines";
 import { getStatuses as getLeadStatuses } from "../../redux/leadStatuses";
@@ -35,14 +33,12 @@ import ProfileSidebar from "./components/ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
 import usePrevious from "../../utility/hooks/usePrevious";
 
-const getProfileType = (path) =>
-{
+const getProfileType = (path) => {
   if (path === "/leads") return "lead";
   return "client";
 };
 
-export default () =>
-{
+export default () => {
   // ** States
   const location = useLocation();
   const profileType = getProfileType(location.pathname);
@@ -74,8 +70,7 @@ export default () =>
   );
 
   // ** Factory method to dispatch the api call
-  const loadProfiles = (options) =>
-  {
+  const loadProfiles = (options) => {
     let params = {
       records_per_page: rowsPerPage,
       page: currentPage,
@@ -99,8 +94,7 @@ export default () =>
     setCurrentPage(options.page);
   };
   // ** Reload the table when record is deleted
-  useEffect(() =>
-  {
+  useEffect(() => {
     if (reloadTable) {
       dispatch(setReloadTable(false));
       loadProfiles({
@@ -111,8 +105,7 @@ export default () =>
   // ** load data when filter value is changed
 
   usePrevious(
-    (prevPipelineFilterValue, prevStatusFilterValue) =>
-    {
+    (prevPipelineFilterValue, prevStatusFilterValue) => {
       //change when filter set to None
       if (
         (prevPipelineFilterValue?.value || prevStatusFilterValue?.value) &&
@@ -132,8 +125,7 @@ export default () =>
     [pipelineFilterValue, statusFilterValue]
   );
   // ** Load the all call profiles for the selected workspace
-  useEffect(() =>
-  {
+  useEffect(() => {
     if (currentWorkspace) {
       dispatch(resetFilters());
       loadProfiles({ page: 1 });
@@ -177,17 +169,18 @@ export default () =>
       minWidth: "172px",
       sortField: "name",
       selector: (row) => row.name,
-      cell: (row) => row.name  ,
-      // (
-      //   <Link  to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
-      //     {/* <div className="d-flex justify-content-left align-items-center"> */}
-      //       {/* <div className="d-flex flex-column"> */}
-      //       {row.name}
-      //         {/* <span className="fw-bolder">{row.name}</span> */}
-      //       {/* </div> */}
-      //     {/* </div> */}
-      //   </Link>
-      // ),
+      // cell: row => row.name,
+      cell: (row) =>   
+      (
+        <Link  to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
+          {/* <div className="d-flex justify-content-left align-items-center"> */}
+            {/* <div className="d-flex flex-column"> */}
+            {row.name}
+              {/* <span className="fw-bolder">{row.name}</span> */}
+            {/* </div> */}
+          {/* </div> */}
+        </Link>
+      ),
     },
     {
       name: "Phone number",
@@ -210,8 +203,7 @@ export default () =>
       name: "Status",
       sortable: false,
       minWidth: "172px",
-      cell: (row) =>
-      {
+      cell: (row) => {
         const status = row[`${profileType}_status`]; //client_status or lead_status
         return status ? <Badge color="warning">{status.name}</Badge> : "-";
       },
@@ -220,8 +212,7 @@ export default () =>
       name: "Pipeline",
       sortable: false,
       minWidth: "172px",
-      cell: (row) =>
-      {
+      cell: (row) => {
         return row.pipeline ? (
           <Badge color="primary">{row.pipeline.name}</Badge>
         ) : (
@@ -232,27 +223,27 @@ export default () =>
     {
       name: "Actions",
       allowOverflow: true,
-      cell: (row) =>
-      {
+      minWidth: "100px",
+      maxWidth: "100px",
+      cell: (row) => {
         return (
           <div className="d-flex">
             <UncontrolledDropdown>
-              <DropdownToggle className="pe-1" tag="span">
+              <DropdownToggle className="pe-1 ms-2" tag="span">
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu container={"body"} end>
-                <Link
+                {/* <Link
                   to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id
                     }`}
-                > 
+                >
                   <DropdownItem>
                     <Eye size={15} />
                     <span className="align-middle ms-50">View</span>
                   </DropdownItem>
-                </Link>
+                </Link> */}
                 <DropdownItem
-                  onClick={() =>
-                  {
+                  onClick={() => {
                     setSelectedProfile(row);
                     toggleSidebar();
                   }}
@@ -280,8 +271,7 @@ export default () =>
     },
   ];
   //Handle sorting
-  const handleSort = (column, sortDirection) =>
-  {
+  const handleSort = (column, sortDirection) => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
     loadProfiles({
@@ -292,8 +282,7 @@ export default () =>
   };
 
   // ** Function in get data on rows per page
-  const handlePerPage = (e) =>
-  {
+  const handlePerPage = (e) => {
     const value = parseInt(e.currentTarget.value);
     setRowsPerPage(value);
     loadProfiles({
@@ -304,8 +293,7 @@ export default () =>
 
   // ** Function in get data on search query change
   const debounceLoadData = useCallback(debounce(loadProfiles, 1000), []);
-  useEffect(() =>
-  {
+  useEffect(() => {
     if (searchTerm) {
       debounceLoadData({
         page: 1,
@@ -316,8 +304,7 @@ export default () =>
   }, [searchTerm]);
 
   // ** Custom Pagination
-  const CustomPagination = () =>
-  {
+  const CustomPagination = () => {
     return (
       <ReactPaginate
         previousLabel={""}
@@ -348,13 +335,11 @@ export default () =>
     );
   }
 
-  const toggleSidebar = () =>
-  {
+  const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const onNewProfileClick = () =>
-  {
+  const onNewProfileClick = () => {
     setSelectedProfile(null);
     toggleSidebar();
   };

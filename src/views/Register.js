@@ -236,7 +236,7 @@ const Register = () => {
                 <span>Sign in instead</span>
               </Link>
             </p>
-            <div className="divider my-2">
+            {/* <div className="divider my-2">
               <div className="divider-text">or</div>
             </div>
             <div className="auth-footer-btn d-flex justify-content-center">
@@ -252,7 +252,7 @@ const Register = () => {
               <Button className="me-0" color="github">
                 <GitHub size={14} />
               </Button>
-            </div>
+            </div> */}
           </Col>
         </Col>
       </Row>

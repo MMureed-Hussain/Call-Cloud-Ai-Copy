@@ -150,7 +150,7 @@ const WorkspaceSwitcher = () =>
   return (
     <React.Fragment>
       <div>
-        <Button style={{ width: "100%", display: 'flex', justifyContent: 'left', alignItems: 'center' }} color="primary" outline id="controlledPopover">
+        <Button style={{ width: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }} color="primary" outline id="controlledPopover">
           {workspaceStore.currentWorkspace &&
             workspaceStore.currentWorkspace.logo &&
             workspaceStore.currentWorkspace.logo.length ?

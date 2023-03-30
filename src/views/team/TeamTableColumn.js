@@ -45,6 +45,7 @@ export const TeamTableColumn = [
     {
       name: "Actions",
       minWidth: "100px",
+      maxWidth: "100px",
       cell: (row) => (
         <div className="column-action">
           <UncontrolledDropdown>

@@ -1,6 +1,10 @@
 // import { useState } from "react";
 // ** Third Party Components
+import axios from "axios";
 import classnames from "classnames";
+import { useEffect, useState } from "react";
+import { CheckCircle } from "react-feather";
+import { useSelector } from "react-redux";
 
 // ** Reactstrap Imports
 import {
@@ -34,6 +38,22 @@ const PricingCards = ({
   const colsProps = cols ? cols : { md: data.length > 3 ? 3 : 4, xs: 12 };
   // const [selectedPlan, setSelectedPlan] = useState(false);
 
+
+  const [activePlan, setActivePlan] = useState(null);
+
+  const loadCurrentPlan = () => {
+    axios
+      .get(`${process.env.REACT_APP_API_ENDPOINT}/api/current-plan-details`)
+      .then((res) => {
+        setActivePlan(res.data?.currentPlanDetails?.currentPlan);
+        // console.log('plans', res.data?.currentPlanDetails?.currentPlan)
+      });
+  };
+  useEffect(() => {
+    loadCurrentPlan();
+  }, []);
+
+
   const renderPricingCards = () => {
     // const stateRef = useRef();
     // const dispatch = useDispatch();
@@ -41,6 +61,9 @@ const PricingCards = ({
     return (
       <>
         {data.map((item, index) => {
+
+          const isSubscribedPlan = activePlan?.isSubscribed === true && activePlan?.name === item.title;
+
           // prettier-ignore
           const monthlyPrice = duration === "yearly" ? item.yearlyPlan.perMonth : item.monthlyPrice,
             // prettier-ignore
@@ -126,6 +149,9 @@ const PricingCards = ({
                       </ListGroupItem>
                     ))}
                   </ListGroup>
+                  {isSubscribedPlan &&
+                    <p className="fw-bold text-uppercase text-primary fs-5">Subscribed <CheckCircle size={18} /></p>
+                  }
                   {currentPlan && (
                     <Button
                       disabled={
@@ -150,6 +176,8 @@ const PricingCards = ({
                       }
                     </Button>
                   )}
+                  {/* {console.log('fifdsfdrst', data[0].title)}
+                  {console.log('actt', activePlan.name)} */}
                 </CardBody>
               </Card>
             </Col>

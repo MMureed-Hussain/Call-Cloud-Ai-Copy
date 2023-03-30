@@ -231,11 +231,13 @@ export const userColumns = [
     name: "Role",
     sortable: false,
     minWidth: "172px",
-    cell: (row) => (row.userRole),
+    cell: (row) => (row.userRole.toUpperCase()),
   },
   {
+    className: "ms-5",
     name: "Actions",
     minWidth: "100px",
+    maxWidth: "100px",
     cell: (row) => (
       <div className="column-action">
         <UncontrolledDropdown>
@@ -278,64 +280,6 @@ export const userColumns = [
     ),
   },
 ];
-
-// export const LeadlistColumns = [
-//   {
-//     name: "Leadlist Name",
-//     sortable: true,
-//     minWidth: "172px",
-//     sortField: "leadlist_name",
-//     selector: (row) => row.workspace_lead.lead_name,
-//     cell: (row) => row.workspace_lead.lead_name,
-//   },
-//   {
-//     name: "Business Name",
-//     sortable: true,
-//     minWidth: "172px",
-//     sortField: "business_name",
-//     selector: (row) => row.business_name,
-//     cell: (row) => row.business_name
-//   },
-//   {
-//     name: "Phone Number",
-//     sortable: false,
-//     minWidth: "172px",
-//     selector: (row) => row.business_phone,
-//     cell: (row) => row.business_phone,
-//   },
-//   {
-//     name: "Website",
-//     sortable: false,
-//     minWidth: "172px",
-//     cell: (row) => row.business_website,
-//   },
-//   {
-//     name: "Country",
-//     sortable: false,
-//     minWidth: "172px",
-//     cell: (row) => row.business_country,
-//   },
-//   {
-//     name: "City",
-//     sortable: false,
-//     minWidth: "172px",
-//     cell: (row) => row.business_city,
-
-//   },
-
-
-//   {
-//     name: "File Name",
-//     sortable: false,
-//     minWidth: "172px",
-//     selector: (row) => row.file_name,
-//     cell: (row) => row.file_name
-//   },
-
-// ];
-
-//new table
-
 
 
 
