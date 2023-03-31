@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import Home from "../Home";
 
 const WorkspaceMemberView = () => {
-  const store = useSelector((state) => state.workspaces);
+  // const store = useSelector((state) => state.workspaces);
   return (
     <Home />
     // <p>

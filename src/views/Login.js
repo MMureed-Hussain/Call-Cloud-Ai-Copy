@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSkin } from "@hooks/useSkin";
 import { Link, Navigate } from "react-router-dom";
-import { Facebook, Twitter, Mail, GitHub } from "react-feather";
+// import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 import InputPasswordToggle from "@components/input-password-toggle";
 
 import {
@@ -73,23 +73,23 @@ const Login = () => {
     e.preventDefault();
   };
 
-  const [, setGoogleLoginUrl] = useState(null);
+  // const [googleLoginUrl, setGoogleLoginUrl] = useState(null);
 
-  const handleGoogleLogin = () => {
-    fetch("http://localhost:8000/api/auth/google", {
-      headers: new Headers({ accept: "application/json" }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
+  // const handleGoogleLogin = () => {
+  //   fetch("http://localhost:8000/api/auth/google", {
+  //     headers: new Headers({ accept: "application/json" }),
+  //   })
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         return response.json();
+  //       }
         
-      })
-      .then((data) => { 
-        setGoogleLoginUrl(data.url); window.location.href = data.url;
-      })
-      .catch((error) => console.error(error));
-  };
+  //     })
+  //     .then((data) => { 
+  //       setGoogleLoginUrl(data.url); window.location.href = data.url;
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
 
   const illustration = skin === "dark" ? "login-v2-dark.svg" : "login-v2.svg",
     source = require(`@src/assets/images/pages/${illustration}`);

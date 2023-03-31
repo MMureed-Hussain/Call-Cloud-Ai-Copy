@@ -4,7 +4,6 @@ import axios from "axios";
 import classnames from "classnames";
 import { useEffect, useState } from "react";
 import { CheckCircle } from "react-feather";
-import { useSelector } from "react-redux";
 
 // ** Reactstrap Imports
 import {
