@@ -40,7 +40,7 @@ const QueueSidebar = ({
 
   const [queueTeams, setQueueTeams] = useState([]);
 
-  const [isSelectValid, setIsSelectValid] = useState(false);
+  // const [isSelectValid, setIsSelectValid] = useState(false);
 
   const [selectedLeadLists, setSelectedLeadLists] = useState(() => {
     return queue ? queue.leadlist_records.map((item) => ({
@@ -255,11 +255,12 @@ const QueueSidebar = ({
                 }));
 
                 // validate the select component
-                setIsSelectValid(selectedOptions.length > 0);
+                // setIsSelectValid(selectedOptions.length > 0);
 
                 setSelectedLeadLists(selectedOptions);
               }}
               styles={selectStyles}
+              required
             />
 
           </FormGroup>
@@ -303,7 +304,9 @@ const QueueSidebar = ({
           </FormGroup>
         </div>
 
-        <Button onClick={(e) => onSubmit(e)} disabled={!isSelectValid} className="me-1" color="primary">
+        <Button onClick={(e) => onSubmit(e)}
+          // disabled={!isSelectValid} 
+          className="me-1" color="primary">
           Submit
           {formSubmissionLoader && (
             <Spinner style={{ marginLeft: "5px" }} size={"sm"} color="white" />

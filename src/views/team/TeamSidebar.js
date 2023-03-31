@@ -164,6 +164,7 @@ const TeamSidebar = ({
             <Select
               value={selectedTeamUsers}
               isMulti
+              required
               classNamePrefix="select"
               placeholder="Select User"
               options={teamUsers.map((item) => ({
