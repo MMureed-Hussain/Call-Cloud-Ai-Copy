@@ -175,8 +175,8 @@ export default () => {
         <Link  to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
           {/* <div className="d-flex justify-content-left align-items-center"> */}
             {/* <div className="d-flex flex-column"> */}
-            {row.name}
-              {/* <span className="fw-bolder">{row.name}</span> */}
+            {/* {row.name} */}
+              <span className=" text-dark">{row.name}</span>
             {/* </div> */}
           {/* </div> */}
         </Link>

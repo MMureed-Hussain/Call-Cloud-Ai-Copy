@@ -167,7 +167,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 			</div>
 
 			<Form  onSubmit={handleSubmit}>
-				<Row className={`pt-2 pb-2 ${data.type == 'number' ? 'bg-light' : ''}`}>
+				<Row className={`pt-2 pb-2 ${data.type == 'number' ? '' : ''}`}>
 					<Col sm="2" className="d-flex align-items-center">
 						<Input
 							type="radio"
@@ -192,7 +192,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 
 					</Col>
 				</Row>
-				<Row className={`pt-2 pb-2 ${data.type == 'days' ? 'bg-light' : ''}`}>
+				<Row className={`pt-2 pb-2 ${data.type == 'days' ? '' : ''}`}>
 					<Col sm="2" className="d-flex  align-items-center">
 						<Input
 							type="radio"
@@ -217,7 +217,7 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 					</Col>
 				</Row>
 
-				<Row className={`pt-2 pb-2 mb-3 ${data.type == 'datetime' ? 'bg-light' : ''}`}>
+				<Row className={`pt-2 pb-2 mb-3 ${data.type == 'datetime' ? '' : ''}`}>
 					<Col sm="2" className="d-flex justify-content-center align-items-center">
 						<Input
 							type="radio"

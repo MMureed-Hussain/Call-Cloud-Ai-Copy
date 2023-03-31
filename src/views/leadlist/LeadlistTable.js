@@ -309,7 +309,7 @@ const LeadList = ({ workspaceId }) => {
         </ModalHeader>
 
         <ModalBody>
-          <DataTable columns={recordColums} data={recordData}></DataTable>
+          <DataTable className="react-dataTable" columns={recordColums} data={recordData}></DataTable>
         </ModalBody>
       </Modal>
       <Card className="overflow-hidden workspace-list">

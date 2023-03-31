@@ -38,7 +38,7 @@ const CallFlowTable = ({ callFlowRecord, nextCallRecord }) => {
             cell: (row) => {
               return (
                 <a href={`https://${row[data.header_name]}`} target="_blank">
-                  {row[data.header_name]}
+                  <span className="text-dark">{row[data.header_name]}</span>
                 </a>
               );
             },
@@ -56,7 +56,7 @@ const CallFlowTable = ({ callFlowRecord, nextCallRecord }) => {
             cell: (row) => {
               return (
                 <Link to={`/leads/${callFlowRecord?.leadprofile.id}`}>
-                  {row[data.header_name]}
+                  <span className="text-dark">{row[data.header_name]}</span>
                 </Link>
               );
             },
