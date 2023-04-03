@@ -22,6 +22,7 @@ export default () =>
     const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '', from_date: '', to_date: '' });
     
 
+    console.log("camp",campaigns)
     useEffect(() =>
     {
         if (currentWorkspace) {

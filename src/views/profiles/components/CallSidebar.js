@@ -1,8 +1,7 @@
 /* eslint-disable */
 import { useEffect, useState, useMemo } from "react";
 import Sidebar from "@components/sidebar";
-import
-{
+import {
   Button,
   Label,
   Form,
@@ -21,8 +20,7 @@ import { createCall, updateCall } from "../../../redux/profiles";
 import TagInput from "./TagInput";
 import { getStatuses } from "../../../redux/callStatuses";
 import { sendCallRecordingStatus } from "@store/notifications";
-export default ({ open, toggleSidebar, call }) =>
-{
+export default ({ open, toggleSidebar, call }) => {
   // ** States
   const [audioDetails, setAudioDetails] = useState({
     url: null,
@@ -47,10 +45,7 @@ export default ({ open, toggleSidebar, call }) =>
     (state) => state.workspaces.currentWorkspace
   );
 
-
-
-  const handleSubmit = (event) =>
-  {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData();
     if (!call) {
@@ -62,25 +57,30 @@ export default ({ open, toggleSidebar, call }) =>
         formData.append("call_status", callStatus.value);
       }
 
-      dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'SUBMITTED', call_profile_id: params.id }));
+      dispatch(
+        sendCallRecordingStatus({
+          workspace_id: currentWorkspace.id,
+          status: "SUBMITTED",
+          call_profile_id: params.id,
+        })
+      );
     }
     setFormSubmissionLoader(true);
     dispatch(
       call
         ? updateCall({
-          formData: {
-            note,
-            tags: JSON.stringify(tags),
-            call_status: callStatus?.value,
-          },
-          id: call.id,
-        })
+            formData: {
+              note,
+              tags: JSON.stringify(tags),
+              call_status: callStatus?.value,
+            },
+            id: call.id,
+          })
         : createCall({
-          formData,
-          id: params.id,
-        })
-    ).then((res) =>
-    {
+            formData,
+            id: params.id,
+          })
+    ).then((res) => {
       setFormSubmissionLoader(false);
       if (res.payload.data) {
         toggleSidebar();
@@ -88,12 +88,10 @@ export default ({ open, toggleSidebar, call }) =>
     });
   };
   // ** Set call fields in case of edit mode
-  useEffect(() =>
-  {
+  useEffect(() => {
     if (call) {
       setNote(call.notes);
-      setAudioDetails((state) =>
-      {
+      setAudioDetails((state) => {
         state.url = `${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${call.id}`;
         return state;
       });
@@ -114,13 +112,11 @@ export default ({ open, toggleSidebar, call }) =>
     );
   }, [call]);
 
-  const callStatusOptions = useMemo(() =>
-  {
+  const callStatusOptions = useMemo(() => {
     return statuses.map((p) => ({ value: p.id, label: p.name }));
   }, [statuses]);
 
-  const handleSidebarClosed = () =>
-  {
+  const handleSidebarClosed = () => {
     setAudioDetails({
       url: null,
       blob: null,
@@ -134,7 +130,13 @@ export default ({ open, toggleSidebar, call }) =>
     setNote("");
     setTags([]);
 
-    dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'DISCONNECTED', call_profile_id: params.id }));
+    dispatch(
+      sendCallRecordingStatus({
+        workspace_id: currentWorkspace.id,
+        status: "DISCONNECTED",
+        call_profile_id: params.id,
+      })
+    );
   };
 
   return (
@@ -199,11 +201,7 @@ export default ({ open, toggleSidebar, call }) =>
           <Input
             placeholder="Enter Note here"
             value={note}
-            className={
-              errors.has("note") ? "is-invalid form-control" : "form-control"
-            }
-            onChange={(e) =>
-            {
+            onChange={(e) => {
               const value = e.target.value.replace(
                 /(^\w{1})|(\s+\w{1})/g,
                 (letter) => letter.toUpperCase()
@@ -211,9 +209,6 @@ export default ({ open, toggleSidebar, call }) =>
               setNote(value);
             }}
           />
-          {!note && (
-            <FormFeedback>{errors.get("note")}</FormFeedback>
-          )}
         </FormGroup>
         <Button className="me-1" color="primary">
           Submit

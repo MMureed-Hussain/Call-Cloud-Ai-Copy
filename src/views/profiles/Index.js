@@ -6,21 +6,22 @@ import { ChevronDown } from "react-feather";
 import Skeleton from "react-loading-skeleton";
 // ** Reactstrap Imports
 import {
-Card,
-UncontrolledDropdown,
-DropdownToggle,
-DropdownMenu,
-DropdownItem,
-Badge,
+  Card,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  Badge,
+  Row,
 } from "reactstrap";
 import CustomHeader from "./components/CustomHeader";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-getProfiles,
-setReloadTable,
-deleteResource,
-resetFilters,
+  getProfiles,
+  setReloadTable,
+  deleteResource,
+  resetFilters,
 } from "../../redux/profiles";
 import { getPipelines } from "../../redux/pipelines";
 import { getStatuses as getLeadStatuses } from "../../redux/leadStatuses";
@@ -68,6 +69,14 @@ export default () => {
   const statusFilterValue = useSelector(
     (state) => state.profiles.statusFilterValue
   );
+  const paginationLine = {
+    height: "1px",
+    width: "98%",
+    position: "absolute",
+    top: "39px",
+    marginLeft: "12px",
+    border: "2px solid red",
+  };
 
   // ** Factory method to dispatch the api call
   const loadProfiles = (options) => {
@@ -170,14 +179,13 @@ export default () => {
       sortField: "name",
       selector: (row) => row.name,
       // cell: row => row.name,
-      cell: (row) =>   
-      (
-        <Link  to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
+      cell: (row) => (
+        <Link to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
           {/* <div className="d-flex justify-content-left align-items-center"> */}
-            {/* <div className="d-flex flex-column"> */}
-            {/* {row.name} */}
-              <span className=" text-dark">{row.name}</span>
-            {/* </div> */}
+          {/* <div className="d-flex flex-column"> */}
+          {/* {row.name} */}
+          <span className=" text-dark">{row.name}</span>
+          {/* </div> */}
           {/* </div> */}
         </Link>
       ),
@@ -306,23 +314,26 @@ export default () => {
   // ** Custom Pagination
   const CustomPagination = () => {
     return (
-      <ReactPaginate
-        previousLabel={""}
-        nextLabel={""}
-        pageCount={pageCount || 1}
-        activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={({ selected }) => loadProfiles({ page: selected })}
-        pageClassName={"page-item"}
-        nextLinkClassName={"page-link"}
-        nextClassName={"page-item next"}
-        previousClassName={"page-item prev"}
-        previousLinkClassName={"page-link"}
-        pageLinkClassName={"page-link"}
-        containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
-        }
-      />
+      <Row style={{ position: "relative" }}>
+        {pageCount < 2 ? <div style={{ ...paginationLine }}></div> : ""}
+        <ReactPaginate
+          previousLabel={""}
+          nextLabel={""}
+          pageCount={pageCount || 1}
+          activeClassName="active"
+          forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+          onPageChange={({ selected }) => loadProfiles({ page: selected })}
+          pageClassName={"page-item"}
+          nextLinkClassName={"page-link"}
+          nextClassName={"page-item next"}
+          previousClassName={"page-item prev"}
+          previousLinkClassName={"page-link"}
+          pageLinkClassName={"page-link"}
+          containerClassName={
+            "pagination react-paginate justify-content-end my-2 pe-1"
+          }
+        />
+      </Row>
     );
   };
 

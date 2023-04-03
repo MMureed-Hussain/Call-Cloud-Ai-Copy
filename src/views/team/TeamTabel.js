@@ -16,33 +16,24 @@ import Skeleton from "react-loading-skeleton";
 // ** Store & Actions
 // import { getAllData, getData } from "../store";
 import {
-
   storeCurrentPageTeam,
   storeRowsPerPageTeam,
   getTeam,
-  deleteTeamFromWorkspace
+  deleteTeamFromWorkspace,
 } from "@store/workspaces";
 import { useDispatch, useSelector } from "react-redux";
 
 // ** Third Party Components
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
-import {
-  ChevronDown,
-} from "react-feather";
+import { ChevronDown } from "react-feather";
 
 // ** Utils
 // eslint-disable-next-line no-unused-vars
 import { selectThemeColors } from "@utils";
 
 // ** Reactstrap Imports
-import {
-  Row,
-  Col,
-  Card,
-  Input,
-  Button,
-} from "reactstrap";
+import { Row, Col, Card, Input, Button } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
@@ -57,7 +48,7 @@ const CustomHeader = ({
   handleFilter,
   searchTerm,
   teamData,
-  setEditTeam
+  setEditTeam,
 }) => {
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
@@ -130,7 +121,14 @@ const TeamTable = ({ workspaceId }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [editTeam, setEditTeam] = useState(null);
-
+  const paginationLine = {
+    height: "1px",
+    width: "98%",
+    position: "absolute",
+    top: "39px",
+    marginLeft: "12px",
+    border: "2px solid red",
+  };
   // ** Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -211,23 +209,26 @@ const TeamTable = ({ workspaceId }) => {
   const CustomPagination = () => {
     const count = Number(Math.ceil(store.totalTeam / rowsPerPage));
     return (
-      <ReactPaginate
-        previousLabel={""}
-        nextLabel={""}
-        pageCount={count || 1}
-        activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page)}
-        pageClassName={"page-item"}
-        nextLinkClassName={"page-link"}
-        nextClassName={"page-item next"}
-        previousClassName={"page-item prev"}
-        previousLinkClassName={"page-link"}
-        pageLinkClassName={"page-link"}
-        containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
-        }
-      />
+      <Row style={{ position: "relative" }}>
+        {count < 2 ? <div style={{ ...paginationLine }}></div> : ""}
+        <ReactPaginate
+          previousLabel={""}
+          nextLabel={""}
+          pageCount={count || 1}
+          activeClassName="active"
+          forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+          onPageChange={(page) => handlePagination(page)}
+          pageClassName={"page-item"}
+          nextLinkClassName={"page-link"}
+          nextClassName={"page-item next"}
+          previousClassName={"page-item prev"}
+          previousLinkClassName={"page-link"}
+          pageLinkClassName={"page-link"}
+          containerClassName={
+            "pagination react-paginate justify-content-end my-2 pe-1"
+          }
+        />
+      </Row>
     );
   };
 

@@ -11,13 +11,17 @@ import {
 } from "reactstrap";
 import "cleave.js/dist/addons/cleave-phone.us";
 import { useDispatch, useSelector } from "react-redux";
-import { createProfile, setSelectedProfile, updateProfile } from "../../../redux/profiles";
+import {
+  createProfile,
+  setSelectedProfile,
+  updateProfile,
+} from "../../../redux/profiles";
 import { getPipelines, setErrors } from "../../../redux/pipelines";
 import { getUsers } from "../../../redux/workspaces";
-import 'react-phone-input-2/lib/style.css'
+import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
-import Select from "react-select"
-import { selectThemeColors } from '@utils';
+import Select from "react-select";
+import { selectThemeColors } from "@utils";
 import Sidebar from "@components/sidebar";
 import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
 
@@ -28,24 +32,36 @@ export default ({ open, toggleSidebar, profile }) => {
   const [leadStatus, setLeadStatus] = useState(null);
   const [clientStatus, setClientStatus] = useState(null);
   const [leadUsers, setLeadUsers] = useState(null);
-
+  const campaigns = useSelector((state) => state.campaigns.campaigns);
+  console.log("profile", campaigns);
   const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.profiles.loading);
   const errors = useSelector((state) => state.profiles.errors);
-  const pipelines = useSelector((state) => state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name })));
-  const leadStatuses = useSelector((state) => state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
-  const clientStatuses = useSelector((state) => state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name })));
-  const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
-  const selfUser = useSelector((state) => state.workspaces.users.find(item => item.name === "me"));
+  const pipelines = useSelector((state) =>
+    state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name }))
+  );
+  const leadStatuses = useSelector((state) =>
+    state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name }))
+  );
+  const clientStatuses = useSelector((state) =>
+    state.clientStatuses.statuses.map((s) => ({ value: s.id, label: s.name }))
+  );
+  const workspaceUsers = useSelector((state) =>
+    state.workspaces.users.map((user) => ({ value: user.id, label: user.name }))
+  );
+  const selfUser = useSelector((state) =>
+    state.workspaces.users.find((item) => item.name === "me")
+  );
 
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
 
   useEffect(() => {
-    dispatch(setErrors({}))
-    if (!profile) { //load from this component when sidebar open for profile creation otherwise load from the profileAbout component
+    dispatch(setErrors({}));
+    if (!profile) {
+      //load from this component when sidebar open for profile creation otherwise load from the profileAbout component
       dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
       dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
       dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
@@ -61,16 +77,30 @@ export default ({ open, toggleSidebar, profile }) => {
       setPhone(profile.phone);
       setProfileName(profile.name);
       if (profile.pipeline) {
-        setPipeline({ value: profile.pipeline.id, label: profile.pipeline.name });
+        setPipeline({
+          value: profile.pipeline.id,
+          label: profile.pipeline.name,
+        });
       }
       if (profile.lead_status) {
-        setLeadStatus({ value: profile.lead_status.id, label: profile.lead_status.name });
+        setLeadStatus({
+          value: profile.lead_status.id,
+          label: profile.lead_status.name,
+        });
       }
       if (profile.client_status) {
-        setClientStatus({ value: profile.client_status.id, label: profile.client_status.name });
+        setClientStatus({
+          value: profile.client_status.id,
+          label: profile.client_status.name,
+        });
       }
       if (profile.users) {
-        setLeadUsers(profile.users.map((item) => ({ value: item.enc_id,  label:item.name})))
+        setLeadUsers(
+          profile.users.map((item) => ({
+            value: item.enc_id,
+            label: item.name,
+          }))
+        );
       }
     }
   }, [profile]);
@@ -80,8 +110,8 @@ export default ({ open, toggleSidebar, profile }) => {
       setLeadUsers([
         {
           label: selfUser.name,
-          value: selfUser.id
-        }
+          value: selfUser.id,
+        },
       ]);
     }
   }, [selfUser, profile]);
@@ -96,7 +126,7 @@ export default ({ open, toggleSidebar, profile }) => {
               phone: phone,
               pipeline: pipeline?.value,
               lead_status: leadStatus?.value,
-              users: leadUsers ? leadUsers.map(u => u.value): null 
+              users: leadUsers ? leadUsers.map((u) => u.value) : null,
             },
             id: profile.id,
           })
@@ -106,7 +136,7 @@ export default ({ open, toggleSidebar, profile }) => {
             workspace_id: currentWorkspace.id,
             pipeline: pipeline?.value,
             lead_status: leadStatus?.value,
-            users: leadUsers ? leadUsers.map(u => u.value): null
+            users: leadUsers ? leadUsers.map((u) => u.value) : null,
           })
     ).then((res) => {
       if (res.payload.data) {
@@ -134,9 +164,7 @@ export default ({ open, toggleSidebar, profile }) => {
             placeholder="Enter profile name"
             value={profileName}
             className={
-              errors.has("name")
-                ? "is-invalid form-control"
-                : "form-control"
+              errors.has("name") ? "is-invalid form-control" : "form-control"
             }
             onChange={(e) => {
               const value = e.target.value.replace(
@@ -226,9 +254,7 @@ export default ({ open, toggleSidebar, profile }) => {
             value={leadUsers}
             classNamePrefix="select"
             className={
-              errors.has("users")
-                ? "is-invalid react-select"
-                : "react-select"
+              errors.has("users") ? "is-invalid react-select" : "react-select"
             }
             placeholder="Select User"
             options={workspaceUsers}

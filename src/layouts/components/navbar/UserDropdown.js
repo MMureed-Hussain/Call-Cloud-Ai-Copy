@@ -46,7 +46,7 @@ const UserDropdown = () => {
 
   // const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
   const workspaceUsers = useSelector((state) => state.workspaces.users);
-  
+
   // Transform the workspaceUsers array into an array of objects with the desired properties
   const transformedUsers = workspaceUsers.map((user) => ({
     value: user.id,
@@ -54,16 +54,18 @@ const UserDropdown = () => {
     email: user.email,
     userRole: user.userRole,
   }));
-  
+
   // useEffect(() => {
   //   if (transformedUsers.length !== 0) {
   //     dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
   //     console.log('userssll', transformedUsers);
   //   }
   // }, []);
-  
-  const isAdmin = transformedUsers.find((user) => user.email === store.user.email && user.userRole === 'admin');
-  
+
+  const isAdmin = transformedUsers.find(
+    (user) => user.email === store.user.email && user.userRole === "admin"
+  );
+
   const handleLogout = () => {
     dispatch(logout());
   };
@@ -85,6 +87,7 @@ const UserDropdown = () => {
           <span className="user-name fw-bold m-0">{store.user.firstName}</span>
           {/* <span className="user-status">Admin</span> */}
         </div>
+        {console.log("avatr", store.user)}
         <Avatar
           img={store.user.avatar ? store.user.avatar : defaultAvatar}
           imgHeight="40"
@@ -96,22 +99,22 @@ const UserDropdown = () => {
         <DropdownItem
           tag={Link}
           to="/profile"
-        // onClick={(e) => e.preventDefault()}
+          // onClick={(e) => e.preventDefault()}
         >
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
         </DropdownItem>
 
-        {isAdmin &&
+        {isAdmin && (
           <DropdownItem
             tag={Link}
             to="/profile?active_tab=billing"
-          // onClick={(e) => e.preventDefault()}
+            // onClick={(e) => e.preventDefault()}
           >
             <DollarSign size={14} className="me-75" />
             <span className="align-middle">Billing & Plans</span>
           </DropdownItem>
-        }
+        )}
 
         {/* <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
           <Mail size={14} className="me-75" />
