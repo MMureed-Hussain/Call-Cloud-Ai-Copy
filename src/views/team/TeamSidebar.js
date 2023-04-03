@@ -110,12 +110,12 @@ const TeamSidebar = ({
         })).then((result) => {
           console.log('team click', result);
             setFormSubmissionLoader(false);
-            if (result.payload.data.team_name) {
+            // if (result.payload.data.data.team_name) {
               setTeamName("");
               setTeamUsers([]);
               refreshTable();
               toggleSidebar();
-            }
+            // }
           }
         );
       }
