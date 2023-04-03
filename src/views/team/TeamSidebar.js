@@ -108,9 +108,9 @@ const TeamSidebar = ({
           team_name: teamName,
           users: selectedTeamUsers.map(item => item.value)
         })).then((result) => {
-          console.log(result);
+          console.log('team click', result);
             setFormSubmissionLoader(false);
-            if (result.payload.data.data.team_name) {
+            if (result.payload.data.team_name) {
               setTeamName("");
               setTeamUsers([]);
               refreshTable();
@@ -149,7 +149,7 @@ const TeamSidebar = ({
             placeholder="Enter Team Name"
             invalid={teamError}
             value={teamName}
-            onChange={(e) => setTeamName(e.target.value.toupper)}
+            onChange={(e) => setTeamName(e.target.value)}
           />
 
           <FormFeedback>Please enter a valid Team Name</FormFeedback>
