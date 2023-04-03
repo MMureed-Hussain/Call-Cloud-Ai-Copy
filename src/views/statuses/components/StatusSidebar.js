@@ -10,6 +10,7 @@ import {
   Spinner,
   FormGroup,
 } from "reactstrap";
+import { createStatus, updateStatus } from "../../../redux/clientStatuses";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
@@ -20,9 +21,8 @@ export default ({
   toggleSidebar,
   status,
   moduleName,
-  createStatus,
-  updateStatus,
-  setErrors
+
+  setErrors,
 }) => {
   const [name, setName] = useState("");
   const [color, setColor] = useState("#9B9B9B");
@@ -45,21 +45,21 @@ export default ({
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSubmissionLoader(true);
-    dispatch(setErrors({}));
+    // dispatch(setErrors({}));
     dispatch(
       status
         ? updateStatus({
-          formData: {
+            formData: {
+              name,
+              color,
+            },
+            id: status.id,
+          })
+        : createStatus({
             name,
             color,
-          },
-          id: status.id,
-        })
-        : createStatus({
-          name,
-          color,
-          workspace_id: currentWorkspace.id,
-        })
+            workspace_id: currentWorkspace.id,
+          })
     ).then((res) => {
       setFormSubmissionLoader(false);
       if (res.payload.data) {
@@ -87,9 +87,7 @@ export default ({
             placeholder="Enter name here"
             value={name}
             className={
-              errors.has("name")
-                ? "is-invalid form-control"
-                : "form-control"
+              errors.has("name") ? "is-invalid form-control" : "form-control"
             }
             onChange={(e) => {
               const value = e.target.value.replace(
