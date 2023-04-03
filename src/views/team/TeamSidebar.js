@@ -149,7 +149,7 @@ const TeamSidebar = ({
             placeholder="Enter Team Name"
             invalid={teamError}
             value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
+            onChange={(e) => setTeamName(e.target.value.toupper)}
           />
 
           <FormFeedback>Please enter a valid Team Name</FormFeedback>

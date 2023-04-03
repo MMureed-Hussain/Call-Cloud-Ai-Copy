@@ -137,6 +137,15 @@ export default () => {
     );
   }
 
+  const paginationLine = {
+    height: "1px",
+    width: "98%",
+    position: "absolute",
+    top: "39px",
+    marginLeft: "12px",
+    border: "2px solid red",
+  };
+
   return (
     <>
       {Boolean(recordings.length) && (
