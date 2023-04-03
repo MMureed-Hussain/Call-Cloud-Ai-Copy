@@ -69,6 +69,16 @@ export default () => {
   const statusFilterValue = useSelector(
     (state) => state.profiles.statusFilterValue
   );
+  const userCampaign = useSelector(
+    (state) => state.auth.user.default_campaign_id
+  );
+  const campaigns = useSelector((state) =>
+    state.campaigns.campaigns?.data?.map((c) => ({
+      value: c.id,
+      label: c.title,
+    }))
+  );
+  const userDefaultCampaign = campaigns?.find((a) => a.value == userCampaign);
   const paginationLine = {
     height: "1px",
     width: "98%",
@@ -389,6 +399,8 @@ export default () => {
           open={sidebarOpen}
           toggleSidebar={toggleSidebar}
           profile={selectedProfile}
+          userDefaultCampaign={userDefaultCampaign}
+          campaigns={campaigns}
         />
       )}
     </>

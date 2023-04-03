@@ -18,6 +18,7 @@ import {
 } from "../../../redux/profiles";
 import { getPipelines, setErrors } from "../../../redux/pipelines";
 import { getUsers } from "../../../redux/workspaces";
+import campaigns, { getCampaignsList } from "../../../redux/campaigns";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
@@ -25,15 +26,21 @@ import { selectThemeColors } from "@utils";
 import Sidebar from "@components/sidebar";
 import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
 
-export default ({ open, toggleSidebar, profile }) => {
+export default ({
+  open,
+  toggleSidebar,
+  profile,
+  campaigns,
+  userDefaultCampaign,
+}) => {
+  console.log("from index", profile);
   const [phone, setPhone] = useState("");
   const [profileName, setProfileName] = useState("");
   const [pipeline, setPipeline] = useState(null);
   const [leadStatus, setLeadStatus] = useState(null);
   const [clientStatus, setClientStatus] = useState(null);
   const [leadUsers, setLeadUsers] = useState(null);
-  const campaigns = useSelector((state) => state.campaigns.campaigns);
-  console.log("profile", campaigns);
+
   const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.profiles.loading);
@@ -41,6 +48,8 @@ export default ({ open, toggleSidebar, profile }) => {
   const pipelines = useSelector((state) =>
     state.pipelines.pipelines.map((p) => ({ value: p.id, label: p.name }))
   );
+  const [campaign, setCampaign] = useState();
+
   const leadStatuses = useSelector((state) =>
     state.leadStatuses.statuses.map((s) => ({ value: s.id, label: s.name }))
   );
@@ -57,7 +66,11 @@ export default ({ open, toggleSidebar, profile }) => {
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
-
+  useEffect(() => {
+    if (userDefaultCampaign) {
+      setCampaign(userDefaultCampaign);
+    }
+  }, [userDefaultCampaign]);
   useEffect(() => {
     dispatch(setErrors({}));
     if (!profile) {
@@ -65,6 +78,13 @@ export default ({ open, toggleSidebar, profile }) => {
       dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
       dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
       dispatch(getLeadStatuses({ workspace_id: currentWorkspace.id }));
+      dispatch(
+        getCampaignsList({
+          workspace_id: currentWorkspace.id,
+          orderby: "created_at",
+          sort: "desc",
+        })
+      );
     }
   }, [currentWorkspace]);
 
@@ -137,6 +157,7 @@ export default ({ open, toggleSidebar, profile }) => {
             pipeline: pipeline?.value,
             lead_status: leadStatus?.value,
             users: leadUsers ? leadUsers.map((u) => u.value) : null,
+            campaign_id: campaign?.value,
           })
     ).then((res) => {
       if (res.payload.data) {
@@ -177,6 +198,19 @@ export default ({ open, toggleSidebar, profile }) => {
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
           )}
+        </FormGroup>
+        <FormGroup>
+          <Label className="form-label" for="campaign">
+            Campaign
+          </Label>
+          <Select
+            value={campaign}
+            theme={selectThemeColors}
+            classNamePrefix="select"
+            placeholder="Select campaign"
+            options={campaigns}
+            onChange={setCampaign}
+          />
         </FormGroup>
         <FormGroup>
           <Label className="form-label" for="phone-number">
