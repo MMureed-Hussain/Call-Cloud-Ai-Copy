@@ -148,8 +148,16 @@ const TeamSidebar = ({
             id="text"
             placeholder="Enter Team Name"
             invalid={teamError}
+            // value={teamName}
+            // onChange={(e) => setTeamName(e.target.value)}
             value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value.replace(
+                /(^\w{1})|(\s+\w{1})/g,
+                (letter) => letter.toUpperCase()
+              );
+              setTeamName(value);
+            }}
           />
 
           <FormFeedback>Please enter a valid Team Name</FormFeedback>
