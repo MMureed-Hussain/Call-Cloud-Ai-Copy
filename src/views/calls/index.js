@@ -333,7 +333,7 @@ export default () => {
 
               {calls && !Boolean(calls.data.length) && (
                 <tr>
-                  <td colSpan={6} className="text-center">
+                  <td colSpan={12} className="text-center">
                     No data Found!
                   </td>
                 </tr>

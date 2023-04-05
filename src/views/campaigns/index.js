@@ -200,7 +200,7 @@ export default () =>
                                 </tr>
                             )}
 
-                            {(campaigns && !Boolean(campaigns.data.length)) && <tr><td colSpan={6} className="text-center">No data Found!</td></tr>}
+                            {(campaigns && !Boolean(campaigns.data.length)) && <tr><td colSpan={12} className="text-center">No data Found!</td></tr>}
                         </tbody>
                     </Table>
                 </div>
