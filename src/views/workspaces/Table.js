@@ -64,6 +64,8 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import Skeleton from "react-loading-skeleton";
 
+
+
 // ** Table Header
 const CustomHeader = ({
   //   store,
@@ -75,6 +77,7 @@ const CustomHeader = ({
   setEditWorkspace,
   userData,
 }) => {
+
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -361,6 +364,11 @@ const WorkspacesList = () => {
           if (result.value) {
             dispatch(deleteWorkspace({ id }));
             refreshTable();
+
+            setTimeout(() => {
+              window.location.href = '/workspaces'
+            }, 500);
+
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({
               title: "Cancelled",
