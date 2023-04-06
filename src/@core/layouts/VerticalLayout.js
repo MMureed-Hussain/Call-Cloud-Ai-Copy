@@ -46,6 +46,8 @@ import { useNavbarColor } from "@hooks/useNavbarColor"
 import "@styles/base/core/menu/menu-types/vertical-menu.scss"
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss"
 import WebNotification from "../components/notification/WebNotification"
+import Timetracker from "../components/timetracker/Timetracker"
+
 
 const VerticalLayout = (props) =>
 {
@@ -214,6 +216,7 @@ const VerticalLayout = (props) =>
       ></div>
       {/* Vertical Nav Menu Overlay */}
 
+      <Timetracker />
       {themeConfig.layout.customizer === true ? (
         <Customizer
           skin={skin}

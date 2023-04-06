@@ -1,4 +1,5 @@
 // ** Redux Imports
+/* eslint-disable */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // ** Axios Imports
@@ -8,7 +9,8 @@ import toast from "react-hot-toast";
 axios.defaults.withCredentials = true;
 
 // Perform Login API and set user data in store
-export const login = createAsyncThunk("auth/login", async (payload) => {
+export const login = createAsyncThunk("auth/login", async (payload) =>
+{
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/login`,
@@ -21,7 +23,6 @@ export const login = createAsyncThunk("auth/login", async (payload) => {
       },
     };
   } catch (e) {
-    console.log(e);
     toast.error(e.response.data.message);
     return {
       data: {
@@ -31,12 +32,13 @@ export const login = createAsyncThunk("auth/login", async (payload) => {
   }
 });
 
-export const googlelogin = createAsyncThunk("auth/googlelogin", async (payload) => {
+export const googlelogin = createAsyncThunk("auth/googlelogin", async (payload) =>
+{
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_API_ENDPOINT}/api/auth/google/callback?${payload.params}`
     );
-    if (response.data.message === 'Please verify your email first') {        
+    if (response.data.message === 'Please verify your email first') {
       alert(response.data.message);
       window.location.href = "/login";
     } else {
@@ -58,7 +60,8 @@ export const googlelogin = createAsyncThunk("auth/googlelogin", async (payload) 
   }
 });
 
-export const emailverification = createAsyncThunk("auth/emailverification", async (payload) => {
+export const emailverification = createAsyncThunk("auth/emailverification", async (payload) =>
+{
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/api/verify-email?token=${payload.params.slice(0, -1)}`);
@@ -80,7 +83,8 @@ export const emailverification = createAsyncThunk("auth/emailverification", asyn
 });
 
 // Perform Register API and set user data in store
-export const register = createAsyncThunk("auth/register", async (payload) => {
+export const register = createAsyncThunk("auth/register", async (payload) =>
+{
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/register`,
@@ -105,7 +109,8 @@ export const register = createAsyncThunk("auth/register", async (payload) => {
 // Perform forgot password API to trigger password reset mail
 export const forgotPasswordRequest = createAsyncThunk(
   "auth/forgotPasswordRequest",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/forgot-password`,
@@ -128,7 +133,8 @@ export const forgotPasswordRequest = createAsyncThunk(
 // Perform reset password API to update password
 export const resetPasswordRequest = createAsyncThunk(
   "auth/resetPasswordRequest",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/reset-password`,
@@ -151,7 +157,8 @@ export const resetPasswordRequest = createAsyncThunk(
 // Perform update profile API to update profile data
 export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/profile`,
@@ -169,7 +176,7 @@ export const updateProfile = createAsyncThunk(
         },
       };
     } catch (e) {
-      console.log(e);
+
       toast.error(e.response.data.message);
       return {
         data: false,
@@ -181,7 +188,8 @@ export const updateProfile = createAsyncThunk(
 // Perform update password API to update/change password
 export const updatePassword = createAsyncThunk(
   "auth/updatePassword",
-  async (payload) => {
+  async (payload) =>
+  {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/api/update-password`,
@@ -202,7 +210,8 @@ export const updatePassword = createAsyncThunk(
 );
 
 // Perform CSRF API to set cookie for future API calls
-export const csrf = createAsyncThunk("auth/csrf", async () => {
+export const csrf = createAsyncThunk("auth/csrf", async () =>
+{
   try {
     await axios.get(
       `${process.env.REACT_APP_API_ENDPOINT}/sanctum/csrf-cookie`
@@ -213,7 +222,8 @@ export const csrf = createAsyncThunk("auth/csrf", async () => {
 });
 
 // Peform get user profile API and add user data in store
-export const getUser = createAsyncThunk("auth/getUser", async () => {
+export const getUser = createAsyncThunk("auth/getUser", async () =>
+{
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_API_ENDPOINT}/api/profile`
@@ -235,7 +245,8 @@ export const getUser = createAsyncThunk("auth/getUser", async () => {
 // Peform get user profile API and add user data in store
 export const sendMailVerificationLink = createAsyncThunk(
   "auth/sendMailVerificationLink",
-  async () => {
+  async () =>
+  {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/email/verification-notification`
@@ -254,7 +265,8 @@ export const sendMailVerificationLink = createAsyncThunk(
 );
 
 // Perform logout action and remove user from store
-export const logout = createAsyncThunk("auth/logout", async () => {
+export const logout = createAsyncThunk("auth/logout", async () =>
+{
   try {
     await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/logout`);
     window.location.href = "/login";
@@ -269,7 +281,8 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 // Perform delete account api and redirect user to /login page
 export const deleteAccount = createAsyncThunk(
   "auth/deleteAccount",
-  async () => {
+  async () =>
+  {
     try {
       await axios.get(
         `${process.env.REACT_APP_API_ENDPOINT}/api/delete-account`
@@ -297,29 +310,36 @@ export const authSlice = createSlice({
     //   state.query = action.payload
     // }
   },
-  extraReducers: (builder) => {
+  extraReducers: (builder) =>
+  {
     builder
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(login.fulfilled, (state, action) =>
+      {
         state.user = action.payload.data.user;
         state.loading = false;
       })
-      .addCase(emailverification.fulfilled, (state, action) => {
+      .addCase(emailverification.fulfilled, (state, action) =>
+      {
         state.user = action.payload.data.user;
         state.loading = false;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(register.fulfilled, (state, action) =>
+      {
         state.user = action.payload.data.user;
         state.loading = false;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.fulfilled, (state) =>
+      {
         state.user = null;
         state.loading = false;
       })
-      .addCase(getUser.fulfilled, (state, action) => {
+      .addCase(getUser.fulfilled, (state, action) =>
+      {
         state.user = action.payload.data.user;
         state.loading = false;
       })
-      .addCase(updateProfile.fulfilled, (state, action) => {
+      .addCase(updateProfile.fulfilled, (state, action) =>
+      {
         if (action.payload.data) {
           state.user = action.payload.data.user;
         }
