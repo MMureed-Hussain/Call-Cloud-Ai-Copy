@@ -300,6 +300,14 @@ const CallList = ({ profileId }) =>
         setViewSidebarOpen(!viewSidebarOpen);
     };
 
+
+    const handleCallSidebar = () =>
+    {
+        setSelectedCall(null);
+        toggleSidebar();
+
+    }
+
     // ** Custom Pagination
     const CustomPagination = () =>
     {
@@ -344,11 +352,7 @@ const CallList = ({ profileId }) =>
                     rowsPerPage={rowsPerPage}
                     handleSearch={handleFilter}
                     handlePerPage={handlePerPage}
-                    toggleSidebar={() =>
-                    {
-                        setSelectedCall(null);
-                        toggleSidebar();
-                    }}
+                    toggleSidebar={handleCallSidebar}
                 />
                 <div className="react-dataTable">
                     <DataTable

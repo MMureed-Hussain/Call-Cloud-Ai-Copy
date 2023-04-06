@@ -102,7 +102,7 @@ export default () =>
 
         let time = total_time.split(':');
         let hr = parseInt(time[0]) ? parseInt(time[0]) : parseInt(time[1]) ? 1 : 0;
-        return parseInt(total_call / hr);
+        return hr ? parseInt(total_call / hr) : 0;
     }
 
 
@@ -219,8 +219,8 @@ export default () =>
                                 <th>User</th>
                                 {/* <th>Team</th> */}
                                 <th>Workspace</th>
-                                <th>Logged In</th>
-                                <th>Logged Out</th>
+                                <th>Start Time</th>
+                                <th>End End</th>
                                 <th>Total Time</th>
                             </tr>
                         </thead>
