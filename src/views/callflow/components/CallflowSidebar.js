@@ -130,7 +130,7 @@ toggleSidebar()
             audioDetails={audioDetails}
             setAudioDetails={setAudioDetails}
           />
-          <FormGroup>
+          <div className="mb-1">
           <Label className="form-label" for="phone-number">
             Call Status<span className="text-danger">*</span>
           </Label>
@@ -150,8 +150,8 @@ toggleSidebar()
           {errors.has("call_status") && (
             <FormFeedback>{errors.get("call_status")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Tags<span className="text-danger">*</span>
           </Label>
@@ -167,8 +167,8 @@ toggleSidebar()
           {errors.has("tags") && (
             <FormFeedback>{errors.get("tags")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Notes
           </Label>
@@ -190,7 +190,7 @@ toggleSidebar()
           {errors.has("note") && (
             <FormFeedback>{errors.get("note")}</FormFeedback>
           )}
-        </FormGroup>
+        </div>
         <div className="d-flex justify-content-center">
         <Button className="me-1" color="primary">
           Submit

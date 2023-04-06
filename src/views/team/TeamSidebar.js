@@ -164,7 +164,7 @@ const TeamSidebar = ({
         </div>
 
         <div className="mb-1">
-          <FormGroup>
+          <div className="mb-1">
             <Label className="form-label" for="select-user">
               Select user For Team
             </Label>
@@ -184,7 +184,7 @@ const TeamSidebar = ({
               }}
               styles={selectStyles}
             />
-          </FormGroup>
+          </div>
         </div>
 
         <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">

@@ -97,31 +97,31 @@ const CreateUpdateContactSidebar = forwardRef((props, ref) =>
 			onClosed={() => setOpen(false)}>
 
 			<Form onSubmit={handleSubmit}>
-				<FormGroup>
+				<div className="mb-1">
 					<Label className="form-label" for="title">First Name</Label>
 					<Input name="first_name" type="text" value={data.first_name} onChange={e => handleChange(e)} className={`${errors.has("first_name") && 'is-invalid'}`} />
 					{errors.has("first_name") && <FormFeedback>{errors.get("first_name")}</FormFeedback>}
-				</FormGroup>
-				<FormGroup>
+				</div>
+				<div className="mb-1">
 					<Label className="form-label" for="title">Last Name</Label>
 					<Input name="last_name" type="text" value={data.last_name} onChange={e => handleChange(e)} />
-				</FormGroup>
-				<FormGroup>
+				</div>
+				<div className="mb-1">
 					<Label className="form-label" for="title">Job Title</Label>
 					<Input name="job_title" type="text" value={data.job_title} onChange={e => handleChange(e)} />
-				</FormGroup>
-				<FormGroup>
+				</div>
+				<div className="mb-1">
 					<Label className="form-label" for="title">Email </Label>
 					<Input name="email" type="email" value={data.email} onChange={e => handleChange(e)} />
-				</FormGroup>
-				<FormGroup>
+				</div>
+				<div className="mb-1">
 					<Label className="form-label" for="phone-number">Phone Number </Label>
 					<PhoneInput country={"us"} value={data.phone} onChange={e => handleChange({ target: { name: 'phone', value: e, type: 'input' } })} enableSearch disableSearchIcon inputClass="form-control w-100" placeholder="1 234 567 8900" />
-				</FormGroup>
-				<FormGroup>
+				</div>
+				<div className="mb-1">
 					<Label className="form-label" for="title"> Note </Label>
 					<Input name="note" type="textarea" placeholder="Enter Note here" value={data.note} onChange={e => handleChange(e)} />
-				</FormGroup>
+				</div>
 				<Button className="me-1" color="primary">
 					{loader && <Spinner style={{ marginRight: "5px" }} size={"sm"} color="white" />}
 					Submit

@@ -82,14 +82,14 @@ export default () => {
     { value: "phone", label: "Phone" },
     { value: "other", label: "Other" },
   ];
-  const paginationLine = {
-    height: "1px",
-    width: "98%",
-    position: "absolute",
-    top: "39px",
-    marginLeft: "12px",
-    border: "2px solid red",
-  };
+  // const paginationLine = {
+  //   height: "1px",
+  //   width: "98%",
+  //   position: "absolute",
+  //   top: "39px",
+  //   marginLeft: "12px",
+  //   border: "2px solid red",
+  // };
   const perPageOptions = [
     { value: 15, label: 15 },
     { value: 25, label: 25 },
@@ -254,11 +254,11 @@ export default () => {
           </Table>
         </div>
         <Row style={{ position: "relative" }}>
-          {followups && followups.last_page !== 0 ? (
+          {/* {followups && followups.last_page !== 0 ? (
             <div style={{ ...paginationLine }}></div>
           ) : (
             ""
-          )}
+          )} */}
 
           <Col className="small">
             {followups.data && (
@@ -290,7 +290,7 @@ export default () => {
                 previousLinkClassName={"page-link"}
                 pageLinkClassName={"page-link"}
                 containerClassName={
-                  "pagination react-paginate justify-content-end my-5 pe-1"
+                  "pagination react-paginate justify-content-end my-2 pe-1"
                 }
               />
             )}

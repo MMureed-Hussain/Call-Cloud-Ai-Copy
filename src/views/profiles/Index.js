@@ -79,14 +79,14 @@ export default () => {
     }))
   );
   const userDefaultCampaign = campaigns?.find((a) => a.value == userCampaign);
-  const paginationLine = {
-    height: "1px",
-    width: "98%",
-    position: "absolute",
-    top: "39px",
-    marginLeft: "12px",
-    border: "2px solid red",
-  };
+  // const paginationLine = {
+  //   height: "1px",
+  //   width: "98%",
+  //   position: "absolute",
+  //   top: "39px",
+  //   marginLeft: "12px",
+  //   border: "2px solid red",
+  // };
 
   // ** Factory method to dispatch the api call
   const loadProfiles = (options) => {
@@ -325,7 +325,7 @@ export default () => {
   const CustomPagination = () => {
     return (
       <Row style={{ position: "relative" }}>
-        {pageCount < 2 ? <div style={{ ...paginationLine }}></div> : ""}
+        {/* {pageCount < 2 ? <div style={{ ...paginationLine }}></div> : ""} */}
         <ReactPaginate
           previousLabel={""}
           nextLabel={""}
@@ -340,7 +340,7 @@ export default () => {
           previousLinkClassName={"page-link"}
           pageLinkClassName={"page-link"}
           containerClassName={
-            "pagination react-paginate justify-content-end my-5 pe-1"
+            "pagination react-paginate justify-content-end my-2 pe-1"
           }
         />
       </Row>

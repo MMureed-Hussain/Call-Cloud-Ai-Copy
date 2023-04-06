@@ -130,14 +130,14 @@ export default () =>
                                     <Select classNamePrefix="select" onChange={e => handleSelectChange(e, 'status')} options={statusOptions} className="mb-2" placeholder="Status" />
                                 </Col>
                                 <Col lg="2">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Input name="from_date" type="date" value={data.from_date} onChange={e => handleChange(e)} placeholder="From date" />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                                 <Col lg="2">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Input name="to_date" type="date" value={data.to_date} onChange={e => handleChange(e)} placeholder="From date" />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                             </Row>
                         </Col>

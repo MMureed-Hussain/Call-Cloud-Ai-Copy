@@ -216,7 +216,7 @@ const QueueSidebar = ({
         </div>
 
         <div className="mb-1">
-          <FormGroup>
+          <div className="mb-1">
             <Label className="form-label" for="lead-list">
               Select Lead List <span className="text-danger">*</span>
             </Label>
@@ -263,26 +263,26 @@ const QueueSidebar = ({
               required
             />
 
-          </FormGroup>
+          </div>
         </div>
 
         {(() => {
           if (selectedLeadLists.length > 0) {
             return (
               <div className="mb-1">
-                <FormGroup>
+                <div className="mb-1">
                   <Label className="form-label" for="lead-list">
                     Selected Lead List
                   </Label>
                   {SortableSelectedLeadLists}
-                </FormGroup>
+                </div>
               </div>
             );
           }
         })()}
 
         <div className="mb-1">
-          <FormGroup>
+          <div className="mb-1">
             <Label className="form-label" for="select-user">
               Select Team to assigned Queue
             </Label>
@@ -301,7 +301,7 @@ const QueueSidebar = ({
               }}
               styles={selectStyles}
             />
-          </FormGroup>
+          </div>
         </div>
 
         <Button onClick={(e) => onSubmit(e)}

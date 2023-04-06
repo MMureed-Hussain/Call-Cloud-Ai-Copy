@@ -184,7 +184,7 @@ export default () =>
                         <Col lg="10">
                             <Row>
                                 <Col lg="4">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Label>Profile Type</Label>
                                         <Select
                                             options={profileTypeOptions}
@@ -194,11 +194,11 @@ export default () =>
                                             className="mb-2"
                                             classNamePrefix="select"
                                         />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                                 {(data && data.profile == 'lead' && profileStatus) &&
                                     <Col lg="4">
-                                        <FormGroup>
+                                        <div className="mb-1">
                                             <Label>Profile status</Label>
                                             <Select
                                                 onChange={e => handleSelectChange(e, 'lead_status')}
@@ -207,13 +207,13 @@ export default () =>
                                                 className="mb-2"
                                                 classNamePrefix="select"
                                             />
-                                        </FormGroup>
+                                        </div>
                                     </Col>
                                 }
 
                                 {(data && data.profile == 'client' && clientStatus) &&
                                     <Col lg="4">
-                                        <FormGroup>
+                                        <div className="mb-1">
                                             <Label>Client Status</Label>
                                             <Select
                                                 onChange={e => handleSelectChange(e, 'client_status')}
@@ -222,12 +222,12 @@ export default () =>
                                                 className="mb-2"
                                                 classNamePrefix="select"
                                             />
-                                        </FormGroup>
+                                        </div>
                                     </Col>
                                 }
 
                                 <Col lg="4">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Label>Pipeline</Label>
                                         <Select
                                             options={[{ value: '', label: 'None' }, ...pipelineOptions,]}
@@ -236,7 +236,7 @@ export default () =>
                                             className="mb-2" 
                                             classNamePrefix="select"
                                             />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                                 
                                 <div  className="w-100"></div>
@@ -244,7 +244,7 @@ export default () =>
                                 {
                                     callStatus &&
                                     <Col lg="4">
-                                        <FormGroup>
+                                        <div className="mb-1">
                                             <Label>Call Status</Label>
                                             <Select
                                                 onChange={e => handleSelectChange(e, 'call_status')}
@@ -252,12 +252,12 @@ export default () =>
                                                 className="mb-2"
                                                 classNamePrefix="select"
                                             />
-                                        </FormGroup>
+                                        </div>
                                     </Col>
                                 }
 
                                 <Col lg="4">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Label>From</Label>
                                         <Input
                                             name="from_date"
@@ -265,11 +265,11 @@ export default () =>
                                             onChange={e => handleChange(e)}
                                             max={moment().format("YYYY-MM-DD")}
                                         />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
 
                                 <Col lg="4">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Label>To</Label>
                                         <Input
                                             name="to_date"
@@ -278,7 +278,7 @@ export default () =>
                                             onChange={e => handleChange(e)}
                                             max={moment().format("YYYY-MM-DD")}
                                         />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                             </Row>
                         </Col>

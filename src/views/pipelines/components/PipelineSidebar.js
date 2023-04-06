@@ -67,7 +67,7 @@ export default ({ open, toggleSidebar, pipeline }) => {
             toggleSidebar={toggleSidebar}
         >
             <Form onSubmit={handleSubmit}>
-                <FormGroup>
+                <div className="mb-1">
                     <Label className="form-label" for="title">
                         Name<span className="text-danger">*</span>
                     </Label>
@@ -88,7 +88,7 @@ export default ({ open, toggleSidebar, pipeline }) => {
                     {errors.has("name") && (
                         <FormFeedback>{errors.get("name")}</FormFeedback>
                     )}
-                </FormGroup>
+                </div>
                 <Button className="me-1" color="primary">
                     Submit
                     {formSubmissionLoader && (

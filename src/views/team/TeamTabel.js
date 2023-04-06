@@ -111,6 +111,7 @@ const TeamTable = ({ workspaceId }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
   const teamData = useSelector((state) => state.auth);
+  const currentWorkspace = useSelector((state) => state.workspaces?.currentWorkspace);
 
   // ** States
   const [sort, setSort] = useState("desc");
@@ -121,14 +122,14 @@ const TeamTable = ({ workspaceId }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [editTeam, setEditTeam] = useState(null);
-  const paginationLine = {
-    height: "1px",
-    width: "98%",
-    position: "absolute",
-    top: "39px",
-    marginLeft: "12px",
-    border: "2px solid red",
-  };
+  // const paginationLine = {
+  //   height: "1px",
+  //   width: "98%",
+  //   position: "absolute",
+  //   top: "39px",
+  //   marginLeft: "12px",
+  //   border: "2px solid red",
+  // };
   // ** Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -149,7 +150,7 @@ const TeamTable = ({ workspaceId }) => {
 
   // ** Get data on mount
   useEffect(() => {
-    if (store.teamLoading && workspaceId) {
+    if (store.teamLoading && currentWorkspace && workspaceId) {
       dispatch(
         getTeam({
           sort,
@@ -161,7 +162,7 @@ const TeamTable = ({ workspaceId }) => {
         })
       );
     }
-  }, [workspaceId]);
+  }, [workspaceId, currentWorkspace]);
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
@@ -210,7 +211,7 @@ const TeamTable = ({ workspaceId }) => {
     const count = Number(Math.ceil(store.totalTeam / rowsPerPage));
     return (
       <Row style={{ position: "relative" }}>
-        {count < 2 ? <div style={{ ...paginationLine }}></div> : ""}
+        {/* {count < 2 ? <div style={{ ...paginationLine }}></div> : ""} */}
         <ReactPaginate
           previousLabel={""}
           nextLabel={""}
@@ -225,7 +226,7 @@ const TeamTable = ({ workspaceId }) => {
           previousLinkClassName={"page-link"}
           pageLinkClassName={"page-link"}
           containerClassName={
-            "pagination react-paginate justify-content-end my-5 pe-1"
+            "pagination react-paginate justify-content-end my-2 pe-1"
           }
         />
       </Row>

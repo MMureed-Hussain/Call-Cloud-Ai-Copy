@@ -326,7 +326,7 @@ const CallList = ({ profileId }) =>
                 previousLinkClassName={"page-link"}
                 pageLinkClassName={"page-link"}
                 containerClassName={
-                    "pagination react-paginate justify-content-end my-5 pe-1"
+                    "pagination react-paginate justify-content-end my-2 pe-1"
                 }
             />
         );
