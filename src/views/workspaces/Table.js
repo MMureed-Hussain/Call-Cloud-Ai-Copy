@@ -75,6 +75,7 @@ const CustomHeader = ({
   setEditWorkspace,
   userData,
 }) => {
+
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -314,7 +315,7 @@ const WorkspacesList = () => {
         previousLinkClassName={"page-link"}
         pageLinkClassName={"page-link"}
         containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
+          "pagination react-paginate justify-content-end my-5 pe-1"
         }
       />
     );
@@ -361,6 +362,11 @@ const WorkspacesList = () => {
           if (result.value) {
             dispatch(deleteWorkspace({ id }));
             refreshTable();
+
+            setTimeout(() => {
+              window.location.href = '/workspaces'
+            }, 500);
+
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({
               title: "Cancelled",

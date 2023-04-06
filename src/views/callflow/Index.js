@@ -1,29 +1,47 @@
 /* eslint-disable */
 import { Row, Col } from "reactstrap";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCallFlowData } from "../../redux/workspaces"
 import CallFlowAbout from "./components/LeadAbout";
 import CallFlowTable from "./components/LeadTable";
 import RecordList from "./components/RecordList";
+import Skeleton from "react-loading-skeleton";
+
 
 export default ({ workspaceId }) => {
   const [callFlowData, setCallFlowData] = useState();
   const [nextCall, setNextCall] = useState(false);
+  // const [loader, setLoader] = useState(true);
 
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
 
+  const fetchCallFlow = () => {
+    dispatch(
+      getCallFlowData(workspaceId)
+    ).then((data) => setCallFlowData(data.payload.data.callflow));
+  }
+
   useEffect(() => {
     if (workspaceId) {
-      dispatch(
-        getCallFlowData(workspaceId)
-      ).then((data) => setCallFlowData(data.payload.data.callflow));
+      fetchCallFlow();
     };
-  }, [nextCall]);
+  }, [nextCall, workspaceId]);
 
   const nextCallRecord = () => {
     setNextCall(!nextCall);
+  }
+
+  if (store.callflowLoading) {
+    return (
+      <Fragment>
+        <div className="vh-100">
+          <Skeleton height={"15%"} />
+          <Skeleton height={"7%"} count={9} />
+        </div>
+      </Fragment>
+    );
   }
 
   return (
