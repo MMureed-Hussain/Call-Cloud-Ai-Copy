@@ -111,7 +111,7 @@ const TeamTable = ({ workspaceId }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.workspaces);
   const teamData = useSelector((state) => state.auth);
-  const currentWorkspace = useSelector((state) => state.workspaces?.currentWorkspace);
+  const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
 
   // ** States
   const [sort, setSort] = useState("desc");
@@ -148,8 +148,7 @@ const TeamTable = ({ workspaceId }) => {
     );
   };
 
-  // ** Get data on mount
-  useEffect(() => {
+  const getTeamData = () => {
     if (store.teamLoading && currentWorkspace && workspaceId) {
       dispatch(
         getTeam({
@@ -162,7 +161,13 @@ const TeamTable = ({ workspaceId }) => {
         })
       );
     }
-  }, [workspaceId, currentWorkspace]);
+  }
+
+  // ** Get data on mount
+  useEffect(() => {
+    refreshTable();
+    getTeamData();
+  }, [workspaceId, currentWorkspace, store.recentlyAccessedWorkspaces]);
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
