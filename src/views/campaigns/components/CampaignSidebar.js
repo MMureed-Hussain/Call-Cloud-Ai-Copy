@@ -38,9 +38,6 @@ const CampaignSidebar = forwardRef((props, ref) => {
       value = e.target.checked;
     } else if (e.target.type === "input") {
       value = e.target.value
-    } else if (e.target.type === "text") {
-      value = e.target.value.toUpperCase()
-
     } else value = e.target.value.replace(
       /(^\w{1})|(\s+\w{1})/g,
       (letter) => letter.toUpperCase()
