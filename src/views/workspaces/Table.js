@@ -365,7 +365,7 @@ const WorkspacesList = () => {
 
             setTimeout(() => {
               window.location.href = '/workspaces'
-            }, 500);
+            }, 1000);
 
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({
