@@ -68,7 +68,7 @@ export default ({ open, toggleSidebar, callNote }) => {
       onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit}>
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Note
           </Label>
@@ -90,7 +90,7 @@ export default ({ open, toggleSidebar, callNote }) => {
           {errors.has("note") && (
             <FormFeedback>{errors.get("note")}</FormFeedback>
           )}
-        </FormGroup>
+        </div>
         <Button className="me-1" color="primary">
           Submit
           {formSubmissionLoader && (

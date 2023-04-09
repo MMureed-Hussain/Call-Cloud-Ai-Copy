@@ -28,7 +28,7 @@ const ColorPicker = ({ label, onChange, value }) => {
 
     return (
         <div>
-            <FormGroup>
+            <div className="mb-1">
                 <Label>
                     {label}:
                 </Label>
@@ -45,7 +45,7 @@ const ColorPicker = ({ label, onChange, value }) => {
                         <option key={color} value={color} style={{ backgroundColor: color }} />
                     ))}
                 </datalist>
-            </FormGroup>
+            </div>
         </div>
     );
 };

@@ -79,7 +79,7 @@ export default ({
       toggleSidebar={toggleSidebar}
     >
       <Form onSubmit={handleSubmit}>
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Name<span className="text-danger">*</span>
           </Label>
@@ -100,7 +100,7 @@ export default ({
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
           )}
-        </FormGroup>
+        </div>
         <ColorPicker label="Color" value={color} onChange={setColor} />
         {errors.has("color") && (
           <FormFeedback>{errors.get("color")}</FormFeedback>

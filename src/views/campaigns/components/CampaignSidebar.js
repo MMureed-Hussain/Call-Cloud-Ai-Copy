@@ -30,9 +30,18 @@ const CampaignSidebar = forwardRef((props, ref) => {
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState({});
   const handleChange = (e) => {
+
     const key = e.target.name;
-    const value =
-      e.target.type == "checkbox" ? e.target.checked : e.target.value;
+    let value = e.target.value;
+
+    if (e.target.type === "checkbox") {
+      value = e.target.checked;
+    } else if (e.target.type === "input") {
+      value = e.target.value
+    } else value = e.target.value.replace(
+      /(^\w{1})|(\s+\w{1})/g,
+      (letter) => letter.toUpperCase()
+    );
 
     setData((data) => ({
       ...data,
@@ -86,19 +95,19 @@ const CampaignSidebar = forwardRef((props, ref) => {
       if (currentWorkspace) {
         let arg = obj
           ? {
-              ...obj,
-              is_created: 0,
-              start_date: moment(obj.start_date).format("YYYY-MM-DD"),
-            }
+            ...obj,
+            is_created: 0,
+            start_date: moment(obj.start_date).format("YYYY-MM-DD"),
+          }
           : {
-              title: "",
-              start_date: "",
-              description: "",
-              is_created: 1,
-              team_id: "",
-              status: 1,
-              workspace_id: currentWorkspace.id,
-            };
+            title: "",
+            start_date: "",
+            description: "",
+            is_created: 1,
+            team_id: "",
+            status: 1,
+            workspace_id: currentWorkspace.id,
+          };
 
         setCampaign(obj);
         setData(arg);
@@ -120,7 +129,7 @@ const CampaignSidebar = forwardRef((props, ref) => {
       onClosed={() => setOpen(false)}
     >
       <Form onSubmit={handleSubmit}>
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label">
             Title <span className="text-danger">*</span>
           </Label>
@@ -136,9 +145,9 @@ const CampaignSidebar = forwardRef((props, ref) => {
           {errors.has("title") && (
             <FormFeedback>{errors.get("title")}</FormFeedback>
           )}
-        </FormGroup>
+        </div>
 
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Description
           </Label>
@@ -149,8 +158,8 @@ const CampaignSidebar = forwardRef((props, ref) => {
             value={data.description}
             onChange={(e) => handleChange(e)}
           />
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Start Date <span className="text-danger">*</span>
           </Label>
@@ -166,9 +175,9 @@ const CampaignSidebar = forwardRef((props, ref) => {
           {errors.has("start_date") && (
             <FormFeedback>{errors.get("start_date")}</FormFeedback>
           )}
-        </FormGroup>
+        </div>
 
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label">
             Select a team <span className="text-danger">*</span>
           </Label>
@@ -185,9 +194,9 @@ const CampaignSidebar = forwardRef((props, ref) => {
           {errors.has("team_id") && (
             <FormFeedback>{errors.get("team_id")}</FormFeedback>
           )}
-        </FormGroup>
+        </div>
 
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label">
             Status <span className="text-danger">*</span>
           </Label>
@@ -200,7 +209,7 @@ const CampaignSidebar = forwardRef((props, ref) => {
               onChange={(e) => handleChange(e)}
             />
           </FormGroup>
-        </FormGroup>
+        </div>
         <Button className="me-1" color="primary" type="submit">
           {loader && (
             <Spinner style={{ marginRight: "5px" }} size={"sm"} color="white" />

@@ -5,25 +5,25 @@ import { Row, Col } from "reactstrap";
 import { useParams } from "react-router-dom";
 
 const PaginationWrapper = ({ paginate, callback }) => {
-  const paginationLine = {
-    height: "1px",
-    width: "98%",
-    position: "absolute",
-    top: "39px",
-    marginLeft: "12px",
-    border: "2px solid red",
-  };
+  // const paginationLine = {
+  //   height: "1px",
+  //   width: "98%",
+  //   position: "absolute",
+  //   top: "39px",
+  //   marginLeft: "12px",
+  //   border: "2px solid red",
+  // };
   const params = useParams();
 
   return (
     <>
       {paginate.data && (
         <Row style={{ position: "relative" }}>
-          {paginate.data.length && paginate.last_page < 2 ? (
+          {/* {paginate.data.length && paginate.last_page < 2 ? (
             <div style={{ ...paginationLine }}></div>
           ) : (
             ""
-          )}
+          )} */}
           <Col className="small">
             {Boolean(paginate.data.length) && (
               <div className="my-2 ms-1">
@@ -52,7 +52,7 @@ const PaginationWrapper = ({ paginate, callback }) => {
                 previousLinkClassName={"page-link"}
                 pageLinkClassName={"page-link"}
                 containerClassName={
-                  "pagination react-paginate justify-content-end my-5 pe-1"
+                  "pagination react-paginate justify-content-end my-2 pe-1"
                 }
               />
             )}

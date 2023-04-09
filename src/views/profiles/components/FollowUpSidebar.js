@@ -206,7 +206,7 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 					</Col>
 				</Row>
 
-				<Row className={`pt-2 pb-2 mb-3 ${data.type == 'datetime' ? '' : ''}`}>
+				<Row className={`pt-2 pb-2 mb-1 ${data.type == 'datetime' ? '' : ''}`}>
 					<Col sm="2" className="d-flex justify-content-center align-items-center">
 						<Input
 							type="radio"
@@ -234,7 +234,7 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 
 				{!user.timezone &&
 
-					<FormGroup>
+					<div className="mb-1">
 						<Label className="form-label" for="timezoneInput">
 							Profile's Timezone
 						</Label>
@@ -253,10 +253,10 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 						/>
 
 						{errors.has("timezone") && <FormFeedback>{errors.get("timezone")}</FormFeedback>}
-					</FormGroup>
+					</div>
 				}
 
-				<FormGroup>
+				<div className="mb-1">
 					<Row className="text-center">
 
 						<Col sm="2" className="d-flex align-items-center">
@@ -301,8 +301,8 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 							</Row>
 						</Col>
 					</Row>
-				</FormGroup>
-				<FormGroup>
+				</div>
+				<div className="mb-1">
 					<Label className="form-label">Location Detail</Label>
 					<Input
 						type="text"
@@ -314,9 +314,9 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 					/>
 
 					{errors.has("location") && <FormFeedback>{errors.get("location")}</FormFeedback>}
-				</FormGroup>
+				</div>
 
-				<FormGroup>
+				<div className="mb-1">
 					<Label className="form-label" for="title"> Note </Label>
 					<Input
 						required
@@ -326,7 +326,7 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 						value={data.notes}
 						onChange={e => handleChange(e)}
 					/>
-				</FormGroup>
+				</div>
 				<Button className="me-1" color="primary" type="submit" >
 					{loader && <Spinner style={{ marginRight: "5px" }} size={"sm"} color="white" />}
 					Submit

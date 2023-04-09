@@ -185,38 +185,38 @@ export default () =>
                         <Col lg="10">
                             <Row>
                                 <Col lg="3">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Select classNamePrefix='select' options={perPageOptions} onChange={e => handleSelectChange(e, 'per_page')} placeholder="Per Page" className="mb-2" />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                                 {/* <Col lg="2">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Select onChange={e => handleSelectChange(e, 'team_id')} options={[{ value: '', label: 'None' }, ...teams,]} className="mb-2" placeholder="Select Team" />
-                                    </FormGroup>
+                                    </div>
                                 </Col> */}
                                 {user.role == 'company' &&
                                     <Col lg="4">
-                                        <FormGroup>
+                                        <div className="mb-1">
                                             <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'user_id')} options={[{ value: '', label: 'None' }, ...workspaceusers,]} className="mb-2" placeholder="Select User" />
-                                        </FormGroup>
+                                        </div>
                                     </Col>
                                 }
                                 <Col lg="2">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Input name="from_date" type="date" value={data.from_date} onChange={e => handleChange(e)} placeholder="From date" />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                                 <Col lg="2">
-                                    <FormGroup>
+                                    <div className="mb-1">
                                         <Input name="to_date" type="date" value={data.to_date} onChange={e => handleChange(e)} placeholder="From date" />
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                             </Row>
                         </Col>
                         {/* <Col lg="2">
-                            <FormGroup>
+                            <div className="mb-1">
                                 <Input name="search" value={data.search} onChange={e => handleChange(e)} placeholder="Search..." style={{ maxHeight: '40px' }} />
-                            </FormGroup>
+                            </div>
                         </Col> */}
                     </Row>
                 </div>

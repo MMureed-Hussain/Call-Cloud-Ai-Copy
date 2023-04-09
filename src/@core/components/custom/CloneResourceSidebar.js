@@ -49,7 +49,7 @@ export default ({ open, toggleSidebar, targetAction }) => {
             toggleSidebar={toggleSidebar}
         >
             <Form onSubmit={handleSubmit}>
-                <FormGroup>
+                <div className="mb-1">
                     <Label className="form-label" for="title">
                         Workspace<span className="text-danger">*</span>
                     </Label>
@@ -62,7 +62,7 @@ export default ({ open, toggleSidebar, targetAction }) => {
                         options={workspaceOptions}
                         onChange={setSelectedWorkspace}
                     />
-                </FormGroup>
+                </div>
                 <Button className="me-1" color="primary">
                     Submit
                     {formSubmissionLoader && (

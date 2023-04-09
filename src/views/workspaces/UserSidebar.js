@@ -24,16 +24,13 @@ const SidebarUser = ({
   user = null,
   workspaceId,
   auth
-}) =>
-{
+}) => {
   // ** States
-  const [email, setEmail] = useState(() =>
-  {
+  const [email, setEmail] = useState(() => {
     return user ? user.email : "";
   });
 
-  const [nickname, setNickname] = useState(() =>
-  {
+  const [nickname, setNickname] = useState(() => {
     return user ? user.nickname : "";
   });
   const [emailError, setEmailError] = useState(false);
@@ -46,8 +43,7 @@ const SidebarUser = ({
   const dispatch = useDispatch();
 
   // ** Function to handle form submit
-  const onSubmit = (e) =>
-  {
+  const onSubmit = (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -65,8 +61,7 @@ const SidebarUser = ({
       if (user) {
         dispatch(
           updateMemberInWorkspace({ nickname, id: user.invitationId, role })
-        ).then((result) =>
-        {
+        ).then((result) => {
           setFormSubmissionLoader(false);
           if (result.payload.data.user) {
             setEmail("");
@@ -77,8 +72,7 @@ const SidebarUser = ({
         });
       } else {
         dispatch(inviteMember({ email, nickname, id: workspaceId, role })).then(
-          (result) =>
-          {
+          (result) => {
             setFormSubmissionLoader(false);
             if (result.payload.data.user) {
               setEmail("");
@@ -92,8 +86,7 @@ const SidebarUser = ({
     }
   };
 
-  const handleSidebarClosed = () =>
-  {
+  const handleSidebarClosed = () => {
     setEmail("");
     setNickname("");
     setEmailError(false);
@@ -143,17 +136,21 @@ const SidebarUser = ({
         {
           (role == 'admin' || auth.user.role == 'company') &&
 
-          <FormGroup>
-            <Label className="form-label" for="timezoneInput"> User Role </Label>
-            <Select
-              defaultValue={{ value: role, label: role.toUpperCase() }}
-              className="react-select"
-              classNamePrefix="select"
-              onChange={e => setRole(e.value)}
-              options={roleList}
-            />
+          <div className="mb-1">
+            {(role !== "admin") &&
+              <>
+                <Label className="form-label" for="timezoneInput"> User Role </Label>
+                <Select
+                  defaultValue={{ value: role, label: role.toUpperCase() }}
+                  className="react-select"
+                  classNamePrefix="select"
+                  onChange={e => setRole(e.value)}
+                  options={roleList}
+                />
+              </>
+            }
 
-          </FormGroup>
+          </div>
         }
 
         <Button onClick={(e) => onSubmit(e)} className="me-1" color="primary">

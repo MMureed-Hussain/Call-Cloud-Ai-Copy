@@ -6,35 +6,32 @@ import { Link } from "react-router-dom";
 import Avatar from "@components/avatar";
 
 
-import
-{ Trash,
-  Edit,
-  MoreVertical,
-  FileText,
-  Trash2,
-  Archive,
+import {
+Trash,
+Edit,
+MoreVertical,
+FileText,
+Trash2,
+Archive,
 } from "react-feather";
 
 // ** Reactstrap Imports
-import
-{ UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
+import {
+UncontrolledDropdown,
+DropdownToggle,
+DropdownMenu,
+DropdownItem,
 } from "reactstrap";
 
-const renderCreatedAt = (row) =>
-{
+const renderCreatedAt = (row) => {
   return row.createdAt ? row.createdAt : "-";
 };
 
-const renderJoinedAt = (row) =>
-{
+const renderJoinedAt = (row) => {
   return row.joinedAt ? row.joinedAt : "-";
 };
 
-const renderClient = (row) =>
-{
+const renderClient = (row) => {
   if (row.avatar && row.avatar.length) {
     return <Avatar className="me-1" img={row.avatar} width="32" height="32" />;
   } else {
@@ -49,8 +46,7 @@ const renderClient = (row) =>
   }
 };
 
-const renderWorkspaceLogo = (row) =>
-{
+const renderWorkspaceLogo = (row) => {
   if (row.logo && row.logo.length) {
     return <Avatar className="me-1" img={row.logo} width="32" height="32" />;
   } else {
@@ -135,8 +131,7 @@ export const adminWorkspaceColumns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) =>
-              {
+              onClick={(e) => {
                 row.handleEdit(row.id);
                 e.preventDefault();
               }}
@@ -148,8 +143,7 @@ export const adminWorkspaceColumns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) =>
-              {
+              onClick={(e) => {
                 row.handleDelete(row.id);
                 e.preventDefault();
               }}
@@ -179,7 +173,7 @@ export const userWorkspaceColumns = [
       </div>
     ),
   },
-  
+
   {
     name: "Joined At",
     sortable: true,
@@ -196,8 +190,7 @@ export const userColumns = [
     sortable: true,
     minWidth: "300px",
     sortField: "name",
-    selector: (row) =>
-    {
+    selector: (row) => {
       return row.nickname ? row.nickname : row.name;
     },
     cell: (row) => (
@@ -212,7 +205,7 @@ export const userColumns = [
       </div>
     ),
   },
- 
+
   {
     name: "Joined At",
     sortable: true,
@@ -249,8 +242,7 @@ export const userColumns = [
               tag="a"
               href="/"
               className="w-100"
-              onClick={(e) =>
-              {
+              onClick={(e) => {
                 row.handleEdit(row.id);
                 e.preventDefault();
               }}
@@ -259,21 +251,22 @@ export const userColumns = [
               <span className="align-middle">Edit</span>
             </DropdownItem>
 
-            <DropdownItem
-              tag="a"
-              href="/"
-              className="w-100"
-              onClick={(e) =>
-              {
-                row.handleDelete(row.invitationId, row.joinedAt);
-                e.preventDefault();
-              }}
-            >
-              <Trash2 size={14} className="me-50" />
-              <span className="align-middle">
-                {row.joinedAt ? "Remove user" : "Cancel invitation"}
-              </span>
-            </DropdownItem>
+            {row.userRole !== "admin" &&
+              <DropdownItem
+                tag="a"
+                href="/"
+                className="w-100"
+                onClick={(e) => {
+                  row.handleDelete(row.invitationId, row.joinedAt);
+                  e.preventDefault();
+                }}
+              >
+                <Trash2 size={14} className="me-50" />
+                <span className="align-middle">
+                  {row.joinedAt ? "Remove user" : "Cancel invitation"}
+                </span>
+              </DropdownItem>
+            }
           </DropdownMenu>
         </UncontrolledDropdown>
       </div>

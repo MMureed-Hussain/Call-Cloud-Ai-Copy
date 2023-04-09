@@ -156,7 +156,7 @@ export default ({ open, toggleSidebar, call }) => {
             setAudioDetails={setAudioDetails}
           />
         )}
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label" for="phone-number">
             Call Status<span className="text-danger">*</span>
           </Label>
@@ -176,8 +176,8 @@ export default ({ open, toggleSidebar, call }) => {
           {errors.has("call_status") && (
             <FormFeedback>{errors.get("call_status")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Tags<span className="text-danger">*</span>
           </Label>
@@ -193,8 +193,8 @@ export default ({ open, toggleSidebar, call }) => {
           {errors.has("tags") && (
             <FormFeedback>{errors.get("tags")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Notes
           </Label>
@@ -209,7 +209,7 @@ export default ({ open, toggleSidebar, call }) => {
               setNote(value);
             }}
           />
-        </FormGroup>
+        </div>
         <Button className="me-1" color="primary">
           Submit
           {formSubmissionLoader && (

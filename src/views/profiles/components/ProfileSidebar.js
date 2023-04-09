@@ -176,7 +176,7 @@ export default ({
       toggleSidebar={toggleSidebar}
     >
       <Form onSubmit={handleSubmit}>
-        <FormGroup>
+        <div className="mb-1">
           <Label className="form-label" for="title">
             Profile Name<span className="text-danger">*</span>
           </Label>
@@ -198,8 +198,8 @@ export default ({
           {errors.has("name") && (
             <FormFeedback>{errors.get("name")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="campaign">
             Campaign
           </Label>
@@ -211,8 +211,8 @@ export default ({
             options={campaigns}
             onChange={setCampaign}
           />
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="phone-number">
             Phone Number<span className="text-danger">*</span>
           </Label>
@@ -233,8 +233,8 @@ export default ({
           {errors.has("phone") && (
             <FormFeedback>{errors.get("phone")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="phone-number">
             Pipeline<span className="text-danger">*</span>
           </Label>
@@ -254,8 +254,8 @@ export default ({
           {errors.has("pipeline") && (
             <FormFeedback>{errors.get("pipeline")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label" for="phone-number">
             Status<span className="text-danger">*</span>
           </Label>
@@ -277,8 +277,8 @@ export default ({
           {errors.has("lead_status") && (
             <FormFeedback>{errors.get("lead_status")}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup>
+        </div>
+        <div className="mb-1">
           <Label className="form-label">
             Users<span className="text-danger">*</span>
           </Label>
@@ -299,7 +299,7 @@ export default ({
           {errors.has("users") && (
             <FormFeedback>{errors.get("users")}</FormFeedback>
           )}
-        </FormGroup>
+        </div>
         <Button className="me-1" color="primary" type="submit">
           Submit
           {loading && (
