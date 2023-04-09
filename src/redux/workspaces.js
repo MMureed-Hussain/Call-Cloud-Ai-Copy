@@ -25,7 +25,6 @@ export const getData = createAsyncThunk(
         },
       };
     } catch (e) {
-      console.log(e);
       toast.error(e.response.data.message);
       return {
         data: {
@@ -51,7 +50,7 @@ export const storeCurrentWorkspaceById = createAsyncThunk(
         },
       };
     } catch (e) {
-      console.log(e);
+
       toast.error(e.response.data.message);
       return {
         data: {
@@ -75,7 +74,7 @@ export const markWorkspaceAsAccessedNow = createAsyncThunk(
         data: true,
       };
     } catch (e) {
-      console.log(e);
+
       toast.error(e.response.data.message);
       return {
         data: false,
@@ -97,7 +96,7 @@ export const recentlyAccessedWorkspaces = createAsyncThunk(
         data: response.data.recentWorkspaces,
       };
     } catch (e) {
-      console.log(e);
+
       toast.error(e.response.data.message);
       return {
         data: false,
@@ -129,7 +128,7 @@ export const addWorkspace = createAsyncThunk(
         },
       };
     } catch (e) {
-      console.log(e);
+
       toast.error(e.response.data.message);
       return {
         data: {
@@ -663,7 +662,7 @@ export const getUsers = createAsyncThunk(
         `${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${payload.id}/users`,
         payload
       );
-      console.log('1st', response.data);
+
       return {
         data: {
           users: response.data.users,
@@ -1162,7 +1161,7 @@ export const workspacesSlice = createSlice({
       .addCase(markWorkspaceAsAccessedNow.fulfilled, (state, action) =>
       {
         if (action.payload.data) {
-          console.log("no action required");
+          console.log("no action required", action.payload.data);
         }
       })
       .addCase(recentlyAccessedWorkspaces.fulfilled, (state, action) =>

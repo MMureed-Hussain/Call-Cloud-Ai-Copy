@@ -16,6 +16,7 @@ export const campaignsSlice = createSlice({
     campaigns: [],
     teams: [],
     reload: false,
+    campaignsOptions: [],
   },
   reducers: {
     setErrors: (state, { payload }) =>
@@ -29,6 +30,10 @@ export const campaignsSlice = createSlice({
     setTeams: (state, { payload }) =>
     {
       state.teams = payload;
+    },
+    setCampaignsOptions: (state, { payload }) =>
+    {
+      state.campaignsOptions = payload;
     },
     setReload: (state, { payload }) =>
     {
@@ -65,6 +70,21 @@ export const getTeamsByWorkspace = createAsyncThunk(
     }
   }
 );
+
+
+export const getCompaignsByWorkspace = createAsyncThunk(
+  "campaigns/getCompaignsByWorkspace",
+  async ({ id }, { dispatch }) =>
+  {
+    try {
+      const response = await axios.get(`${baseURL}/workspace/${id}`);
+      dispatch(setCampaignsOptions(response.data));
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
+
 
 export const storeOrUpdate = createAsyncThunk(
   "campaigns/storeOrUpdate",
@@ -106,6 +126,7 @@ export const {
   setCampaigns,
   setTeams,
   setReload,
+  setCampaignsOptions,
 } = campaignsSlice.actions;
 
 export default campaignsSlice.reducer;

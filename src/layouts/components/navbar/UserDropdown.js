@@ -1,11 +1,13 @@
 // ** React Imports
+/* eslint-disable */
 import { Link, Navigate } from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
 
 // ** Third Party Components
-import {
+import
+{
   User,
   Mail,
   CheckSquare,
@@ -18,7 +20,8 @@ import {
 } from "react-feather";
 
 // ** Reactstrap Imports
-import {
+import
+{
   UncontrolledDropdown,
   DropdownMenu,
   DropdownToggle,
@@ -37,10 +40,12 @@ import { logout } from "@store/auth";
 // import { getUsers } from "../../../redux/workspaces";
 // import { useEffect } from "react";
 
-const UserDropdown = () => {
+const UserDropdown = () =>
+{
   const dispatch = useDispatch();
 
-  const store = useSelector((state) => {
+  const store = useSelector((state) =>
+  {
     return state.auth;
   });
 
@@ -66,7 +71,8 @@ const UserDropdown = () => {
     (user) => user.email === store.user.email && user.userRole === "admin"
   );
 
-  const handleLogout = () => {
+  const handleLogout = () =>
+  {
     dispatch(logout());
   };
 
@@ -87,7 +93,7 @@ const UserDropdown = () => {
           <span className="user-name fw-bold m-0">{store.user.firstName}</span>
           {/* <span className="user-status">Admin</span> */}
         </div>
-        {console.log("avatr", store.user)}
+
         <Avatar
           img={store.user.avatar ? store.user.avatar : defaultAvatar}
           imgHeight="40"
@@ -99,7 +105,7 @@ const UserDropdown = () => {
         <DropdownItem
           tag={Link}
           to="/profile"
-          // onClick={(e) => e.preventDefault()}
+        // onClick={(e) => e.preventDefault()}
         >
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
@@ -109,7 +115,7 @@ const UserDropdown = () => {
           <DropdownItem
             tag={Link}
             to="/profile?active_tab=billing"
-            // onClick={(e) => e.preventDefault()}
+          // onClick={(e) => e.preventDefault()}
           >
             <DollarSign size={14} className="me-75" />
             <span className="align-middle">Billing & Plans</span>

@@ -1,11 +1,9 @@
 /* eslint-disable */
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
 import Skeleton from "react-loading-skeleton";
-import moment from "moment";
 import Select from "react-select";
-import { Row, Col, Button, Card, CardHeader, CardTitle, Badge, Table, Input, FormGroup, Label, CardBody } from "reactstrap";
+import { Row, Col, Card, CardHeader, CardTitle, Badge, Table, Input, FormGroup, CardBody } from "reactstrap";
 import PaginationWrapper from "@src/@core/components/custom/PaginationWrapper";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
@@ -13,7 +11,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { getSessionList } from "../../redux/timers";
+import { getSessionList, setReload } from "../../redux/timers";
 import { getUsersOfWorkspace } from "../../redux/workspaces";
 import { getTeamsByWorkspace } from "../../redux/campaigns";
 import UserInfo from "../profiles/components/UserInfo";
@@ -28,18 +26,18 @@ export default () =>
     const total_time = useSelector((state) => state.timers.total_time);
     const total_call = useSelector((state) => state.timers.total_call);
     const calls = useSelector((state) => state.timers.calls);
+    const reload = useSelector((state) => state.timers.reload);
     const teams = useSelector((state) => state.campaigns.teams);
     const workspaceusers = useSelector((state) => state.workspaces.workspaceusers);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '' });
-    const [labels, setLabels] = useState([]);
+
 
     useEffect(() =>
     {
         if (currentWorkspace) {
             dispatch(getTeamsByWorkspace({ id: currentWorkspace.id }));
             dispatch(getUsersOfWorkspace({ id: currentWorkspace.id }));
-
         }
 
     }, [currentWorkspace]);
@@ -47,8 +45,18 @@ export default () =>
 
     useEffect(() =>
     {
+        if (reload) {
+            dispatch(setReload(false));
+            loadData();
+        }
+    }, [reload]);
+
+
+    useEffect(() =>
+    {
         loadData();
     }, [data, currentWorkspace]);
+
 
     const loadData = (options) =>
     {
@@ -217,7 +225,7 @@ export default () =>
                         <thead>
                             <tr>
                                 <th>User</th>
-                                {/* <th>Team</th> */}
+                                <th>Campaign</th>
                                 <th>Workspace</th>
                                 <th>Start Time</th>
                                 <th>End End</th>
@@ -233,9 +241,10 @@ export default () =>
                                             email={row.user.email}
                                         />
                                     </td>
+                                    <td>{row.campaign?.title}</td>
                                     <td>{row.workspace.name}</td>
                                     <td>{row.started_at}</td>
-                                    <td>{row.stopped_at}</td>
+                                    <td>{row.stopped_at} {(row.stopped_at == null && row.session == 'ongoing') && <Badge color="success" className="bg-light-success">Ongoing</Badge>} </td>
                                     <td>{row.total_time}</td>
                                 </tr>
                             )}

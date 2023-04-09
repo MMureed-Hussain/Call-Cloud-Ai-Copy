@@ -1,47 +1,45 @@
-import { useState } from "react";
+/* eslint-disable */
+import { useEffect, useState } from "react";
 import { useSkin } from "@hooks/useSkin";
 import { Link, Navigate } from "react-router-dom";
 // import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 import InputPasswordToggle from "@components/input-password-toggle";
-
-import {
-  Row,
-  Col,
-  CardTitle,
-  CardText,
-  Form,
-  Label,
-  Input,
-  Button,
-  FormFeedback,
-  Spinner,
-} from "reactstrap";
+import { Row, Col, CardTitle, CardText, Form, Label, Input, Button, FormFeedback, Spinner } from "reactstrap";
 import "@styles/react/pages/page-authentication.scss";
 
 import { useDispatch, useSelector } from "react-redux";
-
 import { login, csrf } from "@store/auth";
+import moment from 'moment-timezone';
 
 // ** Config
 import themeConfig from "@configs/themeConfig";
 
-const Login = () => {
+const Login = () =>
+{
   const { skin } = useSkin();
-
   const dispatch = useDispatch();
-  const store = useSelector((state) => {
-    return state.auth;
-  });
-
+  const store = useSelector((state) => { return state.auth });
   const [email, setEmail] = useState("");
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [passwordEmpty, setPasswordEmpty] = useState(false);
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
+  const [timezone, setTimezone] = useState(null);
   const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 
-  const handleSubmit = (e) => {
+
+  useEffect(() =>
+  {
+    if (!timezone) {
+      const userTimezone = moment.tz.guess();
+      setTimezone(userTimezone);
+    }
+  }, []);
+
+
+
+  const handleSubmit = (e) =>
+  {
     let valid = true;
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       setEmailInvalid(true);
@@ -59,8 +57,9 @@ const Login = () => {
 
     if (valid) {
       setFormSubmissionLoader(true);
-      dispatch(csrf()).then(() => {
-        const payload = { email, password };
+      dispatch(csrf()).then(() =>
+      {
+        const payload = { email, password, timezone };
 
         if (rememberMe) {
           payload.remember_me = true;
@@ -83,7 +82,7 @@ const Login = () => {
   //       if (response.ok) {
   //         return response.json();
   //       }
-        
+
   //     })
   //     .then((data) => { 
   //       setGoogleLoginUrl(data.url); window.location.href = data.url;
@@ -99,7 +98,7 @@ const Login = () => {
   } else if (store.user && store.user.emailVerified && store.user.profileCompleted) {
     return <Navigate to="/dashboard" />;
   }
-  
+
   return (
     <div className="auth-wrapper auth-cover">
       {/* {!store.user && toast.success("test")} */}
@@ -165,7 +164,8 @@ const Login = () => {
                 <Input
                   type="checkbox"
                   id="remember-me"
-                  onChange={(e) => {
+                  onChange={(e) =>
+                  {
                     console.log("reme", e);
                     setRememberMe(e.target.checked);
                   }}

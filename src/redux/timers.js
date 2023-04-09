@@ -17,7 +17,8 @@ export const timerSlice = createSlice({
     total_time: '',
     total_call: 0,
     calls: [],
-    current_session: false,
+    timer: null,
+    reload: false,
   },
   reducers: {
     setErrors: (state, { payload }) =>
@@ -42,10 +43,15 @@ export const timerSlice = createSlice({
       state.calls = payload;
     },
 
-    setCurrentSession: (state, { payload }) =>
+    setTimer: (state, { payload }) =>
     {
-      state.current_session = payload;
+      state.timer = payload;
     },
+
+    setReload: (state, { payload }) =>
+    {
+      state.reload = payload;
+    }
   },
 });
 
@@ -71,8 +77,22 @@ export const storeOrUpdate = createAsyncThunk(
   async (params, { dispatch }) =>
   {
     try {
-      const response = await axios.post(`${baseURL}`, { ...params });
-      console.log(response);
+      const response = await axios.post(`${baseURL}`, params);
+      dispatch(setTimer(response.data.timer));
+      dispatch(setReload(true));
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
+  }
+);
+
+export const getCrrentTimer = createAsyncThunk(
+  "timers/current",
+  async (params, { dispatch }) =>
+  {
+    try {
+      const response = await axios.get(`${baseURL}/current`);
+      dispatch(setTimer(response.data.timer));
     } catch (e) {
       toast.error(e.response.data.message);
     }
@@ -86,7 +106,8 @@ export const {
   setTotalTime,
   setTotalCall,
   setCalls,
-  setCurrentSession,
+  setTimer,
+  setReload,
 } = timerSlice.actions;
 
 export default timerSlice.reducer;
