@@ -12,10 +12,7 @@ axios.defaults.withCredentials = true;
 export const login = createAsyncThunk("auth/login", async (payload) =>
 {
   try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_ENDPOINT}/login`,
-      payload
-    );
+    const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/login`, payload);
     window.location.href = "/";
     return {
       data: {

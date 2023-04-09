@@ -20,9 +20,7 @@ export default () =>
     const teams = useSelector((state) => state.campaigns.teams);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '', from_date: '', to_date: '' });
-    
 
-    console.log("camp",campaigns)
     useEffect(() =>
     {
         if (currentWorkspace) {
@@ -30,7 +28,7 @@ export default () =>
         }
     }, [currentWorkspace]);
 
-
+    
     useEffect(() =>
     {
         loadData();
@@ -165,12 +163,12 @@ export default () =>
                         <tbody>
                             {campaigns.data && campaigns.data.map((row, ind) =>
                                 <tr key={ind} >
-                                    <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: '20ch'   }}>{row.title}  </td>
-                                    <td style={{  whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",maxWidth: '10ch' }}>{row.description} </td>
+                                    <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: '20ch' }}>{row.title}  </td>
+                                    <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: '10ch' }}>{row.description} </td>
                                     <td>
-                                        <Badge 
-                                        color={`${row.status ? 'success' : 'danger'}`}
-                                        className={`badge-glow`}>
+                                        <Badge
+                                            color={`${row.status ? 'success' : 'danger'}`}
+                                            className={`badge-glow`}>
                                             {row.status ? 'ACTIVE' : 'INACTIVE'}
                                         </Badge>
                                     </td>

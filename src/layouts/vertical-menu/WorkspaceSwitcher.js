@@ -1,7 +1,8 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
 
-import {
+import
+{
   Button,
   Popover,
   UncontrolledPopover,
@@ -16,7 +17,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 import { useSelector, useDispatch } from "react-redux";
-import {
+import
+{
   storeCurrentWorkspace,
   markWorkspaceAsAccessedNow,
   recentlyAccessedWorkspaces,
@@ -31,7 +33,8 @@ import { selectThemeColors } from "@utils";
 import { useNavigate, Link } from "react-router-dom";
 import { getUsers } from "../../redux/workspaces";
 
-const WorkspaceSwitcher = () => {
+const WorkspaceSwitcher = () =>
+{
   //   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const workspaceStore = useSelector((state) => state.workspaces);
@@ -43,7 +46,8 @@ const WorkspaceSwitcher = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (workspaceStore.currentWorkspace) {
       dispatch(
         getUsers({
@@ -58,7 +62,8 @@ const WorkspaceSwitcher = () => {
     }
   }, [workspaceStore.currentWorkspace]);
 
-  const loadWorkspacesOptions = async () => {
+  const loadWorkspacesOptions = async () =>
+  {
     const res = await axios.post(
       `${process.env.REACT_APP_API_ENDPOINT}/api/workspaces`,
       {
@@ -67,7 +72,8 @@ const WorkspaceSwitcher = () => {
         page: 1,
       }
     );
-    const workspaces = res.data.workspaces.map((workspace) => {
+    const workspaces = res.data.workspaces.map((workspace) =>
+    {
       return {
         id: workspace.id,
         value: workspace.name,
@@ -78,11 +84,13 @@ const WorkspaceSwitcher = () => {
     return workspaces;
   };
 
-  const handleWorkspaceInputChange = (newValue) => {
+  const handleWorkspaceInputChange = (newValue) =>
+  {
     setWorkspaceQuery(newValue);
   };
 
-  const formatOptionLabel = (workspace) => {
+  const formatOptionLabel = (workspace) =>
+  {
     return (
       <div className="d-flex align-items-center">
         {workspace.logo && workspace.logo.length ? (
@@ -103,7 +111,8 @@ const WorkspaceSwitcher = () => {
     );
   };
 
-  const handleWorkSpaceOnChange = (workspace) => {
+  const handleWorkSpaceOnChange = (workspace) =>
+  {
     dispatch(
       storeCurrentWorkspace({
         workspace: {
@@ -114,7 +123,8 @@ const WorkspaceSwitcher = () => {
       })
     );
 
-    dispatch(markWorkspaceAsAccessedNow({ id: workspace.id })).then(() => {
+    dispatch(markWorkspaceAsAccessedNow({ id: workspace.id })).then(() =>
+    {
       dispatch(recentlyAccessedWorkspaces());
     });
 
@@ -123,7 +133,8 @@ const WorkspaceSwitcher = () => {
     setTimeout(() => setPopoverOpen(true), 1000);
   };
 
-  const handleWorkSpaceOnClick = (workspace) => {
+  const handleWorkSpaceOnClick = (workspace) =>
+  {
     dispatch(
       storeCurrentWorkspace({
         workspace: {
@@ -133,7 +144,8 @@ const WorkspaceSwitcher = () => {
         },
       })
     );
-    dispatch(markWorkspaceAsAccessedNow({ id: workspace.id })).then(() => {
+    dispatch(markWorkspaceAsAccessedNow({ id: workspace.id })).then(() =>
+    {
       dispatch(recentlyAccessedWorkspaces());
     });
     setPopoverOpen(false);
@@ -154,8 +166,8 @@ const WorkspaceSwitcher = () => {
           id="controlledPopover"
         >
           {workspaceStore.currentWorkspace &&
-          workspaceStore.currentWorkspace.logo &&
-          workspaceStore.currentWorkspace.logo.length ? (
+            workspaceStore.currentWorkspace.logo &&
+            workspaceStore.currentWorkspace.logo.length ? (
             <Avatar
               className="me-1"
               img={workspaceStore.currentWorkspace.logo}
@@ -197,7 +209,8 @@ const WorkspaceSwitcher = () => {
               <Link
                 className="btn btn-light text-primary btn-sm"
                 to="/workspaces"
-                onClick={() => {
+                onClick={() =>
+                {
                   setPopoverOpen(false);
                   setTimeout(() => setPopoverOpen(true), 1000);
                 }}
@@ -220,7 +233,8 @@ const WorkspaceSwitcher = () => {
                         className="add-new-user w-100"
                         color="primary"
                         outline
-                        onClick={() => {
+                        onClick={() =>
+                        {
                           setPopoverOpen(false);
                           setTimeout(() => setPopoverOpen(true), 1000);
                         }}

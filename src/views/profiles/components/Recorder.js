@@ -7,7 +7,6 @@ import { Mic, Pause, StopCircle, Play } from 'react-feather';
 import { padStart } from "lodash"
 import { sendCallRecordingStatus } from "@store/notifications";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentSession } from "../../../redux/timers";
 
 export default ({ audioDetails, setAudioDetails }) =>
 {
@@ -20,7 +19,7 @@ export default ({ audioDetails, setAudioDetails }) =>
     const [timestamp, setTimestamp] = useState(0); //duration of recording in milliseconds
     const [recorder, setRecorder] = useState(null); //media recorder instance
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-    const currentSession = useSelector((state) => state.timers.current_session);
+    const currentSession = useSelector((state) => state.timers.timer);
 
     useEffect(() =>
     {
@@ -79,15 +78,17 @@ export default ({ audioDetails, setAudioDetails }) =>
 
     const onStart = async () =>
     {
+
+        if (!currentSession) {
+            alert('Please start the timer first!');
+            return;
+        }
+
         resetRecorder();
         startTimer();
         setRecording(true);
         setRecordPaused(false);
         recorder.start(10); // start recorder with 10ms buffer
-
-        if (!currentSession) {
-            dispatch(setCurrentSession(!currentSession));
-        }
 
         //Update Call recording status
         dispatch(sendCallRecordingStatus({ workspace_id: currentWorkspace.id, status: 'STARTED', call_profile_id: parms.id }));
