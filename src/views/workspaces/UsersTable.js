@@ -65,6 +65,7 @@ import {
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import axios from "axios";
 
 // ** Table Header
 const CustomHeader = ({
@@ -76,6 +77,7 @@ const CustomHeader = ({
   searchTerm,
   userData,
   setEditUser,
+  copy
 }) => {
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
@@ -127,6 +129,15 @@ const CustomHeader = ({
               >
                 Add New User
               </Button>
+              <Button
+                className="add-new-user ms-2"
+                color="primary"
+                onClick={() => {
+                  console.log("invie click".dr)
+                  navigator.clipboard.writeText(copy)}}
+              >
+                Invite
+              </Button>
             </div>
           )}
         </Col>
@@ -148,6 +159,7 @@ const UsersList = ({ workspaceId }) => {
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(() => store.rowsPerPageUser);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [copy, setCopy] = useState();
 
   const [editUser, setEditUser] = useState(null);
   // const paginationLine = {
@@ -309,6 +321,20 @@ const UsersList = ({ workspaceId }) => {
     );
   };
 
+  // invite link work
+  const copyLink = async() => {
+    // const tempLink = document.createElement("a");
+    axios.get (`${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${workspaceId}/inviteLink`)
+    .then((res)=>{console.warn("Link is here " , res.data)
+    setCopy(res.data);
+    })
+    // tempLink.click();
+  };
+
+  useEffect(()=>{copyLink();
+  console.warn("Link is here ",copy)
+  },[workspaceId])
+
   // ** Custom Pagination
   const CustomPagination = () => {
     const count = Number(Math.ceil(store.totalUsers / rowsPerPage));
@@ -464,6 +490,7 @@ const UsersList = ({ workspaceId }) => {
                 toggleSidebar={toggleSidebar}
                 userData={userData}
                 setEditUser={setEditUser}
+                copy={copy}
               />
             }
           />
