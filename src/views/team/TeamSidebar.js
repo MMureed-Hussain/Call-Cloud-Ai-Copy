@@ -147,14 +147,14 @@ const TeamSidebar = ({
             invalid={teamError}
             required
             value={teamName}
-            // onChange={(e) => setTeamName(e.target.value)}
-            onChange={(e) => {
-              const value = e.target.value.replace(
-                /(^\w{1})|(\s+\w{1})/g,
-                (letter) => letter.toUpperCase()
-              );
-              setTeamName(teamName);
-            }}
+            onChange={(e) => setTeamName(e.target.value)}
+            // onChange={(e) => {
+            //   const value = e.target.value.replace(
+            //     /(^\w{1})|(\s+\w{1})/g,
+            //     (letter) => letter.toUpperCase()
+            //   );
+            //   setTeamName(teamName);
+            // }}
             // value={teamName}
           />
 
