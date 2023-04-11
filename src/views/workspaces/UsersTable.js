@@ -66,6 +66,7 @@ import {
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 // ** Table Header
 const CustomHeader = ({
@@ -123,21 +124,23 @@ const CustomHeader = ({
                 className="add-new-user"
                 color="primary"
                 onClick={() => {
+                  console.log("invie click".dr)
+                  navigator.clipboard.writeText(copy),toast.success('Link copied to clipboard');
+                }}
+              >
+                Invite
+              </Button>
+              <Button
+                className="add-new-user ms-2"
+                color="primary"
+                onClick={() => {
                   setEditUser(null);
                   toggleSidebar();
                 }}
               >
                 Add New User
               </Button>
-              <Button
-                className="add-new-user ms-2"
-                color="primary"
-                onClick={() => {
-                  console.log("invie click".dr)
-                  navigator.clipboard.writeText(copy)}}
-              >
-                Invite
-              </Button>
+              
             </div>
           )}
         </Col>
@@ -322,18 +325,23 @@ const UsersList = ({ workspaceId }) => {
   };
 
   // invite link work
-  const copyLink = async() => {
+  const copyLink = async () => {
     // const tempLink = document.createElement("a");
-    axios.get (`${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${workspaceId}/inviteLink`)
-    .then((res)=>{console.warn("Link is here " , res.data)
-    setCopy(res.data);
-    })
-    // tempLink.click();
+    axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/workspace/${workspaceId}/inviteLink`)
+      .then((res) => {
+        console.warn("Link is here ", res.data)
+        setCopy(res.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Failed to copy link');
+      });
   };
 
-  useEffect(()=>{copyLink();
-  console.warn("Link is here ",copy)
-  },[workspaceId])
+  useEffect(() => {
+    copyLink();
+    console.warn("Link is here ", copy)
+  }, [workspaceId])
 
   // ** Custom Pagination
   const CustomPagination = () => {

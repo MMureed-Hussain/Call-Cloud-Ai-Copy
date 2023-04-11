@@ -208,10 +208,9 @@ const QueueSidebar = ({
             placeholder="Enter Queue Name"
             invalid={queueError}
             value={queueName}
-
+            required
             onChange={(e) => setQueueName(e.target.value)}
           />
-
           <FormFeedback>Please enter a valid Queue</FormFeedback>
         </div>
 
