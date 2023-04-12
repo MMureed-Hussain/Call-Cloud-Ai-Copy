@@ -65,6 +65,8 @@ export const getTeamsByWorkspace = createAsyncThunk(
     try {
       const response = await axios.get(`${baseURL}/teams/${id}`);
       dispatch(setTeams(response.data));
+      console.warn("response for teams",response.data[0]);
+
     } catch (e) {
       toast.error(e.response.data.message);
     }
@@ -79,6 +81,7 @@ export const getCompaignsByWorkspace = createAsyncThunk(
     try {
       const response = await axios.get(`${baseURL}/workspace/${id}`);
       dispatch(setCampaignsOptions(response.data));
+      console.warn("response for campaign",response.data);
     } catch (e) {
       toast.error(e.response.data.message);
     }

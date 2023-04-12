@@ -111,6 +111,7 @@ const ProfileAbout = ({ data }) => {
       client_status: clientStatus?.value,
       name: data.name,
       phone: data.phone,
+      // campaign:data.title,
       ...params,
     };
     delete payload[data.type === "lead" ? "client_status" : "lead_status"];
@@ -174,6 +175,10 @@ const ProfileAbout = ({ data }) => {
               placeholder="1 234 567 8900"
               inputStyle={{ maxWidth: "fit-content" }}
             />
+          </div>
+          <div className="mt-2">
+            <h5 className="mb-75">Campaign:</h5>
+
           </div>
           <div className="mt-2">
             <h5 className="mb-75">Pipeline:</h5>

@@ -13,7 +13,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 import { useDispatch, useSelector } from "react-redux";
 import { getSessionList, setReload } from "../../redux/timers";
 import { getUsersOfWorkspace } from "../../redux/workspaces";
-import { getTeamsByWorkspace } from "../../redux/campaigns";
+import { getCompaignsByWorkspace, getTeamsByWorkspace } from "../../redux/campaigns";
 import UserInfo from "../profiles/components/UserInfo";
 
 
@@ -30,14 +30,17 @@ export default () =>
     const teams = useSelector((state) => state.campaigns.teams);
     const workspaceusers = useSelector((state) => state.workspaces.workspaceusers);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+    const campaignsOptions = useSelector((state) => state.campaigns.campaignsOptions);
     const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '' });
-
+     console.warn("timers", timers)
 
     useEffect(() =>
     {
         if (currentWorkspace) {
             dispatch(getTeamsByWorkspace({ id: currentWorkspace.id }));
             dispatch(getUsersOfWorkspace({ id: currentWorkspace.id }));
+            dispatch(getCompaignsByWorkspace({ id: currentWorkspace.id }));
+
         }
 
     }, [currentWorkspace]);
@@ -182,7 +185,7 @@ export default () =>
                 </CardHeader>
                 <div className="p-1">
                     <Row>
-                        <Col lg="10">
+                        <Col lg="12">
                             <Row>
                                 <Col lg="3">
                                     <div className="mb-1">
@@ -195,12 +198,21 @@ export default () =>
                                     </div>
                                 </Col> */}
                                 {user.role == 'company' &&
-                                    <Col lg="4">
+                                    <Col lg="3">
                                         <div className="mb-1">
                                             <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'user_id')} options={[{ value: '', label: 'None' }, ...workspaceusers,]} className="mb-2" placeholder="Select User" />
                                         </div>
                                     </Col>
                                 }
+                                <Col lg="3">
+                                        <div className="mb-1">
+                                            <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'campaign_id')} options={[{ value: '', label: 'None' }, ...campaignsOptions,]} className="mb-2" placeholder="Select Camp" />
+                                        </div>
+                                    </Col><Col lg="3">
+                                        <div className="mb-1">
+                                        <Select onChange={e => handleSelectChange(e, 'team_id')} options={[{ value: '', label: 'None' }, ...teams,]} className="mb-2" placeholder="Select Team" />
+                                        </div>
+                                    </Col>
                                 <Col lg="2">
                                     <div className="mb-1">
                                         <Input name="from_date" type="date" value={data.from_date} onChange={e => handleChange(e)} placeholder="From date" />
@@ -230,6 +242,7 @@ export default () =>
                                 <th>Start Time</th>
                                 <th>End End</th>
                                 <th>Total Time</th>
+                                <th>Teams</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -246,6 +259,7 @@ export default () =>
                                     <td>{row.started_at}</td>
                                     <td>{row.stopped_at} {(row.stopped_at == null && row.session == 'ongoing') && <Badge color="success" className="bg-light-success">Ongoing</Badge>} </td>
                                     <td>{row.total_time}</td>
+                                    <td>{row.team?.team_name}</td>
                                 </tr>
                             )}
 
