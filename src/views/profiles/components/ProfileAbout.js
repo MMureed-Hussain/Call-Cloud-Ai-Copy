@@ -8,7 +8,7 @@ import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
 import { getStatuses as getClientStatuses } from "../../../redux/clientStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
-import { updateProfile } from "../../../redux/profiles";
+import { getProfiles, updateProfile } from "../../../redux/profiles";
 import { Edit } from "react-feather";
 import ProfileSidebar from "./ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
@@ -43,6 +43,7 @@ const ProfileAbout = ({ data }) => {
         }))
       : []
   );
+  console.log("profle")
 
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
@@ -50,10 +51,10 @@ const ProfileAbout = ({ data }) => {
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
+
   const workspaceUsers = useSelector((state) =>
     state.workspaces.users.map((user) => ({ value: user.id, label: user.name }))
   );
-
   const pipelinesOptions = useMemo(() => {
     return pipelines.map((p) => ({ value: p.id, label: p.name }));
   }, [pipelines]);
@@ -102,6 +103,11 @@ const ProfileAbout = ({ data }) => {
     if (!workspaceUsers.length) {
       dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
     }
+    
+      dispatch(getProfiles()).then((res)=>{
+        console.log("Camps",res.data)
+      });
+    
   }, []);
 
   const handleProfileUpdate = (params) => {
@@ -168,16 +174,18 @@ const ProfileAbout = ({ data }) => {
             <h5 className="mb-75">Phone:</h5>
             <PhoneInput
               className="phone-placeholder"
+              style={{}}
               country={"us"}
               value={data.phone}
               disableSearchIcon
               disabled
               placeholder="1 234 567 8900"
-              inputStyle={{ maxWidth: "fit-content" }}
+              inputStyle={{ maxWidth: "fit-content",paddingLeft:'30px' }}
             />
           </div>
           <div className="mt-2">
             <h5 className="mb-75">Campaign:</h5>
+            <CardText>{data.campaign.title}</CardText>
 
           </div>
           <div className="mt-2">

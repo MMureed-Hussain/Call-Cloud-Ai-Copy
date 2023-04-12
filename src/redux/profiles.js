@@ -97,6 +97,8 @@ export const getProfile = createAsyncThunk(
         }
       );
       dispatch(setSelectedProfile(response.data.data));
+      console.warn("Campaing for profile",response.data.data);
+      
       return {
         data: response.data.data,
       };

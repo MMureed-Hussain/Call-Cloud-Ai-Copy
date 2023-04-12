@@ -90,6 +90,7 @@ const Timetracker = () =>
     {
         e.preventDefault()
         setOpen(!open);
+        dispatch(getCompaignsByWorkspace({ id: currentWorkspace.id }));
     }
 
     const handleSelectChange = (e, name) =>
