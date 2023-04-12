@@ -145,7 +145,7 @@ const ProfileAbout = ({ data }) => {
               checked={data.type === "client"}
               onChange={() =>
                 handleProfileUpdate({
-                  type: data.type === "client" ? "lead" : "client",
+                  type: data.type === "Client" ? "Lead" : "client",
                 })
               }
             />
@@ -185,7 +185,7 @@ const ProfileAbout = ({ data }) => {
           </div>
           <div className="mt-2">
             <h5 className="mb-75">Campaign:</h5>
-            <CardText>{data.campaign.title}</CardText>
+            <CardText>{data?.campaign?.title || '-'}</CardText>
 
           </div>
           <div className="mt-2">
