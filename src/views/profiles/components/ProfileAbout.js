@@ -43,8 +43,6 @@ const ProfileAbout = ({ data }) => {
         }))
       : []
   );
-  console.log("profle")
-
   const pipelines = useSelector((state) => state.pipelines.pipelines);
   const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
   const clientStatuses = useSelector((state) => state.clientStatuses.statuses);
@@ -141,7 +139,7 @@ const ProfileAbout = ({ data }) => {
               checked={data.type === "client"}
               onChange={() =>
                 handleProfileUpdate({
-                  type: data.type === "Client" ? "Lead" : "client",
+                  type: data.type === "client" ? "lead" : "client",
                 })
               }
             />

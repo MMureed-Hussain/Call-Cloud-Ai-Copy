@@ -64,7 +64,6 @@ export const sendCallRecordingStatus = createAsyncThunk(
   {
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/workspace/call/recording/status`, payload);
-      console.log(res.data, 'sendCallRecordingStatus');
     } catch (e) {
       toast.error(e.response.data.message);
     }
