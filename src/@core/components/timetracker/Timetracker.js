@@ -23,7 +23,6 @@ const Timetracker = () =>
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const campaignsOptions = useSelector((state) => state.campaigns.campaignsOptions);
     const [data, setData] = useState({ campaign_id: 0});
-    console.warn("campaignsOptions", campaignsOptions)
 
     useEffect(() =>
     {
@@ -104,7 +103,6 @@ const Timetracker = () =>
 
     const handleSelected = (campaignsOptions, id) =>
     {
-        console.log("campaignsOption0ssssss",campaignsOptions,"id",id)
         let newOptions = [{ value: 0, label: 'None' }, ...campaignsOptions];
         let selected = id ? id : 0;
         return newOptions.filter(option => option.value === selected);
@@ -112,7 +110,6 @@ const Timetracker = () =>
 
     const handleChange = (e) =>
     {
-        console.log("data",data)
         dispatch(storeOrUpdate(data));
     }
 

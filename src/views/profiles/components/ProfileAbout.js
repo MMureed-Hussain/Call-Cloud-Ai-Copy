@@ -8,7 +8,7 @@ import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
 import { getStatuses as getClientStatuses } from "../../../redux/clientStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
-import { getProfiles, updateProfile } from "../../../redux/profiles";
+import {updateProfile } from "../../../redux/profiles";
 import { Edit } from "react-feather";
 import ProfileSidebar from "./ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
@@ -104,15 +104,11 @@ const ProfileAbout = ({ data }) => {
       dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
     }
     
-      dispatch(getProfiles()).then((res)=>{
-        console.log("Camps",res.data)
-      });
-    
   }, []);
 
   const handleProfileUpdate = (params) => {
     const payload = {
-      pipeline: pipeline.value,
+      pipeline: pipeline?.value,
       lead_status: leadStatus?.value,
       client_status: clientStatus?.value,
       name: data.name,
