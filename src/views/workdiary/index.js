@@ -206,7 +206,7 @@ export default () =>
                                 }
                                 <Col lg="3">
                                         <div className="mb-1">
-                                            <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'campaign_id')} options={[{ value: '', label: 'None' }, ...campaignsOptions,]} className="mb-2" placeholder="Select Camp" />
+                                            <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'campaign_id')} options={[{ value: '', label: 'None' }, ...campaignsOptions,]} className="mb-2" placeholder="Select Campaign" />
                                         </div>
                                     </Col><Col lg="3">
                                         <div className="mb-1">

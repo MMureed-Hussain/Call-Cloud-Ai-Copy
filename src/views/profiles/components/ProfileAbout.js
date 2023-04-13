@@ -139,7 +139,7 @@ const ProfileAbout = ({ data }) => {
               checked={data.type === "client"}
               onChange={() =>
                 handleProfileUpdate({
-                  type: data.type === "client" ? "lead" : "client",
+                  type:data.type ==="client" ? "lead" : "client",
                 })
               }
             />
@@ -200,7 +200,7 @@ const ProfileAbout = ({ data }) => {
           <div className="mt-2">
             <h5 className="mb-75">Status:</h5>
             <Select
-              value={data.type === "lead" ? leadStatus : clientStatus}
+              value={data.type === "lead" ? leadStatus : clientStatus }
               theme={selectThemeColors}
               classNamePrefix="select"
               className="react-select"
