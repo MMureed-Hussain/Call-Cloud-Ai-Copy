@@ -237,12 +237,12 @@ export default () =>
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Campaign</th>
                                 <th>Workspace</th>
+                                <th>Campaign</th>
+                                <th>Teams</th>
                                 <th>Start Time</th>
                                 <th>End End</th>
                                 <th>Total Time</th>
-                                <th>Teams</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -254,12 +254,12 @@ export default () =>
                                             email={row.user.email}
                                         />
                                     </td>
+                                    <td>{row.workspace?.name}</td>
                                     <td>{row.campaign?.title}</td>
-                                    <td>{row.workspace.name}</td>
+                                    <td>{row.team?.team_name}</td>
                                     <td>{row.started_at}</td>
                                     <td>{row.stopped_at} {(row.stopped_at == null && row.session == 'ongoing') && <Badge color="success" className="bg-light-success">Ongoing</Badge>} </td>
                                     <td>{row.total_time}</td>
-                                    <td>{row.team?.team_name}</td>
                                 </tr>
                             )}
 
