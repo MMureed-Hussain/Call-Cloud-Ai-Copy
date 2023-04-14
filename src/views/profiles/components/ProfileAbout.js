@@ -160,7 +160,7 @@ const ProfileAbout = ({ data }) => {
               color={`light-${data.type === "client" ? "success" : "warning"}`}
             >
               {" "}
-              {data.type}
+              {`${data.type.charAt(0).toUpperCase()}${data.type.slice(1)}`}
             </Badge>
           </h5>
           <CardText>{data.name}</CardText>
