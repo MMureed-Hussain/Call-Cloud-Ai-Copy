@@ -65,6 +65,7 @@ export const getTeamsByWorkspace = createAsyncThunk(
     try {
       const response = await axios.get(`${baseURL}/teams/${id}`);
       dispatch(setTeams(response.data));
+
     } catch (e) {
       toast.error(e.response.data.message);
     }

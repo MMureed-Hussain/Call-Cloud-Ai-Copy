@@ -22,7 +22,7 @@ const Timetracker = () =>
     const timer = useSelector((state) => state.timers.timer);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const campaignsOptions = useSelector((state) => state.campaigns.campaignsOptions);
-    const [data, setData] = useState({ campaign_id: 0 });
+    const [data, setData] = useState({ campaign_id: 0});
 
     useEffect(() =>
     {
@@ -89,6 +89,7 @@ const Timetracker = () =>
     {
         e.preventDefault()
         setOpen(!open);
+        dispatch(getCompaignsByWorkspace({ id: currentWorkspace.id }));
     }
 
     const handleSelectChange = (e, name) =>
@@ -100,10 +101,10 @@ const Timetracker = () =>
 
     }
 
-    const handleSelected = (op, sel) =>
+    const handleSelected = (campaignsOptions, id) =>
     {
-        let newOptions = [{ value: 0, label: 'None' }, ...op];
-        let selected = sel ? sel : 0;
+        let newOptions = [{ value: 0, label: 'None' }, ...campaignsOptions];
+        let selected = id ? id : 0;
         return newOptions.filter(option => option.value === selected);
     }
 
@@ -138,13 +139,13 @@ const Timetracker = () =>
                                 <Label>Select a campaign </Label>
                                 <Select
                                     classNamePrefix="select"
-                                    className={`${!Boolean(data.campaign_id) && 'is-invalid'}`}
+                                    className={`${!Boolean(data.campaign_id && 'is-invalid')}`}
                                     onChange={e => handleSelectChange(e, 'campaign_id')}
                                     options={[{ value: 0, label: 'None' }, ...campaignsOptions]}
                                     value={handleSelected(campaignsOptions, data.campaign_id)}
                                     isDisabled={Boolean(timer)}
                                 />
-                                {!Boolean(data.campaign_id) && <FormFeedback className="text-danger">Please select a campaign to start the session! </FormFeedback>}
+                                    {!Boolean(data.campaign_id ) && <FormFeedback className="text-danger">Please select a campaign to start the session! </FormFeedback>}
                             </FormGroup>
                         </Col>
                     </Row>

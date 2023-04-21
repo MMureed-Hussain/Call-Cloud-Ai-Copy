@@ -78,10 +78,8 @@ const TeamSidebar = ({
   // ** Function to handle form submit
   const onSubmit = (e) => {
     e.preventDefault();
+    setFormSubmissionLoader(true);
 
-    const valid = true;
-    if (valid) {
-      setFormSubmissionLoader(true);
 
       if (team) {
         dispatch(
@@ -119,7 +117,6 @@ const TeamSidebar = ({
           }
         );
       }
-    }
   };
 
   const handleSidebarClosed = () => {
@@ -148,16 +145,17 @@ const TeamSidebar = ({
             id="text"
             placeholder="Enter Team Name"
             invalid={teamError}
-            // value={teamName}
-            // onChange={(e) => setTeamName(e.target.value)}
+            required
             value={teamName}
-            onChange={(e) => {
-              const value = e.target.value.replace(
-                /(^\w{1})|(\s+\w{1})/g,
-                (letter) => letter.toUpperCase()
-              );
-              setTeamName(value);
-            }}
+            onChange={(e) => setTeamName(e.target.value)}
+            // onChange={(e) => {
+            //   const value = e.target.value.replace(
+            //     /(^\w{1})|(\s+\w{1})/g,
+            //     (letter) => letter.toUpperCase()
+            //   );
+            //   setTeamName(teamName);
+            // }}
+            // value={teamName}
           />
 
           <FormFeedback>Please enter a valid Team Name</FormFeedback>
