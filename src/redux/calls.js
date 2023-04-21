@@ -49,7 +49,7 @@ export const getCallsList = createAsyncThunk(
     } catch (e) {
       toast.error(e.response.data.message);
     }
-  } 
+  }
 );
 
 
@@ -62,21 +62,6 @@ export const getCallsListWithCount = createAsyncThunk(
       dispatch(setReports(response.data));
     } catch (e) {
       toast.error(e.response.data.message);
-    }
-  }
-);
-
-
-export const leadProfileStatusList = createAsyncThunk(
-  "calls/leadProfileStatusList",
-  async ({ id }) =>
-  {
-    try {
-      const response = await axios.get(`${baseURL}/profile/status/list/${id}`);
-      return response.data.data;
-    } catch (e) {
-      toast.error(e.response.data.message);
-      return null;
     }
   }
 );

@@ -30,15 +30,15 @@ import
 } from "../../redux/profiles";
 import CallViewSidebar from "./components/CallViewSidebar";
 import UserInfo from "./components/UserInfo";
-import { getStatuses } from "../../redux/callStatuses";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import usePrevious from "../../utility/hooks/usePrevious";
 import { sendCallRecordingStatus } from "@store/notifications";
 
-const CallList = ({ profileId }) =>
+const CallList = ({ profileId, callOptions }) =>
 {
     // ** States
+    const dispatch = useDispatch();
     const [sort, setSort] = useState("desc");
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -48,22 +48,15 @@ const CallList = ({ profileId }) =>
     const [calls, setCalls] = useState([]);
     const [pageCount, setPageCount] = useState(1);
     const [selectedCall, setSelectedCall] = useState(null);
-
     const [viewSidebarOpen, setViewSidebarOpen] = useState(false);
-
-    const dispatch = useDispatch();
     const reloadCallTable = useSelector((state) => state.profiles.reloadCallTable);
     const statusFilterValue = useSelector((state) => state.profiles.statusFilterValue);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-    const statuses = useSelector((state) => state.callStatuses.statuses.map(s => ({ value: s.id, label: s.name })));
 
     useEffect(() =>
     {
         if (currentWorkspace) {
-            loadCalls({
-                page: 1,
-            });
-            dispatch(getStatuses({ workspace_id: currentWorkspace.id, include_call_count: "true", profile_id: profileId }))
+            loadCalls({ page: 1 });
         }
     }, [currentWorkspace]);
 
@@ -176,12 +169,12 @@ const CallList = ({ profileId }) =>
             cell: (row) =>
             {
                 return <Select
-                    value={row.call_status ? { value: row.call_status.id, label: row.call_status.name } : null}
+                    value={row.call_status ? { value: row.status.id, label: row.status.name } : null}
                     theme={selectThemeColors}
                     classNamePrefix="select"
                     className="react-select"
                     placeholder="Select call status"
-                    options={statuses}
+                    options={callOptions}
                     menuPortalTarget={document.body}
                     onChange={e => onChangeCallStatus(row, e.value)}
                 />
@@ -379,6 +372,7 @@ const CallList = ({ profileId }) =>
                     open={sidebarOpen}
                     call={selectedCall}
                     toggleSidebar={toggleSidebar}
+                    callOptions={callOptions}
                 />
             )}
             {viewSidebarOpen && (

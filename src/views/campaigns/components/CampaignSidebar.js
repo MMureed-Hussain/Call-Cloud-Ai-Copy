@@ -1,7 +1,8 @@
 /* eslint-disable */
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useImperativeHandle, forwardRef } from "react";
-import {
+import
+{
   Button,
   Label,
   Form,
@@ -17,7 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { storeOrUpdate } from "../../../redux/campaigns";
 import moment from "moment/moment";
 
-const CampaignSidebar = forwardRef((props, ref) => {
+const CampaignSidebar = forwardRef((props, ref) =>
+{
   const params = useParams();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -29,7 +31,8 @@ const CampaignSidebar = forwardRef((props, ref) => {
   const [open, setOpen] = useState(false);
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState({});
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
 
     const key = e.target.name;
     let value = e.target.value;
@@ -49,7 +52,8 @@ const CampaignSidebar = forwardRef((props, ref) => {
     }));
   };
 
-  const handleSelectChange = (e, name) => {
+  const handleSelectChange = (e, name) =>
+  {
     let target = {
       name,
       type: "input",
@@ -59,7 +63,8 @@ const CampaignSidebar = forwardRef((props, ref) => {
     handleChange({ target });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event) =>
+  {
     event.preventDefault();
     if (!data.team_id) {
       toast.error("Please select a team.");
@@ -67,19 +72,22 @@ const CampaignSidebar = forwardRef((props, ref) => {
     }
     setLoader(true);
     console.log(data, "eata");
-    dispatch(storeOrUpdate(data)).then((res) => {
+    dispatch(storeOrUpdate(data)).then((res) =>
+    {
       console.log(res, "res");
       setLoader(false);
     });
     setOpen(false);
   };
 
-  const handleSelected = (op, sel) => {
+  const handleSelected = (op, sel) =>
+  {
     return op.filter((option) => option.value === sel);
   };
 
   //current dates
-  const disableDates = () => {
+  const disableDates = () =>
+  {
     const today = new Date();
     const dd = today.getDate() < 10 ? `0${today.getDate()}` : today.getDate();
     const mm =
@@ -91,7 +99,8 @@ const CampaignSidebar = forwardRef((props, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    handleShow: (obj = null) => {
+    handleShow: (obj = null) =>
+    {
       if (currentWorkspace) {
         let arg = obj
           ? {
@@ -152,6 +161,7 @@ const CampaignSidebar = forwardRef((props, ref) => {
             Description
           </Label>
           <Input
+            style={{ textTransform: 'lowercase' }}
             name="description"
             type="textarea"
             placeholder="Enter description here"

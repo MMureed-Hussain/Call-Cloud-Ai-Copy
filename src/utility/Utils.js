@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { DefaultRoute } from "../router/routes"
 
 // ** Checks if an object is empty (returns boolean)
@@ -10,34 +12,26 @@ export const kFormatter = (num) => (num > 999 ? `${(num / 1000).toFixed(1)}k` : 
 export const htmlToString = (html) => html.replace(/<\/?[^>]+(>|$)/g, "")
 
 // ** Checks if the passed date is today
-const isToday = (date) => {
+const isToday = (date) =>
+{
   const today = new Date()
   return (
-    /* eslint-disable operator-linebreak */
     date.getDate() === today.getDate() &&
     date.getMonth() === today.getMonth() &&
     date.getFullYear() === today.getFullYear()
-    /* eslint-enable */
   )
 }
 
-/**
- ** Format and return date in Humanize format
- ** Intl docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/format
- ** Intl Constructor: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
- * @param {String} value date to format
- * @param {Object} formatting Intl object to format with
- */
-export const formatDate = (
-  value,
-  formatting = { month: "short", day: "numeric", year: "numeric" }
-) => {
+
+export const formatDate = (value, formatting = { month: "short", day: "numeric", year: "numeric" }) =>
+{
   if (!value) return value
   return new Intl.DateTimeFormat("en-US", formatting).format(new Date(value))
 }
 
 // ** Returns short month of passed date
-export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
+export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) =>
+{
   const date = new Date(value)
   let formatting = { month: "short", day: "numeric" }
 
@@ -64,7 +58,8 @@ export const getUserData = () => JSON.parse(localStorage.getItem("userData"))
  * ? NOTE: If you have different pages to navigate based on user ability then this function can be useful. However, you need to update it.
  * @param {String} userRole Role of user
  */
-export const getHomeRouteForLoggedInUser = (userRole) => {
+export const getHomeRouteForLoggedInUser = (userRole) =>
+{
   if (userRole === "admin") return DefaultRoute
   if (userRole === "client") return "/access-control"
   return "/login"
@@ -83,7 +78,8 @@ export const selectThemeColors = (theme) => ({
   }
 })
 
-export const millisecondsToTime = (milliseconds) => {
+export const millisecondsToTime = (milliseconds) =>
+{
 
   const secs = milliseconds / 1000;
   const hours = Math.floor(secs / (60 * 60));
@@ -100,3 +96,59 @@ export const millisecondsToTime = (milliseconds) => {
     s: seconds
   };
 }
+
+export const companySizeOptions = [
+  {
+    label: "1",
+    value: "1",
+  },
+  {
+
+    label: "2-5",
+    value: "2-5",
+  },
+  {
+    label: "6-20",
+    value: "6-20",
+  },
+  {
+    label: "21-50",
+    value: "21-50",
+  },
+  {
+    label: "51-100",
+    value: "51-100",
+  },
+  {
+    label: "100-1000",
+    value: "100-1000",
+  },
+  {
+    label: "1000+",
+    value: "1000+",
+  },
+];
+
+export const statusOptions = [
+  { value: 'CALL', label: 'CALL' },
+  { value: 'CLIENT', label: 'CLIENT' },
+  { value: 'LEAD_PROFILE', label: 'LEAD PROFILE' },
+  { value: 'PIPELINE', label: 'PIPELINE' },
+];
+
+
+export const perPageOptions = [
+  { value: 15, label: 15 },
+  { value: 25, label: 25 },
+  { value: 50, label: 50 },
+  { value: 100, label: 100 }
+];
+
+
+export const filterStatus = (statuses, type) =>
+{
+  return statuses.filter((op) => op.type === type);
+
+}
+
+

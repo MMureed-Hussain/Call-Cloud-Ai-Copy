@@ -157,9 +157,7 @@ export const updateProfile = createAsyncThunk(
   async (payload) =>
   {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/api/profile`,
-        payload,
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/profile`, payload,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -181,6 +179,36 @@ export const updateProfile = createAsyncThunk(
     }
   }
 );
+
+
+// Perform update profile API to update profile data
+export const getTimezones = createAsyncThunk(
+  "auth/getTimezones",
+  async (payload, { dispatch }) =>
+  {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/timezones`);
+      dispatch(setTimezoneList(response.data));
+    } catch (e) {
+
+    }
+  });
+
+
+// Perform update profile API to update profile data
+export const getIndustryOptions = createAsyncThunk(
+  "auth/getIndustryOptions",
+  async (payload, { dispatch }) =>
+  {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/industries`);
+      const industries = res.data.map(op => ({ value: op.id, label: op.industry }));
+      dispatch(setIndustriesOptions(industries));
+    } catch (e) {
+
+    }
+  });
+
 
 // Perform update password API to update/change password
 export const updatePassword = createAsyncThunk(
@@ -300,12 +328,20 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    loading: true
+    loading: true,
+    timezonesList: [],
+    industriesOptions: [],
   },
   reducers: {
-    // handleSearchQuery: (state, action) => {
-    //   state.query = action.payload
-    // }
+    setTimezoneList: (state, { payload }) =>
+    {
+      state.timezonesList = payload;
+    },
+    setIndustriesOptions: (state, { payload }) =>
+    {
+      state.industriesOptions = payload;
+    },
+
   },
   extraReducers: (builder) =>
   {
@@ -343,5 +379,11 @@ export const authSlice = createSlice({
       });
   },
 });
+
+
+export const {
+  setTimezoneList,
+  setIndustriesOptions
+} = authSlice.actions;
 
 export default authSlice.reducer;

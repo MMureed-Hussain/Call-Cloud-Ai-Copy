@@ -14,6 +14,7 @@ export const followupsSlice = createSlice({
   initialState: {
     errors: new ErrorHandler(),
     followups: [],
+    reloadTable: false,
   },
   reducers: {
     setErrors: (state, { payload }) =>
@@ -25,6 +26,10 @@ export const followupsSlice = createSlice({
       state.followups = payload;
     },
 
+    setReloadTable: (state, { payload }) =>
+    {
+      state.reloadTable = payload;
+    },
 
   },
 });
@@ -50,6 +55,7 @@ export const getFollowups = createAsyncThunk(
 export const {
   setErrors,
   setFollowups,
+  setReloadTable,
 } = followupsSlice.actions;
 
 export default followupsSlice.reducer;

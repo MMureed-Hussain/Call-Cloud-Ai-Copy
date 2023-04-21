@@ -28,7 +28,7 @@ export default () =>
         }
     }, [currentWorkspace]);
 
-    
+
     useEffect(() =>
     {
         loadData();
@@ -187,10 +187,10 @@ export default () =>
                                                         <Edit size={15} />
                                                         <span className="align-middle ms-50">Edit</span>
                                                     </DropdownItem>
-                                                    <DropdownItem onClick={() => dispatch(deleteCampaign(row.id))}>
+                                                    {/* <DropdownItem onClick={() => dispatch(deleteCampaign(row.id))}>
                                                         <Trash size={15} />
                                                         <span className="align-middle ms-50">Delete</span>
-                                                    </DropdownItem>
+                                                    </DropdownItem> */}
                                                 </DropdownMenu>
                                             </UncontrolledDropdown>
                                         </div>

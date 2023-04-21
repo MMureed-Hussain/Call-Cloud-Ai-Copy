@@ -15,7 +15,7 @@ import moment from "moment";
 //Redux
 import { useDispatch, useSelector } from "react-redux";
 import { getCallFollowUpsByProfileId, setReloadTable, deleteCallFollowUp } from "../../redux/profiles";
-import FollowUpSidebar from "./components/FollowUpSidebar";
+import FollowUpSidebar from "../followups/components/FollowUpSidebar";
 import FollowUpViewSidebar from "./components/FollowUpViewSidebar";
 import ViewCalendarModal from "./components/ViewCalendarModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

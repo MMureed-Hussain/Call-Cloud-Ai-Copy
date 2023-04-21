@@ -70,10 +70,7 @@ const Followups = lazy(() => import("../../views/followups"));
 const Profiles = lazy(() => import("../../views/profiles/Index"));
 
 const CallProfileView = lazy(() => import("../../views/profiles/View"));
-const Pipelines = lazy(() => import("../../views/pipelines/Index"));
-const CallStatuses = lazy(() => import("../../views/call-statuses/Index"));
-const ClientStatuses = lazy(() => import("../../views/client-statuses/index"));
-const LeadStatuses = lazy(() => import("../../views/lead-statuses/Index"));
+const Statuses = lazy(() => import("../../views/statuses/Index"));
 const ActivityLogs = lazy(() => import("../../views/activity-logs/Index"));
 const Calls = lazy(() => import("../../views/calls/index"));
 const Reports = lazy(() => import("../../views/reports/index"));
@@ -214,29 +211,8 @@ const Routes = [
     },
   },
   {
-    path: "/pipelines",
-    element: <Pipelines />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/lead-statuses",
-    element: <LeadStatuses/>,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
     path: "/statuses",
-    element: <CallStatuses />,
-    meta: {
-      isPrivate: true,
-    },
-  },
-  {
-    path: "/client-statuses",
-    element: <ClientStatuses />,
+    element: <Statuses />,
     meta: {
       isPrivate: true,
     },
@@ -265,7 +241,7 @@ const Routes = [
       isPrivate: false,
     },
   },
-  
+
   {
     path: "/register",
     element: <Register />,

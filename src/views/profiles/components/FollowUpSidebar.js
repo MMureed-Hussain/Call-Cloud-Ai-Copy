@@ -18,7 +18,8 @@ import { faVideo, faPhone } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 
 
-const FollowUpSidebar = forwardRef((props, ref) => {
+const FollowUpSidebar = forwardRef((props, ref) =>
+{
 
 	const params = useParams()
 	const dispatch = useDispatch();
@@ -34,7 +35,8 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 
 	const [data, setData] = useState({});
 
-	const handleChange = (e) => {
+	const handleChange = (e) =>
+	{
 
 		const key = e.target.name;
 		const value = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
@@ -55,7 +57,8 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 		}
 	}
 
-	const handleSelectChange = (e, name) => {
+	const handleSelectChange = (e, name) =>
+	{
 		let target = {
 			name,
 			type: 'input',
@@ -69,18 +72,21 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 		}
 	}
 
-	const handleSubmit = (event) => {
+	const handleSubmit = (event) =>
+	{
 		event.preventDefault();
 		let arg = { id: params.id, data };
 		setLoader(true);
 		dispatch(storeOrUpdateCallFollowUp(arg))
-			.then(res => {
+			.then(res =>
+			{
 				setLoader(false);
 				setOpen(false)
 			});
 	};
 
-	const meetingOptions = () => {
+	const meetingOptions = () =>
+	{
 		let numbers = [];
 		for (let i = 1; i < 61; i++) {
 			numbers.push({ value: i, label: i });
@@ -89,7 +95,8 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 
 	}
 
-	const meetingHeldOn = () => {
+	const meetingHeldOn = () =>
+	{
 		if (data.type && data.meeting_at) {
 			let date = (data.type == 'number' || data.type == 'days') ? moment().add(data.meeting_at, 'days') : moment(data.meeting_at);
 			return `This meeting will be ${date.format('lll')}`;
@@ -97,7 +104,8 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 	}
 
 	useImperativeHandle(ref, () => ({
-		handleShow: (obj = null) => {
+		handleShow: (obj = null) =>
+		{
 
 			if (workspaces && workspaces.currentWorkspace) {
 
@@ -126,10 +134,13 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 	}));
 
 
-	useEffect(() => {
+	useEffect(() =>
+	{
 		axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/timezones`)
-			.then((res) => {
-				const timezoneOptions = res.data.map((timezone) => {
+			.then((res) =>
+			{
+				const timezoneOptions = res.data.map((timezone) =>
+				{
 					return {
 						id: timezone.id,
 						value: timezone.id,
@@ -319,7 +330,6 @@ const FollowUpSidebar = forwardRef((props, ref) => {
 				<div className="mb-1">
 					<Label className="form-label" for="title"> Note </Label>
 					<Input
-						required
 						name="notes"
 						type="textarea"
 						placeholder="Enter Note here"

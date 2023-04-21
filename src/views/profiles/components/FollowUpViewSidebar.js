@@ -60,7 +60,7 @@ const FollowUpViewSidebar = forwardRef((props, ref) =>
 				</>
 			}
 		</Sidebar>
-		
+
 	);
 });
 

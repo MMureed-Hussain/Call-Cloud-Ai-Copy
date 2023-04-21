@@ -1,15 +1,16 @@
 /* eslint-disable */
 import { useSelector } from "react-redux";
-import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid, PieChart, Volume2, Clock } from "react-feather";
+import { Layers, Loader, Home, Users, AlignJustify, UserCheck, Calendar, Circle, Bookmark, Phone, List, Slack, Grid, PieChart, Volume2, Clock, Package } from "react-feather";
 
 
-const navigation = () => {
+const navigation = () =>
+{
 
   const user = useSelector((state) => state.auth.user);
   const currentWorkspace = useSelector(
     (state) => state.workspaces.currentWorkspace
   );
-  
+
   const tabs =
     [
       {
@@ -46,34 +47,8 @@ const navigation = () => {
           {
             id: "statuses",
             title: "Statuses",
-            icon: <Home size={20} />,
-            badge: "light-warning",
-            children: [
-              {
-                id: "pipelines",
-                title: "Pipelines",
-                icon: <Circle size={20} />,
-                navLink: "/pipelines",
-              },
-              {
-                id: "leadStatuses",
-                title: "Lead",
-                icon: <Circle size={20} />,
-                navLink: "/lead-statuses",
-              },
-              {
-                id: "callStatuses",
-                title: "Call",
-                icon: <Circle size={20} />,
-                navLink: "/statuses",
-              },
-              {
-                id: "clientStatuses",
-                title: "Client",
-                icon: <Circle size={20} />,
-                navLink: "/client-statuses",
-              },
-            ],
+            icon: <Package size={20} />,
+            navLink: "/statuses",
           },
         ],
       },

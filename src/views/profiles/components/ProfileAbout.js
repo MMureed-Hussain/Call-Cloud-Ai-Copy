@@ -1,129 +1,72 @@
 /* eslint-disable */
-import { Button, Card, CardBody, Input, CardText, Badge } from "reactstrap";
+import { Button, Card, CardBody, Input, CardText, Badge, FormGroup } from "reactstrap";
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getPipelines } from "../../../redux/pipelines";
-import { getStatuses as getLeadStatuses } from "../../../redux/leadStatuses";
-import { getStatuses as getClientStatuses } from "../../../redux/clientStatuses";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
-import {updateProfile } from "../../../redux/profiles";
 import { Edit } from "react-feather";
 import ProfileSidebar from "./ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
 import { Link } from "react-router-dom";
 import { Link as LinkIcon } from "react-feather";
-import { getUsers } from "../../../redux/workspaces";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from "../../../redux/profiles";
 
-const ProfileAbout = ({ data }) => {
+const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, workspaceUsers, campaignsOptions }) =>
+{
   const dispatch = useDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [pipeline, setPipeline] = useState(
-    data.pipeline
-      ? { value: data.pipeline.id, label: data.pipeline.name }
-      : null
-  );
-  const [leadStatus, setLeadStatus] = useState(
-    data.lead_status
-      ? { value: data.lead_status.id, label: data.lead_status.name }
-      : null
-  );
-  const [clientStatus, setClientStatus] = useState(
-    data.client_status
-      ? { value: data.client_status.id, label: data.client_status.name }
-      : null
-  );
+  const profileSidebarRef = useRef(null);
 
-  const [leadUsers, setLeadUsers] = useState(
-    data.users
-      ? data.users.map((item) => ({
-          value: item.enc_id,
-          label: item.name,
-        }))
-      : []
-  );
-  const pipelines = useSelector((state) => state.pipelines.pipelines);
-  const leadStatuses = useSelector((state) => state.leadStatuses.statuses);
-  const clientStatuses = useSelector((state) => state.clientStatuses.statuses);
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
+  const [input, setInput] = useState({
+    name: data.name,
+    phone: data.phone,
+    type: data.type,
+    users: data.users.length ? data.users.map((item) => ({ value: item.id, label: item.name })) : [],
+    client_status_id: data?.client_status_id ?? null,
+    pipeline_id: data?.pipeline_id ?? null,
+    lead_status_id: data?.lead_status_id ?? null,
+    campaign_id: data?.campaign_id ?? null,
+  });
 
-  const workspaceUsers = useSelector((state) =>
-    state.workspaces.users.map((user) => ({ value: user.id, label: user.name }))
-  );
-  const pipelinesOptions = useMemo(() => {
-    return pipelines.map((p) => ({ value: p.id, label: p.name }));
-  }, [pipelines]);
 
-  const leadStatusesOptions = useMemo(() => {
-    return leadStatuses.map((p) => ({ value: p.id, label: p.name }));
-  }, [leadStatuses]);
-
-  const clientStatusesOptions = useMemo(() => {
-    return clientStatuses.map((p) => ({ value: p.id, label: p.name }));
-  }, [clientStatuses]);
-
-  useEffect(() => {
-    if (data?.pipeline) {
-      setPipeline({ value: data.pipeline.id, label: data.pipeline.name });
-    }
-    if (data?.lead_status) {
-      setLeadStatus({
-        value: data.lead_status.id,
-        label: data.lead_status.name,
-      });
-    }
-    if (data?.client_status) {
-      setClientStatus({
-        value: data.client_status.id,
-        label: data.client_status.name,
-      });
-    } else {
-      setClientStatus(clientStatusesOptions[0]);
-    }
-    if (data?.users) {
-      setLeadUsers(data.users.map((u) => ({ value: u.enc_id, label: u.name })));
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (!pipelines.length) {
-      dispatch(getPipelines({ workspace_id: data.workspace_id }));
-    }
-    if (!leadStatuses.length) {
-      dispatch(getLeadStatuses({ workspace_id: data.workspace_id }));
-    }
-    if (!clientStatuses.length) {
-      dispatch(getClientStatuses({ workspace_id: data.workspace_id }));
-    }
-    if (!workspaceUsers.length) {
-      dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
-    }
-    
-  }, []);
-
-  const handleProfileUpdate = (params) => {
-    const payload = {
-      pipeline: pipeline?.value,
-      lead_status: leadStatus?.value,
-      client_status: clientStatus?.value,
-      name: data.name,
-      phone: data.phone,
-      // campaign:data.title,
-      ...params,
-    };
-    delete payload[data.type === "lead" ? "client_status" : "lead_status"];
-    dispatch(
-      updateProfile({
-        payload,
-        id: data.id,
-      })
-    );
+  const handleChange = (e) =>
+  {
+    const key = e.target.name;
+    let value = e.target.value;
+    setInput((input) => ({
+      ...input,
+      [key]: value,
+    }));
   };
 
-  const toggleSidebar = () => {
+  const handleSelectChange = (e, name) =>
+  {
+    let target = {
+      name,
+      type: "input",
+      value: e.value,
+    };
+
+    handleChange({ target });
+  };
+
+  const handleSelected = (op, sel) =>
+  {
+    let newOptions = [{ value: 0, label: 'None' }, ...op];
+    let selected = sel ? sel : 0;
+    return newOptions.filter(option => option.value === selected);
+  }
+
+  useEffect(() =>
+  {
+    if (input) {
+      dispatch(updateProfile({ payload: input, id: data.id }));
+    }
+  }, [input]);
+
+  const toggleSidebar = () =>
+  {
     setSidebarOpen(!sidebarOpen);
   };
 
@@ -135,122 +78,92 @@ const ProfileAbout = ({ data }) => {
             <Input
               type="switch"
               id="switch-success"
-              name="success"
+              name="type"
               checked={data.type === "client"}
-              onChange={() =>
-                handleProfileUpdate({
-                  type:data.type ==="client" ? "lead" : "client",
-                })
-              }
+              onChange={() => handleChange({ target: { name: 'type', type: 'input', value: input.type === "client" ? "lead" : "client" } })}
             />
           </div>
-          <Button
-            onClick={toggleSidebar}
-            className="rounded-circle btn-icon"
-            color="primary"
-          >
+          <Button onClick={() => profileSidebarRef.current.handleShow(data)} className="rounded-circle btn-icon" color="primary">
             <Edit size={20} />
           </Button>
         </div>
         <CardBody>
           <h5 className="mb-75">
             Profile{" "}
-            <Badge
-              className="ms-1"
-              color={`light-${data.type === "client" ? "success" : "warning"}`}
-            >
-              {" "}
-              {`${data.type.charAt(0).toUpperCase()}${data.type.slice(1)}`}
+            <Badge className="ms-1" color={`light-${input.type === "client" ? "success" : "warning"}`} > {" "}
+              {input.type}
             </Badge>
           </h5>
           <CardText>{data.name}</CardText>
-          <div className="mt-2">
+          <div className="mt-1">
             <h5 className="mb-75">Phone:</h5>
             <PhoneInput
               className="phone-placeholder"
-              style={{}}
               country={"us"}
               value={data.phone}
               disableSearchIcon
               disabled
               placeholder="1 234 567 8900"
-              inputStyle={{ maxWidth: "fit-content",paddingLeft:'30px' }}
+              inputStyle={{ maxWidth: "fit-content" }}
             />
           </div>
-          <div className="mt-2">
-            <h5 className="mb-75">Campaign:</h5>
-            <CardText>{data?.campaign?.title || '-'}</CardText>
-
+          <div className="mt-1 mb-1">
+            <h5 className="mb-75">Campaign</h5>
+            <Select
+              classNamePrefix="select"
+              onChange={e => handleSelectChange(e, 'campaign_id')}
+              options={[{ value: '', label: 'None' }, ...campaignsOptions]}
+              value={handleSelected(campaignsOptions, input.campaign_id)}
+            />
           </div>
-          <div className="mt-2">
+          <div className="mb-1">
             <h5 className="mb-75">Pipeline:</h5>
             <Select
-              value={pipeline}
-              theme={selectThemeColors}
               classNamePrefix="select"
-              className="react-select"
-              placeholder="Select pipeline"
-              options={pipelinesOptions}
-              onChange={(value) => {
-                setPipeline(value);
-                handleProfileUpdate({ pipeline: value.value });
-              }}
+              className="mb-2"
+              placeholder="Pipeline"
+              options={pipelineOptions}
+              onChange={e => handleSelectChange(e, 'pipeline_id')}
+              value={handleSelected(pipelineOptions, input.pipeline_id)}
             />
           </div>
-          <div className="mt-2">
+          <div className="mb-1">
             <h5 className="mb-75">Status:</h5>
-            <Select
-              value={data.type === "lead" ? leadStatus : clientStatus }
-              theme={selectThemeColors}
-              classNamePrefix="select"
-              className="react-select"
-              placeholder="Select status"
-              options={
-                data.type === "lead"
-                  ? leadStatusesOptions
-                  : clientStatusesOptions
-              }
-              onChange={(val) => {
-                data.type === "lead"
-                  ? setLeadStatus(val)
-                  : setClientStatus(val);
-                handleProfileUpdate({ [`${data.type}_status`]: val.value });
-              }}
-            />
+            {data.type == 'client' &&
+              <Select
+                classNamePrefix="select"
+                className="mb-2"
+                placeholder='Client Status'
+                options={clientOptions}
+                onChange={e => handleSelectChange(e, 'client_status_id')}
+                value={handleSelected(clientOptions, input.client_status_id)}
+              />
+            }
+            {
+              data.type == 'lead' &&
+              <Select
+                classNamePrefix="select"
+                className="mb-2"
+                placeholder='Lead Status'
+                options={leadOptions}
+                onChange={e => handleSelectChange(e, 'lead_status_id')}
+                value={handleSelected(leadOptions, input.lead_status_id)}
+              />
+            }
           </div>
           <div className="mt-2">
             <h5 className="mb-75">Users:</h5>
             <Select
               theme={selectThemeColors}
               isMulti
-              value={leadUsers}
+              value={input.users}
               classNamePrefix="select"
               className="react-select"
               placeholder="Select User"
               options={workspaceUsers}
-              onChange={(e) => {
-                setLeadUsers(e.length > 0 ? e : []);
-                handleProfileUpdate({ users: e.map((u) => u.value) });
-              }}
+              onChange={(e) => handleChange({ target: { name: 'users', type: 'input', value: e } })}
             />
           </div>
-          {/* {data.type === "client" && (
-            <div className="mt-2">
-              <h5 className="mb-75">Client Status:</h5>
-              <Select
-                value={clientStatus}
-                theme={selectThemeColors}
-                classNamePrefix="select"
-                className="react-select"
-                placeholder="Select client status"
-                options={clientStatusesOptions}
-                onChange={(val) => {
-                  setClientStatus(val);
-                  handleProfileUpdate({ client_status: val.value });
-                }}
-              />
-            </div>
-          )} */}
           <div className="mt-2">
             <h5 className="mb-75">Created At:</h5>
             <CardText>
@@ -264,23 +177,21 @@ const ProfileAbout = ({ data }) => {
             </CardText>
           </div>
           <div className="mt-2">
-            <Link
-              className="d-flex align-items-center"
-              to={`/activity-logs?model_type=CallProfile&model_id=${data.id}`}
-            >
+            <Link className="d-flex align-items-center" to={`/activity-logs?model_type=CallProfile&model_id=${data.id}`}>
               <LinkIcon size={14} className="me-50" />
               <h5 className="mb-0">Activity Logs</h5>
             </Link>
           </div>
         </CardBody>
       </Card>
-      {sidebarOpen && (
-        <ProfileSidebar
-          open={sidebarOpen}
-          toggleSidebar={toggleSidebar}
-          profile={data}
-        />
-      )}
+
+      <ProfileSidebar
+        pipelineOptions={pipelineOptions}
+        leadOptions={leadOptions}
+        clientOptions={clientOptions}
+        type={input.type}
+        ref={profileSidebarRef}
+      />
     </>
   );
 };

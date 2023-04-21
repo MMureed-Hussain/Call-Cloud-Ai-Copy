@@ -4,32 +4,54 @@ import { Row, Col } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getProfile } from "../../redux/profiles";
 import Skeleton from "react-loading-skeleton";
 import CallsList from "./CallsList";
 import CallFollowUpList from "./CallFollowUpList";
 import ContactList from "./ContactList";
 import NoteList from "./NoteList";
 
-export default () => {
+import { getProfile, setReloadTable } from "../../redux/profiles";
+import { getUsers } from "../../redux/workspaces";
+import { getStatusesOptions } from "../../redux/statuses";
+import { getCampaignsList } from "../../redux/campaigns";
+
+export default () =>
+{
   const params = useParams();
   const dispatch = useDispatch();
   //selectors
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
+  const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
   const profile = useSelector((state) => state.profiles.selectedProfile);
+  const reload = useSelector((state) => state.profiles.reloadTable);
 
-  useEffect(() => {
+
+  const clientOptions = useSelector((state) => state.statuses.client_options);
+  const callOptions = useSelector((state) => state.statuses.call_options);
+  const leadOptions = useSelector((state) => state.statuses.lead_options);
+  const pipelineOptions = useSelector((state) => state.statuses.pipeline_options);
+  const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
+  const campaignsOptions = useSelector((state) => state.campaigns.campaignsOptions);
+
+
+  useEffect(() =>
+  {
     if (currentWorkspace) {
-      dispatch(
-        getProfile({
-          // params: { include_calls: "false" },
-          id: params.id,
-        })
-      );
+      dispatch(getProfile({ id: params.id }));
+      dispatch(getStatusesOptions());
+      dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
+      dispatch(getCampaignsList({ workspace_id: currentWorkspace.id, orderby: "created_at", sort: "desc", }));
     }
   }, [currentWorkspace]);
+
+
+  useEffect(() =>
+  {
+    if (reload) {
+      dispatch(setReloadTable(false));
+      dispatch(getProfile({ id: params.id }));
+    }
+  }, [reload]);
+
 
   if (!profile) {
     return (
@@ -45,12 +67,19 @@ export default () => {
       <section id="profile-info">
         <Row>
           <Col lg={{ size: 3, order: 1 }} sm={{ size: 12 }} xs={{ order: 2 }}>
-            <ProfileAbout data={profile} />
+            <ProfileAbout
+              data={profile}
+              clientOptions={clientOptions}
+              leadOptions={leadOptions}
+              pipelineOptions={pipelineOptions}
+              workspaceUsers={workspaceUsers}
+              campaignsOptions={campaignsOptions}
+            />
           </Col>
           <Col lg={{ size: 9, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
             <CallFollowUpList />
             <NoteList profileId={params.id} />
-            <CallsList profileId={params.id} />
+            <CallsList profileId={params.id} callOptions={callOptions} />
           </Col>
         </Row>
       </section>

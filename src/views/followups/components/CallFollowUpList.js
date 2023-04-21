@@ -1,44 +1,36 @@
 /* eslint-disable */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import { ChevronDown } from "react-feather";
 import Skeleton from "react-loading-skeleton";
 import moment from "moment";
 import toast from "react-hot-toast";
 import Select from "react-select";
 
 // ** Reactstrap Imports
-import {
-  Row,
-  Col,
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Badge,
-  Table,
-  Input,
-} from "reactstrap";
-import { Edit, Eye, Trash, MoreVertical } from "react-feather";
-
+import { Row, Col, Button, Card, CardHeader, CardTitle, Badge, Table, Input, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import { Edit, Eye, Trash, MoreVertical, ChevronDown } from "react-feather";
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { getFollowups, setErrors } from "../../../redux/followups";
-import { getPipelines } from "../../../redux/pipelines";
+import { getFollowups, setErrors, setReloadTable } from "../../../redux/followups";
+import { deleteCallFollowUp } from "../../../redux/profiles";
+import { } from "../../../redux/statuses";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendar,
-  faCalendarCheck,
-  faVideo,
-  faPhone,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faCalendarCheck, faVideo, faPhone, } from "@fortawesome/free-solid-svg-icons";
+import FollowUpSidebar from "./FollowUpSidebar";
+import FollowUpViewSidebar from "./FollowUpViewSidebar";
 
-export default () => {
+export default () =>
+{
+
+  const followUpSidebarRef = useRef(null);
+  const followViewUpSidebarRef = useRef(null);
   const dispatch = useDispatch();
   const per_page = useSelector((state) => state.layout.pagination.per_page);
   const followups = useSelector((state) => state.followups.followups);
-  const pipelines = useSelector((state) => state.pipelines.pipelines);
+  const pipelines = [];
+  const reloadTable = useSelector((state) => state.followups.reloadTable);
+
   const [data, setData] = useState({
     sort: "desc",
     orderby: "created_at",
@@ -51,17 +43,23 @@ export default () => {
     (state) => state.workspaces.currentWorkspace
   );
 
-  useEffect(() => {
-    if (currentWorkspace) {
-      dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
-    }
-  }, [currentWorkspace]);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     loadFollowUps();
   }, [data, currentWorkspace]);
 
-  const loadFollowUps = (options) => {
+
+  useEffect(() =>
+  {
+    if (reloadTable) {
+      dispatch(setReloadTable(false));
+      loadFollowUps({ ...data });
+    }
+  }, [reloadTable]);
+
+  const loadFollowUps = (options) =>
+  {
     if (currentWorkspace) {
       let queryParams = {
         workspace_id: currentWorkspace.id,
@@ -76,20 +74,14 @@ export default () => {
     value: pipeline.id,
     label: pipeline.name,
   }));
+
   const typeOptions = [
     { value: "", label: "None" },
     { value: "google_meet", label: "Video" },
     { value: "phone", label: "Phone" },
     { value: "other", label: "Other" },
   ];
-  // const paginationLine = {
-  //   height: "1px",
-  //   width: "98%",
-  //   position: "absolute",
-  //   top: "39px",
-  //   marginLeft: "12px",
-  //   border: "2px solid red",
-  // };
+  
   const perPageOptions = [
     { value: 15, label: 15 },
     { value: 25, label: 25 },
@@ -97,7 +89,8 @@ export default () => {
     { value: 100, label: 100 },
   ];
 
-  const handleSelectChange = (e, name) => {
+  const handleSelectChange = (e, name) =>
+  {
     let target = {
       name,
       type: "input",
@@ -107,7 +100,8 @@ export default () => {
     handleChange({ target });
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const key = e.target.name;
     const value =
       e.target.type == "checkbox" ? e.target.checked : e.target.value;
@@ -117,6 +111,15 @@ export default () => {
       [key]: value,
     }));
   };
+
+
+  const handleDeleteFollowUp = (row) =>
+  {
+    dispatch(deleteCallFollowUp(row.id))
+    dispatch(setReloadTable(true));
+
+  }
+
 
   if (!followups.data) {
     return (
@@ -191,6 +194,7 @@ export default () => {
                 <th>Link</th>
                 <th>Notes</th>
                 <th>Created At</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -240,6 +244,29 @@ export default () => {
                     </td>
                     <td style={{ maxWidth: "300px" }}>{row.notes}</td>
                     <td>{row.created_at}</td>
+                    <td>
+                      <div className="d-flex">
+                        <UncontrolledDropdown>
+                          <DropdownToggle className="pe-1" tag="span">
+                            <MoreVertical size={15} />
+                          </DropdownToggle>
+                          <DropdownMenu container={"body"} end>
+                            <DropdownItem onClick={() => followViewUpSidebarRef.current.handleShow(row)} >
+                              <Eye size={15} />
+                              <span className="align-middle ms-50">View</span>
+                            </DropdownItem>
+                            <DropdownItem onClick={() => followUpSidebarRef.current.handleShow(row)} >
+                              <Edit size={15} />
+                              <span className="align-middle ms-50">Edit</span>
+                            </DropdownItem>
+                            <DropdownItem onClick={() => handleDeleteFollowUp(row)}>
+                              <Trash size={15} />
+                              <span className="align-middle ms-50">Delete</span>
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </div>
+                    </td>
                   </tr>
                 ))}
 
@@ -254,18 +281,10 @@ export default () => {
           </Table>
         </div>
         <Row style={{ position: "relative" }}>
-          {/* {followups && followups.last_page !== 0 ? (
-            <div style={{ ...paginationLine }}></div>
-          ) : (
-            ""
-          )} */}
-
           <Col className="small">
             {followups.data && (
               <div className="my-2 ms-1">
-                {" "}
-                Showing {followups.from} to {followups.to} of {followups.total}{" "}
-                entries
+                {" "}Showing {followups.from} to {followups.to} of {followups.total}{" "} entries
               </div>
             )}
           </Col>
@@ -296,6 +315,10 @@ export default () => {
             )}
           </Col>
         </Row>
+
+        <FollowUpSidebar ref={followUpSidebarRef} />
+        <FollowUpViewSidebar ref={followViewUpSidebarRef} />
+
       </Card>
     </>
   );
