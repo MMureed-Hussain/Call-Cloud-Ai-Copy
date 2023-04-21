@@ -9,7 +9,7 @@ import { Row, Col, Card, CardHeader, CardTitle, Badge, Input, CardBody, FormGrou
 //Redux
 import { random } from "lodash"
 import { useDispatch, useSelector } from "react-redux";
-import { getPipelines } from "../../redux/pipelines";
+import { getStatusesOptions } from "../../redux/statuses";
 import { getCallsListWithCount, getRecordingByWorkspace, leadProfileStatusList } from "../../redux/calls";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
@@ -21,13 +21,13 @@ export default () =>
     const user = useSelector((state) => state.auth.user);
     const reports = useSelector((state) => state.calls.reports);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
-    const pipelines = useSelector((state) => state.pipelines.pipelines);
     const [labels, setLabels] = useState([]);
-    const [profileStatus, setProfileStatus] = useState(null);
-    const [clientStatus, setClientStatus] = useState(null);
-    const [callStatus, setCallStatus] = useState(null);
-    const selectDefaultValue = { value: '', label: 'None' };
-    const pipelineOptions = pipelines.map(pipeline => ({ value: pipeline.id, label: pipeline.name }));
+
+
+    const callStatus = useSelector((state) => state.statuses.call_options);
+    const profileStatus = useSelector((state) => state.statuses.lead_options);
+    const clientStatus = useSelector((state) => state.statuses.client_options);
+    const pipelineOptions = useSelector((state) => state.statuses.pipeline_options);
 
 
     const [data, setData] = useState({
@@ -111,31 +111,15 @@ export default () =>
         }
     };
 
+
+    useEffect(() =>
+    {
+        dispatch(getStatusesOptions());
+    }, []);
+
     useEffect(() =>
     {
         if (currentWorkspace) {
-
-
-            dispatch(getPipelines({ workspace_id: currentWorkspace.id }));
-
-            dispatch(leadProfileStatusList({ id: currentWorkspace.id })).then(({ payload }) =>
-            {
-
-                if (payload && payload.lead_statuses) {
-                    setProfileStatus(payload.lead_statuses);
-                }
-
-                if (payload && payload.lead_statuses) {
-                    setCallStatus(payload.call_statuses);
-                }
-
-
-                if (payload && payload.client_statuses) {
-                    setClientStatus(payload.client_statuses);
-                }
-
-            });
-
             const privateChannel = window.Pusher.subscribe(`private-workspaces.${currentWorkspace.id}`)
             privateChannel.bind('WorkspaceCallRecordingStatus', (res) =>
             {
@@ -143,7 +127,6 @@ export default () =>
                 loadData();
 
             });
-
         }
     }, [currentWorkspace]);
 
@@ -166,6 +149,7 @@ export default () =>
     {
         let newOptions = [{ value: '', label: 'None' }, ...op];
         let selected = sel ? sel : '';
+        console.log(op, sel, 'sdfsdf');
         return newOptions.filter(option => option.value === selected);
     }
 
@@ -232,14 +216,14 @@ export default () =>
                                         <Select
                                             options={[{ value: '', label: 'None' }, ...pipelineOptions,]}
                                             onChange={e => handleSelectChange(e, 'pipeline_id')}
-                                            placeholder="Select a pipeline" 
-                                            className="mb-2" 
+                                            placeholder="Select a pipeline"
+                                            className="mb-2"
                                             classNamePrefix="select"
-                                            />
+                                        />
                                     </div>
                                 </Col>
-                                
-                                <div  className="w-100"></div>
+
+                                <div className="w-100"></div>
 
                                 {
                                     callStatus &&

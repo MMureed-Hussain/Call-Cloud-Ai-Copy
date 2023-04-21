@@ -1,408 +1,247 @@
 /* eslint-disable */
-import { useState, useCallback, useMemo } from "react";
-import ReactPaginate from "react-paginate";
-import DataTable from "react-data-table-component";
-import { ChevronDown } from "react-feather";
+import { Link, Navigate, useLocation } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
-// ** Reactstrap Imports
-import {
-  Card,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Badge,
-  Row,
-} from "reactstrap";
-import CustomHeader from "./components/CustomHeader";
-import { useEffect } from "react";
+import Select from "react-select";
+import PaginationWrapper from "@src/@core/components/custom/PaginationWrapper";
+import { Row, Col, Button, Card, CardHeader, CardTitle, Table, Input, FormGroup, Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getProfiles,
-  setReloadTable,
-  deleteResource,
-  resetFilters,
-} from "../../redux/profiles";
-import { getPipelines } from "../../redux/pipelines";
-import { getStatuses as getLeadStatuses } from "../../redux/leadStatuses";
+import { getProfiles, setReloadTable } from "../../redux/profiles";
+import { getStatusesOptions } from "../../redux/statuses";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
-import { Link, useLocation } from "react-router-dom";
-import { debounce } from "lodash";
-import { getStatuses as getCallStatuses } from "../../redux/callStatuses";
-import { getStatuses as getClientStatuses } from "../../redux/clientStatuses";
-import ProfileSidebar from "./components/ProfileSidebar";
 import PhoneInput from "react-phone-input-2";
-import usePrevious from "../../utility/hooks/usePrevious";
+import UserInfo from "./components/UserInfo";
+import ProfileSidebar from "./components/ProfileSidebar";
 
-const getProfileType = (path) => {
-  if (path === "/leads") return "lead";
-  return "client";
-};
+const getProfileType = (path) => { return path === '/leads' ? 'lead' : 'client' };
 
-export default () => {
-  // ** States
-  const location = useLocation();
-  const profileType = getProfileType(location.pathname);
+export default () =>
+{
 
-  const [sort, setSort] = useState("desc");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortColumn, setSortColumn] = useState("id");
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState(false);
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const profileType = getProfileType(location.pathname);
+    const profileSidebarRef = useRef(null);
+    const user = useSelector((state) => state.auth.user);
+    const per_page = useSelector((state) => state.layout.pagination.per_page);
+    const profiles = useSelector((state) => state.profiles.profiles);
+    const reload = useSelector((state) => state.profiles.reloadTable);
+    const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+    const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '', type: profileType });
 
-  const dispatch = useDispatch();
-  //selectors
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
-  const profiles = useSelector((state) => state.profiles.profiles);
-  // console.log("--------", profiles);
-  const loading = useSelector((state) => state.profiles.loadingProfiles);
-  const pageCount = useSelector((state) => state.profiles.pageCount);
-  const reloadTable = useSelector((state) => state.profiles.reloadTable);
+    const clientOptions = useSelector((state) => state.statuses.client_options);
+    const leadOptions = useSelector((state) => state.statuses.lead_options);
+    const pipelineOptions = useSelector((state) => state.statuses.pipeline_options);
 
-  const pipelineFilterValue = useSelector(
-    (state) => state.profiles.pipelineFilterValue
-  );
-  const statusFilterValue = useSelector(
-    (state) => state.profiles.statusFilterValue
-  );
-  const userCampaign = useSelector(
-    (state) => state.auth.user.default_campaign_id
-  );
-  const campaigns = useSelector((state) =>
-    state.campaigns.campaigns?.data?.map((c) => ({
-      value: c.id,
-      label: c.title,
-    }))
-  );
-  const userDefaultCampaign = campaigns?.find((a) => a.value == userCampaign);
-  // const paginationLine = {
-  //   height: "1px",
-  //   width: "98%",
-  //   position: "absolute",
-  //   top: "39px",
-  //   marginLeft: "12px",
-  //   border: "2px solid red",
-  // };
+    useEffect(() =>
+    {
+        dispatch(getStatusesOptions());
+    }, []);
 
-  // ** Factory method to dispatch the api call
-  const loadProfiles = (options) => {
-    let params = {
-      records_per_page: rowsPerPage,
-      page: currentPage,
-      workspace_id: currentWorkspace?.id,
-      sort_by: sortColumn,
-      sort,
-      type: profileType,
-      ...options,
+
+    useEffect(() =>
+    {
+        loadData();
+    }, [data, currentWorkspace]);
+
+    useEffect(() =>
+    {
+        if (reload) {
+            dispatch(setReloadTable(false));
+            loadData();
+        }
+    }, [reload]);
+
+
+    const loadData = (options) =>
+    {
+        if (currentWorkspace) {
+            let queryParams = {
+                workspace_id: currentWorkspace.id,
+                ...data,
+                ...options,
+            };
+            dispatch(getProfiles(queryParams));
+        }
     };
-    if (pipelineFilterValue?.value) {
-      params = { pipeline_id: pipelineFilterValue.value, ...params };
-    }
-    if (statusFilterValue?.value) {
-      params = {
-        [profileType === "client" ? "client_status_id" : "call_status_id"]:
-          statusFilterValue.value,
-        ...params,
-      };
-    }
-    dispatch(getProfiles(params));
-    setCurrentPage(options.page);
-  };
-  // ** Reload the table when record is deleted
-  useEffect(() => {
-    if (reloadTable) {
-      dispatch(setReloadTable(false));
-      loadProfiles({
-        page: currentPage,
-      });
-    }
-  }, [reloadTable]);
-  // ** load data when filter value is changed
 
-  usePrevious(
-    (prevPipelineFilterValue, prevStatusFilterValue) => {
-      //change when filter set to None
-      if (
-        (prevPipelineFilterValue?.value || prevStatusFilterValue?.value) &&
-        (!pipelineFilterValue.value || !statusFilterValue.value)
-      ) {
-        loadProfiles({
-          page: 1,
-        });
-      }
-      //when filter value is changed
-      if (pipelineFilterValue?.value || statusFilterValue?.value) {
-        loadProfiles({
-          page: 1,
-        });
-      }
-    },
-    [pipelineFilterValue, statusFilterValue]
-  );
-  // ** Load the all call profiles for the selected workspace
-  useEffect(() => {
-    if (currentWorkspace) {
-      dispatch(resetFilters());
-      loadProfiles({ page: 1 });
-      dispatch(
-        getPipelines({
-          workspace_id: currentWorkspace.id,
-          include_count: "true",
-          profile_type: profileType,
-        })
-      );
-      if (profileType === "lead") {
-        dispatch(
-          getLeadStatuses({
-            workspace_id: currentWorkspace.id,
-          })
-        );
-        //load call statuses in case of leads
-        dispatch(
-          getCallStatuses({
-            workspace_id: currentWorkspace.id,
-            include_profile_count: "true",
-          })
-        );
-      }
-      //load client statuses with count
-      if (profileType === "client") {
-        dispatch(
-          getClientStatuses({
-            workspace_id: currentWorkspace.id,
-            include_profile_count: "true",
-          })
-        );
-      }
+    const perPageOptions = [
+        { value: 15, label: 15 },
+        { value: 25, label: 25 },
+        { value: 50, label: 50 },
+        { value: 100, label: 100 }
+    ];
+
+    const handleSelectChange = (e, name) =>
+    {
+        let target = {
+            name,
+            type: 'input',
+            value: e.value,
+        };
+
+        handleChange({ target });
     }
-  }, [currentWorkspace]);
-  // ** Columns meta for the data table
-  const columns = [
+
+    const handleChange = (e) =>
     {
-      name: "Name",
-      sortable: true,
-      minWidth: "172px",
-      sortField: "name",
-      selector: (row) => row.name,
-      // cell: row => row.name,
-      cell: (row) => (
-        <Link to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id}`}>
-          {/* <div className="d-flex justify-content-left align-items-center"> */}
-          {/* <div className="d-flex flex-column"> */}
-          {/* {row.name} */}
-          <span className=" text-dark">{row.name}</span>
-          {/* </div> */}
-          {/* </div> */}
-        </Link>
-      ),
-    },
-    {
-      name: "Phone number",
-      sortable: true,
-      minWidth: "172px",
-      sortField: "phone",
-      selector: (row) => row.phone,
-      cell: (row) => (
-        <PhoneInput
-          className="phone-placeholder"
-          country={"us"}
-          value={row.phone}
-          disableSearchIcon
-          disabled
-          placeholder="1 234 567 8900"
-        />
-      ),
-    },
-    {
-      name: "Status",
-      sortable: false,
-      minWidth: "172px",
-      cell: (row) => {
-        const status = row[`${profileType}_status`]; //client_status or lead_status
-        return status ? <Badge color="warning">{status.name}</Badge> : "-";
-      },
-    },
-    {
-      name: "Pipeline",
-      sortable: false,
-      minWidth: "172px",
-      cell: (row) => {
-        return row.pipeline ? (
-          <Badge color="primary">{row.pipeline.name}</Badge>
-        ) : (
-          "-"
-        );
-      },
-    },
-    {
-      name: "Actions",
-      allowOverflow: true,
-      minWidth: "100px",
-      maxWidth: "100px",
-      cell: (row) => {
+        const key = e.target.name;
+        const value = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
+
+        setData(data => ({
+            ...data,
+            [key]: value,
+        }));
+
+    }
+
+
+    if (!user) {
+        return <Navigate to="/login" />;
+    }
+
+    if (!profiles.data) {
         return (
-          <div className="d-flex">
-            <UncontrolledDropdown>
-              <DropdownToggle className="pe-1 ms-2" tag="span">
-                <MoreVertical size={15} />
-              </DropdownToggle>
-              <DropdownMenu container={"body"} end>
-                {/* <Link
-                  to={`/${profileType === "lead" ? "leads" : "clients"}/${row.id
-                    }`}
-                >
-                  <DropdownItem>
-                    <Eye size={15} />
-                    <span className="align-middle ms-50">View</span>
-                  </DropdownItem>
-                </Link> */}
-                <DropdownItem
-                  onClick={() => {
-                    setSelectedProfile(row);
-                    toggleSidebar();
-                  }}
-                >
-                  <Edit size={15} />
-                  <span className="align-middle ms-50">Edit</span>
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() =>
-                    dispatch(
-                      deleteResource(
-                        `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${row.id}`
-                      )
-                    )
-                  }
-                >
-                  <Trash size={15} className="me-50" />
-                  <span className="align-middle ms-50">Delete</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          </div>
+            <div className="vh-100">
+                <Skeleton height={"15%"} />
+                <Skeleton height={"7%"} count={9} />
+            </div>
         );
-      },
-    },
-  ];
-  //Handle sorting
-  const handleSort = (column, sortDirection) => {
-    setSort(sortDirection);
-    setSortColumn(column.sortField);
-    loadProfiles({
-      page: 1,
-      sort: sortDirection,
-      sort_by: sortColumn,
-    });
-  };
-
-  // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
-    const value = parseInt(e.currentTarget.value);
-    setRowsPerPage(value);
-    loadProfiles({
-      page: 1,
-      records_per_page: value,
-    });
-  };
-
-  // ** Function in get data on search query change
-  const debounceLoadData = useCallback(debounce(loadProfiles, 1000), []);
-  useEffect(() => {
-    if (searchTerm) {
-      debounceLoadData({
-        page: 1,
-        search: searchTerm,
-        workspace_id: currentWorkspace.id,
-      });
     }
-  }, [searchTerm]);
 
-  // ** Custom Pagination
-  const CustomPagination = () => {
     return (
-      <Row style={{ position: "relative" }}>
-        {/* {pageCount < 2 ? <div style={{ ...paginationLine }}></div> : ""} */}
-        <ReactPaginate
-          previousLabel={""}
-          nextLabel={""}
-          pageCount={pageCount || 1}
-          activeClassName="active"
-          forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-          onPageChange={({ selected }) => loadProfiles({ page: selected })}
-          pageClassName={"page-item"}
-          nextLinkClassName={"page-link"}
-          nextClassName={"page-item next"}
-          previousClassName={"page-item prev"}
-          previousLinkClassName={"page-link"}
-          pageLinkClassName={"page-link"}
-          containerClassName={
-            "pagination react-paginate justify-content-end my-2 pe-1"
-          }
-        />
-      </Row>
+        <>
+            <Card>
+                <CardHeader className="py-1">
+                    <CardTitle tag="h4"> {profileType == 'lead' ? 'Lead Profile' : 'Client Profile'}</CardTitle>
+                    {profileType == 'lead' && <Button onClick={() => profileSidebarRef.current.handleShow(null)}>Add Profile</Button>}
+                </CardHeader>
+                <div className="p-1">
+                    <Row>
+                        <Col lg="10">
+                            <Row>
+                                <Col lg="2">
+                                    <Select
+                                        classNamePrefix="select"
+                                        options={perPageOptions}
+                                        onChange={e => handleSelectChange(e, 'per_page')}
+                                        placeholder="Per Page" className="mb-2"
+                                    />
+                                </Col>
+                                <Col lg="2">
+                                    <Select
+                                        classNamePrefix="select"
+                                        onChange={e => handleSelectChange(e, 'status_id')}
+                                        options={profileType == 'client' ? [{ value: '', label: 'None' }, ...clientOptions] : [{ value: '', label: 'None' }, ...leadOptions]}
+                                        className="mb-2"
+                                        placeholder={profileType == 'client' ? 'Client Status' : 'Lead Status'}
+                                    />
+                                </Col>
+                                <Col lg="2">
+                                    <Select
+                                        classNamePrefix="select"
+                                        onChange={e => handleSelectChange(e, 'pipeline_id')}
+                                        options={[{ value: '', label: 'None' }, ...pipelineOptions]}
+                                        className="mb-2"
+                                        placeholder="Pipeline"
+                                    />
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col lg="2">
+                            <div className="d-flex align-center flex-wrap gap-4 mb-2">
+                                <Input
+                                    name="search"
+                                    value={data.search}
+                                    onChange={e => handleChange(e)}
+                                    placeholder="Search..."
+                                    style={{ maxHeight: '40px' }}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
+                <div className="react-dataTable">
+                    <Table responsive>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone Number</th>
+                                <th>Status</th>
+                                <th>Pipeline</th>
+                                <th>Created By</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {profiles.data && profiles.data.map((row, ind) =>
+                                <tr key={ind} >
+                                    <td>
+                                        <Link to={`/${row.type === "lead" ? "leads" : "clients"}/${row.id}`}>
+                                            {row.name}
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <PhoneInput className="phone-placeholder" country={"us"} value={row.phone} disableSearchIcon disabled />
+                                    </td>
+                                    <td>
+                                        {(row.type == 'lead' && row.lead_status) && <Badge color="warning">{row?.lead_status.name}</Badge>}
+                                        {(row.type == 'client' && row.client_status) && <Badge color="warning">{row?.client_status.name}</Badge>}
+                                    </td>
+                                    <td>
+                                        {row?.pipeline && <Badge color="info">{row?.pipeline.name}</Badge>}
+                                    </td>
+                                    <td>
+                                        {row.created_by &&
+
+                                            <UserInfo
+                                                name={`${row.created_by.first_name} ${row.created_by.last_name}`}
+                                                email={row.created_by.email}
+                                            />
+                                        }
+                                    </td>
+                                    <td>{row.created_at}</td>
+                                    <td>{row.updated_at}</td>
+                                    <td>
+                                        <div className="text-center">
+                                            <UncontrolledDropdown>
+                                                <DropdownToggle className="cursor-pointer" tag="span">
+                                                    <MoreVertical size={15} />
+                                                </DropdownToggle>
+                                                <DropdownMenu container={"body"} end>
+                                                    <DropdownItem onClick={() => profileSidebarRef.current.handleShow(row)} >
+                                                        <Edit size={15} />
+                                                        <span className="align-middle ms-50">Edit</span>
+                                                    </DropdownItem>
+                                                    {/* <DropdownItem onClick={() => dispatch(deleteResource(row.id))}>
+                                                        <Trash size={15} />
+                                                        <span className="align-middle ms-50">Delete</span>
+                                                    </DropdownItem> */}
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+
+                            {(profiles && !Boolean(profiles.data.length)) && <tr><td colSpan={12} className="text-center">No data Found!</td></tr>}
+                        </tbody>
+                    </Table>
+                </div>
+                <PaginationWrapper paginate={profiles} callback={loadData} />
+            </Card>
+
+            {/* Modals */}
+            <ProfileSidebar
+                pipelineOptions={pipelineOptions}
+                leadOptions={leadOptions}
+                clientOptions={clientOptions}
+                type={profileType}
+                ref={profileSidebarRef}
+            />
+        </>
+
     );
-  };
-
-  if (loading) {
-    return (
-      <div className="vh-100">
-        <Skeleton height={"15%"} />
-        <Skeleton height={"7%"} count={9} />
-      </div>
-    );
-  }
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const onNewProfileClick = () => {
-    setSelectedProfile(null);
-    toggleSidebar();
-  };
-
-  return (
-    <>
-      <Card className="overflow-hidden workspace-list">
-        <CustomHeader
-          searchTerm={searchTerm}
-          rowsPerPage={rowsPerPage}
-          handleSearch={setSearchTerm}
-          handlePerPage={handlePerPage}
-          onNewProfileClick={onNewProfileClick}
-          profileType={profileType}
-        />
-        <div className="react-dataTable">
-          <DataTable
-            noHeader
-            sortServer
-            pagination
-            responsive
-            paginationServer
-            defaultSortField={"id"}
-            columns={columns}
-            onSort={handleSort}
-            defaultSortAsc={false}
-            sortIcon={<ChevronDown />}
-            className="react-dataTable"
-            paginationComponent={CustomPagination}
-            data={profiles?.length ? profiles : []}
-          />
-        </div>
-      </Card>
-      {sidebarOpen && (
-        <ProfileSidebar
-          open={sidebarOpen}
-          toggleSidebar={toggleSidebar}
-          profile={selectedProfile}
-          userDefaultCampaign={userDefaultCampaign}
-          campaigns={campaigns}
-        />
-      )}
-    </>
-  );
 };

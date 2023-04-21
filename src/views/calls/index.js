@@ -7,72 +7,48 @@ import moment from "moment";
 import toast from "react-hot-toast";
 import Select from "react-select";
 import PhoneInput from "react-phone-input-2";
-// ** Reactstrap Imports
-import {
-  Row,
-  Col,
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Badge,
-  Table,
-  Input,
-  CardBody,
-} from "reactstrap";
-
-//Redux
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getCallsList,
-  leadProfileStatusList,
-  setErrors,
-  getRecordingByWorkspace,
-} from "../../redux/calls";
+import { Row, Col, Button, Card, CardHeader, CardTitle, Badge, Table, Input, CardBody } from "reactstrap";
 import CallPlayer from "../profiles/components/CallPlayer";
 import UserInfo from "../profiles/components/UserInfo";
 
-export default () => {
+//Redux
+import { useDispatch, useSelector } from "react-redux";
+import { getCallsList, setErrors, getRecordingByWorkspace } from "../../redux/calls";
+import { getProfilesOptions } from "../../redux/profiles";
+import { getStatusesOptions } from "../../redux/statuses";
+
+export default () =>
+{
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const per_page = useSelector((state) => state.layout.pagination.per_page);
-  const calls = useSelector((state) => state.calls.calls);
+  const callStatus = useSelector((state) => state.statuses.call_options);
   const recordings = useSelector((state) => state.calls.recordings);
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
-  const [profileStatus, setProfileStatus] = useState(null);
-  const [callStatus, setCallStatus] = useState(null);
+  const calls = useSelector((state) => state.calls.calls);
+  const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
+  const profileStatus = useSelector((state) => state.statuses.lead_options);
+
+  const [data, setData] = useState({ sort: "desc", orderby: "created_at", per_page: per_page, search: "", });
   const [callProfiles, setCallProfiles] = useState(null);
-  const [data, setData] = useState({
-    sort: "desc",
-    orderby: "created_at",
-    per_page: per_page,
-    search: "",
-  });
 
-  useEffect(() => {
+
+  useEffect(() =>
+  {
+    dispatch(getStatusesOptions());
+  }, []);
+
+
+  useEffect(() =>
+  {
     if (currentWorkspace) {
-      dispatch(leadProfileStatusList({ id: currentWorkspace.id })).then(
-        ({ payload }) => {
-          if (payload && payload.lead_statuses) {
-            setProfileStatus(payload.lead_statuses);
-          }
-
-          if (payload && payload.lead_statuses) {
-            setCallStatus(payload.call_statuses);
-          }
-
-          if (payload && payload.call_profiles) {
-            setCallProfiles(payload.call_profiles);
-          }
-        }
-      );
+      dispatch(getProfilesOptions({ type: 'lead' }))
+        .then(({ payload }) => setCallProfiles(payload));
 
       const privateChannel = window.Pusher.subscribe(
         `private-workspaces.${currentWorkspace.id}`
       );
-      privateChannel.bind("WorkspaceCallRecordingStatus", (res) => {
+      privateChannel.bind("WorkspaceCallRecordingStatus", (res) =>
+      {
         dispatch(getRecordingByWorkspace({ id: currentWorkspace.id }));
         if (res.status == "SUBMITTED") {
           loadData();
@@ -81,11 +57,13 @@ export default () => {
     }
   }, [currentWorkspace]);
 
-  useEffect(() => {
+  useEffect(() =>
+  {
     loadData();
   }, [data, currentWorkspace]);
 
-  const loadData = (options) => {
+  const loadData = (options) =>
+  {
     if (currentWorkspace) {
       let queryParams = {
         workspace_id: currentWorkspace.id,
@@ -103,7 +81,8 @@ export default () => {
     { value: 100, label: 100 },
   ];
 
-  const handleSelectChange = (e, name) => {
+  const handleSelectChange = (e, name) =>
+  {
     let target = {
       name,
       type: "input",
@@ -113,7 +92,8 @@ export default () => {
     handleChange({ target });
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const key = e.target.name;
     const value =
       e.target.type == "checkbox" ? e.target.checked : e.target.value;
@@ -183,10 +163,10 @@ export default () => {
                       {(row.status == "NOT_SUBMITTED" ||
                         row.status == "SUBMITTED" ||
                         row.status == "STOPPED") && (
-                        <Badge color="danger" className="bg-light-danger">
-                          {row.status}
-                        </Badge>
-                      )}
+                          <Badge color="danger" className="bg-light-danger">
+                            {row.status}
+                          </Badge>
+                        )}
                     </td>
                     <td>{row.callprofile && row.callprofile.name}</td>
                     <td>
