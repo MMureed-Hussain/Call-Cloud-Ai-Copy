@@ -30,7 +30,7 @@ const AccountTabs = ({ data }) =>
     timezone: data?.timezone ?? null,
     companySize: data?.companySize ?? null,
     companyName: data?.companyName ?? null,
-    industry: data?.industry.id ?? null,
+    industry: data?.industry?.id ?? null,
   });
 
   useEffect(() =>
