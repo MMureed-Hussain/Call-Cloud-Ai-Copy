@@ -13,7 +13,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 import { useDispatch, useSelector } from "react-redux";
 import { getSessionList, setReload } from "../../redux/timers";
 import { getUsersOfWorkspace } from "../../redux/workspaces";
-import { getCompaignsByWorkspace, getTeamsByWorkspace } from "../../redux/campaigns";
+import { getTeamsByWorkspace } from "../../redux/campaigns";
 import UserInfo from "../profiles/components/UserInfo";
 
 
@@ -32,15 +32,12 @@ export default () =>
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const campaignsOptions = useSelector((state) => state.campaigns.campaignsOptions);
     const [data, setData] = useState({ sort: 'desc', orderby: 'created_at', per_page: per_page, search: '' });
-     console.warn("timers", timers)
 
     useEffect(() =>
     {
         if (currentWorkspace) {
             dispatch(getTeamsByWorkspace({ id: currentWorkspace.id }));
             dispatch(getUsersOfWorkspace({ id: currentWorkspace.id }));
-            dispatch(getCompaignsByWorkspace({ id: currentWorkspace.id }));
-
         }
 
     }, [currentWorkspace]);
@@ -205,14 +202,14 @@ export default () =>
                                     </Col>
                                 }
                                 <Col lg="3">
-                                        <div className="mb-1">
-                                            <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'campaign_id')} options={[{ value: '', label: 'None' }, ...campaignsOptions,]} className="mb-2" placeholder="Select Campaign" />
-                                        </div>
-                                    </Col><Col lg="3">
-                                        <div className="mb-1">
+                                    <div className="mb-1">
+                                        <Select classNamePrefix='select' onChange={e => handleSelectChange(e, 'campaign_id')} options={[{ value: '', label: 'None' }, ...campaignsOptions,]} className="mb-2" placeholder="Select Campaign" />
+                                    </div>
+                                </Col><Col lg="3">
+                                    <div className="mb-1">
                                         <Select onChange={e => handleSelectChange(e, 'team_id')} options={[{ value: '', label: 'None' }, ...teams,]} className="mb-2" placeholder="Select Team" />
-                                        </div>
-                                    </Col>
+                                    </div>
+                                </Col>
                                 <Col lg="2">
                                     <div className="mb-1">
                                         <Input name="from_date" type="date" value={data.from_date} onChange={e => handleChange(e)} placeholder="From date" />

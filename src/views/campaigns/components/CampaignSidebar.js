@@ -1,16 +1,7 @@
 /* eslint-disable */
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useImperativeHandle, forwardRef } from "react";
-import
-{
-  Button,
-  Label,
-  Form,
-  Input,
-  FormFeedback,
-  Spinner,
-  FormGroup,
-} from "reactstrap";
+import { Button, Label, Form, Input, FormFeedback, Spinner, FormGroup, } from "reactstrap";
 import Select from "react-select";
 import toast from "react-hot-toast";
 import Sidebar from "@components/sidebar";
@@ -25,9 +16,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
   const user = useSelector((state) => state.auth.user);
   const errors = useSelector((state) => state.campaigns.errors);
   const [campaign, setCampaign] = useState(null);
-  const currentWorkspace = useSelector(
-    (state) => state.workspaces.currentWorkspace
-  );
+  const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
   const [open, setOpen] = useState(false);
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState({});
@@ -71,12 +60,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
       return;
     }
     setLoader(true);
-    console.log(data, "eata");
-    dispatch(storeOrUpdate(data)).then((res) =>
-    {
-      console.log(res, "res");
-      setLoader(false);
-    });
+    dispatch(storeOrUpdate(data));
     setOpen(false);
   };
 
@@ -107,6 +91,7 @@ const CampaignSidebar = forwardRef((props, ref) =>
             ...obj,
             is_created: 0,
             start_date: moment(obj.start_date).format("YYYY-MM-DD"),
+            workspace_id: currentWorkspace.id,
           }
           : {
             title: "",

@@ -136,19 +136,22 @@ const FollowUpSidebar = forwardRef((props, ref) =>
 
 	useEffect(() =>
 	{
-		axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/timezones`)
-			.then((res) =>
-			{
-				const timezoneOptions = res.data.map((timezone) =>
+
+		if (!user.timezone) {
+			axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/timezones`)
+				.then((res) =>
 				{
-					return {
-						id: timezone.id,
-						value: timezone.id,
-						label: timezone.name,
-					};
+					const timezoneOptions = res.data.map((timezone) =>
+					{
+						return {
+							id: timezone.id,
+							value: timezone.id,
+							label: timezone.name,
+						};
+					});
+					setTimezoneList(timezoneOptions);
 				});
-				setTimezoneList(timezoneOptions);
-			});
+		}
 	}, []);
 
 

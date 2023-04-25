@@ -36,13 +36,12 @@ export const updateProfile = createAsyncThunk(
 	async ({ payload, id }, { dispatch }) =>
 	{
 		try {
-			console.log(payload, id, 'pay');
 			dispatch(setLoading(true));
 			dispatch(setErrors({}));
 			const response = await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`, payload);
 			toast.success(response.data.message);
-			dispatch(setReloadTable(true));
 			dispatch(setSelectedProfile(response.data.data));
+			dispatch(setReloadTable(true));
 			return {
 				data: response.data.data,
 			};
@@ -92,21 +91,12 @@ export const getProfile = createAsyncThunk(
 	async ({ params, id }, { dispatch }) =>
 	{
 		try {
-			const response = await axios.get(
-				`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`,
-				{
-					params,
-				}
-			);
+			const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}`, { params });
 			dispatch(setSelectedProfile(response.data.data));
-			return {
-				data: response.data.data,
-			};
+			return { data: response.data.data };
 		} catch (e) {
 			toast.error(e.response.data.message);
-			return {
-				data: null,
-			};
+			return { data: null };
 		}
 	}
 );
@@ -116,20 +106,11 @@ export const getCallsByProfileId = createAsyncThunk(
 	async ({ params, id }, { dispatch }) =>
 	{
 		try {
-			const response = await axios.get(
-				`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/calls`,
-				{
-					params,
-				}
-			);
-			return {
-				data: response.data,
-			};
+			const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/${id}/calls`, { params });
+			return { data: response.data };
 		} catch (e) {
 			toast.error(e.response.data.message);
-			return {
-				data: null,
-			};
+			return { data: null };
 		}
 	}
 );
@@ -191,10 +172,8 @@ export const updateCall = createAsyncThunk(
 	{
 		try {
 			dispatch(setErrors({}));
-			const response = await axios.put(
-				`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/update-call/${id}`,
-				formData
-			);
+			console.log(formData, 'data');
+			const response = await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/update-call/${id}`, formData);
 			toast.success(response.data.message);
 			dispatch(setReloadCallTable(true));
 			return {

@@ -14,21 +14,14 @@ import { updateProfile } from "../../../redux/profiles";
 
 const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, workspaceUsers, campaignsOptions }) =>
 {
+
   const dispatch = useDispatch();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const profileSidebarRef = useRef(null);
 
   const [input, setInput] = useState({
     name: data.name,
     phone: data.phone,
-    type: data.type,
-    users: data.users.length ? data.users.map((item) => ({ value: item.id, label: item.name })) : [],
-    client_status_id: data?.client_status_id ?? null,
-    pipeline_id: data?.pipeline_id ?? null,
-    lead_status_id: data?.lead_status_id ?? null,
-    campaign_id: data?.campaign_id ?? null,
   });
-
 
   const handleChange = (e) =>
   {
@@ -65,11 +58,6 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
     }
   }, [input]);
 
-  const toggleSidebar = () =>
-  {
-    setSidebarOpen(!sidebarOpen);
-  };
-
   return (
     <>
       <Card>
@@ -80,7 +68,7 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
               id="switch-success"
               name="type"
               checked={data.type === "client"}
-              onChange={() => handleChange({ target: { name: 'type', type: 'input', value: input.type === "client" ? "lead" : "client" } })}
+              onChange={() => handleChange({ target: { name: 'type', type: 'input', value: data.type === "client" ? "lead" : "client" } })}
             />
           </div>
           <Button onClick={() => profileSidebarRef.current.handleShow(data)} className="rounded-circle btn-icon" color="primary">
@@ -90,8 +78,8 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
         <CardBody>
           <h5 className="mb-75">
             Profile{" "}
-            <Badge className="ms-1" color={`light-${input.type === "client" ? "success" : "warning"}`} > {" "}
-              {input.type}
+            <Badge className="ms-1" color={`light-${data.type === "client" ? "success" : "warning"}`} > {" "}
+              {data.type}
             </Badge>
           </h5>
           <CardText>{data.name}</CardText>
@@ -113,7 +101,7 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
               classNamePrefix="select"
               onChange={e => handleSelectChange(e, 'campaign_id')}
               options={[{ value: '', label: 'None' }, ...campaignsOptions]}
-              value={handleSelected(campaignsOptions, input.campaign_id)}
+              value={handleSelected(campaignsOptions, data.campaign_id)}
             />
           </div>
           <div className="mb-1">
@@ -124,7 +112,7 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
               placeholder="Pipeline"
               options={pipelineOptions}
               onChange={e => handleSelectChange(e, 'pipeline_id')}
-              value={handleSelected(pipelineOptions, input.pipeline_id)}
+              value={handleSelected(pipelineOptions, data.pipeline_id)}
             />
           </div>
           <div className="mb-1">
@@ -136,7 +124,7 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
                 placeholder='Client Status'
                 options={clientOptions}
                 onChange={e => handleSelectChange(e, 'client_status_id')}
-                value={handleSelected(clientOptions, input.client_status_id)}
+                value={handleSelected(clientOptions, data.client_status_id)}
               />
             }
             {
@@ -147,15 +135,16 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
                 placeholder='Lead Status'
                 options={leadOptions}
                 onChange={e => handleSelectChange(e, 'lead_status_id')}
-                value={handleSelected(leadOptions, input.lead_status_id)}
+                value={handleSelected(leadOptions, data.lead_status_id)}
               />
             }
           </div>
           <div className="mt-2">
             <h5 className="mb-75">Users:</h5>
             <Select
-              theme={selectThemeColors}
               isMulti
+              defaultValue={data.users.map((item) => ({ value: item.id, label: item.name }))}
+              theme={selectThemeColors}
               value={input.users}
               classNamePrefix="select"
               className="react-select"
@@ -189,7 +178,7 @@ const ProfileAbout = ({ data, clientOptions, leadOptions, pipelineOptions, works
         pipelineOptions={pipelineOptions}
         leadOptions={leadOptions}
         clientOptions={clientOptions}
-        type={input.type}
+        type={data.type}
         ref={profileSidebarRef}
       />
     </>

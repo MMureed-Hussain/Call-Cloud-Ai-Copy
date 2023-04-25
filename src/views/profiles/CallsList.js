@@ -5,29 +5,14 @@ import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
 import Skeleton from "react-loading-skeleton";
 // ** Reactstrap Imports
-import
-{
-    Card,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    CardHeader,
-    CardTitle,
-} from "reactstrap";
+import { Card, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, CardHeader, CardTitle, } from "reactstrap";
 import CallListHeader from "./components/CallListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit, Eye, Trash, MoreVertical } from "react-feather";
 import CallSidebar from "./components/CallSidebar";
 import moment from "moment";
 import CallPlayer from "./components/CallPlayer";
-import
-{
-    getCallsByProfileId,
-    setReloadCallTable,
-    deleteResource,
-    updateCall,
-} from "../../redux/profiles";
+import { getCallsByProfileId, setReloadCallTable, deleteResource, updateCall, } from "../../redux/profiles";
 import CallViewSidebar from "./components/CallViewSidebar";
 import UserInfo from "./components/UserInfo";
 import Select from "react-select";
@@ -129,13 +114,17 @@ const CallList = ({ profileId, callOptions }) =>
     {
         dispatch(updateCall({
             formData: {
-                tags: JSON.stringify(call.tags.map((tag) => ({ value: tag.id, label: tag.label }))),
-                call_status: status,
-                note: call.notes,
+                status_id: status,
             },
             id: call.id,
         })
         );
+    }
+
+    const handleSelected = (selected) =>
+    {
+
+        return callOptions.filter(op => op.value === selected);
     }
 
     const columns = [
@@ -169,7 +158,7 @@ const CallList = ({ profileId, callOptions }) =>
             cell: (row) =>
             {
                 return <Select
-                    value={row.call_status ? { value: row.status.id, label: row.status.name } : null}
+                    value={handleSelected(row.status_id)}
                     theme={selectThemeColors}
                     classNamePrefix="select"
                     className="react-select"
@@ -235,13 +224,7 @@ const CallList = ({ profileId, callOptions }) =>
                                     <span className="align-middle ms-50">Edit</span>
                                 </DropdownItem>
                                 <DropdownItem
-                                    onClick={() =>
-                                        dispatch(
-                                            deleteResource(
-                                                `${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`
-                                            )
-                                        )
-                                    }
+                                    onClick={() => dispatch(deleteResource(`${process.env.REACT_APP_API_ENDPOINT}/api/profiles/delete-call/${row.id}`))}
                                 >
                                     <Trash size={15} />
                                     <span className="align-middle ms-50">Delete</span>
@@ -366,22 +349,9 @@ const CallList = ({ profileId, callOptions }) =>
                     />
                 </div>
             </Card>
-            {sidebarOpen && (
 
-                <CallSidebar
-                    open={sidebarOpen}
-                    call={selectedCall}
-                    toggleSidebar={toggleSidebar}
-                    callOptions={callOptions}
-                />
-            )}
-            {viewSidebarOpen && (
-                <CallViewSidebar
-                    open={viewSidebarOpen}
-                    call={selectedCall}
-                    toggleSidebar={toggleViewSidebar}
-                />
-            )}
+            {sidebarOpen && (<CallSidebar open={sidebarOpen} call={selectedCall} toggleSidebar={toggleSidebar} callOptions={callOptions} />)}
+            {viewSidebarOpen && (<CallViewSidebar open={viewSidebarOpen} call={selectedCall} toggleSidebar={toggleViewSidebar} />)}
         </>
     );
 };

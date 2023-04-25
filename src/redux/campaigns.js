@@ -5,7 +5,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ErrorHandler from "../utility/ErrorHandler";
-
 axios.defaults.withCredentials = true;
 const baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api/campaigns`;
 
@@ -94,6 +93,7 @@ export const storeOrUpdate = createAsyncThunk(
     try {
       const response = await axios.post(`${baseURL}`, params);
       toast.success(response.data.message);
+      dispatch(getCompaignsByWorkspace({ id: params.workspace_id }));
       dispatch(setReload(true));
       return { data: true };
     } catch (e) {
