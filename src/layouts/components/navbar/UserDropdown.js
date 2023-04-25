@@ -87,12 +87,11 @@ const UserDropdown = () =>
         href="/"
         tag="a"
         className="nav-link dropdown-user-link"
-        onClick={(e) => e.preventDefault()}
-      >
-        <div className="user-nav d-sm-flex d-none">
+        onClick={(e) => e.preventDefault()}>
+        {/* <div className="user-nav d-sm-flex d-none">
           <span className="user-name fw-bold m-0">{store.user.firstName}</span>
-          {/* <span className="user-status">Admin</span> */}
-        </div>
+          <span className="user-status">Admin</span>
+        </div> */}
 
         <Avatar
           img={store.user.avatar ? store.user.avatar : defaultAvatar}

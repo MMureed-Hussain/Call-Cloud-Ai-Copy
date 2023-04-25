@@ -51,6 +51,7 @@ export default () =>
                 ...data,
                 ...options,
             };
+            
             dispatch(getCampaignsList(queryParams));
         }
     };

@@ -13,7 +13,6 @@ import NoteList from "./NoteList";
 import { getProfile, setReloadTable } from "../../redux/profiles";
 import { getUsers } from "../../redux/workspaces";
 import { getStatusesOptions } from "../../redux/statuses";
-import { getCampaignsList } from "../../redux/campaigns";
 
 export default () =>
 {
@@ -24,7 +23,6 @@ export default () =>
   const profile = useSelector((state) => state.profiles.selectedProfile);
   const reload = useSelector((state) => state.profiles.reloadTable);
 
-
   const clientOptions = useSelector((state) => state.statuses.client_options);
   const callOptions = useSelector((state) => state.statuses.call_options);
   const leadOptions = useSelector((state) => state.statuses.lead_options);
@@ -32,25 +30,14 @@ export default () =>
   const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
   const campaignsOptions = useSelector((state) => state.campaigns.campaignsOptions);
 
-
   useEffect(() =>
   {
     if (currentWorkspace) {
       dispatch(getProfile({ id: params.id }));
       dispatch(getStatusesOptions());
       dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
-      dispatch(getCampaignsList({ workspace_id: currentWorkspace.id, orderby: "created_at", sort: "desc", }));
     }
   }, [currentWorkspace]);
-
-
-  useEffect(() =>
-  {
-    if (reload) {
-      dispatch(setReloadTable(false));
-      dispatch(getProfile({ id: params.id }));
-    }
-  }, [reload]);
 
 
   if (!profile) {

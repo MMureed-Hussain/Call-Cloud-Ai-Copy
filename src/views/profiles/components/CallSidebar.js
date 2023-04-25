@@ -16,7 +16,7 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 	// ** States
 	const dispatch = useDispatch();
 	const params = useParams();
-	const [note, setNote] = useState("");
+	const [notes, setNotes] = useState("");
 	const [tags, setTags] = useState([]);
 	const [formSubmissionLoader, setFormSubmissionLoader] = useState(false);
 	const [callStatus, setCallStatus] = useState(null);
@@ -36,7 +36,7 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 	useEffect(() =>
 	{
 		if (call) {
-			setNote(call.notes);
+			setNotes(call.notes);
 			setAudioDetails((state) =>
 			{
 				state.url = `${process.env.REACT_APP_API_ENDPOINT}/audio-stream/${call.id}`;
@@ -44,10 +44,10 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 			});
 			let tags = call.tags.map((tag) => ({ value: tag.id, label: tag.label }));
 			setTags(tags);
-			if (call.status) {
+			if (call.status_id) {
 				setCallStatus({
-					value: call.status.id,
-					label: call.status.name,
+					value: call.status_id,
+					label: call.call_status.name,
 				});
 			}
 		}
@@ -58,12 +58,12 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 		event.preventDefault();
 		const formData = new FormData();
 		if (!call) {
-			formData.append("note", note);
+			formData.append("notes", notes);
 			formData.append("tags", JSON.stringify(tags));
 			formData.append("voice", audioDetails.blob);
 			formData.append("call_profile_id", params.id);
 			if (callStatus) {
-				formData.append("call_status", callStatus.value);
+				formData.append("status_id", callStatus.value);
 			}
 
 			dispatch(
@@ -79,9 +79,9 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 			call
 				? updateCall({
 					formData: {
-						note,
+						notes,
 						tags: JSON.stringify(tags),
-						call_status: callStatus?.value,
+						status_id: callStatus?.value,
 					},
 					id: call.id,
 				})
@@ -111,7 +111,7 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 				s: 0,
 			},
 		});
-		setNote("");
+		setNotes("");
 		setTags([]);
 
 		dispatch(
@@ -122,6 +122,12 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 			})
 		);
 	};
+
+
+	const handleSelected = (selected) =>
+	{
+		return callOptions.filter(op => op.value === selected);
+	}
 
 	return (
 		<Sidebar
@@ -148,18 +154,12 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 						value={callStatus}
 						theme={selectThemeColors}
 						classNamePrefix="select"
-						className={
-							errors.has("call_status")
-								? "is-invalid react-select"
-								: "react-select"
-						}
+						className={errors.has("status_id") ? "is-invalid react-select" : "react-select"}
 						placeholder="Select call status"
 						options={callOptions}
 						onChange={setCallStatus}
 					/>
-					{errors.has("call_status") && (
-						<FormFeedback>{errors.get("call_status")}</FormFeedback>
-					)}
+					{errors.has("status_id") && (<FormFeedback>{errors.get("status_id")}</FormFeedback>)}
 				</div>
 				<div className="mb-1">
 					<Label className="form-label" for="title">
@@ -168,15 +168,11 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 					<TagInput
 						value={tags}
 						onChange={setTags}
-						className={
-							errors.has("tags") ? "is-invalid react-select" : "react-select"
-						}
+						className={errors.has("tags") ? "is-invalid react-select" : "react-select"}
 						name="Tags"
 						placeHolder="Add tag"
 					/>
-					{errors.has("tags") && (
-						<FormFeedback>{errors.get("tags")}</FormFeedback>
-					)}
+					{errors.has("tags") && <FormFeedback>{errors.get("tags")}</FormFeedback>}
 				</div>
 				<div className="mb-1">
 					<Label className="form-label" for="title">
@@ -184,14 +180,14 @@ export default ({ open, toggleSidebar, call, callOptions }) =>
 					</Label>
 					<Input
 						placeholder="Enter Note here"
-						value={note}
+						value={notes}
 						onChange={(e) =>
 						{
 							const value = e.target.value.replace(
 								/(^\w{1})|(\s+\w{1})/g,
 								(letter) => letter.toUpperCase()
 							);
-							setNote(value);
+							setNotes(value);
 						}}
 					/>
 				</div>

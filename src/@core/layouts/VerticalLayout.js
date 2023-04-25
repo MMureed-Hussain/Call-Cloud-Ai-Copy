@@ -184,13 +184,11 @@ const VerticalLayout = (props) =>
       <Navbar
         expand="lg"
         container={false}
-        light={skin !== "dark"}
+        // light={skin !== "dark"}
         dark={skin === "dark" || bgColorCondition}
         color={bgColorCondition ? navbarColor : undefined}
-        className={classnames(
-          `header-navbar navbar align-items-center ${navbarClasses[navbarType] || "floating-nav"
-          } navbar-shadow`
-        )}
+
+        className={classnames(`header-navbar navbar align-items-center ${navbarClasses[navbarType] || "floating-nav"} navbar-shadow`)}
       >
 
         <div className="navbar-container d-flex content">
@@ -205,6 +203,7 @@ const VerticalLayout = (props) =>
           )}
         </div>
       </Navbar>
+
       {children}
 
       {/* Vertical Nav Menu Overlay */}

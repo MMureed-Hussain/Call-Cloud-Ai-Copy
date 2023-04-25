@@ -1,21 +1,21 @@
 // ** React Imports
+/* eslint-disable */
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbTack } from "@fortawesome/free-solid-svg-icons";
-
 // ** Icons Imports
 import { Disc, X, Circle } from "react-feather";
-
 // ** Config
 import themeConfig from "@configs/themeConfig";
-
 // ** Utils
 import { getUserData, getHomeRouteForLoggedInUser } from "@utils";
-
 import WorkspaceSwitcher from "./WorkspaceSwitcher.js";
+import { useSelector } from "react-redux";
+import NavbarUser from "../components/navbar/NavbarUser.js";
 
-const VerticalMenuHeader = (props) => {
+const VerticalMenuHeader = (props) =>
+{
   // ** Props
   const {
     menuCollapsed,
@@ -26,15 +26,18 @@ const VerticalMenuHeader = (props) => {
   } = props;
 
   // ** Vars
-  const user = getUserData();
+  // const user = getUserData();
+  const user = useSelector((state) => state.auth.user);
 
   // ** Reset open group
-  useEffect(() => {
+  useEffect(() =>
+  {
     if (!menuHover && menuCollapsed) setGroupOpen([]);
   }, [menuHover, menuCollapsed]);
 
   // ** Menu toggler component
-  const Toggler = () => {
+  const Toggler = () =>
+  {
     if (!menuCollapsed) {
       return (
         <FontAwesomeIcon
@@ -63,10 +66,7 @@ const VerticalMenuHeader = (props) => {
       <div className="navbar-header">
         <ul className="nav navbar-nav flex-row">
           <li className="nav-item me-auto">
-            <NavLink
-              to={user ? getHomeRouteForLoggedInUser(user.role) : "/"}
-              className="navbar-brand"
-            >
+            <NavLink to={user ? getHomeRouteForLoggedInUser(user.role) : "/"} className="navbar-brand">
               <span className="brand-logo">
                 <img src={themeConfig.app.appLogoImage} alt="logo" />
               </span>
@@ -75,14 +75,13 @@ const VerticalMenuHeader = (props) => {
           </li>
 
           <li className="nav-item nav-toggle">
-            <div className="nav-link modern-nav-toggle cursor-pointer">
+            {/* <div className="nav-link modern-nav-toggle cursor-pointer">
               <Toggler />
-              <X
-                onClick={() => setMenuVisibility(false)}
-                className="toggle-icon icon-x d-block d-xl-none"
-                size={20}
-              />
-            </div>
+              <X onClick={() => setMenuVisibility(false)} className="toggle-icon icon-x d-block d-xl-none" size={20} />
+            </div> */}
+
+            {user && <NavbarUser />}
+
           </li>
         </ul>
       </div>

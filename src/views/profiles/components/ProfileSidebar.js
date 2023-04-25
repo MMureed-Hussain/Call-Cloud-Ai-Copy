@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProfile, setSelectedProfile, updateProfile } from "../../../redux/profiles";
 import { } from "../../../redux/statuses";
 import { getUsers } from "../../../redux/workspaces";
-import { getCampaignsList } from "../../../redux/campaigns";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
@@ -25,14 +24,6 @@ export default forwardRef(({ type, clientOptions, leadOptions, pipelineOptions }
 	const errors = useSelector((state) => state.profiles.errors);
 	const workspaceUsers = useSelector((state) => state.workspaces.users.map((user) => ({ value: user.id, label: user.name })));
 	const [data, setData] = useState({});
-
-	useEffect(() =>
-	{
-		dispatch(getUsers({ id: currentWorkspace.id, perPage: 50, page: 1 }));
-		dispatch(getCampaignsList({ workspace_id: currentWorkspace.id, orderby: "created_at", sort: "desc", }));
-	}, [currentWorkspace]);
-
-
 
 	useImperativeHandle(ref, () => ({
 		handleShow: (obj = null) =>

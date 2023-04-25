@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 import { useEffect, useState, useRef } from "react";
 import { Clock, Meh, X } from "react-feather";
 import { Row, Col, FormGroup, Input, Label, FormFeedback } from "reactstrap";
@@ -8,7 +7,6 @@ import { storeOrUpdate, getCrrentTimer } from "../../../redux/timers";
 import { getCompaignsByWorkspace } from "../../../redux/campaigns";
 import { millisecondsToTime } from "../../../utility/Utils";
 import Select from "react-select";
-import moment from "moment/moment";
 
 const Timetracker = () =>
 {
@@ -22,7 +20,7 @@ const Timetracker = () =>
     const timer = useSelector((state) => state.timers.timer);
     const currentWorkspace = useSelector((state) => state.workspaces.currentWorkspace);
     const campaignsOptions = useSelector((state) => state.campaigns.campaignsOptions);
-    const [data, setData] = useState({ campaign_id: 0});
+    const [data, setData] = useState({ campaign_id: 0 });
 
     useEffect(() =>
     {
@@ -89,7 +87,6 @@ const Timetracker = () =>
     {
         e.preventDefault()
         setOpen(!open);
-        dispatch(getCompaignsByWorkspace({ id: currentWorkspace.id }));
     }
 
     const handleSelectChange = (e, name) =>
@@ -145,7 +142,7 @@ const Timetracker = () =>
                                     value={handleSelected(campaignsOptions, data.campaign_id)}
                                     isDisabled={Boolean(timer)}
                                 />
-                                    {!Boolean(data.campaign_id ) && <FormFeedback className="text-danger">Please select a campaign to start the session! </FormFeedback>}
+                                {!Boolean(data.campaign_id) && <FormFeedback className="text-danger">Please select a campaign to start the session! </FormFeedback>}
                             </FormGroup>
                         </Col>
                     </Row>
